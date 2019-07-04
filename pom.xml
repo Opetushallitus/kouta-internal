@@ -21,11 +21,14 @@
 
         <!-- Utility properties -->
         <scala-utils.version>0.0.1-SNAPSHOT</scala-utils.version>
-        <json4s.version>3.6.3</json4s.version>
+        <json4s.version>3.6.7</json4s.version>
 
         <!-- Http related properties -->
         <scalatra.version>2.6.5</scalatra.version>
         <javax.servlet-api.version>4.0.1</javax.servlet-api.version>
+
+        <!-- Elasticsearch properties -->
+        <elastic4sVersion>6.7.0</elastic4sVersion>
 
         <!-- Test properties -->
         <scala-test.version>3.2.0-SNAP10</scala-test.version>
@@ -83,6 +86,10 @@
                     <groupId>org.scala-lang.modules</groupId>
                     <artifactId>scala-parser-combinators_2.12</artifactId>
                 </exclusion>
+                <exclusion>
+                    <groupId>org.json4s</groupId>
+                    <artifactId>json4s-core_2.12</artifactId>
+                </exclusion>
             </exclusions>
         </dependency>
         <dependency>
@@ -115,7 +122,7 @@
             <scope>test</scope>
         </dependency>
 
-        <!-- Utility properties -->
+        <!-- Utility dependencies -->
         <dependency>
             <groupId>fi.vm.sade</groupId>
             <artifactId>scala-logging_2.12</artifactId>
@@ -136,8 +143,48 @@
                     <groupId>org.scala-lang</groupId>
                     <artifactId>scala-library</artifactId>
                 </exclusion>
+                <exclusion>
+                    <groupId>com.fasterxml.jackson.core</groupId>
+                    <artifactId>jackson-databind</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>com.fasterxml.jackson.core</groupId>
+                    <artifactId>jackson-core</artifactId>
+                </exclusion>
+
             </exclusions>
         </dependency>
+
+        <!-- Elasticsearch dependencies -->
+        <dependency>
+            <groupId>com.sksamuel.elastic4s</groupId>
+            <artifactId>elastic4s-http_2.12</artifactId>
+            <version>${elastic4sVersion}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>slf4j-api</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>joda-time</groupId>
+                    <artifactId>joda-time</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.scala-lang</groupId>
+                    <artifactId>scala-library</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>com.fasterxml.jackson.core</groupId>
+                    <artifactId>jackson-annotations</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-annotations</artifactId>
+            <version>2.9.9</version>
+        </dependency>
+
 
         <!-- Test dependencies -->
         <dependency>
@@ -166,10 +213,16 @@
                     <groupId>org.eclipse.jetty</groupId>
                     <artifactId>jetty-webapp</artifactId>
                 </exclusion>
+                <exclusion>
+                    <groupId>org.apache.httpcomponents</groupId>
+                    <artifactId>httpclient</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.scala-lang</groupId>
+                    <artifactId>scala-reflect</artifactId>
+                </exclusion>
             </exclusions>
         </dependency>
-
-        
     </dependencies>
 
     <repositories>

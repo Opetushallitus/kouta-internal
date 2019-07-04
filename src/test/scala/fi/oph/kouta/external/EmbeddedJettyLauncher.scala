@@ -1,6 +1,14 @@
 package fi.oph.kouta.external
 
+import com.sksamuel.elastic4s.http.get.GetResponse
+import com.sksamuel.elastic4s.http.{RequestFailure, RequestSuccess}
+import fi.oph.kouta.external.elasticsearch.{ElasticSearchException, ElasticsearchClientFactory}
 import fi.vm.sade.utils.slf4j.Logging
+
+import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.Future
+import scala.util.{Failure, Success}
+import com.sksamuel.elastic4s.http.ElasticDsl._
 
 object EmbeddedJettyLauncher extends Logging {
 
@@ -9,8 +17,34 @@ object EmbeddedJettyLauncher extends Logging {
   val TestDataGeneratorSessionId = "ea596a9c-5940-497e-b5b7-aded3a2352a7"
 
   def main(args: Array[String]) {
-    val port = System.getProperty("kouta-external.port", DefaultPort).toInt
-    logger.info(s"Starting standalone Kouta-external Jetty on port $port...")
-    new JettyLauncher(port).start.join
+
+    println("Creating a client")
+    logger.error("Starting a client")
+    ElasticsearchClientFactory.withClient { client =>
+      Future.sequence {
+        1.to(9).map(Integer.toString).map { i =>
+          println(s"i: $i")
+          client.execute {
+            get(s"1.2.246.562.13.0000000000000000000$i").from("koulutus-kouta")
+          }.flatMap {
+            case failure: RequestFailure => Future.failed(ElasticSearchException(failure.error))
+
+            case response: RequestSuccess[GetResponse] =>
+              logger.info(s"response $response")
+              logger.info(response.result.sourceAsString)
+              Future.successful(response.result.sourceAsString)
+          }
+        }
+      }.andThen {
+        case Success(f) => f.foreach(println)
+        case Failure(exception) => throw exception
+      }
+    }
+    /*
+      val port = System.getProperty("kouta-external.port", DefaultPort).toInt
+      logger.info(s"Starting standalone Kouta-external Jetty on port $port...")
+      new JettyLauncher(port).start.join()
+
+     */
   }
 }
