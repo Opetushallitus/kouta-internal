@@ -5,11 +5,11 @@ import java.time.format.DateTimeFormatter
 import java.time.{Instant, ZoneId, ZonedDateTime}
 import java.util.{ConcurrentModificationException, NoSuchElementException}
 
-import fi.oph.kouta.external.util.fi.oph.kouta.util.KoutaJsonFormats
+import fi.oph.kouta.external.util.KoutaJsonFormats
 import fi.vm.sade.utils.slf4j.Logging
 import org.json4s.MappingException
-import org.scalatra.json.JacksonJsonSupport
 import org.scalatra._
+import org.scalatra.json.JacksonJsonSupport
 
 import scala.util.control.NonFatal
 import scala.util.{Failure, Try}
