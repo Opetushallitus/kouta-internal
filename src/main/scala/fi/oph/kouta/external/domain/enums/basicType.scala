@@ -17,7 +17,7 @@ abstract class BasicTypeCompanion[A <: BasicType: Manifest] {
 
   protected val baseClassName: String = camel2spaces(baseClass.getSimpleName)
 
-  def all: Seq[A]
+  def all: List[A]
 
   lazy val map: Map[String, A] = all.map(a => a.name -> a).toMap
 

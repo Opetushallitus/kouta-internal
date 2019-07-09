@@ -65,7 +65,7 @@ case class AmmatillinenKoulutusMetadataIndexed(
     kuvaus: Map[Kieli, String],
     lisatiedot: Seq[LisatietoIndexed]
 ) extends KoulutusMetadataIndexed {
-  override def toKoulutusMetadata: KoulutusMetadata =
+  override def toKoulutusMetadata: AmmatillinenKoulutusMetadata =
     AmmatillinenKoulutusMetadata(
       tyyppi = tyyppi,
       kuvaus = kuvaus,
@@ -81,7 +81,7 @@ case class KorkeakoulutusKoulutusMetadataIndexed(
     opintojenLaajuus: Option[OpintojenLaajuus],
     kuvauksenNimi: Map[Kieli, String]
 ) extends KoulutusMetadataIndexed {
-  override def toKoulutusMetadata: KoulutusMetadata =
+  override def toKoulutusMetadata: KorkeakoulutusKoulutusMetadata =
     KorkeakoulutusKoulutusMetadata(
       tyyppi = tyyppi,
       kuvaus = kuvaus,

@@ -10,5 +10,5 @@ object Koulutustyyppi extends BasicTypeCompanion[Koulutustyyppi] {
   case object Yo  extends Koulutustyyppi("yo")
   case object Amk extends Koulutustyyppi("amk")
 
-  val all: Seq[Koulutustyyppi] = Seq(Amm, Lk, Muu, Yo, Amk)
+  val all: List[Koulutustyyppi] = List(Amm, Lk, Muu, Yo, Amk)
 }

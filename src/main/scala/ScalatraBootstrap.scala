@@ -5,12 +5,10 @@ import org.scalatra._
 
 class ScalatraBootstrap extends LifeCycle {
   override def init(context: ServletContext) {
-
     super.init(context)
 
-    context.mount(new MyScalatraServlet, "/*")
+    implicit val swagger: KoutaExternalSwagger = new KoutaExternalSwagger
 
-    implicit val swagger: KoutaBackendSwagger = new KoutaBackendSwagger
     context.mount(new KoulutusServlet(), "/koulutus", "koulutus")
 
     context.mount(new HealthcheckServlet(), "/healthcheck", "healthcheck")

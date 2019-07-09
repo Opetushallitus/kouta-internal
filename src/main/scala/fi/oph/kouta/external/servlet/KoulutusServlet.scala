@@ -1,15 +1,16 @@
 package fi.oph.kouta.external.servlet
 
+import fi.oph.kouta.external.PrettySwaggerSupport
 import fi.oph.kouta.external.domain.Koulutus
 import fi.oph.kouta.external.domain.oid.KoulutusOid
 import fi.oph.kouta.external.service.KoulutusService
 import org.scalatra.FutureSupport
-import org.scalatra.swagger._
+import org.scalatra.swagger.Swagger
 
 import scala.concurrent.ExecutionContext
 import scala.concurrent.ExecutionContext.Implicits.global
 
-class KoulutusServlet(implicit val swagger: Swagger) extends KoutaServlet with SwaggerSupport with FutureSupport {
+class KoulutusServlet(implicit val swagger: Swagger) extends KoutaServlet with PrettySwaggerSupport with FutureSupport {
 
   override def executor: ExecutionContext = global
 
@@ -23,4 +24,7 @@ class KoulutusServlet(implicit val swagger: Swagger) extends KoutaServlet with S
 
     KoulutusService.getKoulutus(KoulutusOid(params("oid")))
   }
+
+  prettifySwaggerModels()
+
 }

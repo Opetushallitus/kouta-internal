@@ -8,6 +8,6 @@ object Julkaisutila extends BasicTypeCompanion[Julkaisutila] {
   case object Julkaistu   extends Julkaisutila("julkaistu")
   case object Arkistoitu  extends Julkaisutila("arkistoitu")
 
-  val all: Seq[Julkaisutila] = Seq(Tallennettu, Julkaistu, Arkistoitu)
+  val all: List[Julkaisutila] = List(Tallennettu, Julkaistu, Arkistoitu)
 }
 
