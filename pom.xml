@@ -71,7 +71,12 @@
                     <groupId>org.scala-lang.modules</groupId>
                     <artifactId>scala-xml_2.12</artifactId>
                 </exclusion>
+                <exclusion>
+                    <groupId>org.scala-lang.modules</groupId>
+                    <artifactId>scala-parser-combinators_2.12</artifactId>
+                </exclusion>
             </exclusions>
+
         </dependency>
         <dependency>
             <groupId>org.scalatra</groupId>
@@ -125,6 +130,42 @@
         <!-- Utility dependencies -->
         <dependency>
             <groupId>fi.vm.sade</groupId>
+            <artifactId>scala-utils_2.12</artifactId>
+            <version>${scala-utils.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.apache.commons</groupId>
+                    <artifactId>commons-lang3</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>com.fasterxml.jackson.core</groupId>
+                    <artifactId>jackson-databind</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>com.fasterxml.jackson.core</groupId>
+                    <artifactId>jackson-core</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.scala-lang</groupId>
+                    <artifactId>scala-library</artifactId>
+                </exclusion>
+
+            </exclusions>
+        </dependency>
+
+        <dependency>
+            <groupId>fi.vm.sade</groupId>
+            <artifactId>scala-properties_2.12</artifactId>
+            <version>${scala-utils.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.scala-lang</groupId>
+                    <artifactId>scala-library</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>fi.vm.sade</groupId>
             <artifactId>scala-logging_2.12</artifactId>
             <version>${scala-utils.version}</version>
             <exclusions>
@@ -151,7 +192,6 @@
                     <groupId>com.fasterxml.jackson.core</groupId>
                     <artifactId>jackson-core</artifactId>
                 </exclusion>
-
             </exclusions>
         </dependency>
 
@@ -174,8 +214,16 @@
                     <artifactId>scala-library</artifactId>
                 </exclusion>
                 <exclusion>
+                    <groupId>org.scala-lang</groupId>
+                    <artifactId>scala-reflect</artifactId>
+                </exclusion>
+                <exclusion>
                     <groupId>com.fasterxml.jackson.core</groupId>
                     <artifactId>jackson-annotations</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>com.typesafe</groupId>
+                    <artifactId>config</artifactId>
                 </exclusion>
             </exclusions>
         </dependency>
@@ -183,6 +231,16 @@
             <groupId>com.sksamuel.elastic4s</groupId>
             <artifactId>elastic4s-json4s_2.12</artifactId>
             <version>${elastic4sVersion}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.json4s</groupId>
+                    <artifactId>json4s-jackson_2.12</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.json4s</groupId>
+                    <artifactId>json4s-core_2.12</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>

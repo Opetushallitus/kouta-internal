@@ -1,0 +1,7 @@
+---
+cas_url: https://virkailija.hahtuvaopintopolku.fi/cas
+kouta_external_cas_service: http://localhost:8099/kouta-backend/auth/login
+
+kouta_external_elasticsearch_url: http://localhost:9200
+
+host_virkailija: virkailija.hahtuvaopintopolku.fi
