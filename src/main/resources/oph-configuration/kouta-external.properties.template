@@ -1,6 +1,6 @@
 cas.url={{cas_url}}
 kouta-external.cas.service={{kouta_external_cas_service}}
-
+kouta-external.cas.allowOldTarjontaRole={{kouta_external_cas_allow_old_tarjonta_rule}}
 kouta-external.elasticsearch.url={{kouta_external_elasticsearch_url}}
 
 host.virkailija={{host_virkailija}}

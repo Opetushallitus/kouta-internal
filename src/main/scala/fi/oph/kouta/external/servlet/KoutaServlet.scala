@@ -1,20 +1,20 @@
 package fi.oph.kouta.external.servlet
 
-import java.text.ParseException
 import java.time.format.DateTimeFormatter
 import java.time.{Instant, ZoneId, ZonedDateTime}
 import java.util.{ConcurrentModificationException, NoSuchElementException}
 
+import fi.oph.kouta.external.PrettySwaggerSupport
+import fi.oph.kouta.external.security._
 import fi.oph.kouta.external.util.KoutaJsonFormats
 import fi.vm.sade.utils.slf4j.Logging
-import org.json4s.MappingException
 import org.scalatra._
 import org.scalatra.json.JacksonJsonSupport
 
 import scala.util.control.NonFatal
 import scala.util.{Failure, Try}
 
-trait KoutaServlet extends ScalatraServlet with KoutaJsonFormats with JacksonJsonSupport with Logging {
+trait KoutaServlet extends ScalatraServlet with PrettySwaggerSupport with KoutaJsonFormats with JacksonJsonSupport with Logging {
 
   before() {
     contentType = formats("json")
@@ -41,21 +41,23 @@ trait KoutaServlet extends ScalatraServlet with KoutaJsonFormats with JacksonJso
   protected def parseIfUnmodifiedSince: Option[Instant] = request.headers.get("If-Unmodified-Since") match {
     case Some(s) =>
       Try(parseHttpDate(s)) match {
-        case x if x.isSuccess => Some(x.get)
-        case Failure(e) => throw new IllegalArgumentException(s"Ei voitu jäsentää otsaketta If-Unmodified-Since muodossa $SampleHttpDate.", e)
+        case x if x.isSuccess =>
+          Some(x.get)
+        case Failure(e) =>
+          throw new IllegalArgumentException(s"Ei voitu jäsentää otsaketta If-Unmodified-Since muodossa $SampleHttpDate.", e)
       }
     case None => None
   }
 
   protected def getIfUnmodifiedSince: Instant = parseIfUnmodifiedSince match {
     case Some(s) => s
-    case None => throw new IllegalArgumentException("Otsake If-Unmodified-Since on pakollinen.")
+    case None    => throw new IllegalArgumentException("Otsake If-Unmodified-Since on pakollinen.")
   }
 
   def errorMsgFromRequest(): String = {
     def msgBody = request.body.length match {
       case x if x > 500000 => request.body.substring(0, 500000)
-      case _ => request.body
+      case _               => request.body
     }
 
     s"Error ${request.getMethod} ${request.getContextPath} => $msgBody"
@@ -67,10 +69,17 @@ trait KoutaServlet extends ScalatraServlet with KoutaJsonFormats with JacksonJso
   }
 
   error {
-    case e: IllegalStateException => badRequest(e)
+    case e: AuthenticationFailedException =>
+      logger.warn(s"authentication failed: ${e.getMessage}")
+      Unauthorized("error" -> "Unauthorized")
+    case e: RoleAuthorizationFailedException =>
+      logger.warn("authorization failed", e.getMessage)
+      Forbidden("error" -> "Forbidden")
+    case e: OrganizationAuthorizationFailedException =>
+      logger.warn("authorization failed", e.getMessage)
+      Forbidden("error" -> s"Forbidden ${e.oids.mkString(", ")}")
+    case e: IllegalStateException    => badRequest(e)
     case e: IllegalArgumentException => badRequest(e)
-    case e: MappingException => badRequest(e)
-    case e: ParseException => badRequest(e)
     case e: ConcurrentModificationException =>
       Conflict("error" -> e.getMessage)
     case e: NoSuchElementException =>

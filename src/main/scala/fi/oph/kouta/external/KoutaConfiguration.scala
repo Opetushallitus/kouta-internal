@@ -15,7 +15,8 @@ case class SecurityConfiguration(
     casUrl: String,
     casServiceIdentifier: String,
     kayttooikeusUrl: String,
-    rootOrganisaatio: OrganisaatioOid
+    rootOrganisaatio: OrganisaatioOid,
+    allowOldTarjontaRole: Boolean
 )
 
 case class ElasticSearchConfiguration(elasticUrl: String)
@@ -26,7 +27,8 @@ case class KoutaConfiguration(config: TypesafeConfig, urlProperties: OphProperti
     casUrl = config.getString("cas.url"),
     casServiceIdentifier = config.getString("kouta-external.cas.service"),
     kayttooikeusUrl = config.getString("kayttooikeus-service.userDetails.byUsername"),
-    rootOrganisaatio = OrganisaatioOid(config.getString("root.organisaatio.oid"))
+    rootOrganisaatio = OrganisaatioOid(config.getString("root.organisaatio.oid")),
+    allowOldTarjontaRole = config.getBoolean("kouta-external.cas.allowOldTarjontaRole")
   )
 
   val elasticSearchConfiguration = ElasticSearchConfiguration(

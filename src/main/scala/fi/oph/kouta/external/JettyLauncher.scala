@@ -6,7 +6,7 @@ import fi.vm.sade.utils.slf4j.Logging
 import org.eclipse.jetty.util.resource.Resource
 
 class JettyLauncher(val port: Int) {
-  val server = new Server(port)
+  val server  = new Server(port)
   val context = new WebAppContext()
   context.setBaseResource(Resource.newClassPathResource("webapp"))
   context.setDescriptor("WEB-INF/web.xml")
