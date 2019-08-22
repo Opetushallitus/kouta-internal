@@ -5,6 +5,10 @@ import java.time.Instant
 import fi.oph.kouta.external.domain.Perustiedot
 import fi.oph.kouta.external.security.{Authenticated, RoleEntity}
 
+import scala.concurrent.Future
+import scala.concurrent.ExecutionContext.Implicits.global
+import scala.util.{Success, Try}
+
 trait RoleEntityAuthorizationService extends AuthorizationService {
   protected val roleEntity: RoleEntity
 
@@ -18,6 +22,15 @@ trait RoleEntityAuthorizationService extends AuthorizationService {
             (entity, lastModified)
           }
         }
+    }
+
+  def authorizeGet[E <: Perustiedot](entity: Future[E])(implicit authenticated: Authenticated): Future[E] =
+    entity.map { e =>
+      withAuthorizedChildOrganizationOids(roleEntity.readRoles) { authorizedOrganizations =>
+        authorize(e.organisaatioOid, authorizedOrganizations) {
+          e
+        }
+      }
     }
 
   def authorizePut[E <: Perustiedot, I](entity: E)(f: => I)(implicit authenticated: Authenticated): I =

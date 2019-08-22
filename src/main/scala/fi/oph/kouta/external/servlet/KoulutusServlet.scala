@@ -10,7 +10,10 @@ import org.scalatra.swagger.Swagger
 import scala.concurrent.ExecutionContext
 import scala.concurrent.ExecutionContext.Implicits.global
 
-class KoulutusServlet(implicit val swagger: Swagger) extends KoutaServlet with CasAuthenticatedServlet with FutureSupport {
+class KoulutusServlet(implicit val swagger: Swagger)
+    extends KoutaServlet
+    with CasAuthenticatedServlet
+    with FutureSupport {
 
   override def executor: ExecutionContext = global
 

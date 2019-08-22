@@ -29,8 +29,9 @@ sealed trait DefaultKoutaJsonFormats {
     koulutusMetadataSerializer,
     koulutusMetadataIndexedSerializer,
     //    toteutusMetadataSerializer,
-    //    valintatapaSisaltoSerializer,
-    //    valintaperusteMetadataSerializer,
+    valintatapaSisaltoSerializer,
+    valintaperusteMetadataSerializer,
+    valintaperusteMetadataIndexedSerializer,
   )
 
   private def genericKoutaFormats: Formats = DefaultFormats
@@ -135,17 +136,16 @@ sealed trait DefaultKoutaJsonFormats {
   }))
 */
 
-  /*
   private def valintaperusteMetadataSerializer = new CustomSerializer[ValintaperusteMetadata](_ => ( {
     case s: JObject =>
       implicit def formats: Formats = genericKoutaFormats + valintatapaSisaltoSerializer
 
       Try(s \ "koulutustyyppi").toOption.collect {
-        case JString(tyyppi) => Koulutustyyppi.withName(tyyppi)
-      }.getOrElse(Amm) match {
-        case Yo => s.extract[YliopistoValintaperusteMetadata]
-        case Amm => s.extract[AmmatillinenValintaperusteMetadata]
-        case Amk => s.extract[AmmattikorkeakouluValintaperusteMetadata]
+        case JString(tyyppi) => Koulutustyyppi(tyyppi)
+      }.getOrElse(Koulutustyyppi.Amm) match {
+        case Koulutustyyppi.Yo => s.extract[YliopistoValintaperusteMetadata]
+        case Koulutustyyppi.Amm => s.extract[AmmatillinenValintaperusteMetadata]
+        case Koulutustyyppi.Amk => s.extract[AmmattikorkeakouluValintaperusteMetadata]
         case kt => throw new UnsupportedOperationException(s"Unsupported koulutustyyppi $kt")
       }
   }, {
@@ -154,31 +154,46 @@ sealed trait DefaultKoutaJsonFormats {
 
       Extraction.decompose(j)
   }))
-*/
 
-  /*
-    private def valintatapaSisaltoSerializer = new CustomSerializer[ValintatapaSisalto](implicit formats => ({
-      case s: JObject =>
-        Try(s \ "tyyppi").collect {
-          case JString(tyyppi) if tyyppi == "teksti" =>
-            Try(s \ "data").collect {
-              case teksti: JObject => ValintatapaSisaltoTeksti(teksti.extract[Kielistetty])
-            }.get
-          case JString(tyyppi) if tyyppi == "taulukko" =>
-            Try(s \ "data").collect {
-              case taulukko: JObject => taulukko.extract[Taulukko]
-            }.get
-        }.get
-    }, {
-      case j: ValintatapaSisaltoTeksti =>
-        implicit def formats: Formats = genericKoutaFormats
+  private def valintaperusteMetadataIndexedSerializer = new CustomSerializer[ValintaperusteMetadataIndexed](_ => ( {
+    case s: JObject =>
+      implicit def formats: Formats = genericKoutaFormats + valintatapaSisaltoSerializer
 
-        JObject(List("tyyppi" -> JString("teksti"), "data" -> Extraction.decompose(j.teksti)))
-      case j: Taulukko =>
-        implicit def formats: Formats = genericKoutaFormats
+      Try(s \ "koulutustyyppi").toOption.collect {
+        case JString(tyyppi) => Koulutustyyppi(tyyppi)
+      }.getOrElse(Koulutustyyppi.Amm) match {
+        case Koulutustyyppi.Yo => s.extract[YliopistoValintaperusteMetadataIndexed]
+        case Koulutustyyppi.Amm => s.extract[AmmatillinenValintaperusteMetadataIndexed]
+        case Koulutustyyppi.Amk => s.extract[AmmattikorkeakouluValintaperusteMetadataIndexed]
+        case kt => throw new UnsupportedOperationException(s"Unsupported koulutustyyppi $kt")
+      }
+  }, {
+    case j: ValintaperusteMetadata =>
+      implicit def formats: Formats = genericKoutaFormats + valintatapaSisaltoSerializer
 
-        JObject(List("tyyppi" -> JString("taulukko"), "data" -> Extraction.decompose(j)))
-    }))
+      Extraction.decompose(j)
+  }))
 
-   */
+  private def valintatapaSisaltoSerializer = new CustomSerializer[ValintatapaSisalto](implicit formats => ( {
+    case s: JObject =>
+      Try(s \ "tyyppi").collect {
+        case JString(tyyppi) if tyyppi == "teksti" =>
+          Try(s \ "data").collect {
+            case teksti: JObject => ValintatapaSisaltoTeksti(teksti.extract[Kielistetty])
+          }.get
+        case JString(tyyppi) if tyyppi == "taulukko" =>
+          Try(s \ "data").collect {
+            case taulukko: JObject => taulukko.extract[Taulukko]
+          }.get
+      }.get
+  }, {
+    case j: ValintatapaSisaltoTeksti =>
+      implicit def formats: Formats = genericKoutaFormats
+
+      JObject(List("tyyppi" -> JString("teksti"), "data" -> Extraction.decompose(j.teksti)))
+    case j: Taulukko =>
+      implicit def formats: Formats = genericKoutaFormats
+
+      JObject(List("tyyppi" -> JString("taulukko"), "data" -> Extraction.decompose(j)))
+  }))
 }

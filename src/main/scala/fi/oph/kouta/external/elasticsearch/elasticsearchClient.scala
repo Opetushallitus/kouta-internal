@@ -23,12 +23,12 @@ abstract class ElasticsearchClient(val index: String, val entityName: String) {
 
   implicit val json4s: Serialization = org.json4s.jackson.Serialization
 
-  def withTemporaryElasticClient[T](f: ElasticClient => Future[T]): Future[T] = {
+  protected def withTemporaryElasticClient[T](f: ElasticClient => Future[T]): Future[T] = {
     val client = ElasticsearchClientHolder.createClient
     f(client).andThen { case _ => client.close() }
   }
 
-  def getItem(id: String): Future[GetResponse] =
+  protected def getItem(id: String): Future[GetResponse] =
     elasticClient.execute {
       get(id).from(index)
     }.flatMap {

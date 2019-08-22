@@ -1,5 +1,5 @@
 import fi.oph.kouta.external._
-import fi.oph.kouta.external.servlet.{AuthServlet, HealthcheckServlet, KoulutusServlet}
+import fi.oph.kouta.external.servlet.{AuthServlet, HealthcheckServlet, KoulutusServlet, ValintaperusteServlet}
 import javax.servlet.ServletContext
 import org.scalatra._
 
@@ -12,6 +12,7 @@ class ScalatraBootstrap extends LifeCycle {
     context.mount(new AuthServlet(), "/auth", "auth")
 
     context.mount(new KoulutusServlet(), "/koulutus", "koulutus")
+    context.mount(new ValintaperusteServlet(), "/valintaperuste", "valintaperuste")
 
     context.mount(new HealthcheckServlet(), "/healthcheck", "healthcheck")
     context.mount(new SwaggerServlet, "/swagger")
