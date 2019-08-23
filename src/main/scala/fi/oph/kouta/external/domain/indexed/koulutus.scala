@@ -10,9 +10,9 @@ case class KoulutusIndexed(
     oid: Option[KoulutusOid],
     johtaaTutkintoon: Boolean,
     koulutustyyppi: Option[Koulutustyyppi],
-    koulutus: Option[Koulutustiedot],
+    koulutus: Option[KoodiUri],
     tila: Julkaisutila,
-    tarjoajat: List[Tarjoaja],
+    tarjoajat: List[Organisaatio],
     nimi: Kielistetty,
     metadata: KoulutusMetadataIndexed,
     julkinen: Boolean,
@@ -38,17 +38,9 @@ case class KoulutusIndexed(
   )
 }
 
-case class Koulutustiedot(koodiUri: String, nimi: Kielistetty)
-
-case class Tarjoaja(oid: OrganisaatioOid)
-
-case class Muokkaaja(oid: UserOid)
-
-case class Organisaatio(oid: OrganisaatioOid)
-
 sealed trait KoulutusMetadataIndexed {
   val tyyppi: Koulutustyyppi
-  val kuvaus: Map[Kieli, String]
+  val kuvaus: Kielistetty
   val lisatiedot: Seq[LisatietoIndexed]
 
   def toKoulutusMetadata: KoulutusMetadata
@@ -62,7 +54,7 @@ case class Otsikko(koodiUri: String)
 
 case class AmmatillinenKoulutusMetadataIndexed(
     tyyppi: Koulutustyyppi,
-    kuvaus: Map[Kieli, String],
+    kuvaus: Kielistetty,
     lisatiedot: Seq[LisatietoIndexed]
 ) extends KoulutusMetadataIndexed {
   override def toKoulutusMetadata: AmmatillinenKoulutusMetadata =
@@ -75,11 +67,11 @@ case class AmmatillinenKoulutusMetadataIndexed(
 
 case class KorkeakoulutusKoulutusMetadataIndexed(
     tyyppi: Koulutustyyppi,
-    kuvaus: Map[Kieli, String],
+    kuvaus: Kielistetty,
     lisatiedot: Seq[LisatietoIndexed],
-    tutkintonimike: Seq[Tutkintonimike],
-    opintojenLaajuus: Option[OpintojenLaajuus],
-    kuvauksenNimi: Map[Kieli, String]
+    tutkintonimike: Seq[KoodiUri],
+    opintojenLaajuus: Option[KoodiUri],
+    kuvauksenNimi: Kielistetty
 ) extends KoulutusMetadataIndexed {
   override def toKoulutusMetadata: KorkeakoulutusKoulutusMetadata =
     KorkeakoulutusKoulutusMetadata(
@@ -91,7 +83,3 @@ case class KorkeakoulutusKoulutusMetadataIndexed(
       kuvauksenNimi = kuvauksenNimi
     )
 }
-
-case class Tutkintonimike(koodiUri: String, nimi: Kielistetty)
-
-case class OpintojenLaajuus(koodiUri: String, nimi: Kielistetty)

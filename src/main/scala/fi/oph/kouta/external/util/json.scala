@@ -40,7 +40,7 @@ sealed trait DefaultKoutaJsonFormats {
       localDateTimeSerializer,
       stringSerializer(Julkaisutila.apply),
       stringSerializer(Koulutustyyppi.apply),
-      //      stringSerializer(Hakulomaketyyppi.apply),
+      stringSerializer(Hakulomaketyyppi.apply),
       stringSerializer(Kieli.apply),
       stringSerializer(UUID.fromString),
       //      stringSerializer(LiitteenToimitustapa.apply),

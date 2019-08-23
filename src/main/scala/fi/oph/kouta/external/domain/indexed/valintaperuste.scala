@@ -101,7 +101,7 @@ case class AmmattikorkeakouluValintaperusteMetadataIndexed(
 }
 
 case class ValintaperusteKielitaitovaatimusIndexed(
-    kieli: Option[KieliIndexed],
+    kieli: Option[KoodiUri],
     kielitaidonVoiOsoittaa: Seq[KielitaidonVoiOsoittaaIndexed],
     vaatimukset: Seq[KielitaitovaatimusIndexed]
 ) {
@@ -111,8 +111,6 @@ case class ValintaperusteKielitaitovaatimusIndexed(
     vaatimukset = vaatimukset.map(_.toKielitaitovaatimus)
   )
 }
-
-case class KieliIndexed(koodiUri: String)
 
 case class KielitaidonVoiOsoittaaIndexed(kielitaito: Option[KoodiUri], lisatieto: Kielistetty) {
   def toKielitaito: Kielitaito = Kielitaito(kielitaito.map(_.koodiUri), lisatieto = lisatieto)
@@ -127,8 +125,6 @@ case class KielitaitovaatimusIndexed(
     kielitaitovaatimusKuvaukset = kielitaitovaatimusKuvaukset.map(_.toKielitaitovaatimusKuvaus)
   )
 }
-
-case class KoodiUri(koodiUri: String)
 
 case class KielitaitovaatimusKuvausIndexed(
     kielitaitovaatimusKuvaus: Option[KoodiUri],
