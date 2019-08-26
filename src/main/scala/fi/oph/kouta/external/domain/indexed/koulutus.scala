@@ -42,26 +42,23 @@ sealed trait KoulutusMetadataIndexed {
   val tyyppi: Koulutustyyppi
   val kuvaus: Kielistetty
   val lisatiedot: Seq[LisatietoIndexed]
+  val koulutusala: Seq[KoodiUri]
 
   def toKoulutusMetadata: KoulutusMetadata
 }
 
-case class LisatietoIndexed(otsikko: Otsikko, teksti: Kielistetty) {
-  def toLisatieto = Lisatieto(otsikkoKoodiUri = otsikko.koodiUri, teksti)
-}
-
-case class Otsikko(koodiUri: String)
-
 case class AmmatillinenKoulutusMetadataIndexed(
     tyyppi: Koulutustyyppi,
     kuvaus: Kielistetty,
-    lisatiedot: Seq[LisatietoIndexed]
+    lisatiedot: Seq[LisatietoIndexed],
+    koulutusala: Seq[KoodiUri]
 ) extends KoulutusMetadataIndexed {
   override def toKoulutusMetadata: AmmatillinenKoulutusMetadata =
     AmmatillinenKoulutusMetadata(
       tyyppi = tyyppi,
       kuvaus = kuvaus,
-      lisatiedot = lisatiedot.map(_.toLisatieto)
+      lisatiedot = lisatiedot.map(_.toLisatieto),
+      koulutusalaKoodiUrit = koulutusala.map(_.koodiUri)
     )
 }
 
@@ -69,6 +66,7 @@ case class KorkeakoulutusKoulutusMetadataIndexed(
     tyyppi: Koulutustyyppi,
     kuvaus: Kielistetty,
     lisatiedot: Seq[LisatietoIndexed],
+    koulutusala: Seq[KoodiUri],
     tutkintonimike: Seq[KoodiUri],
     opintojenLaajuus: Option[KoodiUri],
     kuvauksenNimi: Kielistetty
@@ -78,6 +76,7 @@ case class KorkeakoulutusKoulutusMetadataIndexed(
       tyyppi = tyyppi,
       kuvaus = kuvaus,
       lisatiedot = lisatiedot.map(_.toLisatieto),
+      koulutusalaKoodiUrit = koulutusala.map(_.koodiUri),
       tutkintonimikeKoodiUrit = tutkintonimike.map(_.koodiUri),
       opintojenLaajuusKoodiUri = opintojenLaajuus.map(_.koodiUri),
       kuvauksenNimi = kuvauksenNimi
