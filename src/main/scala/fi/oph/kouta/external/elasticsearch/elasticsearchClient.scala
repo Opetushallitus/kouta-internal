@@ -6,7 +6,9 @@ import com.sksamuel.elastic4s.http.ElasticDsl._
 import com.sksamuel.elastic4s.http.get.GetResponse
 import com.sksamuel.elastic4s.http.{ElasticClient, ElasticProperties, RequestFailure, RequestSuccess}
 import fi.oph.kouta.external.KoutaConfigurationFactory
-import org.json4s.Serialization
+import fi.vm.sade.utils.slf4j.Logging
+import org.json4s.{Serialization, _}
+import org.json4s.jackson.Serialization.write
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -18,7 +20,7 @@ object ElasticsearchClientHolder {
   def createClient = ElasticClient(ElasticProperties(elasticUrl))
 }
 
-abstract class ElasticsearchClient(val index: String, val entityName: String) {
+abstract class ElasticsearchClient(val index: String, val entityName: String) extends Logging {
   lazy val elasticClient: ElasticClient = ElasticsearchClientHolder.client
 
   implicit val json4s: Serialization = org.json4s.jackson.Serialization

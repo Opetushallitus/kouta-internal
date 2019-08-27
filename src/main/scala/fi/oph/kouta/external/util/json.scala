@@ -43,7 +43,7 @@ sealed trait DefaultKoutaJsonFormats {
       stringSerializer(Hakulomaketyyppi.apply),
       stringSerializer(Kieli.apply),
       stringSerializer(UUID.fromString),
-      //      stringSerializer(LiitteenToimitustapa.apply),
+      stringSerializer(LiitteenToimitustapa.apply),
       stringSerializer(HakuOid),
       stringSerializer(HakukohdeOid),
       stringSerializer(KoulutusOid),

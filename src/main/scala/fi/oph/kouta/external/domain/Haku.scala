@@ -31,4 +31,3 @@ case class Haku(
     modified: Option[LocalDateTime]
 ) extends PerustiedotWithOid
 
-case class HakuMetadata(yhteyshenkilo: Option[Yhteyshenkilo], tulevaisuudenAikataulu: Seq[Ajanjakso])
