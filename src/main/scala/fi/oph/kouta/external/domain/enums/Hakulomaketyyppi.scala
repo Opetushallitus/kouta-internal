@@ -1,5 +1,15 @@
 package fi.oph.kouta.external.domain.enums
 
+import fi.oph.kouta.external.swagger.SwaggerModel
+
+@SwaggerModel(
+  """    Hakulomaketyyppi:
+    |      type: string
+    |      enum:
+    |        - ataru
+    |        - ei sähköistä
+    |        - muu
+    |""")
 sealed abstract class Hakulomaketyyppi (val name: String) extends BasicType
 
 object Hakulomaketyyppi extends BasicTypeCompanion[Hakulomaketyyppi] {

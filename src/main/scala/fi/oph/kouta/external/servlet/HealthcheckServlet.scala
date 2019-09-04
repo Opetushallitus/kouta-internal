@@ -1,14 +1,21 @@
 package fi.oph.kouta.external.servlet
 
+import fi.oph.kouta.external.swagger.SwaggerPaths.registerPath
 import org.scalatra._
-import org.scalatra.swagger.{Swagger, _}
 
-class HealthcheckServlet(implicit val swagger: Swagger) extends KoutaServlet with SwaggerSupport {
+class HealthcheckServlet extends KoutaServlet {
 
-  override val applicationDescription = "Healthcheck API"
-  override val modelName              = "Health"
-
-  get("/", operation(apiOperation[String]("Healthcheck") summary "Healthcheck" tags "Admin")) {
+  registerPath("/healthcheck/",
+    s"""    get:
+       |      summary: Healthcheck-rajapinta
+       |      description: Healthcheck-rajapinta
+       |      tags:
+       |        - Admin
+       |      responses:
+       |        '200':
+       |          description: Ok
+       |""".stripMargin)
+  get("/") {
     Ok("message" -> "ok")
   }
 

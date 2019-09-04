@@ -28,7 +28,7 @@ sealed trait DefaultKoutaJsonFormats {
   def koutaJsonFormats: Formats = genericKoutaFormats ++ Seq(
     koulutusMetadataSerializer,
     koulutusMetadataIndexedSerializer,
-    //    toteutusMetadataSerializer,
+    toteutusMetadataSerializer,
     valintatapaSisaltoSerializer,
     valintaperusteMetadataSerializer,
     valintaperusteMetadataIndexedSerializer,
@@ -59,7 +59,7 @@ sealed trait DefaultKoutaJsonFormats {
   private def keySerializer[A: Manifest](deserializer: PartialFunction[String, A])(serializer: PartialFunction[Any, String]) =
     new CustomKeySerializer[A](_ => (deserializer, serializer))
 
-  private def kieliKeySerializer = keySerializer {
+  private def kieliKeySerializer: CustomKeySerializer[Kieli] = keySerializer {
     case s: String => Kieli(s)
   } {
     case k: Kieli => k.toString
@@ -77,16 +77,16 @@ sealed trait DefaultKoutaJsonFormats {
     case a: A => JString(a.toString)
   }
 
-  private def koulutusMetadataSerializer = serializer[KoulutusMetadata] {
+  private def koulutusMetadataSerializer: CustomSerializer[KoulutusMetadata] = serializer[KoulutusMetadata] {
     case s: JObject =>
       implicit def formats: Formats = genericKoutaFormats
 
       Try(s \ "tyyppi").toOption.collect {
         case JString(tyyppi) => Koulutustyyppi(tyyppi)
       }.getOrElse(Koulutustyyppi.Amm) match {
-        case Koulutustyyppi.Yo => s.extract[KorkeakoulutusKoulutusMetadata]
-        case Koulutustyyppi.Amk => s.extract[KorkeakoulutusKoulutusMetadata]
+        case Koulutustyyppi.Yo => s.extract[YliopistoKoulutusMetadata]
         case Koulutustyyppi.Amm => s.extract[AmmatillinenKoulutusMetadata]
+        case Koulutustyyppi.Amk => s.extract[AmmattikorkeakouluKoulutusMetadata]
         case kt => throw new UnsupportedOperationException(s"Unsupported koulutustyyppi $kt")
       }
   } {
@@ -96,15 +96,15 @@ sealed trait DefaultKoutaJsonFormats {
       Extraction.decompose(j)
   }
 
-  private def koulutusMetadataIndexedSerializer = serializer[KoulutusMetadataIndexed] {
+  private def koulutusMetadataIndexedSerializer: CustomSerializer[KoulutusMetadataIndexed] = serializer[KoulutusMetadataIndexed] {
     case s: JObject =>
       implicit def formats: Formats = genericKoutaFormats
 
       Try(s \ "tyyppi").toOption.collect {
         case JString(tyyppi) => Koulutustyyppi(tyyppi)
       }.getOrElse(Koulutustyyppi.Amm) match {
-        case Koulutustyyppi.Yo => s.extract[KorkeakoulutusKoulutusMetadataIndexed]
-        case Koulutustyyppi.Amk => s.extract[KorkeakoulutusKoulutusMetadataIndexed]
+        case Koulutustyyppi.Yo => s.extract[YliopistoKoulutusMetadataIndexed]
+        case Koulutustyyppi.Amk => s.extract[AmmattikorkeakouluKoulutusMetadataIndexed]
         case Koulutustyyppi.Amm => s.extract[AmmatillinenKoulutusMetadataIndexed]
         case kt => throw new UnsupportedOperationException(s"Unsupported koulutustyyppi $kt")
       }
@@ -115,28 +115,26 @@ sealed trait DefaultKoutaJsonFormats {
       Extraction.decompose(j)
   }
 
-  /*
-  private def toteutusMetadataSerializer = new CustomSerializer[ToteutusMetadata](_ => ({
+  private def toteutusMetadataSerializer: CustomSerializer[ToteutusMetadata] = serializer[ToteutusMetadata]{
     case s: JObject =>
       implicit def formats: Formats = genericKoutaFormats
 
       Try(s \ "tyyppi").toOption.collect {
-        case JString(tyyppi) => Koulutustyyppi.withName(tyyppi)
-      }.getOrElse(Amm) match {
-        case Yo => s.extract[YliopistoToteutusMetadata]
-        case Amm => s.extract[AmmatillinenToteutusMetadata]
-        case Amk => s.extract[AmmattikorkeakouluToteutusMetadata]
+        case JString(tyyppi) => Koulutustyyppi(tyyppi)
+      }.getOrElse(Koulutustyyppi.Amm) match {
+        case Koulutustyyppi.Yo => s.extract[YliopistoToteutusMetadata]
+        case Koulutustyyppi.Amm => s.extract[AmmatillinenToteutusMetadata]
+        case Koulutustyyppi.Amk => s.extract[AmmattikorkeakouluToteutusMetadata]
         case kt => throw new UnsupportedOperationException(s"Unsupported koulutustyyppi $kt")
       }
-  }, {
+  } {
     case j: ToteutusMetadata =>
       implicit def formats: Formats = genericKoutaFormats
 
       Extraction.decompose(j)
-  }))
-*/
+  }
 
-  private def valintaperusteMetadataSerializer = new CustomSerializer[ValintaperusteMetadata](_ => ( {
+  private def valintaperusteMetadataSerializer: CustomSerializer[ValintaperusteMetadata] = serializer[ValintaperusteMetadata] {
     case s: JObject =>
       implicit def formats: Formats = genericKoutaFormats + valintatapaSisaltoSerializer
 
@@ -148,14 +146,14 @@ sealed trait DefaultKoutaJsonFormats {
         case Koulutustyyppi.Amk => s.extract[AmmattikorkeakouluValintaperusteMetadata]
         case kt => throw new UnsupportedOperationException(s"Unsupported koulutustyyppi $kt")
       }
-  }, {
+  } {
     case j: ValintaperusteMetadata =>
       implicit def formats: Formats = genericKoutaFormats + valintatapaSisaltoSerializer
 
       Extraction.decompose(j)
-  }))
+  }
 
-  private def valintaperusteMetadataIndexedSerializer = new CustomSerializer[ValintaperusteMetadataIndexed](_ => ( {
+  private def valintaperusteMetadataIndexedSerializer: CustomSerializer[ValintaperusteMetadataIndexed] = serializer[ValintaperusteMetadataIndexed]{
     case s: JObject =>
       implicit def formats: Formats = genericKoutaFormats + valintatapaSisaltoSerializer
 
@@ -167,12 +165,12 @@ sealed trait DefaultKoutaJsonFormats {
         case Koulutustyyppi.Amk => s.extract[AmmattikorkeakouluValintaperusteMetadataIndexed]
         case kt => throw new UnsupportedOperationException(s"Unsupported koulutustyyppi $kt")
       }
-  }, {
+  } {
     case j: ValintaperusteMetadata =>
       implicit def formats: Formats = genericKoutaFormats + valintatapaSisaltoSerializer
 
       Extraction.decompose(j)
-  }))
+  }
 
   private def valintatapaSisaltoSerializer = new CustomSerializer[ValintatapaSisalto](implicit formats => ( {
     case s: JObject =>

@@ -1,5 +1,15 @@
 package fi.oph.kouta.external.domain.enums
 
+import fi.oph.kouta.external.swagger.SwaggerModel
+
+@SwaggerModel(
+  """    LiitteenToimitustapa:
+    |      type: string
+    |      enum:
+    |        - hakijapalvelu
+    |        - osoite
+    |        - lomake
+    |""")
 sealed abstract class LiitteenToimitustapa(val name: String) extends BasicType
 
 object LiitteenToimitustapa extends BasicTypeCompanion[LiitteenToimitustapa] {

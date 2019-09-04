@@ -4,12 +4,10 @@ import java.time.format.DateTimeFormatter
 import java.time.{Instant, ZoneId, ZonedDateTime}
 import java.util.{ConcurrentModificationException, NoSuchElementException}
 
-import fi.oph.kouta.external.PrettySwaggerSupport
 import fi.oph.kouta.external.elasticsearch.ElasticSearchException
 import fi.oph.kouta.external.security._
 import fi.oph.kouta.external.util.KoutaJsonFormats
 import fi.vm.sade.utils.slf4j.Logging
-import org.json4s.{DefaultFormats, Formats}
 import org.json4s.jackson.Serialization.write
 import org.scalatra._
 import org.scalatra.json.JacksonJsonSupport
@@ -17,7 +15,7 @@ import org.scalatra.json.JacksonJsonSupport
 import scala.util.control.NonFatal
 import scala.util.{Failure, Try}
 
-trait KoutaServlet extends ScalatraServlet with PrettySwaggerSupport with KoutaJsonFormats with JacksonJsonSupport with Logging {
+trait KoutaServlet extends ScalatraServlet with KoutaJsonFormats with JacksonJsonSupport with Logging {
 
   before() {
     contentType = formats("json")

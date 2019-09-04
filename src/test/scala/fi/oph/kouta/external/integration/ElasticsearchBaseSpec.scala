@@ -7,7 +7,7 @@ import fi.oph.kouta.external.elasticsearch.ElasticsearchClient
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
-class ElasticsearchBaseSpec extends ElasticsearchClient("test", "test") with IntegrationSpec {
+class ElasticsearchBaseSpec extends ElasticsearchClient("test", "test") with KoutaIntegrationSpec {
 
   "Tests" should "connect to elasticsearch" in {
 

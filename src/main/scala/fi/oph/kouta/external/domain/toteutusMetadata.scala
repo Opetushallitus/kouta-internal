@@ -1,7 +1,36 @@
 package fi.oph.kouta.external.domain
 
 import fi.oph.kouta.external.domain.enums.Koulutustyyppi
+import fi.oph.kouta.external.swagger.SwaggerModel
 
+@SwaggerModel(
+  """    ToteutusMetadata:
+    |      type: object
+    |      properties:
+    |        kuvaus:
+    |          type: object
+    |          description: Toteutuksen kuvausteksti eri kielillä. Kielet on määritetty toteutuksen kielivalinnassa.
+    |          allOf:
+    |            - $ref: '#/components/schemas/Kuvaus'
+    |        opetus:
+    |          type: object
+    |          $ref: '#/components/schemas/Opetus'
+    |        yhteyshenkilo:
+    |          type: object
+    |          description: Toteutuksen yhteyshenkilön tiedot
+    |          allOf:
+    |            - $ref: '#/components/schemas/Yhteyshenkilo'
+    |        asiasanat:
+    |          type: array
+    |          description: Lista toteutukseen liittyvistä asiasanoista, joiden avulla opiskelija voi hakea koulutusta Opintopolusta
+    |          items:
+    |            $ref: '#/components/schemas/Asiasana'
+    |        ammattinimikkeet:
+    |          type: array
+    |          description: Lista toteutukseen liittyvistä ammattinimikkeistä, joiden avulla opiskelija voi hakea koulutusta Opintopolusta
+    |          items:
+    |            $ref: '#/components/schemas/Ammattinimike'
+    |""")
 sealed trait ToteutusMetadata {
   val tyyppi: Koulutustyyppi
   val kuvaus: Kielistetty
@@ -11,11 +40,45 @@ sealed trait ToteutusMetadata {
   val yhteyshenkilo: Option[Yhteyshenkilo]
 }
 
+@SwaggerModel(
+  """    KorkeakouluToteutusMetadata:
+    |      allOf:
+    |        - $ref: '#/components/schemas/ToteutusMetadata'
+    |      properties:
+    |        alemmanKorkeakoulututkinnonOsaamisalat:
+    |          type: array
+    |          description: Lista alemman korkeakoulututkinnon erikoistumisalojen, opintosuuntien, pääaineiden tms. kuvauksista.
+    |          items:
+    |            $ref: '#/components/schemas/KorkeakouluOsaamisala'
+    |        ylemmanKorkeakoulututkinnonOsaamisalat:
+    |          type: array
+    |          items:
+    |            $ref: '#/components/schemas/KorkeakouluOsaamisala'
+    |          description: Lista ylemmän korkeakoulututkinnon erikoistumisalojen, opintosuuntien, pääaineiden tms. kuvauksista.
+    |""")
 sealed trait KorkeakoulutusToteutusMetadata extends ToteutusMetadata {
   val alemmanKorkeakoulututkinnonOsaamisalat: Seq[KorkeakouluOsaamisala]
   val ylemmanKorkeakoulututkinnonOsaamisalat: Seq[KorkeakouluOsaamisala]
 }
 
+@SwaggerModel(
+  """    AmmatillinenToteutusMetadata:
+    |      allOf:
+    |        - $ref: '#/components/schemas/ToteutusMetadata'
+    |        - type: object
+    |          properties:
+    |            osaamisalat:
+    |              type: array
+    |              items:
+    |                $ref: '#/components/schemas/Osaamisala'
+    |              description: Lista ammatillisen koulutuksen osaamisalojen kuvauksia
+    |            koulutustyyppi:
+    |              type: string
+    |              description: Koulutuksen metatiedon tyyppi
+    |              example: amm
+    |              enum:
+    |                - amm
+    |""")
 case class AmmatillinenToteutusMetadata(
     tyyppi: Koulutustyyppi,
     kuvaus: Kielistetty,
@@ -26,6 +89,19 @@ case class AmmatillinenToteutusMetadata(
     yhteyshenkilo: Option[Yhteyshenkilo]
 ) extends ToteutusMetadata
 
+@SwaggerModel(
+  """    YliopistoToteutusMetadata:
+    |      allOf:
+    |        - $ref: '#/components/schemas/KorkeakouluToteutusMetadata'
+    |        - type: object
+    |          properties:
+    |            koulutustyyppi:
+    |              type: string
+    |              description: Koulutuksen metatiedon tyyppi
+    |              example: yo
+    |              enum:
+    |                - yo
+    |""")
 case class YliopistoToteutusMetadata(
     tyyppi: Koulutustyyppi,
     kuvaus: Kielistetty,
@@ -37,6 +113,19 @@ case class YliopistoToteutusMetadata(
     ylemmanKorkeakoulututkinnonOsaamisalat: Seq[KorkeakouluOsaamisala]
 ) extends KorkeakoulutusToteutusMetadata
 
+@SwaggerModel(
+  """    AmmattikorkeaToteutusMetadata:
+    |      allOf:
+    |        - $ref: '#/components/schemas/KorkeakouluToteutusMetadata'
+    |        - type: object
+    |          properties:
+    |            koulutustyyppi:
+    |              type: string
+    |              description: Koulutuksen metatiedon tyyppi
+    |              example: amk
+    |              enum:
+    |                - amk
+    |""")
 case class AmmattikorkeakouluToteutusMetadata(
     tyyppi: Koulutustyyppi,
     kuvaus: Kielistetty,
@@ -48,34 +137,3 @@ case class AmmattikorkeakouluToteutusMetadata(
     ylemmanKorkeakoulututkinnonOsaamisalat: Seq[KorkeakouluOsaamisala]
 ) extends KorkeakoulutusToteutusMetadata
 
-trait Osaamisala {
-  val linkki: Kielistetty
-  val otsikko: Kielistetty
-}
-
-case class AmmatillinenOsaamisala(koodi: String, linkki: Kielistetty, otsikko: Kielistetty) extends Osaamisala
-
-case class KorkeakouluOsaamisala(nimi: Kielistetty, kuvaus: Kielistetty, linkki: Kielistetty, otsikko: Kielistetty)
-    extends Osaamisala
-
-case class Opetus(
-    opetuskieliKoodiUrit: Seq[String],
-    opetuskieletKuvaus: Kielistetty,
-    opetusaikaKoodiUrit: Seq[String],
-    opetusaikaKuvaus: Kielistetty,
-    opetustapaKoodiUrit: Seq[String],
-    opetustapaKuvaus: Kielistetty,
-    onkoMaksullinen: Option[Boolean],
-    maksullisuusKuvaus: Kielistetty,
-    maksunMaara: Option[Double],
-    alkamiskausiKoodiUri: Option[String],
-    alkamisvuosi: Option[String],
-    alkamisaikaKuvaus: Kielistetty,
-    lisatiedot: Seq[Lisatieto],
-    onkoLukuvuosimaksua: Option[Boolean],
-    lukuvuosimaksu: Kielistetty,
-    lukuvuosimaksuKuvaus: Kielistetty,
-    onkoStipendia: Option[Boolean],
-    stipendinMaara: Kielistetty,
-    stipendinKuvaus: Kielistetty
-)

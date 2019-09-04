@@ -62,7 +62,13 @@ case class AmmatillinenKoulutusMetadataIndexed(
     )
 }
 
-case class KorkeakoulutusKoulutusMetadataIndexed(
+trait KorkeakoulutusKoulutusMetadataIndexed extends KoulutusMetadataIndexed {
+  val kuvauksenNimi: Kielistetty
+  val tutkintonimike: Seq[KoodiUri]
+  val opintojenLaajuus: Option[KoodiUri]
+}
+
+case class YliopistoKoulutusMetadataIndexed(
     tyyppi: Koulutustyyppi,
     kuvaus: Kielistetty,
     lisatiedot: Seq[LisatietoIndexed],
@@ -70,15 +76,34 @@ case class KorkeakoulutusKoulutusMetadataIndexed(
     tutkintonimike: Seq[KoodiUri],
     opintojenLaajuus: Option[KoodiUri],
     kuvauksenNimi: Kielistetty
-) extends KoulutusMetadataIndexed {
-  override def toKoulutusMetadata: KorkeakoulutusKoulutusMetadata =
-    KorkeakoulutusKoulutusMetadata(
-      tyyppi = tyyppi,
-      kuvaus = kuvaus,
-      lisatiedot = lisatiedot.map(_.toLisatieto),
-      koulutusalaKoodiUrit = koulutusala.map(_.koodiUri),
-      tutkintonimikeKoodiUrit = tutkintonimike.map(_.koodiUri),
-      opintojenLaajuusKoodiUri = opintojenLaajuus.map(_.koodiUri),
-      kuvauksenNimi = kuvauksenNimi
-    )
+) extends KorkeakoulutusKoulutusMetadataIndexed {
+  override def toKoulutusMetadata: YliopistoKoulutusMetadata = YliopistoKoulutusMetadata(
+    tyyppi = tyyppi,
+    kuvaus = kuvaus,
+    lisatiedot = lisatiedot.map(_.toLisatieto),
+    koulutusalaKoodiUrit = koulutusala.map(_.koodiUri),
+    tutkintonimikeKoodiUrit = tutkintonimike.map(_.koodiUri),
+    opintojenLaajuusKoodiUri = opintojenLaajuus.map(_.koodiUri),
+    kuvauksenNimi = kuvauksenNimi
+  )
+}
+
+case class AmmattikorkeakouluKoulutusMetadataIndexed(
+    tyyppi: Koulutustyyppi,
+    kuvaus: Kielistetty,
+    lisatiedot: Seq[LisatietoIndexed],
+    koulutusala: Seq[KoodiUri],
+    tutkintonimike: Seq[KoodiUri],
+    opintojenLaajuus: Option[KoodiUri],
+    kuvauksenNimi: Kielistetty
+) extends KorkeakoulutusKoulutusMetadataIndexed {
+  override def toKoulutusMetadata: AmmattikorkeakouluKoulutusMetadata = AmmattikorkeakouluKoulutusMetadata(
+    tyyppi = tyyppi,
+    kuvaus = kuvaus,
+    lisatiedot = lisatiedot.map(_.toLisatieto),
+    koulutusalaKoodiUrit = koulutusala.map(_.koodiUri),
+    tutkintonimikeKoodiUrit = tutkintonimike.map(_.koodiUri),
+    opintojenLaajuusKoodiUri = opintojenLaajuus.map(_.koodiUri),
+    kuvauksenNimi = kuvauksenNimi
+  )
 }

@@ -1,7 +1,5 @@
 package fi.oph.kouta.external.security
 
-import java.time.LocalDateTime
-
 import fi.oph.kouta.external.domain.oid.OrganisaatioOid
 
 import scala.util.matching.Regex
@@ -79,8 +77,7 @@ case class ServiceTicket(s: String)
 case class CasSession(
     casTicket: ServiceTicket,
     personOid: String,
-    authorities: Set[Authority],
-    lastRead: LocalDateTime = LocalDateTime.now
+    authorities: Set[Authority]
 ) extends Session {
   override def hasAnyRole(roles: Set[Role]): Boolean   = this.roles.intersect(roles).nonEmpty
   override def hasEveryRole(roles: Set[Role]): Boolean = roles.subsetOf(this.roles)

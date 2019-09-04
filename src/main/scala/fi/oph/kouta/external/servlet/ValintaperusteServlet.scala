@@ -2,38 +2,47 @@ package fi.oph.kouta.external.servlet
 
 import java.util.UUID
 
-import fi.oph.kouta.external.domain.Valintaperuste
 import fi.oph.kouta.external.security.Authenticated
 import fi.oph.kouta.external.service.ValintaperusteService
+import fi.oph.kouta.external.swagger.SwaggerPaths.registerPath
 import org.scalatra.FutureSupport
-import org.scalatra.swagger.Swagger
 
 import scala.concurrent.ExecutionContext
 import scala.concurrent.ExecutionContext.Implicits.global
 
-class ValintaperusteServlet(implicit val swagger: Swagger)
+class ValintaperusteServlet
     extends KoutaServlet
     with CasAuthenticatedServlet
     with FutureSupport {
 
   override def executor: ExecutionContext = global
 
-  override val applicationDescription = "Valintaperuste API"
-  override val modelName              = "Valintaperuste"
-
-  get(
-    "/:id",
-    operation(
-      apiOperation[Valintaperuste]("Hae valintaperuste")
-        tags modelName
-        summary "Hae valintaperuste"
-        parameter pathParam[String]("id").description("Valintaperusteen UUID")
-    )
-  ) {
+  registerPath("/valintaperuste/{id}",
+    """    get:
+      |      summary: Hae valintaperustekuvauksen tiedot
+      |      operationId: Hae valintaperuste
+      |      description: Hakee valintaperustekuvauksen kaikki tiedot
+      |      tags:
+      |        - Valintaperuste
+      |      parameters:
+      |        - in: path
+      |          name: oid
+      |          schema:
+      |            type: string
+      |          required: true
+      |          description: Valintaperuste-id
+      |          example: ea596a9c-5940-497e-b5b7-aded3a2352a7
+      |      responses:
+      |        '200':
+      |          description: Ok
+      |          content:
+      |            application/json:
+      |              schema:
+      |                $ref: '#/components/schemas/Valintaperuste'
+      |""".stripMargin)
+  get("/:id") {
     implicit val authenticated: Authenticated = authenticate
 
     ValintaperusteService.get(UUID.fromString(params("id")))
   }
-
-  prettifySwaggerModels()
 }

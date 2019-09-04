@@ -5,6 +5,7 @@ import java.util.concurrent.TimeUnit
 
 import fi.oph.kouta.external.KoutaConfigurationFactory
 import fi.oph.kouta.external.client.KayttooikeusClient
+import fi.oph.kouta.external.database.SessionDAO
 import fi.vm.sade.utils.cas.CasClient.Username
 import fi.vm.sade.utils.slf4j.Logging
 import scalaz.concurrent.Task

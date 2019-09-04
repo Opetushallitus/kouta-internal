@@ -1,39 +1,48 @@
 package fi.oph.kouta.external.servlet
 
-import fi.oph.kouta.external.domain.Koulutus
 import fi.oph.kouta.external.domain.oid.KoulutusOid
 import fi.oph.kouta.external.security.Authenticated
 import fi.oph.kouta.external.service.KoulutusService
+import fi.oph.kouta.external.swagger.SwaggerPaths.registerPath
 import org.scalatra.FutureSupport
-import org.scalatra.swagger.Swagger
 
 import scala.concurrent.ExecutionContext
 import scala.concurrent.ExecutionContext.Implicits.global
 
-class KoulutusServlet(implicit val swagger: Swagger)
+class KoulutusServlet
   extends KoutaServlet
     with CasAuthenticatedServlet
     with FutureSupport {
 
   override def executor: ExecutionContext = global
 
-  override val applicationDescription = "Koulutus API"
-  override val modelName              = "Koulutus"
-
-  get(
-    "/:oid",
-    operation(
-      apiOperation[Koulutus]("Hae koulutus")
-        tags modelName
-        summary "Hae koulutus"
-        parameter pathParam[String]("oid").description("Koulutuksen oid")
-    )
-  ) {
+  registerPath( "/koulutus/{oid}",
+    """    get:
+      |      summary: Hae koulutus
+      |      description: Hae koulutuksen tiedot annetulla koulutus-oidilla
+      |      operationId: Hae koulutus
+      |      tags:
+      |        - Koulutus
+      |      parameters:
+      |        - in: path
+      |          name: oid
+      |          schema:
+      |            type: string
+      |          required: true
+      |          description: Koulutus-oid
+      |          example: 1.2.246.562.13.00000000000000000009
+      |      responses:
+      |        '200':
+      |          description: Ok
+      |          content:
+      |            application/json:
+      |              schema:
+      |                $ref: '#/components/schemas/Koulutus'
+      |""".stripMargin)
+  get("/:oid") {
     implicit val authenticated: Authenticated = authenticate
 
     KoulutusService.get(KoulutusOid(params("oid")))
   }
-
-  prettifySwaggerModels()
 
 }

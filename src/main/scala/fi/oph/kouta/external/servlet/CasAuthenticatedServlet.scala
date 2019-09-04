@@ -2,7 +2,8 @@ package fi.oph.kouta.external.servlet
 
 import java.util.UUID
 
-import fi.oph.kouta.external.security.{Authenticated, AuthenticationFailedException, SessionDAO}
+import fi.oph.kouta.external.database.SessionDAO
+import fi.oph.kouta.external.security.{Authenticated, AuthenticationFailedException}
 import fi.vm.sade.utils.slf4j.Logging
 import org.scalatra.ScalatraServlet
 

@@ -1,5 +1,7 @@
+import fi.oph.kouta.external.KoutaConfigurationFactory
+import fi.oph.kouta.external.database.KoutaDatabase
 import fi.oph.kouta.external.servlet._
-import fi.oph.kouta.external.{KoutaExternalSwagger, SwaggerServlet}
+import fi.oph.kouta.external.swagger.SwaggerServlet
 import javax.servlet.ServletContext
 import org.scalatra._
 
@@ -7,7 +9,8 @@ class ScalatraBootstrap extends LifeCycle {
   override def init(context: ServletContext) {
     super.init(context)
 
-    implicit val swagger: KoutaExternalSwagger = new KoutaExternalSwagger
+    KoutaConfigurationFactory.init()
+    KoutaDatabase.init()
 
     context.mount(new AuthServlet(), "/auth", "auth")
 
@@ -21,4 +24,10 @@ class ScalatraBootstrap extends LifeCycle {
     context.mount(new SwaggerServlet, "/swagger")
 
   }
+
+  override def destroy(context: ServletContext): Unit = {
+    super.destroy(context)
+    KoutaDatabase.destroy()
+  }
+
 }

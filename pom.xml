@@ -27,16 +27,22 @@
         <scala-cas.version>1.0.1-SNAPSHOT</scala-cas.version>
 
         <!-- Http related properties -->
-        <scalatra.version>2.6.5</scalatra.version>
+        <scalatra.version>2.7.0-RC1</scalatra.version>
         <javax.servlet-api.version>4.0.1</javax.servlet-api.version>
 
         <!-- Elasticsearch properties -->
         <elastic4sVersion>6.7.0</elastic4sVersion>
 
+        <!-- Database related properties -->
+        <flyway.version>5.1.4</flyway.version>
+        <slick.version>3.3.2</slick.version>
+        <jdbc.version>42.2.6</jdbc.version>
+
         <!-- Test properties -->
         <scala-test.version>3.2.0-SNAP10</scala-test.version>
-        <scalatra-scalatest.version>2.6.5</scalatra-scalatest.version>
+        <scalatra-scalatest.version>2.7.0-RC1</scalatra-scalatest.version>
         <jetty.version>9.4.12.v20180830</jetty.version>
+
         <commons.io.version>2.6</commons.io.version>
 
         <!-- Plugin properties -->
@@ -83,16 +89,12 @@
         </dependency>
         <dependency>
             <groupId>org.scalatra</groupId>
-            <artifactId>scalatra-swagger_2.12</artifactId>
+            <artifactId>scalatra-json_2.12</artifactId>
             <version>${scalatra.version}</version>
             <exclusions>
                 <exclusion>
                     <groupId>org.scala-lang</groupId>
                     <artifactId>scala-library</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.scala-lang.modules</groupId>
-                    <artifactId>scala-parser-combinators_2.12</artifactId>
                 </exclusion>
                 <exclusion>
                     <groupId>org.json4s</groupId>
@@ -194,6 +196,21 @@
                 <exclusion>
                     <groupId>com.fasterxml.jackson.core</groupId>
                     <artifactId>jackson-core</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.reflections</groupId>
+            <artifactId>reflections</artifactId>
+            <version>0.9.11</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>com.google.guava</groupId>
+                    <artifactId>guava</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.javassist</groupId>
+                    <artifactId>javassist</artifactId>
                 </exclusion>
             </exclusions>
         </dependency>
@@ -308,6 +325,47 @@
             <version>2.9.9</version>
         </dependency>
 
+        <!-- Database related properties -->
+        <dependency>
+            <groupId>org.flywaydb</groupId>
+            <artifactId>flyway-core</artifactId>
+            <version>${flyway.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.typesafe.slick</groupId>
+            <artifactId>slick_2.12</artifactId>
+            <version>${slick.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.scala-lang</groupId>
+                    <artifactId>scala-library</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>com.typesafe</groupId>
+                    <artifactId>config</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>com.typesafe.slick</groupId>
+            <artifactId>slick-hikaricp_2.12</artifactId>
+            <version>${slick.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.scala-lang</groupId>
+                    <artifactId>scala-library</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>slf4j-api</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <version>${jdbc.version}</version>
+        </dependency>
 
         <!-- Test dependencies -->
         <dependency>
