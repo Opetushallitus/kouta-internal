@@ -97,17 +97,17 @@ import fi.oph.kouta.external.swagger.SwaggerModel
     |           example: 2019-08-23T09:55
     |""")
 case class Koulutus(
-    oid: Option[KoulutusOid] = None,
+    oid: Option[KoulutusOid],
     johtaaTutkintoon: Boolean,
-    koulutustyyppi: Option[Koulutustyyppi] = None,
-    koulutusKoodiUri: Option[String] = None,
-    tila: Julkaisutila = Julkaisutila.Tallennettu,
-    tarjoajat: List[OrganisaatioOid] = List(),
-    nimi: Kielistetty = Map(),
-    metadata: Option[KoulutusMetadata] = None,
-    julkinen: Boolean = false,
+    koulutustyyppi: Option[Koulutustyyppi],
+    koulutusKoodiUri: Option[String],
+    tila: Julkaisutila,
+    tarjoajat: List[OrganisaatioOid],
+    nimi: Kielistetty,
+    metadata: Option[KoulutusMetadata],
+    julkinen: Boolean,
     muokkaaja: UserOid,
     organisaatioOid: OrganisaatioOid,
-    kielivalinta: Seq[Kieli] = Seq(),
+    kielivalinta: Seq[Kieli],
     modified: Option[LocalDateTime]
 ) extends PerustiedotWithOid
