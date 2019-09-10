@@ -13,22 +13,24 @@ import org.json4s.jackson.Serialization.write
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-object ElasticsearchClientHolder {
-  val elasticUrl: String = KoutaConfigurationFactory.configuration.elasticSearchConfiguration.elasticUrl
-  val client: ElasticClient = createClient
-
-  def createClient = ElasticClient(ElasticProperties(elasticUrl))
+trait ElasticsearchClientHolder {
+  val client: ElasticClient
 }
 
-abstract class ElasticsearchClient(val index: String, val entityName: String) extends Logging {
-  lazy val elasticClient: ElasticClient = ElasticsearchClientHolder.client
+object DefaultElasticsearchClientHolder extends ElasticsearchClientHolder {
+  private lazy val elasticUrl: String = KoutaConfigurationFactory.configuration.elasticSearchConfiguration.elasticUrl
+
+  lazy val client: ElasticClient = ElasticClient(ElasticProperties(elasticUrl))
+}
+
+abstract class ElasticsearchClient(
+    val index: String,
+    val entityName: String,
+    clientHolder: ElasticsearchClientHolder = DefaultElasticsearchClientHolder
+) extends Logging {
+  lazy val elasticClient: ElasticClient = clientHolder.client
 
   implicit val json4s: Serialization = org.json4s.jackson.Serialization
-
-  protected def withTemporaryElasticClient[T](f: ElasticClient => Future[T]): Future[T] = {
-    val client = ElasticsearchClientHolder.createClient
-    f(client).andThen { case _ => client.close() }
-  }
 
   protected def getItem(id: String): Future[GetResponse] =
     elasticClient.execute {

@@ -54,7 +54,7 @@ class SwaggerServlet extends ScalatraServlet {
   }
 
   private def getModelAnnotations: String = {
-    val reflections = new Reflections("fi.oph.kouta")
+    val reflections = new Reflections("fi.oph.kouta.external")
 
     reflections
       .getTypesAnnotatedWith(classOf[SwaggerModel])

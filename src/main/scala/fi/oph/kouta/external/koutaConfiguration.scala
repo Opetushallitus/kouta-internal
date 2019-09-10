@@ -35,23 +35,24 @@ case class ElasticSearchConfiguration(elasticUrl: String)
 case class KoutaConfiguration(config: TypesafeConfig, urlProperties: OphProperties)
     extends ApplicationSettings(config) {
 
-  val databaseConfiguration = KoutaDatabaseConfiguration(
-    url = config.getString("kouta-external.db.url"),
-    username = config.getString("kouta-external.db.user"),
-    password = config.getString("kouta-external.db.password"),
-    numThreads = Option(config.getInt("kouta-external.db.numThreads")),
-    maxConnections = Option(config.getInt("kouta-external.db.maxConnections")),
-    minConnections = Option(config.getInt("kouta-external.db.minConnections")),
-    registerMbeans = Option(config.getBoolean("kouta-external.db.registerMbeans")),
-    initializationFailTimeout = Option(config.getInt("kouta-external.db.initializationFailTimeout")),
-    leakDetectionThresholdMillis = Option(config.getInt("kouta-external.db.leakDetectionThresholdMillis"))
-  )
+  val databaseConfiguration: KoutaDatabaseConfiguration =
+    KoutaDatabaseConfiguration(
+      url = config.getString("kouta-external.db.url"),
+      username = config.getString("kouta-external.db.user"),
+      password = config.getString("kouta-external.db.password"),
+      numThreads = Option(config.getInt("kouta-external.db.numThreads")),
+      maxConnections = Option(config.getInt("kouta-external.db.maxConnections")),
+      minConnections = Option(config.getInt("kouta-external.db.minConnections")),
+      registerMbeans = Option(config.getBoolean("kouta-external.db.registerMbeans")),
+      initializationFailTimeout = Option(config.getInt("kouta-external.db.initializationFailTimeout")),
+      leakDetectionThresholdMillis = Option(config.getInt("kouta-external.db.leakDetectionThresholdMillis"))
+    )
 
   val securityConfiguration = SecurityConfiguration(
     casUrl = config.getString("cas.url"),
     casServiceIdentifier = config.getString("kouta-external.cas.service"),
     kayttooikeusUrl = config.getString("kayttooikeus-service.userDetails.byUsername"),
-    rootOrganisaatio = OrganisaatioOid(config.getString("root.organisaatio.oid")),
+    rootOrganisaatio = OrganisaatioOid(config.getString("root.organisaatio.oid"))
   )
 
   val elasticSearchConfiguration = ElasticSearchConfiguration(

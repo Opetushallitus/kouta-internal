@@ -54,7 +54,7 @@ object KoutaDatabase extends Logging {
     settings.registerMbeans.foreach(hikariConfig.setRegisterMbeans)
     //settings.initializationFailTimeout.foreach(hikariConfig.setI)
     //hikariConfig.setLeakDetectionThreshold(settings.leakDetectionThresholdMillis.getOrElse(settings.getMaxLifetime))
-    val executor = AsyncExecutor("kouta", maxPoolSize, 1000)
+    val executor = AsyncExecutor("koutaexternal", maxPoolSize, 1000)
 
     val className    = classOf[HikariConfig].getSimpleName
     val executorName = ToStringBuilder.reflectionToString(executor)
@@ -68,7 +68,6 @@ object KoutaDatabase extends Logging {
   }
 
   private def migrate(): Unit = {
-    logger.error("migrate() called")
     val flyway = new Flyway()
     flyway.setDataSource(settings.url, settings.username, settings.password)
     flyway.migrate()

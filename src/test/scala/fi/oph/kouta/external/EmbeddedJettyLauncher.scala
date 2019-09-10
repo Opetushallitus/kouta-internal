@@ -33,17 +33,18 @@ object EmbeddedJettyLauncher extends Logging with KoutaConfigurationConstants {
 
 trait KoutaConfigurationConstants {
   val SystemPropertyNameConfigProfile = "kouta-external.config-profile"
-  val SystemPropertyNameTemplate = "kouta-external.template-file"
+  val SystemPropertyNameTemplate      = "kouta-external.template-file"
 
-  val ConfigProfileDefault = "default"
+  val ConfigProfileDefault  = "default"
   val ConfigProfileTemplate = "template"
 }
+
 object TestSetups extends Logging with KoutaConfigurationConstants {
 
   def setupWithTemplate(port:Int) = {
-    logger.info(s"Setting up test template with Postgres port ${port}")
+    logger.info(s"Setting up test template with Postgres port $port")
     Templates.createTestTemplate(port)
-    System.setProperty(SystemPropertyNameTemplate, Templates.TEST_TEMPLATE_FILE_PATH)
+    System.setProperty(SystemPropertyNameTemplate, Templates.TestTemplateFilePath)
     System.setProperty(SystemPropertyNameConfigProfile, ConfigProfileTemplate)
   }
 
@@ -61,17 +62,17 @@ object TestSetups extends Logging with KoutaConfigurationConstants {
     }
 
   def setupWithDefaultTestTemplateFile() = {
-    logger.info(s"Using default test template ${Templates.DEFAULT_TEMPLATE_FILE_PATH}")
-    System.setProperty(SystemPropertyNameTemplate, Templates.TEST_TEMPLATE_FILE_PATH)
-    System.setProperty(SystemPropertyNameTemplate, Templates.DEFAULT_TEMPLATE_FILE_PATH)
+    logger.info(s"Using default test template ${Templates.DefaultTemplateFilePath}")
+    System.setProperty(SystemPropertyNameTemplate, Templates.TestTemplateFilePath)
+    System.setProperty(SystemPropertyNameTemplate, Templates.DefaultTemplateFilePath)
   }
 
 }
 
 object Templates {
 
-  val DEFAULT_TEMPLATE_FILE_PATH = "src/test/resources/dev-vars.yml"
-  val TEST_TEMPLATE_FILE_PATH = "src/test/resources/embedded-jetty-vars.yml"
+  val DefaultTemplateFilePath = "src/test/resources/dev-vars.yml"
+  val TestTemplateFilePath = "src/test/resources/embedded-jetty-vars.yml"
 
   import java.io.{File, PrintWriter}
   import java.nio.file.Files
@@ -79,19 +80,18 @@ object Templates {
   import scala.io.Source
   import scala.util.{Failure, Success, Try}
 
-  def createTestTemplate(port:Int, deleteAutomatically:Boolean = true) = {
-    val file = new File(TEST_TEMPLATE_FILE_PATH)
-    Try(new PrintWriter(new File(TEST_TEMPLATE_FILE_PATH))) match {
+  def createTestTemplate(port:Int, deleteAutomatically:Boolean = false) = {
+    Try(new PrintWriter(new File(TestTemplateFilePath))) match {
       case Failure(t) =>
         t.printStackTrace()
         throw t
       case Success(w) => try {
-        Source.fromFile(DEFAULT_TEMPLATE_FILE_PATH)
+        Source.fromFile(DefaultTemplateFilePath)
           .getLines
           .map {
-            case x if x.contains("host_postgresql_koutaexternal_port") => s"host_postgresql_koutaexternal_port: ${port}"
-            case x if x.contains("host_postgresql_koutaexternal_user") => "host_postgresql_koutaexternal_user: oph"
-            case x if x.contains("host_postgresql_koutaexternal_password") => "host_postgresql_koutaexternal_password:"
+            case x if x.contains("host_postgresql_koutaexternal_port") => s"host_postgresql_koutaexternal_port: $port"
+            case x if x.contains("postgres_app_user") => "postgres_app_user: oph"
+            case x if x.contains("host_postgresql_koutaexternal_app_password") => "host_postgresql_koutaexternal_app_password:"
             case x if x.contains("host_postgresql_koutaexternal") => "host_postgresql_koutaexternal: localhost"
             case x => x
           }
@@ -107,6 +107,6 @@ object Templates {
   }
 
   def deleteTestTemplate() = {
-    Files.deleteIfExists(new File(TEST_TEMPLATE_FILE_PATH).toPath)
+    Files.deleteIfExists(new File(TestTemplateFilePath).toPath)
   }
 }

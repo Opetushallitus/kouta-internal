@@ -2,8 +2,8 @@ cas.url={{cas_url}}
 kouta-external.cas.service={{kouta_external_cas_service}}
 
 kouta-external.db.url=jdbc:postgresql://{{host_postgresql_koutaexternal}}:{{host_postgresql_koutaexternal_port}}/koutaexternal
-kouta-external.db.user={{host_postgresql_koutaexternal_user}}
-kouta-external.db.password={{host_postgresql_koutaexternal_password}}
+kouta-external.db.user={{postgres_app_user}}
+kouta-external.db.password={{host_postgresql_koutaexternal_app_password}}
 kouta-external.db.connectionPool=HikariCP
 kouta-external.db.numThreads=10
 kouta-external.db.maxConnections=50

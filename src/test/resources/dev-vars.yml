@@ -1,8 +1,8 @@
 ---
 host_postgresql_koutaexternal: localhost
 host_postgresql_koutaexternal_port: 5432
-host_postgresql_koutaexternal_user: oph
-host_postgresql_koutaexternal_password:
+postgres_app_user: oph
+host_postgresql_koutaexternal_app_password:
 
 cas_url: https://virkailija.hahtuvaopintopolku.fi/cas
 kouta_external_cas_service: http://localhost:8097/kouta-external/auth/login

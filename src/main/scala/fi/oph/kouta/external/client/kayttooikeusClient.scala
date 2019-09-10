@@ -24,7 +24,7 @@ trait KayttooikeusClient extends HttpClient with Logging {
             s"User not found with username: $username, got response $status $response"
           )
         case _ =>
-          throw new InternalError(s"Failed to get username $username details, got response $status $response")
+          throw new RuntimeException(s"Failed to get username $username details using URL $url, got response $status $response")
       }
 
     get(url, errorHandler) { response =>
