@@ -28,7 +28,7 @@ trait HttpClient {
     }
 
   private def defaultErrorHandler(url: String, statusCode: Int, response: String) =
-    throw new InternalError(s"Url $url returned status code $statusCode $response")
+    throw new RuntimeException(s"Url $url returned status code $statusCode $response")
 
   def toQueryParams(params: (String, String)*): JavaMap[String, String] =
     scala.collection.JavaConverters.mapAsJavaMap(Map(params: _*))
