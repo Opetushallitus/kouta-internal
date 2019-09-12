@@ -18,7 +18,18 @@ class SwaggerServlet extends ScalatraServlet {
         |openapi: 3.0.0
         |info:
         |  title: kouta-external
-        |  description: "Uusi koulutustarjonta"
+        |  description: >
+        |    Uuden koulutustarjonnan ulkoinen API.
+        |
+        |
+        |    Ohjeet kirjautumiseen rajapintojen kutsujalle:
+        |    [https://confluence.csc.fi/display/oppija/Rajapintojen+autentikaatio](https://confluence.csc.fi/display/oppija/Rajapintojen+autentikaatio)
+        |
+        |
+        |    Helpoin tapa kirjautua sisään Swagger-ui:n käyttäjälle on avata
+        |    [/kouta-external/auth/login](/kouta-external/auth/login) uuteen selainikkunaan.
+        |    Jos näkyviin tulee `{"personOid":"1.2.246.562.24.xxxx"}` on kirjautuminen onnistunut. Jos näkyviin tulee
+        |    opintopolun kirjautumisikkuna, kirjaudu sisään.
         |  version: 0.1-SNAPSHOT
         |  termsOfService: https://opintopolku.fi/wp/fi/opintopolku/tietoa-palvelusta/
         |  contact:
@@ -41,17 +52,28 @@ class SwaggerServlet extends ScalatraServlet {
     val paths = SwaggerPaths.paths.map {
       case (path, op) =>
         s"""  $path:
+           |    parameters:
+           |      - $$ref: '#/components/parameters/callerId'
            |""".stripMargin +
           op.mkString
     }.mkString
 
-    val modelHeader =
+    val componentsHeader =
       s"""
          |components:
+         |  parameters:
+         |    callerId:
+         |      in: header
+         |      name: Caller-Id
+         |      schema:
+         |        type: string
+         |        default: kouta-external-swagger
+         |      required: true
+         |      description: Kutsujan <a href="https://confluence.csc.fi/pages/viewpage.action?pageId=50858064">Caller ID</a>
          |  schemas:
          |""".stripMargin
 
-    Seq(header, paths, modelHeader, getModelAnnotations).mkString
+    Seq(header, paths, componentsHeader, getModelAnnotations).mkString
   }
 
   private def getModelAnnotations: String = {
