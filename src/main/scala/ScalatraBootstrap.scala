@@ -1,7 +1,7 @@
-import fi.oph.kouta.external.KoutaConfigurationFactory
-import fi.oph.kouta.external.database.KoutaDatabase
-import fi.oph.kouta.external.servlet._
-import fi.oph.kouta.external.swagger.SwaggerServlet
+import fi.oph.kouta.internal.KoutaConfigurationFactory
+import fi.oph.kouta.internal.database.KoutaDatabase
+import fi.oph.kouta.internal.servlet._
+import fi.oph.kouta.internal.swagger.SwaggerServlet
 import javax.servlet.ServletContext
 import org.scalatra._
 

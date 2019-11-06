@@ -5,9 +5,9 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>fi.oph.kouta</groupId>
-    <artifactId>kouta-external</artifactId>
+    <artifactId>kouta-internal</artifactId>
     <version>0.1-SNAPSHOT</version>
-    <name>kouta-external</name>
+    <name>kouta-internal</name>
 
 
     <properties>
@@ -529,7 +529,7 @@
                         <configuration>
                             <archive>
                                 <manifest>
-                                    <mainClass>fi.oph.kouta.external.JettyLauncher</mainClass>
+                                    <mainClass>fi.oph.kouta.internal.JettyLauncher</mainClass>
                                 </manifest>
                             </archive>
                             <descriptorRefs>
