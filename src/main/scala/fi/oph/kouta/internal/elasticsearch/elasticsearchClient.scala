@@ -4,6 +4,7 @@ import java.util.NoSuchElementException
 
 import com.sksamuel.elastic4s.http.ElasticDsl._
 import com.sksamuel.elastic4s.http.get.GetResponse
+import com.sksamuel.elastic4s.http.search.SearchResponse
 import com.sksamuel.elastic4s.http.{ElasticClient, ElasticProperties, RequestFailure, RequestSuccess}
 import fi.oph.kouta.internal.KoutaConfigurationFactory
 import fi.vm.sade.utils.slf4j.Logging
@@ -38,7 +39,9 @@ abstract class ElasticsearchClient(
 
   protected def getItem(id: String): Future[GetResponse] =
     elasticClient.execute {
-      get(id).from(index)
+      val q = get(id).from(index)
+      logger.debug(s"Elasticsearch query: {}", q.show)
+      q
     }.flatMap {
       case failure: RequestFailure =>
         Future.failed(ElasticSearchException(failure.error))
@@ -47,8 +50,26 @@ abstract class ElasticsearchClient(
         Future.failed(new NoSuchElementException(s"No such element for $entityName $id"))
 
       case response: RequestSuccess[GetResponse] =>
-        logger.debug(s"Elasticsearch status: ${response.status}")
-        logger.debug(s"Elasticsearch response: ${response.result.sourceAsString}")
+        logger.debug(s"Elasticsearch status: {}", response.status)
+        logger.debug(s"Elasticsearch response: {}", response.result.sourceAsString)
+        Future.successful(response.result)
+    }
+
+  protected def simpleSearch(field: String, value: String): Future[SearchResponse] =
+    elasticClient.execute {
+      val q = search(index).query(matchPhraseQuery(field, value))
+      logger.debug(s"Elasticsearch query: ${q.show}")
+      q
+    }.flatMap {
+      case failure: RequestFailure =>
+        Future.failed(ElasticSearchException(failure.error))
+
+      case response: RequestSuccess[SearchResponse] if response.result.hits.isEmpty =>
+        Future.failed(new NoSuchElementException(s"No results in $entityName for search for $value in $field"))
+
+      case response: RequestSuccess[SearchResponse] =>
+        logger.debug(s"Elasticsearch status: {}", response.status)
+        logger.debug(s"Elasticsearch response: [{}]", response.result.hits.hits.map(_.sourceAsString).mkString(","))
         Future.successful(response.result)
     }
 }

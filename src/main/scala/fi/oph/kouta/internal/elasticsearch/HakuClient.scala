@@ -1,6 +1,8 @@
 package fi.oph.kouta.internal.elasticsearch
 
 
+import java.util.UUID
+
 import com.sksamuel.elastic4s.json4s.ElasticJson4s.Implicits._
 import fi.oph.kouta.internal.domain.Haku
 import fi.oph.kouta.internal.domain.indexed.HakuIndexed
@@ -20,4 +22,9 @@ abstract class HakuClient(override val index: String)
     getItem(oid.s)
       .map(_.to[HakuIndexed])
       .map(_.toHaku)
+
+  def searchByAtaruId(id: UUID): Future[Seq[Haku]] =
+    simpleSearch("hakulomakeAtaruId", id.toString)
+      .map(_.to[HakuIndexed])
+      .map(_.map(_.toHaku))
 }
