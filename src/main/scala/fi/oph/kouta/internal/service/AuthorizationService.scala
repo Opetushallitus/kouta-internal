@@ -2,11 +2,15 @@ package fi.oph.kouta.internal.service
 
 import fi.oph.kouta.internal.KoutaConfigurationFactory
 import fi.oph.kouta.internal.client.OrganisaatioClient
+import fi.oph.kouta.internal.domain.Perustiedot
 import fi.oph.kouta.internal.domain.oid.OrganisaatioOid
 import fi.oph.kouta.internal.security._
 import fi.vm.sade.utils.slf4j.Logging
 
 import scala.collection.IterableView
+import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.Future
+
 
 trait AuthorizationService extends Logging {
 
@@ -68,5 +72,14 @@ trait AuthorizationService extends Logging {
       f
     } else {
       throw OrganizationAuthorizationFailedException()
+    }
+
+  def filterAllowed[R <: Perustiedot](res: Future[Iterable[R]], roles: Seq[Role])(implicit authenticated: Authenticated): Future[Iterable[R]] =
+    if (hasRootAccess(roles)) {
+      res
+    } else {
+      withAuthorizedChildOrganizationOids(roles) { orgs =>
+        res.map(_.filter(h => orgs.exists(_ == h.organisaatioOid)))
+      }
     }
 }
