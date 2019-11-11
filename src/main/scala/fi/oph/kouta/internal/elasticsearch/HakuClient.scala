@@ -12,10 +12,8 @@ import fi.oph.kouta.internal.util.KoutaJsonFormats
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-object HakuClient extends HakuClient("haku-kouta")
-
-abstract class HakuClient(override val index: String)
-  extends ElasticsearchClient(index, "haku")
+class HakuClient(override val index: String, elasticsearchClientHolder: ElasticsearchClientHolder)
+  extends ElasticsearchClient(index, "haku", elasticsearchClientHolder)
     with KoutaJsonFormats {
 
   def getHaku(oid: HakuOid): Future[Haku] =
