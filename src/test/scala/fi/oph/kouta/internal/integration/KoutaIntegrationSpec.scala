@@ -2,13 +2,13 @@ package fi.oph.kouta.internal.integration
 
 import java.util.UUID
 
-import fi.oph.kouta.internal.MockSecurityContext
+import clojure.java.api.Clojure
 import fi.oph.kouta.internal.TestSetups.{setupWithEmbeddedPostgres, setupWithTemplate}
 import fi.oph.kouta.internal.database.SessionDAO
 import fi.oph.kouta.internal.domain.oid.OrganisaatioOid
 import fi.oph.kouta.internal.security.{Authority, CasSession, RoleEntity, ServiceTicket}
 import fi.oph.kouta.internal.util.KoutaJsonFormats
-import org.json4s.jackson.Serialization.read
+import fi.oph.kouta.internal.{MockSecurityContext, TempElasticClientHolder}
 import org.scalactic.Equality
 import org.scalatra.test.scalatest.ScalatraFlatSpec
 import slick.jdbc.GetResult
@@ -18,6 +18,7 @@ import scala.reflect.Manifest
 case class TestUser(oid: String, username: String, sessionId: UUID) {
   val ticket = MockSecurityContext.ticketFor(KoutaIntegrationSpec.serviceIdentifier, username)
 }
+
 trait KoutaIntegrationSpec extends ScalatraFlatSpec with HttpSpec with DatabaseSpec {
 
   val serviceIdentifier  = KoutaIntegrationSpec.serviceIdentifier
@@ -26,12 +27,29 @@ trait KoutaIntegrationSpec extends ScalatraFlatSpec with HttpSpec with DatabaseS
 
   val testUser = TestUser("test-user-oid", "testuser", defaultSessionId)
 
+  val require = Clojure.`var`("clojure.core", "require")
+
+  val elasticUtils = "clj-elasticsearch.elastic-utils"
+  require.invoke(Clojure.read(elasticUtils))
+
+  val indexerFixture = "kouta-indeksoija-service.fixture.kouta-indexer-fixture"
+  require.invoke(Clojure.read(indexerFixture))
+  val indexAll = Clojure.`var`(indexerFixture, "index-all")
+
   def addDefaultSession(): Unit = {
     SessionDAO.store(CasSession(ServiceTicket(testUser.ticket), testUser.oid, defaultAuthorities), testUser.sessionId)
   }
 
   override def beforeAll(): Unit = {
     super.beforeAll()
+
+    val intern = Clojure.`var`("clojure.core", "intern")
+    intern.invoke(
+      Clojure.read("clj-elasticsearch.elastic-utils"),
+      Clojure.read("elastic-host"),
+      Clojure.read(TempElasticClientHolder.elasticUrl)
+    )
+
     Option(System.getProperty("kouta-internal.test-postgres-port")) match {
       case Some(port) => setupWithTemplate(port.toInt)
       case None       => setupWithEmbeddedPostgres()
@@ -56,12 +74,14 @@ object KoutaIntegrationSpec {
 sealed trait HttpSpec extends KoutaJsonFormats { this: ScalatraFlatSpec =>
   val defaultSessionId = UUID.randomUUID()
 
-  val DebugJson = false
+  val DebugJson = true
 
   def debugJson[E <: AnyRef](body: String)(implicit mf: Manifest[E]): Unit = {
     if (DebugJson) {
-      import org.json4s.jackson.Serialization.writePretty
-      println(writePretty[E](read[E](body)))
+//      import org.json4s.jackson.Serialization.writePretty
+//      println(writePretty[E](read[E](body)))
+      println("ASDF body:")
+      println(body)
     }
   }
 
@@ -118,25 +138,23 @@ sealed trait HttpSpec extends KoutaJsonFormats { this: ScalatraFlatSpec =>
     }
   }
 
-  def get[E <: scala.AnyRef, I](path: String, id: I, expected: E)(
+  def get[E <: scala.AnyRef, I](path: String, id: I)(
       implicit equality: Equality[E],
       mf: Manifest[E]
-  ): String =
-    get(path, id, defaultSessionId, expected)
+  ): E =
+    get(path, id, defaultSessionId)
 
-  def get[E <: scala.AnyRef, I](path: String, id: I, sessionId: UUID, expected: E)(
+  def get[E <: scala.AnyRef, I](path: String, id: I, sessionId: UUID)(
       implicit equality: Equality[E],
       mf: Manifest[E]
-  ): String = {
+  ): E =
     get(s"$path/${id.toString}", headers = Seq(sessionHeader(sessionId))) {
       withClue(body) {
         status should equal(200)
       }
       debugJson(body)
-      read[E](body) should equal(expected)
-      header("Last-Modified")
+      read[E](body)
     }
-  }
 
   def get(path: String, sessionId: UUID, expectedStatus: Int): Unit = {
     get(path, headers = Seq(sessionHeader(sessionId))) {
