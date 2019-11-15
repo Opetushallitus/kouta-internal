@@ -31,7 +31,7 @@
         <javax.servlet-api.version>4.0.1</javax.servlet-api.version>
 
         <!-- Elasticsearch properties -->
-        <elastic4sVersion>6.7.0</elastic4sVersion>
+        <elastic4sVersion>6.7.3</elastic4sVersion>
 
         <!-- Database related properties -->
         <flyway.version>5.1.4</flyway.version>
@@ -43,7 +43,9 @@
         <scalatra-scalatest.version>2.7.0-RC1</scalatra-scalatest.version>
         <jetty.version>9.4.17.v20190418</jetty.version>
         <embedded-elasticsearch.version>2.10.0</embedded-elasticsearch.version>
-
+        <kouta-indeksoija.version>0.1.8-SNAPSHOT</kouta-indeksoija.version>
+        <kouta-backend.version>0.10-SNAPSHOT-KTO-382</kouta-backend.version>
+        <mockserver-netty.version>5.5.0</mockserver-netty.version>
         <commons.io.version>2.6</commons.io.version>
 
         <!-- Plugin properties -->
@@ -434,6 +436,51 @@
             </exclusions>
         </dependency>
 
+        <dependency>
+            <groupId>org.mock-server</groupId>
+            <artifactId>mockserver-netty</artifactId>
+            <version>${mockserver-netty.version}</version>
+            <scope>test</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>javax.xml.bind</groupId>
+                    <artifactId>jaxb-api</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>com.google.code.findbugs</groupId>
+                    <artifactId>jsr305</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>com.google.guava</groupId>
+                    <artifactId>guava</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.apache.commons</groupId>
+                    <artifactId>commons-lang3</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>com.fasterxml.jackson.core</groupId>
+                    <artifactId>jackson-core</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>com.fasterxml.jackson.core</groupId>
+                    <artifactId>jackson-databind</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>com.fasterxml.jackson.core</groupId>
+                    <artifactId>jackson-annotations</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>javax.servlet</groupId>
+                    <artifactId>javax.servlet-api</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>joda-time</groupId>
+                    <artifactId>joda-time</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
         <!-- Indeksoija dependencies for testing -->
 
         <dependency>
@@ -446,7 +493,7 @@
         <dependency>
             <groupId>kouta-indeksoija-service</groupId>
             <artifactId>kouta-indeksoija-service</artifactId>
-            <version>0.1.8-SNAPSHOT</version>
+            <version>${kouta-indeksoija.version}</version>
             <scope>test</scope>
             <exclusions>
                 <exclusion>
@@ -585,6 +632,18 @@
                     <groupId>ring</groupId>
                     <artifactId>ring-core</artifactId>
                 </exclusion>
+                <exclusion>
+                    <groupId>com.googlecode.libphonenumber</groupId>
+                    <artifactId>libphonenumber</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>net.sf.jopt-simple</groupId>
+                    <artifactId>jopt-simple</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.mozilla</groupId>
+                    <artifactId>rhino</artifactId>
+                </exclusion>
             </exclusions>
         </dependency>
 
@@ -712,7 +771,7 @@
         <dependency>
             <groupId>fi.oph.kouta</groupId>
             <artifactId>kouta-backend</artifactId>
-            <version>0.8-SNAPSHOT</version>
+            <version>${kouta-backend.version}</version>
             <scope>test</scope>
             <exclusions>
                 <exclusion>
@@ -749,7 +808,7 @@
         <dependency>
             <groupId>fi.oph.kouta</groupId>
             <artifactId>kouta-backend</artifactId>
-            <version>0.8-SNAPSHOT</version>
+            <version>${kouta-backend.version}</version>
             <classifier>tests</classifier>
             <scope>test</scope>
             <exclusions>
