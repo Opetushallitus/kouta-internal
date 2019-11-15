@@ -15,7 +15,7 @@ trait GenericGetTests[E, ID] {
   def get(id: ID, sessionId: UUID): E
   def get(id: ID, sessionId: UUID, errorStatus: Int): Unit
 
-  def getTests() { // Metodin sisällä, jotta entityName bindataan myöhemmin, sen jälkeen kun se on overridattu
+  def getTests(): Unit = { // Metodin sisällä, jotta entityName bindataan vasta sen jälkeen kun se on overridattu
 
     "GET /:id" should s"get $entityName from elastic search" in {
       get(existingId, defaultSessionId)
