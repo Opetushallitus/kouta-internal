@@ -1,22 +1,29 @@
 package fi.oph.kouta.internal.integration.fixture
 
-import clojure.java.api.Clojure
-import fi.oph.kouta.internal.TempElasticClientHolder
+import java.util.UUID
+
+import fi.oph.kouta.external.KoutaFixtureTool
 import fi.oph.kouta.internal.domain.Haku
-import fi.oph.kouta.internal.domain.oid.HakuOid
-import fi.oph.kouta.internal.integration.KoutaIntegrationSpec
+import fi.oph.kouta.internal.domain.oid.{HakuOid, OrganisaatioOid}
 import fi.oph.kouta.internal.servlet.HakuServlet
+import fi.oph.kouta.internal.{OrganisaatioServiceMock, TempElasticClientHolder}
 
 abstract class HakuFixture extends KoutaIntegrationSpec {
   val HakuPath = "/haku"
 
   addServlet(new HakuServlet(TempElasticClientHolder), HakuPath)
 
-  val addHakuMock = Clojure.`var`(indexerFixture, "add-haku-mock")
+  def get(oid: HakuOid): Haku = get[Haku](HakuPath, oid)
 
-  def get(oid: HakuOid): Haku = get[Haku, HakuOid](HakuPath, oid)
+  def get(oid: HakuOid, sessionId: UUID): Haku = get[Haku](HakuPath, oid, sessionId)
 
-  def addHaku(hakuOid: HakuOid): Unit = {
-    addHakuMock.invoke(Clojure.read(s"${'"'}${hakuOid.s}${'"'}"))
+  def get(oid: HakuOid, errorStatus: Int): Unit = get(oid, defaultSessionId, errorStatus)
+
+  def get(oid: HakuOid, sessionId: UUID, errorStatus: Int): Unit = get(s"$HakuPath/$oid", sessionId, errorStatus)
+
+  def addMockHaku(hakuOid: HakuOid, organisaatioOid: OrganisaatioOid = OrganisaatioServiceMock.ChildOid): Unit = {
+    val haku = KoutaFixtureTool.DefaultHakuScala + (KoutaFixtureTool.OrganisaatioKey -> organisaatioOid.s)
+    KoutaFixtureTool.addHaku(hakuOid.s, haku)
+    indexHaku(hakuOid)
   }
 }

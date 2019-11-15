@@ -47,7 +47,7 @@ abstract class ElasticsearchClient(
         Future.failed(ElasticSearchException(failure.error))
 
       case response: RequestSuccess[GetResponse] if !response.result.exists =>
-        Future.failed(new NoSuchElementException(s"No such element for $entityName $id"))
+        Future.failed(new NoSuchElementException(s"Didn't find $entityName with id $id"))
 
       case response: RequestSuccess[GetResponse] =>
         logger.debug(s"Elasticsearch status: {}", response.status)
@@ -65,7 +65,7 @@ abstract class ElasticsearchClient(
         Future.failed(ElasticSearchException(failure.error))
 
       case response: RequestSuccess[SearchResponse] if response.result.hits.isEmpty =>
-        Future.failed(new NoSuchElementException(s"No results in $entityName for search for $value in $field"))
+        Future.failed(new NoSuchElementException(s"Didn't find anything searching for $entityName with $value in $field"))
 
       case response: RequestSuccess[SearchResponse] =>
         logger.debug(s"Elasticsearch status: {}", response.status)
