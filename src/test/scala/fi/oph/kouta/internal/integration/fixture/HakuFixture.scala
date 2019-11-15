@@ -8,7 +8,7 @@ import fi.oph.kouta.internal.domain.oid.{HakuOid, OrganisaatioOid}
 import fi.oph.kouta.internal.servlet.HakuServlet
 import fi.oph.kouta.internal.{OrganisaatioServiceMock, TempElasticClientHolder}
 
-abstract class HakuFixture extends KoutaIntegrationSpec {
+trait HakuFixture extends KoutaIntegrationSpec {
   val HakuPath = "/haku"
 
   addServlet(new HakuServlet(TempElasticClientHolder), HakuPath)

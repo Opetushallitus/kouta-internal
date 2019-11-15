@@ -1,6 +1,7 @@
 package fi.oph.kouta.internal.servlet
 
 import fi.oph.kouta.internal.domain.oid.HakukohdeOid
+import fi.oph.kouta.internal.elasticsearch.ElasticsearchClientHolder
 import fi.oph.kouta.internal.security.Authenticated
 import fi.oph.kouta.internal.service.HakukohdeService
 import fi.oph.kouta.internal.swagger.SwaggerPaths.registerPath
@@ -9,14 +10,17 @@ import org.scalatra.FutureSupport
 import scala.concurrent.ExecutionContext
 import scala.concurrent.ExecutionContext.Implicits.global
 
-class HakukohdeServlet
-  extends KoutaServlet
+class HakukohdeServlet(elasticsearchClientHolder: ElasticsearchClientHolder)
+    extends KoutaServlet
     with CasAuthenticatedServlet
     with FutureSupport {
 
   override def executor: ExecutionContext = global
 
-  registerPath("/hakukohde/{oid}",
+  val hakukohdeService = new HakukohdeService(elasticsearchClientHolder)
+
+  registerPath(
+    "/hakukohde/{oid}",
     """    get:
       |      summary: Hae hakukohteen tiedot
       |      operationId: Hae hakukohde
@@ -38,11 +42,12 @@ class HakukohdeServlet
       |            application/json:
       |              schema:
       |                $ref: '#/components/schemas/Hakukohde'
-      |""".stripMargin)
+      |""".stripMargin
+  )
   get("/:oid") {
     implicit val authenticated: Authenticated = authenticate
 
-    HakukohdeService.get(HakukohdeOid(params("oid")))
+    hakukohdeService.get(HakukohdeOid(params("oid")))
   }
 
 }

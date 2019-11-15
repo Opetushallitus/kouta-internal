@@ -2,10 +2,10 @@ package fi.oph.kouta.internal.integration
 
 import fi.oph.kouta.internal.domain.Haku
 import fi.oph.kouta.internal.domain.oid.HakuOid
-import fi.oph.kouta.internal.integration.fixture.{AccessControlSpec, ElasticFixture, HakuFixture}
+import fi.oph.kouta.internal.integration.fixture.{AccessControlSpec, HakuFixture}
 import fi.oph.kouta.internal.security.Role
 
-class HakuSpec extends HakuFixture with AccessControlSpec with ElasticFixture {
+class HakuSpec extends HakuFixture with AccessControlSpec {
 
   override val roleEntities = Seq(Role.Haku)
 
@@ -15,11 +15,6 @@ class HakuSpec extends HakuFixture with AccessControlSpec with ElasticFixture {
   override def beforeAll(): Unit = {
     super.beforeAll()
     addMockHaku(hakuOid, ChildOid)
-  }
-
-  override def afterAll(): Unit = {
-    super.afterAll()
-    cleanElastic()
   }
 
   "GET /:oid" should "get haku from elastic search" in {

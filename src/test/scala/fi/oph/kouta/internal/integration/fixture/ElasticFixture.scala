@@ -6,9 +6,9 @@ import fi.vm.sade.utils.slf4j.Logging
 import org.json4s.jackson.Serialization.read
 import org.json4s.{DefaultFormats, Formats}
 
-trait ElasticFixture extends Logging {
-  def cleanElastic(): Unit = client.execute(deleteByQuery("haku-kouta", "haku-kouta", "*")).await
+import scala.concurrent.ExecutionContext.Implicits.global
 
+trait ElasticFixture extends Logging {
   lazy val testSnapshotRepository = {
     val repositoryName = "_testsnapshot"
     client.execute(createRepository(repositoryName, "fs").settings(Map("location" -> "snapshots"))).await

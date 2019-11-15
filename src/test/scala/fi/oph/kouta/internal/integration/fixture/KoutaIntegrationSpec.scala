@@ -35,11 +35,13 @@ trait KoutaIntegrationSpec extends ScalatraFlatSpec with HttpSpec with Indeksoij
     }
 
     addDefaultSession()
+    initIndices()
   }
 
   override def afterAll(): Unit = {
     super.afterAll()
     truncateDatabase()
+    resetIndices()
   }
 }
 

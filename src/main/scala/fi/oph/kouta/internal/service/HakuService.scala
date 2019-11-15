@@ -11,7 +11,9 @@ import fi.vm.sade.utils.slf4j.Logging
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class HakuService(elasticsearchClientHolder: ElasticsearchClientHolder) extends RoleEntityAuthorizationService with Logging {
+class HakuService(elasticsearchClientHolder: ElasticsearchClientHolder)
+    extends RoleEntityAuthorizationService
+    with Logging {
 
   override val roleEntity: RoleEntity = Role.Haku
 

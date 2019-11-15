@@ -13,7 +13,7 @@ import scala.concurrent.ExecutionContext
 import scala.concurrent.ExecutionContext.Implicits.global
 
 class HakuServlet(elasticsearchClientHolder: ElasticsearchClientHolder)
-  extends KoutaServlet
+    extends KoutaServlet
     with CasAuthenticatedServlet
     with FutureSupport {
 
@@ -21,7 +21,8 @@ class HakuServlet(elasticsearchClientHolder: ElasticsearchClientHolder)
 
   val hakuService = new HakuService(elasticsearchClientHolder)
 
-  registerPath("/haku/{oid}",
+  registerPath(
+    "/haku/{oid}",
     """    get:
       |      summary: Hae haun tiedot
       |      operationId: Hae haku
@@ -43,14 +44,16 @@ class HakuServlet(elasticsearchClientHolder: ElasticsearchClientHolder)
       |            application/json:
       |              schema:
       |                $ref: '#/components/schemas/Haku'
-      |""".stripMargin)
+      |""".stripMargin
+  )
   get("/:oid") {
     implicit val authenticated: Authenticated = authenticate
 
     hakuService.get(HakuOid(params("oid")))
   }
 
-  registerPath("/haku/search",
+  registerPath(
+    "/haku/search",
     """    get:
       |      summary: Etsi hakuja
       |      operationId: Etsi hakuja
@@ -74,12 +77,13 @@ class HakuServlet(elasticsearchClientHolder: ElasticsearchClientHolder)
       |                type: array
       |                items:
       |                  $ref: '#/components/schemas/Haku'
-      |""".stripMargin)
+      |""".stripMargin
+  )
   get("/search") {
     implicit val authenticated: Authenticated = authenticate
 
     params.get("ataruId").map(UUID.fromString) match {
-      case None => NotFound()
+      case None     => NotFound()
       case Some(id) => hakuService.searchByAtaruId(id)
     }
   }
