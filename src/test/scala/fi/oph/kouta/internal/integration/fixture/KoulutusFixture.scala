@@ -19,7 +19,6 @@ trait KoulutusFixture extends KoutaIntegrationSpec {
 
   def get(oid: KoulutusOid, sessionId: UUID, errorStatus: Int): Unit = get(s"$KoulutusPath/$oid", sessionId, errorStatus)
 
-
   def addMockKoulutus(koulutusOid: KoulutusOid, organisaatioOid: OrganisaatioOid = OrganisaatioServiceMock.ChildOid): Unit = {
     val koulutus = KoutaFixtureTool.DefaultKoulutusScala + (KoutaFixtureTool.OrganisaatioKey -> organisaatioOid.s)
     KoutaFixtureTool.addKoulutus(koulutusOid.s, koulutus)
