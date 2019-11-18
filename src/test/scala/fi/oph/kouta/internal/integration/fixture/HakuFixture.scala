@@ -2,6 +2,7 @@ package fi.oph.kouta.internal.integration.fixture
 
 import java.util.UUID
 
+import fi.oph.kouta.domain.{Ataru, EiSähköistä}
 import fi.oph.kouta.external.KoutaFixtureTool
 import fi.oph.kouta.internal.domain.Haku
 import fi.oph.kouta.internal.domain.oid.{HakuOid, OrganisaatioOid}
@@ -21,8 +22,22 @@ trait HakuFixture extends KoutaIntegrationSpec {
 
   def get(oid: HakuOid, sessionId: UUID, errorStatus: Int): Unit = get(s"$HakuPath/$oid", sessionId, errorStatus)
 
-  def addMockHaku(hakuOid: HakuOid, organisaatioOid: OrganisaatioOid = OrganisaatioServiceMock.ChildOid): Unit = {
-    val haku = KoutaFixtureTool.DefaultHakuScala + (KoutaFixtureTool.OrganisaatioKey -> organisaatioOid.s)
+  def addMockHaku(
+      hakuOid: HakuOid,
+      organisaatioOid: OrganisaatioOid = OrganisaatioServiceMock.ChildOid,
+      hakulomakeAtaruId: Option[UUID] = None
+  ): Unit = {
+    val hakulomakeFields: Map[String, String] = hakulomakeAtaruId match {
+      case None =>
+        Map(
+          KoutaFixtureTool.HakulomaketyyppiKey -> EiSähköistä.toString,
+          KoutaFixtureTool.HakulomakeIdKey     -> UUID.randomUUID().toString
+        )
+      case Some(id) =>
+        Map(KoutaFixtureTool.HakulomaketyyppiKey -> Ataru.toString, KoutaFixtureTool.HakulomakeIdKey -> id.toString)
+    }
+
+    val haku = KoutaFixtureTool.DefaultHakuScala ++ hakulomakeFields + (KoutaFixtureTool.OrganisaatioKey -> organisaatioOid.s)
     KoutaFixtureTool.addHaku(hakuOid.s, haku)
     indexHaku(hakuOid)
   }

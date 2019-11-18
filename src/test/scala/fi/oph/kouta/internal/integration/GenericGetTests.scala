@@ -55,8 +55,8 @@ trait GenericGetTests[E, ID] {
       get(existingId, otherRoleSession, 403)
     }
 
-    it should "allow indexer access" in {
-      get(existingId, indexerSession)
+    it should "deny indexer access" in {
+      get(existingId, indexerSession, 403)
     }
   }
 }

@@ -83,9 +83,13 @@ class HakuServlet(elasticsearchClientHolder: ElasticsearchClientHolder)
     implicit val authenticated: Authenticated = authenticate
 
     params.get("ataruId").map(UUID.fromString) match {
-      case None     => NotFound()
-      case Some(id) => hakuService.searchByAtaruId(id)
+      case None => NotFound()
+      case Some(id) =>
+        hakuService.searchByAtaruId(id).map {
+          case haut if haut.isEmpty =>
+            NotFound(s"Didn't find anything searching for haku with $id in hakulomakeAtaruId")
+          case haut => haut
+        }
     }
   }
-
 }
