@@ -23,13 +23,13 @@ class HakuService(elasticsearchClientHolder: ElasticsearchClientHolder)
     authorizeGet(hakuClient.getHaku(oid))
 
   def searchByAtaruId(ataruId: UUID)(implicit authenticated: Authenticated): Future[Seq[Haku]] = {
-    val res = hakuClient.searchByAtaruId(ataruId)
+    val haut = hakuClient.searchByAtaruId(ataruId)
 
     if (hasRootAccess(roleEntity.readRoles)) {
-      res
+      haut
     } else {
       withAuthorizedChildOrganizationOids(roleEntity.readRoles) { orgs =>
-        res.map(_.filter(h => orgs.exists(_ == h.organisaatioOid)))
+        haut.map(_.filter(h => orgs.exists(_ == h.organisaatioOid)))
       }
     }
   }
