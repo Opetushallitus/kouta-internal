@@ -4,14 +4,19 @@ import java.time.LocalDateTime
 import java.util.UUID
 
 import fi.oph.kouta.internal.domain.enums.{Hakulomaketyyppi, Julkaisutila, Kieli}
-import fi.oph.kouta.internal.domain.oid.HakuOid
+import fi.oph.kouta.internal.domain.oid.{HakuOid, HakukohdeOid}
 import fi.oph.kouta.internal.domain._
+
+case class EmbeddedHakukohdeIndexed(
+    oid: HakukohdeOid
+)
 
 class HakuIndexed(
     oid: Option[HakuOid],
     tila: Julkaisutila,
     nimi: Kielistetty,
     hakutapa: Option[KoodiUri],
+    hakukohteet: List[EmbeddedHakukohdeIndexed],
     hakukohteenLiittamisenTakaraja: Option[LocalDateTime],
     hakukohteenMuokkaamisenTakaraja: Option[LocalDateTime],
     ajastettuJulkaisu: Option[LocalDateTime],
@@ -36,6 +41,7 @@ class HakuIndexed(
     tila = tila,
     nimi = nimi,
     hakutapaKoodiUri = hakutapa.map(_.koodiUri),
+    hakukohteet = hakukohteet.map(_.oid),
     hakukohteenLiittamisenTakaraja = hakukohteenLiittamisenTakaraja,
     hakukohteenMuokkaamisenTakaraja = hakukohteenMuokkaamisenTakaraja,
     ajastettuJulkaisu = ajastettuJulkaisu,

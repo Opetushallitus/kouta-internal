@@ -5,7 +5,7 @@ import java.util.UUID
 
 import fi.oph.kouta.internal.swagger.SwaggerModel
 import fi.oph.kouta.internal.domain.enums.{Hakulomaketyyppi, Julkaisutila, Kieli}
-import fi.oph.kouta.internal.domain.oid.{HakuOid, OrganisaatioOid, UserOid}
+import fi.oph.kouta.internal.domain.oid.{HakuOid, HakukohdeOid, OrganisaatioOid, UserOid}
 
 @SwaggerModel(
   """    Haku:
@@ -32,6 +32,14 @@ import fi.oph.kouta.internal.domain.oid.{HakuOid, OrganisaatioOid, UserOid}
     |          type: string
     |          description: Haun hakutapa. Viittaa [koodistoon](https://virkailija.testiopintopolku.fi/koodisto-ui/html/koodisto/hakutapa/11)
     |          example: hakutapa_03#1
+    |        hakukohteet:
+    |          type: array
+    |          description: Haun hakukohteiden tunnisteet.
+    |          items:
+    |            type: string
+    |          example:
+    |            - 1.2.246.562.20.00000000000000000009
+    |            - 1.2.246.562.20.00000000000000000010
     |        hakukohteenLiittamisenTakaraja:
     |          type: string
     |          format: date-time
@@ -131,6 +139,7 @@ case class Haku(
     tila: Julkaisutila,
     nimi: Kielistetty,
     hakutapaKoodiUri: Option[String],
+    hakukohteet: List[HakukohdeOid],
     hakukohteenLiittamisenTakaraja: Option[LocalDateTime],
     hakukohteenMuokkaamisenTakaraja: Option[LocalDateTime],
     ajastettuJulkaisu: Option[LocalDateTime],
