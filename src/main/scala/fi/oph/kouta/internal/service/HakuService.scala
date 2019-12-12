@@ -1,7 +1,5 @@
 package fi.oph.kouta.internal.service
 
-import java.util.UUID
-
 import fi.oph.kouta.internal.domain.Haku
 import fi.oph.kouta.internal.domain.oid.HakuOid
 import fi.oph.kouta.internal.elasticsearch.{ElasticsearchClientHolder, HakuClient}
@@ -22,7 +20,7 @@ class HakuService(elasticsearchClientHolder: ElasticsearchClientHolder)
   def get(oid: HakuOid)(implicit authenticated: Authenticated): Future[Haku] =
     authorizeGet(hakuClient.getHaku(oid))
 
-  def searchByAtaruId(ataruId: UUID)(implicit authenticated: Authenticated): Future[Seq[Haku]] = {
+  def searchByAtaruId(ataruId: String)(implicit authenticated: Authenticated): Future[Seq[Haku]] = {
     val haut = hakuClient.searchByAtaruId(ataruId)
 
     if (hasRootAccess(roleEntity.readRoles)) {
