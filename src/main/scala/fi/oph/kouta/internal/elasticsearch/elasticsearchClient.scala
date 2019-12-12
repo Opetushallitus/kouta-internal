@@ -62,11 +62,6 @@ abstract class ElasticsearchClient(val index: String, val entityName: String, cl
       case failure: RequestFailure =>
         Future.failed(ElasticSearchException(failure.error))
 
-      case response: RequestSuccess[SearchResponse] if response.result.hits.isEmpty =>
-        Future.failed(
-          new NoSuchElementException(s"Didn't find anything searching for $entityName with $value in $field")
-        )
-
       case response: RequestSuccess[SearchResponse] =>
         logger.debug(s"Elasticsearch status: {}", response.status)
         logger.debug(s"Elasticsearch response: [{}]", response.result.hits.hits.map(_.sourceAsString).mkString(","))

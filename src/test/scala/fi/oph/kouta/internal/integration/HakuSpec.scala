@@ -48,8 +48,8 @@ class HakuSpec extends HakuFixture with AccessControlSpec with GenericGetTests[H
     )
   }
 
-  it should "return 404 if no haut are found" in {
-    get(s"$HakuPath/search?ataruId=$ataruId3", defaultSessionId, 404)
+  it should "return 200 with an empty list if no haut are found" in {
+    get[Seq[Haku]](s"$HakuPath/search?ataruId=$ataruId3", defaultSessionId) should be (empty)
   }
 
   it should "return 401 without a valid session" in {
@@ -68,8 +68,8 @@ class HakuSpec extends HakuFixture with AccessControlSpec with GenericGetTests[H
     )
   }
 
-  it should s"return 404 if the user doesn't have access to any of the matching haku" in {
-    get(s"$HakuPath/search?ataruId=$ataruId1", crudSessions(LonelyOid), 404)
+  it should s"return 200 with an empty list if the user doesn't have access to any of the matching haku" in {
+    get[Seq[Haku]](s"$HakuPath/search?ataruId=$ataruId1", crudSessions(LonelyOid)) should be (empty)
   }
 
   it should s"allow a user of an ancestor organization to get the haut" in {
@@ -84,7 +84,7 @@ class HakuSpec extends HakuFixture with AccessControlSpec with GenericGetTests[H
   }
 
   it should "deny a user with only access to a descendant organization" in {
-    get(s"$HakuPath/search?ataruId=$ataruId1", crudSessions(GrandChildOid), 404)
+    get[Seq[Haku]](s"$HakuPath/search?ataruId=$ataruId1", crudSessions(GrandChildOid)) should be (empty)
   }
 
   it should "deny a user with the wrong role" in {

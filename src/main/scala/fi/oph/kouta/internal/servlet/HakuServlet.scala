@@ -5,7 +5,7 @@ import fi.oph.kouta.internal.elasticsearch.ElasticsearchClientHolder
 import fi.oph.kouta.internal.security.Authenticated
 import fi.oph.kouta.internal.service.HakuService
 import fi.oph.kouta.internal.swagger.SwaggerPaths.registerPath
-import org.scalatra.{BadRequest, FutureSupport, NotFound}
+import org.scalatra.{BadRequest, FutureSupport}
 
 import scala.concurrent.ExecutionContext
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -82,12 +82,7 @@ class HakuServlet(elasticsearchClientHolder: ElasticsearchClientHolder)
 
     params.get("ataruId") match {
       case None => BadRequest("Query parameter ataruId is required")
-      case Some(id) =>
-        hakuService.searchByAtaruId(id).map {
-          case haut if haut.isEmpty =>
-            NotFound(s"Didn't find anything searching for haku with $id in hakulomakeAtaruId")
-          case haut => haut
-        }
+      case Some(id) => hakuService.searchByAtaruId(id)
     }
   }
 }
