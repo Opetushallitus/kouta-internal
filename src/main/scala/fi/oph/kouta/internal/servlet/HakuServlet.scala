@@ -1,7 +1,6 @@
 package fi.oph.kouta.internal.servlet
 
 import fi.oph.kouta.internal.domain.oid.HakuOid
-import fi.oph.kouta.internal.elasticsearch.ElasticsearchClientHolder
 import fi.oph.kouta.internal.security.Authenticated
 import fi.oph.kouta.internal.service.HakuService
 import fi.oph.kouta.internal.swagger.SwaggerPaths.registerPath
@@ -10,14 +9,12 @@ import org.scalatra.{BadRequest, FutureSupport}
 import scala.concurrent.ExecutionContext
 import scala.concurrent.ExecutionContext.Implicits.global
 
-class HakuServlet(elasticsearchClientHolder: ElasticsearchClientHolder)
+class HakuServlet(hakuService: HakuService)
     extends KoutaServlet
     with CasAuthenticatedServlet
     with FutureSupport {
 
   override def executor: ExecutionContext = global
-
-  val hakuService = new HakuService(elasticsearchClientHolder)
 
   registerPath(
     "/haku/{oid}",

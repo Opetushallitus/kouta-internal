@@ -31,9 +31,9 @@ class HakukohdeSpec
   override def beforeAll(): Unit = {
     super.beforeAll()
 
-    addMockHaku(hakuOid, ChildOid)
-    addMockKoulutus(koulutusOid, ChildOid)
-    addMockToteutus(toteutusId, ChildOid, koulutusOid)
+    addMockHaku(hakuOid, ParentOid)
+    addMockKoulutus(koulutusOid, ParentOid)
+    addMockToteutus(toteutusId, ParentOid, koulutusOid)
 
     addMockSorakuvaus(sorakuvausId, ChildOid)
     addMockValintaperuste(valintaperusteId, ChildOid, sorakuvausId)
@@ -42,4 +42,27 @@ class HakukohdeSpec
   }
 
   getTests()
+
+  it should "find hakukohde based on haku OID" in {
+    val hakukohteet = get[Seq[Hakukohde]](s"$HakukohdePath/search?haku=${hakuOid.toString}", defaultSessionId)
+    hakukohteet.map(_.oid) should contain theSameElementsAs Seq(Some(existingId))
+    hakukohteet.foreach(_.hakuOid should be(hakuOid))
+  }
+
+  it should "find hakukohde based on tarjoaja OID" in {
+    val hakukohteet = get[Seq[Hakukohde]](s"$HakukohdePath/search?tarjoaja=${ParentOid.toString}", defaultSessionId)
+    hakukohteet.map(_.oid) should contain theSameElementsAs Seq(Some(existingId))
+  }
+
+  it should "find hakukohde based on haku and tarjoaja OID" in {
+    val hakukohteet = get[Seq[Hakukohde]](s"$HakukohdePath/search?haku=${hakuOid.toString}&tarjoaja=${ParentOid.toString}", defaultSessionId)
+    hakukohteet.map(_.oid) should contain theSameElementsAs Seq(Some(existingId))
+  }
+
+  it should "return 404 if haku does not exist" in {
+    get(s"$HakukohdePath/search?haku=1.2.246.562.29.00000000000000000001", headers = Seq(defaultSessionHeader)) {
+      status should equal(404)
+      body should include(s"Didn't find id 1.2.246.562.29.00000000000000000001")
+    }
+  }
 }

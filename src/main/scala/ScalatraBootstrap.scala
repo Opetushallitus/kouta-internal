@@ -1,6 +1,7 @@
 import fi.oph.kouta.internal.KoutaConfigurationFactory
 import fi.oph.kouta.internal.database.KoutaDatabase
 import fi.oph.kouta.internal.elasticsearch.DefaultElasticsearchClientHolder
+import fi.oph.kouta.internal.service.{HakuService, HakukohdeService}
 import fi.oph.kouta.internal.servlet._
 import fi.oph.kouta.internal.swagger.SwaggerServlet
 import javax.servlet.ServletContext
@@ -13,12 +14,15 @@ class ScalatraBootstrap extends LifeCycle {
     KoutaConfigurationFactory.init()
     KoutaDatabase.init()
 
+    val hakuService = new HakuService(DefaultElasticsearchClientHolder)
+    val hakukohdeService = new HakukohdeService(DefaultElasticsearchClientHolder, hakuService)
+
     context.mount(new AuthServlet(), "/auth", "auth")
 
     context.mount(new KoulutusServlet(DefaultElasticsearchClientHolder), "/koulutus", "koulutus")
     context.mount(new ValintaperusteServlet(DefaultElasticsearchClientHolder), "/valintaperuste", "valintaperuste")
-    context.mount(new HakuServlet(DefaultElasticsearchClientHolder), "/haku", "haku")
-    context.mount(new HakukohdeServlet(DefaultElasticsearchClientHolder), "/hakukohde", "hakukohde")
+    context.mount(new HakuServlet(hakuService), "/haku", "haku")
+    context.mount(new HakukohdeServlet(hakukohdeService), "/hakukohde", "hakukohde")
     context.mount(new ToteutusServlet(DefaultElasticsearchClientHolder), "/toteutus", "toteutus")
 
     context.mount(new HealthcheckServlet(), "/healthcheck", "healthcheck")
