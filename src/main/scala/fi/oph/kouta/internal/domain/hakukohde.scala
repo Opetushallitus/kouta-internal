@@ -8,6 +8,21 @@ import fi.oph.kouta.internal.domain.oid._
 import fi.oph.kouta.internal.swagger.SwaggerModel
 
 @SwaggerModel(
+  """    YhdenPaikanSaanto:
+    |      type: object
+    |      properties:
+    |        voimassa:
+    |          type: boolean
+    |          description: Onko yhden paikan säännön piirissä.
+    |        syy:
+    |          type: string
+    |          description: Syy miksi ei ole yhden paikan säännön piirissä.
+    |""")
+case class YhdenPaikanSaanto(
+  voimassa: Boolean,
+  syy: String)
+
+@SwaggerModel(
   """    Hakukohde:
     |      type: object
     |      properties:
@@ -126,6 +141,11 @@ import fi.oph.kouta.internal.swagger.SwaggerModel
     |          type: string
     |          description: Hakukohteeseen liittyvän valintaperustekuvauksen yksilöivä tunniste
     |          example: "ea596a9c-5940-497e-b5b7-aded3a2352a7"
+    |        yhdenPaikanSaanto:
+    |          type: object
+    |          description: Onko hakukohde yhden paikan säännön piirissä.
+    |          allOf:
+    |            - $ref: '#/components/schemas/YhdenPaikanSaanto'
     |        liitteetOnkoSamaToimitusaika:
     |          type: boolean
     |          description: Onko kaikilla hakukohteen liitteillä sama toimitusaika?
@@ -207,6 +227,7 @@ case class Hakukohde(
     toinenAsteOnkoKaksoistutkinto: Option[Boolean],
     kaytetaanHaunAikataulua: Option[Boolean],
     valintaperusteId: Option[UUID],
+    yhdenPaikanSaanto: YhdenPaikanSaanto,
     liitteetOnkoSamaToimitusaika: Option[Boolean],
     liitteetOnkoSamaToimitusosoite: Option[Boolean],
     liitteidenToimitusaika: Option[LocalDateTime],
