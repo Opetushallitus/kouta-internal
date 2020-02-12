@@ -1,26 +1,25 @@
 package fi.oph.kouta.internal.elasticsearch
 
 
+import com.sksamuel.elastic4s.http.ElasticClient
 import com.sksamuel.elastic4s.json4s.ElasticJson4s.Implicits._
 import fi.oph.kouta.internal.domain.Haku
 import fi.oph.kouta.internal.domain.indexed.HakuIndexed
 import fi.oph.kouta.internal.domain.oid.HakuOid
 import fi.oph.kouta.internal.util.KoutaJsonFormats
+import fi.vm.sade.utils.slf4j.Logging
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class HakuClient(override val index: String, elasticsearchClientHolder: ElasticsearchClientHolder)
-  extends ElasticsearchClient(index, "haku", elasticsearchClientHolder)
-    with KoutaJsonFormats {
-
+class HakuClient(val index: String, val client: ElasticClient) extends KoutaJsonFormats with Logging with ElasticsearchClient {
   def getHaku(oid: HakuOid): Future[Haku] =
-    getItem(oid.s)
-      .map(_.to[HakuIndexed])
+    getItem[HakuIndexed](oid.s)
       .map(_.toHaku)
 
   def searchByAtaruId(id: String): Future[Seq[Haku]] =
-    simpleSearch("hakulomakeAtaruId", id)
-      .map(_.to[HakuIndexed])
+    searchItems[HakuIndexed](request => request.matchQuery("hakulomakeAtaruId", id))
       .map(_.map(_.toHaku))
 }
+
+object HakuClient extends HakuClient("haku-kouta", ElasticsearchClient.client)

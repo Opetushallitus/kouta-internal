@@ -1,5 +1,6 @@
 package fi.oph.kouta.internal.servlet
 
+import fi.oph.kouta.internal.database.SessionDAO
 import fi.oph.kouta.internal.domain.oid.{HakuOid, HakukohdeOid, OrganisaatioOid}
 import fi.oph.kouta.internal.security.Authenticated
 import fi.oph.kouta.internal.service.HakukohdeService
@@ -9,7 +10,7 @@ import org.scalatra.{BadRequest, FutureSupport}
 import scala.concurrent.ExecutionContext
 import scala.concurrent.ExecutionContext.Implicits.global
 
-class HakukohdeServlet(hakukohdeService: HakukohdeService)
+class HakukohdeServlet(hakukohdeService: HakukohdeService, val sessionDAO: SessionDAO)
     extends KoutaServlet
     with CasAuthenticatedServlet
     with FutureSupport {
@@ -95,3 +96,5 @@ class HakukohdeServlet(hakukohdeService: HakukohdeService)
     }
   }
 }
+
+object HakukohdeServlet extends HakukohdeServlet(HakukohdeService, SessionDAO)

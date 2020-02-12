@@ -16,10 +16,11 @@ import scala.util.control.NonFatal
 object CasSessionService
     extends CasSessionService(
       ProductionSecurityContext(KoutaConfigurationFactory.configuration.securityConfiguration),
-      KayttooikeusClient
+      KayttooikeusClient,
+      SessionDAO
     )
 
-abstract class CasSessionService(val securityContext: SecurityContext, val userDetailsService: KayttooikeusClient)
+class CasSessionService(securityContext: SecurityContext, userDetailsService: KayttooikeusClient, sessionDAO: SessionDAO)
     extends Logging {
   logger.info(s"Using security context ${securityContext.getClass.getSimpleName}")
 
@@ -44,7 +45,7 @@ abstract class CasSessionService(val securityContext: SecurityContext, val userD
   private def storeSession(ticket: ServiceTicket, user: KayttooikeusUserDetails): (UUID, CasSession) = {
     val session = CasSession(ticket, user.oid, user.authorities)
     logger.debug(s"Storing to session: ${session.casTicket} ${session.personOid} ${session.authorities}")
-    val id = SessionDAO.store(session)
+    val id = sessionDAO.store(session)
     (id, session)
   }
 
@@ -55,7 +56,7 @@ abstract class CasSessionService(val securityContext: SecurityContext, val userD
   }
 
   private def getSession(id: UUID): Either[Throwable, (UUID, Session)] =
-    SessionDAO
+    sessionDAO
       .get(id)
       .map(session => (id, session))
       .toRight(new AuthenticationFailedException(s"Session $id doesn't exist"))
@@ -76,5 +77,5 @@ abstract class CasSessionService(val securityContext: SecurityContext, val userD
     }
   }
 
-  def deleteSession(ticket: ServiceTicket): Boolean = SessionDAO.delete(ticket)
+  def deleteSession(ticket: ServiceTicket): Boolean = sessionDAO.delete(ticket)
 }

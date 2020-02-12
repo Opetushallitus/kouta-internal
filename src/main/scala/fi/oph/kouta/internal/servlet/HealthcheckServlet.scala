@@ -5,7 +5,7 @@ import fi.oph.kouta.internal.elasticsearch.ElasticsearchHealth
 import fi.oph.kouta.internal.swagger.SwaggerPaths.registerPath
 import org.scalatra._
 
-class HealthcheckServlet extends KoutaServlet {
+class HealthcheckServlet(elasticsearchHealth: ElasticsearchHealth) extends KoutaServlet {
 
   registerPath(
     "/healthcheck/",
@@ -36,7 +36,7 @@ class HealthcheckServlet extends KoutaServlet {
        |""".stripMargin
   )
   get("/elastic") {
-    ElasticsearchHealth.checkStatus() match {
+    elasticsearchHealth.checkStatus() match {
       case s if s == Unreachable || s == Red =>
         InternalServerError("status" -> s.name)
       case s if s == Yellow || s == Green =>
@@ -44,3 +44,5 @@ class HealthcheckServlet extends KoutaServlet {
     }
   }
 }
+
+object HealthcheckServlet extends HealthcheckServlet(ElasticsearchHealth)

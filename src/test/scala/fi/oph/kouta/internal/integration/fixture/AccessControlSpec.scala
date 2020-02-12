@@ -2,10 +2,9 @@ package fi.oph.kouta.internal.integration.fixture
 
 import java.util.UUID
 
-import fi.oph.kouta.internal.{MockSecurityContext, OrganisaatioServiceMock}
-import fi.oph.kouta.internal.database.SessionDAO
 import fi.oph.kouta.internal.domain.oid.OrganisaatioOid
 import fi.oph.kouta.internal.security._
+import fi.oph.kouta.internal.{MockSecurityContext, OrganisaatioServiceMock}
 import org.scalatra.test.scalatest.ScalatraFlatSpec
 
 import scala.collection.mutable
@@ -15,7 +14,7 @@ case class TestUser(oid: String, username: String, sessionId: UUID) {
 }
 
 trait AccessControlSpec extends ScalatraFlatSpec with OrganisaatioServiceMock {
-  this: HttpSpec =>
+  this: HttpSpec with KoutaIntegrationSpec =>
 
   protected val roleEntities: Seq[RoleEntity] = Seq.empty
 
@@ -50,7 +49,7 @@ trait AccessControlSpec extends ScalatraFlatSpec with OrganisaatioServiceMock {
     val sessionId = UUID.randomUUID()
     val oid = s"1.2.246.562.24.${math.abs(sessionId.getLeastSignificantBits.toInt)}"
     val user = TestUser(oid, s"user-$oid", sessionId)
-    SessionDAO.store(CasSession(ServiceTicket(user.ticket), user.oid, authorities.toSet), user.sessionId)
+    sessionDAO.store(CasSession(ServiceTicket(user.ticket), user.oid, authorities.toSet), user.sessionId)
     sessionId
   }
 

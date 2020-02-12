@@ -16,6 +16,7 @@ import scala.util.Try
 
 trait KoutaJsonFormats extends DefaultKoutaJsonFormats {
 
+  implicit val json4s: Serialization = org.json4s.jackson.Serialization
   implicit def jsonFormats: Formats = koutaJsonFormats
 
   def toJson(data: AnyRef): String = write(data)

@@ -4,13 +4,12 @@ import java.io.File
 import java.util.concurrent.TimeUnit
 
 import com.sksamuel.elastic4s.http.{ElasticClient, ElasticProperties}
-import fi.oph.kouta.internal.elasticsearch.ElasticsearchClientHolder
 import fi.vm.sade.utils.tcp.ChooseFreePort
 import pl.allegro.tech.embeddedelasticsearch.{EmbeddedElastic, PopularProperties}
 
-object TempElasticClientHolder extends ElasticsearchClientHolder {
-  lazy val elasticUrl            = s"http://localhost:${TempElastic.start()}"
-  lazy val client: ElasticClient = ElasticClient(ElasticProperties(elasticUrl))
+object TempElasticClient {
+  val url = s"http://localhost:${TempElastic.start()}"
+  val client = ElasticClient(ElasticProperties(url))
 }
 
 object TempElastic {

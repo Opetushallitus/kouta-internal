@@ -16,17 +16,8 @@ import scala.concurrent.duration.Duration
 import scala.util.Try
 
 
-object KoutaDatabase extends Logging {
-
-  val settings: KoutaDatabaseConfiguration = KoutaConfigurationFactory.configuration.databaseConfiguration
-
-  logger.warn(settings.username)
-
-  migrate()
-
+class KoutaDatabase(settings: KoutaDatabaseConfiguration) extends Logging {
   val db = initDb()
-
-  def init(): Unit = {}
 
   def runBlocking[R](operations: DBIO[R], timeout: Duration = Duration(10, TimeUnit.MINUTES)): R = {
     Await.result(
@@ -44,6 +35,8 @@ object KoutaDatabase extends Logging {
   }
 
   private def initDb() = {
+    migrate()
+
     val hikariConfig = new HikariConfig()
     hikariConfig.setJdbcUrl(settings.url)
     hikariConfig.setUsername(settings.username)
@@ -74,3 +67,5 @@ object KoutaDatabase extends Logging {
     flyway.migrate()
   }
 }
+
+object KoutaDatabase extends KoutaDatabase(KoutaConfigurationFactory.configuration.databaseConfiguration)
