@@ -12,7 +12,7 @@ case class EmbeddedHakukohdeIndexed(
 )
 
 case class HakuIndexed(
-    oid: Option[HakuOid],
+    oid: HakuOid,
     tila: Julkaisutila,
     nimi: Kielistetty,
     hakutapa: Option[KoodiUri],

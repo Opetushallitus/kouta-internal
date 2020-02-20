@@ -7,7 +7,7 @@ import fi.oph.kouta.internal.domain.enums.{Julkaisutila, Kieli, Koulutustyyppi}
 import fi.oph.kouta.internal.domain.oid.{KoulutusOid, ToteutusOid}
 
 case class ToteutusIndexed(
-    oid: Option[ToteutusOid],
+    oid: ToteutusOid,
     koulutusOid: KoulutusOid,
     tila: Julkaisutila,
     tarjoajat: List[Organisaatio],

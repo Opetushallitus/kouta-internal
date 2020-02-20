@@ -45,18 +45,18 @@ class HakukohdeSpec
 
   it should "find hakukohde based on haku OID" in {
     val hakukohteet = get[Seq[Hakukohde]](s"$HakukohdePath/search?haku=${hakuOid.toString}", defaultSessionId)
-    hakukohteet.map(_.oid) should contain theSameElementsAs Seq(Some(existingId))
+    hakukohteet.map(_.oid) should contain theSameElementsAs Seq(existingId)
     hakukohteet.foreach(_.hakuOid should be(hakuOid))
   }
 
   it should "find hakukohde based on tarjoaja OID" in {
     val hakukohteet = get[Seq[Hakukohde]](s"$HakukohdePath/search?tarjoaja=${ParentOid.toString}", defaultSessionId)
-    hakukohteet.map(_.oid) should contain theSameElementsAs Seq(Some(existingId))
+    hakukohteet.map(_.oid) should contain theSameElementsAs Seq(existingId)
   }
 
   it should "find hakukohde based on haku and tarjoaja OID" in {
     val hakukohteet = get[Seq[Hakukohde]](s"$HakukohdePath/search?haku=${hakuOid.toString}&tarjoaja=${ParentOid.toString}", defaultSessionId)
-    hakukohteet.map(_.oid) should contain theSameElementsAs Seq(Some(existingId))
+    hakukohteet.map(_.oid) should contain theSameElementsAs Seq(existingId)
   }
 
   it should "return 404 if haku does not exist" in {
