@@ -136,7 +136,7 @@ case class Haku(
     ajastettuJulkaisu: Option[LocalDateTime],
     alkamiskausiKoodiUri: Option[String],
     alkamisvuosi: Option[String],
-    kohdejoukkoKoodiUri: Option[String],
+    kohdejoukkoKoodiUri: String,
     kohdejoukonTarkenneKoodiUri: Option[String],
     hakulomaketyyppi: Option[Hakulomaketyyppi],
     hakulomakeAtaruId: Option[UUID],
