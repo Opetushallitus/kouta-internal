@@ -20,7 +20,7 @@ case class KoulutusIndexed(
     organisaatio: Organisaatio,
     kielivalinta: Seq[Kieli],
     modified: Option[LocalDateTime]
-) {
+) extends WithTila {
   def toKoulutus: Koulutus = Koulutus(
     oid = oid,
     johtaaTutkintoon = johtaaTutkintoon,

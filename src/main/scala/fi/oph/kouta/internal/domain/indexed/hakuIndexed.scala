@@ -11,7 +11,7 @@ case class EmbeddedHakukohdeIndexed(
     oid: HakukohdeOid
 )
 
-class HakuIndexed(
+case class HakuIndexed(
     oid: Option[HakuOid],
     tila: Julkaisutila,
     nimi: Kielistetty,
@@ -35,7 +35,7 @@ class HakuIndexed(
     muokkaaja: Muokkaaja,
     kielivalinta: Seq[Kieli],
     modified: Option[LocalDateTime]
-) {
+) extends WithTila {
   def toHaku: Haku = Haku(
     oid = oid,
     tila = tila,

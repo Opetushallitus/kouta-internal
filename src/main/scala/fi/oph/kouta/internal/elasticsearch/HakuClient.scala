@@ -2,6 +2,7 @@ package fi.oph.kouta.internal.elasticsearch
 
 
 import com.sksamuel.elastic4s.http.ElasticClient
+import com.sksamuel.elastic4s.http.ElasticDsl._
 import com.sksamuel.elastic4s.json4s.ElasticJson4s.Implicits._
 import fi.oph.kouta.internal.domain.Haku
 import fi.oph.kouta.internal.domain.indexed.HakuIndexed
@@ -18,8 +19,7 @@ class HakuClient(val index: String, val client: ElasticClient) extends KoutaJson
       .map(_.toHaku)
 
   def searchByAtaruId(id: String): Future[Seq[Haku]] =
-    searchItems[HakuIndexed](request => request.matchQuery("hakulomakeAtaruId", id))
-      .map(_.map(_.toHaku))
+    searchItems[HakuIndexed](matchQuery("hakulomakeAtaruId", id)).map(_.map(_.toHaku))
 }
 
 object HakuClient extends HakuClient("haku-kouta", ElasticsearchClient.client)

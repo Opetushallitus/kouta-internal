@@ -5,8 +5,11 @@ import java.util.UUID
 import fi.oph.kouta.internal.domain.oid._
 import fi.oph.kouta.internal.domain.enums._
 
-sealed trait Perustiedot{
+trait WithTila {
   val tila: Julkaisutila
+}
+
+sealed trait Perustiedot extends WithTila {
   val nimi: Kielistetty
   val muokkaaja: UserOid
   val kielivalinta: Seq[Kieli]
