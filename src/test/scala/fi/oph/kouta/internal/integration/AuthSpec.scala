@@ -3,6 +3,7 @@ package fi.oph.kouta.internal.integration
 import java.util.UUID
 
 import fi.oph.kouta.integration.fixture.AuthFixture
+import fi.oph.kouta.internal.integration.fixture.KoutaIntegrationSpec
 
 class AuthSpec extends KoutaIntegrationSpec with AuthFixture {
 

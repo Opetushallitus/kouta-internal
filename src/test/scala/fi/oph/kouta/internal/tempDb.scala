@@ -14,7 +14,7 @@ object TempDb extends Logging {
 
   import CommandLine._
 
-  val dataDirectoryName = s"kouta-temp-db/$port"
+  val dataDirectoryName = s"target/kouta-temp-db/$port"
   val dataDirectoryFile = new File(dataDirectoryName)
   val dataDirectoryPath = dataDirectoryFile.getAbsolutePath
 

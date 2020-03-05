@@ -1,6 +1,7 @@
 package fi.oph.kouta.internal.servlet
 
 import fi.oph.kouta.internal.domain.oid.KoulutusOid
+import fi.oph.kouta.internal.elasticsearch.ElasticsearchClientHolder
 import fi.oph.kouta.internal.security.Authenticated
 import fi.oph.kouta.internal.service.KoulutusService
 import fi.oph.kouta.internal.swagger.SwaggerPaths.registerPath
@@ -9,14 +10,17 @@ import org.scalatra.FutureSupport
 import scala.concurrent.ExecutionContext
 import scala.concurrent.ExecutionContext.Implicits.global
 
-class KoulutusServlet
-  extends KoutaServlet
+class KoulutusServlet(elasticsearchClientHolder: ElasticsearchClientHolder)
+    extends KoutaServlet
     with CasAuthenticatedServlet
     with FutureSupport {
 
   override def executor: ExecutionContext = global
 
-  registerPath( "/koulutus/{oid}",
+  val koulutusService = new KoulutusService(elasticsearchClientHolder)
+
+  registerPath(
+    "/koulutus/{oid}",
     """    get:
       |      summary: Hae koulutus
       |      description: Hae koulutuksen tiedot annetulla koulutus-oidilla
@@ -38,11 +42,12 @@ class KoulutusServlet
       |            application/json:
       |              schema:
       |                $ref: '#/components/schemas/Koulutus'
-      |""".stripMargin)
+      |""".stripMargin
+  )
   get("/:oid") {
     implicit val authenticated: Authenticated = authenticate
 
-    KoulutusService.get(KoulutusOid(params("oid")))
+    koulutusService.get(KoulutusOid(params("oid")))
   }
 
 }
