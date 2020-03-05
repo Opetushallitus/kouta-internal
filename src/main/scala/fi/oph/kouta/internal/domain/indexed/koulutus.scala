@@ -7,7 +7,7 @@ import fi.oph.kouta.internal.domain.enums._
 import fi.oph.kouta.internal.domain.oid._
 
 case class KoulutusIndexed(
-    oid: Option[KoulutusOid],
+    oid: KoulutusOid,
     johtaaTutkintoon: Boolean,
     koulutustyyppi: Option[Koulutustyyppi],
     koulutus: Option[KoodiUri],

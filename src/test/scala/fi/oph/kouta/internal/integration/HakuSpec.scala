@@ -40,7 +40,7 @@ class HakuSpec extends HakuFixture with AccessControlSpec with GenericGetTests[H
     ataruIds.foreach(_ should not be empty)
     ataruIds.map(_.get).foreach(_ shouldEqual ataruId1)
 
-    haut.map(_.oid.get) should contain theSameElementsAs Seq(
+    haut.map(_.oid) should contain theSameElementsAs Seq(
       HakuOid("1.2.246.562.29.301"),
       HakuOid("1.2.246.562.29.302"),
       HakuOid("1.2.246.562.29.305"),

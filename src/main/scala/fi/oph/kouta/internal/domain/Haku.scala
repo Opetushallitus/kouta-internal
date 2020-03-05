@@ -127,7 +127,7 @@ import fi.oph.kouta.internal.domain.oid.{HakuOid, HakukohdeOid, OrganisaatioOid,
     |           example: 2019-08-23T09:55
     |""")
 case class Haku(
-    oid: Option[HakuOid],
+    oid: HakuOid,
     tila: Julkaisutila,
     nimi: Kielistetty,
     hakutapaKoodiUri: Option[String],
@@ -136,7 +136,7 @@ case class Haku(
     ajastettuJulkaisu: Option[LocalDateTime],
     alkamiskausiKoodiUri: Option[String],
     alkamisvuosi: Option[String],
-    kohdejoukkoKoodiUri: Option[String],
+    kohdejoukkoKoodiUri: String,
     kohdejoukonTarkenneKoodiUri: Option[String],
     hakulomaketyyppi: Option[Hakulomaketyyppi],
     hakulomakeAtaruId: Option[UUID],

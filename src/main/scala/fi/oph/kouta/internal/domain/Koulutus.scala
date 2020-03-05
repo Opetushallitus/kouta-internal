@@ -97,7 +97,7 @@ import fi.oph.kouta.internal.swagger.SwaggerModel
     |           example: 2019-08-23T09:55
     |""")
 case class Koulutus(
-    oid: Option[KoulutusOid],
+    oid: KoulutusOid,
     johtaaTutkintoon: Boolean,
     koulutustyyppi: Option[Koulutustyyppi],
     koulutusKoodiUri: Option[String],

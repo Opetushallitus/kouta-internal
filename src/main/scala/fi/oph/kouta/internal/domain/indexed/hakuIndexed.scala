@@ -12,7 +12,7 @@ case class EmbeddedHakukohdeIndexed(
 )
 
 case class HakuIndexed(
-    oid: Option[HakuOid],
+    oid: HakuOid,
     tila: Julkaisutila,
     nimi: Kielistetty,
     hakutapa: Option[KoodiUri],
@@ -21,7 +21,7 @@ case class HakuIndexed(
     ajastettuJulkaisu: Option[LocalDateTime],
     alkamiskausi: Option[KoodiUri],
     alkamisvuosi: Option[String],
-    kohdejoukko: Option[KoodiUri],
+    kohdejoukko: KoodiUri,
     kohdejoukonTarkenne: Option[KoodiUri],
     hakulomaketyyppi: Option[Hakulomaketyyppi],
     hakulomakeAtaruId: Option[UUID],
@@ -45,7 +45,7 @@ case class HakuIndexed(
     ajastettuJulkaisu = ajastettuJulkaisu,
     alkamiskausiKoodiUri = alkamiskausi.map(_.koodiUri),
     alkamisvuosi = alkamisvuosi,
-    kohdejoukkoKoodiUri = kohdejoukko.map(_.koodiUri),
+    kohdejoukkoKoodiUri = kohdejoukko.koodiUri,
     kohdejoukonTarkenneKoodiUri = kohdejoukonTarkenne.map(_.koodiUri),
     hakulomaketyyppi = hakulomaketyyppi,
     hakulomakeAtaruId = hakulomakeAtaruId,

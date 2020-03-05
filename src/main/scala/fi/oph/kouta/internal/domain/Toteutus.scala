@@ -149,7 +149,7 @@ import fi.oph.kouta.internal.swagger.SwaggerModel
     |           example: 2019-08-23T09:55
     |""")
 case class Toteutus(
-    oid: Option[ToteutusOid],
+    oid: ToteutusOid,
     koulutusOid: KoulutusOid,
     tila: Julkaisutila,
     tarjoajat: List[OrganisaatioOid],

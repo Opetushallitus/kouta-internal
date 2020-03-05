@@ -18,7 +18,7 @@ sealed trait Perustiedot extends WithTila {
 }
 
 abstract class PerustiedotWithOid extends Perustiedot {
-  val oid: Option[Oid]
+  val oid: Oid
 }
 
 abstract class PerustiedotWithId extends Perustiedot {

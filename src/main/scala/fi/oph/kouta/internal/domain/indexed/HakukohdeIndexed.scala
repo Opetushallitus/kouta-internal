@@ -8,7 +8,7 @@ import fi.oph.kouta.internal.domain.oid.{HakuOid, HakukohdeOid, ToteutusOid}
 import fi.oph.kouta.internal.domain.{Ajanjakso, Hakukohde, Kielistetty, Liite, LiitteenToimitusosoite, WithTila, YhdenPaikanSaanto}
 
 case class HakukohdeIndexed(
-    oid: Option[HakukohdeOid],
+    oid: HakukohdeOid,
     toteutusOid: ToteutusOid,
     hakuOid: HakuOid,
     tila: Julkaisutila,

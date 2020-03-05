@@ -203,7 +203,7 @@ case class YhdenPaikanSaanto(
     |           example: 2019-08-23T09:55
     |""")
 case class Hakukohde(
-    oid: Option[HakukohdeOid],
+    oid: HakukohdeOid,
     toteutusOid: ToteutusOid,
     hakuOid: HakuOid,
     tila: Julkaisutila,
