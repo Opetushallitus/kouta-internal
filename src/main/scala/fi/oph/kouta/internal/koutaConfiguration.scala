@@ -83,8 +83,6 @@ object KoutaConfigurationFactory extends Logging with KoutaConfigurationConstant
       )
   }
 
-  def init(): Unit = {}
-
   private def loadOphConfiguration(): KoutaConfiguration = {
     val configFilePath = System.getProperty("user.home") + "/oph-configuration/kouta-internal.properties"
 

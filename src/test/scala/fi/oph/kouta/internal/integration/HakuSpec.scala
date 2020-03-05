@@ -48,8 +48,8 @@ class HakuSpec extends HakuFixture with AccessControlSpec with GenericGetTests[H
     )
   }
 
-  it should "return 404 if no haut are found" in {
-    get(s"$HakuPath/search?ataruId=$ataruId3", defaultSessionId, 404)
+  it should "return 200 with an empty list if no haut are found" in {
+    get[Seq[Haku]](s"$HakuPath/search?ataruId=$ataruId3", defaultSessionId) should be (empty)
   }
 
   it should "return 401 without a valid session" in {
@@ -57,41 +57,5 @@ class HakuSpec extends HakuFixture with AccessControlSpec with GenericGetTests[H
       status should equal(401)
       body should include("Unauthorized")
     }
-  }
-
-  it should s"list the haut the user has access to" in {
-    val haut = get[Seq[Haku]](s"$HakuPath/search?ataruId=$ataruId1", crudSessions(ChildOid))
-
-    haut.map(_.oid.get) should contain theSameElementsAs Seq(
-      HakuOid("1.2.246.562.29.301"),
-      HakuOid("1.2.246.562.29.302")
-    )
-  }
-
-  it should s"return 404 if the user doesn't have access to any of the matching haku" in {
-    get(s"$HakuPath/search?ataruId=$ataruId1", crudSessions(LonelyOid), 404)
-  }
-
-  it should s"allow a user of an ancestor organization to get the haut" in {
-    val haut = get[Seq[Haku]](s"$HakuPath/search?ataruId=$ataruId1", crudSessions(ParentOid))
-
-    haut.map(_.oid.get) should contain theSameElementsAs Seq(
-      HakuOid("1.2.246.562.29.301"),
-      HakuOid("1.2.246.562.29.302"),
-      HakuOid("1.2.246.562.29.305"),
-      HakuOid("1.2.246.562.29.306")
-    )
-  }
-
-  it should "deny a user with only access to a descendant organization" in {
-    get(s"$HakuPath/search?ataruId=$ataruId1", crudSessions(GrandChildOid), 404)
-  }
-
-  it should "deny a user with the wrong role" in {
-    get(s"$HakuPath/search?ataruId=$ataruId1", otherRoleSession, 403)
-  }
-
-  it should "deny indexer access" in {
-    get(s"$HakuPath/search?ataruId=$ataruId1", indexerSession, 403)
   }
 }

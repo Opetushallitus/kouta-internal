@@ -1,25 +1,21 @@
 package fi.oph.kouta.internal.servlet
 
-import java.util.UUID
-
+import fi.oph.kouta.internal.database.SessionDAO
 import fi.oph.kouta.internal.domain.oid.HakuOid
-import fi.oph.kouta.internal.elasticsearch.ElasticsearchClientHolder
 import fi.oph.kouta.internal.security.Authenticated
 import fi.oph.kouta.internal.service.HakuService
 import fi.oph.kouta.internal.swagger.SwaggerPaths.registerPath
-import org.scalatra.{FutureSupport, NotFound}
+import org.scalatra.{BadRequest, FutureSupport}
 
 import scala.concurrent.ExecutionContext
 import scala.concurrent.ExecutionContext.Implicits.global
 
-class HakuServlet(elasticsearchClientHolder: ElasticsearchClientHolder)
+class HakuServlet(hakuService: HakuService, val sessionDAO: SessionDAO)
     extends KoutaServlet
     with CasAuthenticatedServlet
     with FutureSupport {
 
   override def executor: ExecutionContext = global
-
-  val hakuService = new HakuService(elasticsearchClientHolder)
 
   registerPath(
     "/haku/{oid}",
@@ -82,14 +78,11 @@ class HakuServlet(elasticsearchClientHolder: ElasticsearchClientHolder)
   get("/search") {
     implicit val authenticated: Authenticated = authenticate
 
-    params.get("ataruId").map(UUID.fromString) match {
-      case None => NotFound()
-      case Some(id) =>
-        hakuService.searchByAtaruId(id).map {
-          case haut if haut.isEmpty =>
-            NotFound(s"Didn't find anything searching for haku with $id in hakulomakeAtaruId")
-          case haut => haut
-        }
+    params.get("ataruId") match {
+      case None => BadRequest("Query parameter ataruId is required")
+      case Some(id) => hakuService.searchByAtaruId(id)
     }
   }
 }
+
+object HakuServlet extends HakuServlet(HakuService, SessionDAO)

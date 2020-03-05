@@ -1,7 +1,7 @@
 package fi.oph.kouta.internal.integration.fixture
 
 import com.sksamuel.elastic4s.http.ElasticDsl._
-import fi.oph.kouta.internal.TempElasticClientHolder.client
+import fi.oph.kouta.internal.TempElasticClient.client
 import fi.vm.sade.utils.slf4j.Logging
 import org.json4s.jackson.Serialization.read
 import org.json4s.{DefaultFormats, Formats}

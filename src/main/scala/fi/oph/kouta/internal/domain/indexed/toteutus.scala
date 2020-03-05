@@ -17,7 +17,7 @@ case class ToteutusIndexed(
     organisaatio: Organisaatio,
     kielivalinta: Seq[Kieli],
     modified: Option[LocalDateTime]
-) {
+) extends WithTila {
   def toToteutus = Toteutus(
     oid = oid,
     koulutusOid = koulutusOid,

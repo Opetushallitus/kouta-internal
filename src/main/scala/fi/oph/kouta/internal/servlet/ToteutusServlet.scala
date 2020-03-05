@@ -1,7 +1,7 @@
 package fi.oph.kouta.internal.servlet
 
+import fi.oph.kouta.internal.database.SessionDAO
 import fi.oph.kouta.internal.domain.oid.ToteutusOid
-import fi.oph.kouta.internal.elasticsearch.ElasticsearchClientHolder
 import fi.oph.kouta.internal.security.Authenticated
 import fi.oph.kouta.internal.service.ToteutusService
 import fi.oph.kouta.internal.swagger.SwaggerPaths.registerPath
@@ -10,14 +10,12 @@ import org.scalatra.FutureSupport
 import scala.concurrent.ExecutionContext
 import scala.concurrent.ExecutionContext.Implicits.global
 
-class ToteutusServlet(elasticsearchClientHolder: ElasticsearchClientHolder)
+class ToteutusServlet(toteutusService: ToteutusService, val sessionDAO: SessionDAO)
     extends KoutaServlet
     with CasAuthenticatedServlet
     with FutureSupport {
 
   override def executor: ExecutionContext = global
-
-  val toteutusService = new ToteutusService(elasticsearchClientHolder)
 
   registerPath(
     "/toteutus/{oid}",
@@ -51,3 +49,5 @@ class ToteutusServlet(elasticsearchClientHolder: ElasticsearchClientHolder)
   }
 
 }
+
+object ToteutusServlet extends ToteutusServlet(ToteutusService, SessionDAO)

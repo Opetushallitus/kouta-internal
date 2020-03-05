@@ -2,45 +2,48 @@ package fi.oph.kouta.internal.integration.fixture
 
 import java.util.UUID
 
+import fi.oph.kouta.internal.KoutaConfigurationFactory
 import fi.oph.kouta.internal.TestSetups.{setupWithEmbeddedPostgres, setupWithTemplate}
-import fi.oph.kouta.internal.database.SessionDAO
+import fi.oph.kouta.internal.database.{KoutaDatabase, SessionDAO}
 import fi.oph.kouta.internal.domain.oid.OrganisaatioOid
 import fi.oph.kouta.internal.security.{Authority, CasSession, RoleEntity, ServiceTicket}
 import fi.oph.kouta.internal.util.KoutaJsonFormats
 import org.json4s.jackson.Serialization.read
 import org.scalactic.Equality
 import org.scalatra.test.scalatest.ScalatraFlatSpec
-import slick.jdbc.GetResult
+import slick.jdbc.PostgresProfile.api._
 
 import scala.reflect.Manifest
 
-trait KoutaIntegrationSpec extends ScalatraFlatSpec with HttpSpec with IndeksoijaFixture with DatabaseSpec {
+trait KoutaIntegrationSpec extends ScalatraFlatSpec with HttpSpec with IndeksoijaFixture {
 
   val serviceIdentifier  = KoutaIntegrationSpec.serviceIdentifier
   val rootOrganisaatio   = KoutaIntegrationSpec.rootOrganisaatio
   val defaultAuthorities = KoutaIntegrationSpec.defaultAuthorities
 
+  Option(System.getProperty("kouta-internal.test-postgres-port")) match {
+    case Some(port) => setupWithTemplate(port.toInt)
+    case None       => setupWithEmbeddedPostgres()
+  }
+  val db = new KoutaDatabase(KoutaConfigurationFactory.configuration.databaseConfiguration)
+  val sessionDAO = new SessionDAO(db)
+
   val testUser = TestUser("test-user-oid", "testuser", defaultSessionId)
 
   def addDefaultSession(): Unit = {
-    SessionDAO.store(CasSession(ServiceTicket(testUser.ticket), testUser.oid, defaultAuthorities), testUser.sessionId)
+    sessionDAO.store(CasSession(ServiceTicket(testUser.ticket), testUser.oid, defaultAuthorities), testUser.sessionId)
   }
 
   override def beforeAll(): Unit = {
     super.beforeAll()
-
-    Option(System.getProperty("kouta-internal.test-postgres-port")) match {
-      case Some(port) => setupWithTemplate(port.toInt)
-      case None       => setupWithEmbeddedPostgres()
-    }
-
     addDefaultSession()
     initIndices()
   }
 
   override def afterAll(): Unit = {
     super.afterAll()
-    truncateDatabase()
+    db.runBlocking(sqlu"""delete from authorities""")
+    db.runBlocking(sqlu"""delete from sessions""")
     resetIndices()
   }
 }
@@ -102,8 +105,6 @@ sealed trait HttpSpec extends KoutaJsonFormats { this: ScalatraFlatSpec =>
     read[E](body)
   }
 
-
-
   def get(path: String, sessionId: UUID, expectedStatus: Int): Unit = {
     get(path, headers = Seq(sessionHeader(sessionId))) {
       withClue(body) {
@@ -111,24 +112,4 @@ sealed trait HttpSpec extends KoutaJsonFormats { this: ScalatraFlatSpec =>
       }
     }
   }
-}
-
-sealed trait DatabaseSpec {
-
-  import fi.oph.kouta.internal.database.KoutaDatabase
-
-  private lazy val db = KoutaDatabase
-
-  def truncateDatabase() = {
-    import slick.jdbc.PostgresProfile.api._
-
-    db.runBlocking(sqlu"""delete from authorities""")
-    db.runBlocking(sqlu"""delete from sessions""")
-  }
-
-  import java.time._
-
-  implicit val getInstant: AnyRef with GetResult[LocalDateTime] = slick.jdbc.GetResult[LocalDateTime](
-    r => LocalDateTime.ofInstant(r.nextTimestamp().toInstant, ZoneId.of("Europe/Helsinki")).withNano(0).withSecond(0)
-  )
 }

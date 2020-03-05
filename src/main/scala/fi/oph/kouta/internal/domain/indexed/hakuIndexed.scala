@@ -4,10 +4,14 @@ import java.time.LocalDateTime
 import java.util.UUID
 
 import fi.oph.kouta.internal.domain.enums.{Hakulomaketyyppi, Julkaisutila, Kieli}
-import fi.oph.kouta.internal.domain.oid.HakuOid
+import fi.oph.kouta.internal.domain.oid.{HakuOid, HakukohdeOid}
 import fi.oph.kouta.internal.domain._
 
-class HakuIndexed(
+case class EmbeddedHakukohdeIndexed(
+    oid: HakukohdeOid
+)
+
+case class HakuIndexed(
     oid: Option[HakuOid],
     tila: Julkaisutila,
     nimi: Kielistetty,
@@ -30,7 +34,7 @@ class HakuIndexed(
     muokkaaja: Muokkaaja,
     kielivalinta: Seq[Kieli],
     modified: Option[LocalDateTime]
-) {
+) extends WithTila {
   def toHaku: Haku = Haku(
     oid = oid,
     tila = tila,

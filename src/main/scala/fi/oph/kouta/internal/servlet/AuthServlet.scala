@@ -9,8 +9,6 @@ import org.scalatra._
 
 class AuthServlet(casSessionService: CasSessionService) extends KoutaServlet {
 
-  def this() = this(CasSessionService)
-
   override implicit val cookieOptions: CookieOptions = CookieOptions(
     path = "/kouta-internal",
     secure = false,
@@ -111,3 +109,5 @@ class AuthServlet(casSessionService: CasSessionService) extends KoutaServlet {
     NoContent()
   }
 }
+
+object AuthServlet extends AuthServlet(CasSessionService)

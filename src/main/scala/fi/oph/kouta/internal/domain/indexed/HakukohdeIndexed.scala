@@ -5,7 +5,7 @@ import java.util.UUID
 
 import fi.oph.kouta.internal.domain.enums.{Hakulomaketyyppi, Julkaisutila, Kieli, LiitteenToimitustapa}
 import fi.oph.kouta.internal.domain.oid.{HakuOid, HakukohdeOid, ToteutusOid}
-import fi.oph.kouta.internal.domain.{Ajanjakso, Hakukohde, Kielistetty, Liite, LiitteenToimitusosoite}
+import fi.oph.kouta.internal.domain.{Ajanjakso, Hakukohde, Kielistetty, Liite, LiitteenToimitusosoite, WithTila, YhdenPaikanSaanto}
 
 case class HakukohdeIndexed(
     oid: Option[HakukohdeOid],
@@ -32,6 +32,7 @@ case class HakukohdeIndexed(
     toinenAsteOnkoKaksoistutkinto: Option[Boolean],
     kaytetaanHaunAikataulua: Option[Boolean],
     valintaperuste: Option[UuidObject],
+    yhdenPaikanSaanto: YhdenPaikanSaanto,
     liitteetOnkoSamaToimitusaika: Option[Boolean],
     liitteetOnkoSamaToimitusosoite: Option[Boolean],
     liitteidenToimitusaika: Option[LocalDateTime],
@@ -44,7 +45,7 @@ case class HakukohdeIndexed(
     organisaatio: Organisaatio,
     kielivalinta: Seq[Kieli],
     modified: Option[LocalDateTime]
-) {
+) extends WithTila {
   def toHakukohde: Hakukohde = Hakukohde(
     oid = oid,
     toteutusOid = toteutusOid,
@@ -70,6 +71,7 @@ case class HakukohdeIndexed(
     toinenAsteOnkoKaksoistutkinto = toinenAsteOnkoKaksoistutkinto,
     kaytetaanHaunAikataulua = kaytetaanHaunAikataulua,
     valintaperusteId = valintaperuste.map(_.id),
+    yhdenPaikanSaanto = yhdenPaikanSaanto,
     liitteetOnkoSamaToimitusaika = liitteetOnkoSamaToimitusaika,
     liitteetOnkoSamaToimitusosoite = liitteetOnkoSamaToimitusosoite,
     liitteidenToimitusaika = liitteidenToimitusaika,

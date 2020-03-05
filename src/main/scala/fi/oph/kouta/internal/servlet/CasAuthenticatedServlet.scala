@@ -10,6 +10,8 @@ import org.scalatra.ScalatraServlet
 trait CasAuthenticatedServlet {
   this: ScalatraServlet with Logging =>
 
+  val sessionDAO: SessionDAO
+
   protected def authenticate: Authenticated = {
     val sessionCookie    = cookies.get("session")
     val sessionAttribute = Option(request.getAttribute("session")).map(_.toString)
@@ -20,7 +22,7 @@ trait CasAuthenticatedServlet {
     val session = sessionCookie
       .orElse(sessionAttribute)
       .map(UUID.fromString)
-      .flatMap(id => SessionDAO.get(id).map((id, _)))
+      .flatMap(id => sessionDAO.get(id).map((id, _)))
 
     logger.trace("Session found {}", session)
 

@@ -2,20 +2,16 @@ package fi.oph.kouta.internal.service
 
 import fi.oph.kouta.internal.domain.Koulutus
 import fi.oph.kouta.internal.domain.oid.KoulutusOid
-import fi.oph.kouta.internal.elasticsearch.{ElasticsearchClientHolder, KoulutusClient}
+import fi.oph.kouta.internal.elasticsearch.KoulutusClient
 import fi.oph.kouta.internal.security.{Authenticated, Role, RoleEntity}
-import fi.vm.sade.utils.slf4j.Logging
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class KoulutusService(elasticsearchClientHolder: ElasticsearchClientHolder)
-    extends RoleEntityAuthorizationService
-    with Logging {
+class KoulutusService(koulutusClient: KoulutusClient)
+    extends RoleEntityAuthorizationService {
 
   override val roleEntity: RoleEntity = Role.Koulutus
-
-  val koulutusClient = new KoulutusClient("koulutus-kouta", elasticsearchClientHolder)
 
   def get(oid: KoulutusOid)(implicit authenticated: Authenticated): Future[Koulutus] = {
     koulutusClient.getKoulutus(oid).map {
@@ -32,3 +28,5 @@ class KoulutusService(elasticsearchClientHolder: ElasticsearchClientHolder)
     }
   }
 }
+
+object KoulutusService extends KoulutusService(KoulutusClient)
