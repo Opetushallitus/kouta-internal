@@ -144,7 +144,7 @@ package object domain {
       |           description: Ajanjakson päättymisaika
       |           example: 2019-08-23T09:55
       |""")
-  case class Ajanjakso(alkaa: LocalDateTime, paattyy: LocalDateTime)
+  case class Ajanjakso(alkaa: LocalDateTime, paattyy: Option[LocalDateTime])
 
   @SwaggerModel(
     """    Valintakoe:
