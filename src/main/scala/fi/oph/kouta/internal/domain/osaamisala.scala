@@ -20,7 +20,8 @@ import fi.oph.kouta.internal.swagger.SwaggerModel
     |          description: Osaamisalan linkin otsikko
     |          allOf:
     |            - $ref: '#/components/schemas/Teksti'
-    |""")
+    |"""
+)
 sealed trait Osaamisala {
   val linkki: Kielistetty
   val otsikko: Kielistetty
@@ -52,6 +53,7 @@ case class AmmatillinenOsaamisala(koodi: String, linkki: Kielistetty, otsikko: K
     |          description: Korkeakoulututkinnon erikoistumisalan, opintosuunnan, pääaineen tms. linkin otsikko
     |          allOf:
     |            - $ref: '#/components/schemas/Teksti'
-    |""")
+    |"""
+)
 case class KorkeakouluOsaamisala(nimi: Kielistetty, kuvaus: Kielistetty, linkki: Kielistetty, otsikko: Kielistetty)
-  extends Osaamisala
+    extends Osaamisala

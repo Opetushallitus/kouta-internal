@@ -33,7 +33,7 @@ class JettyLauncher(val port: Int) {
   }
 
   private def requestLog(properties: OphProperties): RequestLog = {
-    val requestLog = new RequestLogImpl
+    val requestLog    = new RequestLogImpl
     val logbackAccess = properties.getOrElse("logback.access", null)
     if (logbackAccess != null) {
       requestLog.setFileName(logbackAccess)

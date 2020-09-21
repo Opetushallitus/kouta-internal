@@ -13,7 +13,13 @@ import fi.oph.kouta.internal.servlet.ToteutusServlet
 trait ToteutusFixture extends KoutaIntegrationSpec {
   val ToteutusPath = "/toteutus"
 
-  addServlet(new ToteutusServlet(new ToteutusService(new ToteutusClient("toteutus-kouta", TempElasticClient.client)), sessionDAO), ToteutusPath)
+  addServlet(
+    new ToteutusServlet(
+      new ToteutusService(new ToteutusClient("toteutus-kouta", TempElasticClient.client)),
+      sessionDAO
+    ),
+    ToteutusPath
+  )
 
   def get(oid: ToteutusOid): Toteutus = get[Toteutus](ToteutusPath, oid)
 

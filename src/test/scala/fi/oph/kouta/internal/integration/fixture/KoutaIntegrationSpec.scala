@@ -25,7 +25,7 @@ trait KoutaIntegrationSpec extends ScalatraFlatSpec with HttpSpec with Indeksoij
     case Some(port) => setupWithTemplate(port.toInt)
     case None       => setupWithEmbeddedPostgres()
   }
-  val db = new KoutaDatabase(KoutaConfigurationFactory.configuration.databaseConfiguration)
+  val db         = new KoutaDatabase(KoutaConfigurationFactory.configuration.databaseConfiguration)
   val sessionDAO = new SessionDAO(db)
 
   val testUser = TestUser("test-user-oid", "testuser", defaultSessionId)
@@ -77,26 +77,26 @@ sealed trait HttpSpec extends KoutaJsonFormats { this: ScalatraFlatSpec =>
 
   def defaultHeaders: Seq[(String, String)] = Seq(defaultSessionHeader, jsonHeader)
 
-  def get[E <: scala.AnyRef](path: String, id: Object)(
-      implicit equality: Equality[E],
+  def get[E <: scala.AnyRef](path: String, id: Object)(implicit
+      equality: Equality[E],
       mf: Manifest[E]
   ): E =
     get(path, id, defaultSessionId)
 
-  def get[E <: scala.AnyRef](path: String, id: Object, sessionId: UUID)(
-      implicit equality: Equality[E],
+  def get[E <: scala.AnyRef](path: String, id: Object, sessionId: UUID)(implicit
+      equality: Equality[E],
       mf: Manifest[E]
   ): E =
     get(s"$path/${id.toString}", sessionId)
 
-  def getObject[E <: scala.AnyRef](path: String)(
-    implicit equality: Equality[E],
-    mf: Manifest[E]
+  def getObject[E <: scala.AnyRef](path: String)(implicit
+      equality: Equality[E],
+      mf: Manifest[E]
   ): E = get(path, defaultSessionId)
 
-  def get[E <: scala.AnyRef](path: String, sessionId: UUID)(
-    implicit equality: Equality[E],
-    mf: Manifest[E]
+  def get[E <: scala.AnyRef](path: String, sessionId: UUID)(implicit
+      equality: Equality[E],
+      mf: Manifest[E]
   ): E = get(path, headers = Seq(sessionHeader(sessionId))) {
     withClue(body) {
       status should equal(200)

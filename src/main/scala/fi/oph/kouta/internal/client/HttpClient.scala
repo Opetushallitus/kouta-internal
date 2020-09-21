@@ -18,10 +18,11 @@ trait HttpClient {
   private val HeaderCallerId            = ("Caller-id", "kouta-internal")
   private val HeaderClientSubSystemCode = ("clientSubSystemCode", "kouta-internal")
 
-  def get[T](url: String,
-             errorHandler: (String, Int, String) => Nothing = defaultErrorHandler,
-             followRedirects: Boolean = false
-            )(parse: String => T): T =
+  def get[T](
+      url: String,
+      errorHandler: (String, Int, String) => Nothing = defaultErrorHandler,
+      followRedirects: Boolean = false
+  )(parse: String => T): T =
     DefaultHttpClient
       .httpGet(url, defaultOptions(followRedirects): _*)
       .header(HeaderClientSubSystemCode._1, HeaderClientSubSystemCode._2)

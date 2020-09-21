@@ -79,7 +79,7 @@ class HakuServlet(hakuService: HakuService, val sessionDAO: SessionDAO)
     implicit val authenticated: Authenticated = authenticate
 
     params.get("ataruId") match {
-      case None => BadRequest("Query parameter ataruId is required")
+      case None     => BadRequest("Query parameter ataruId is required")
       case Some(id) => hakuService.searchByAtaruId(id)
     }
   }

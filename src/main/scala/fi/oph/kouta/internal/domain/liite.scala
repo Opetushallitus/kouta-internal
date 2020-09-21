@@ -46,7 +46,8 @@ import fi.oph.kouta.internal.swagger.SwaggerModel
     |          description: Liitteen toimitusosoite, jos ei ole sama kuin kaikilla hakukohteen liitteillä
     |          allOf:
     |            - $ref: '#/components/schemas/LiitteenToimitusosoite'
-    |""")
+    |"""
+)
 case class Liite(
     id: Option[UUID],
     tyyppi: Option[String],
@@ -57,8 +58,7 @@ case class Liite(
     toimitusosoite: Option[LiitteenToimitusosoite]
 )
 
-@SwaggerModel(
-  """    LiitteenToimitusosoite:
+@SwaggerModel("""    LiitteenToimitusosoite:
     |      type: object
     |      properties:
     |        osoite:

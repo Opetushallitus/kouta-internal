@@ -8,8 +8,7 @@ import fi.oph.kouta.internal.security.{Authenticated, Role, RoleEntity}
 
 import scala.concurrent.Future
 
-class ValintaperusteService(valintaperusteClient: ValintaperusteClient)
-    extends RoleEntityAuthorizationService {
+class ValintaperusteService(valintaperusteClient: ValintaperusteClient) extends RoleEntityAuthorizationService {
 
   override val roleEntity: RoleEntity = Role.Valintaperuste
 

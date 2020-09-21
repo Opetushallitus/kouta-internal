@@ -16,7 +16,9 @@ class HakukohdeService(hakukohdeClient: HakukohdeClient, hakuService: HakuServic
   def get(oid: HakukohdeOid)(implicit authenticated: Authenticated): Future[Hakukohde] =
     authorizeGet(hakukohdeClient.getHakukohde(oid))
 
-  def searchByHakuAndTarjoaja(hakuOid: Option[HakuOid], tarjoajaOid: Option[OrganisaatioOid])(implicit authenticated: Authenticated): Future[Seq[Hakukohde]] = {
+  def searchByHakuAndTarjoaja(hakuOid: Option[HakuOid], tarjoajaOid: Option[OrganisaatioOid])(implicit
+      authenticated: Authenticated
+  ): Future[Seq[Hakukohde]] = {
     val checkHakuExists = hakuOid.fold(Future.successful(()))(hakuService.get(_).map(_ => ()))
     checkHakuExists.flatMap(_ => hakukohdeClient.searchByHakuAndTarjoaja(hakuOid, tarjoajaOid))
   }

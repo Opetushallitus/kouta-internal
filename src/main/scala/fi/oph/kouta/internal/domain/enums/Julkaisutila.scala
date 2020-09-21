@@ -21,4 +21,3 @@ object Julkaisutila extends BasicTypeCompanion[Julkaisutila] {
 
   val all: List[Julkaisutila] = List(Tallennettu, Julkaistu, Arkistoitu)
 }
-

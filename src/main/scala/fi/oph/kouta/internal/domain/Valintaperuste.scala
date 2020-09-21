@@ -133,7 +133,8 @@ import fi.oph.kouta.internal.swagger.SwaggerModel
     |           format: date-time
     |           description: Valintaperustekuvauksen viimeisin muokkausaika. Järjestelmän generoima
     |           example: 2019-08-23T09:55
-    |""")
+    |"""
+)
 case class Valintaperuste(
     id: Option[UUID],
     tila: Julkaisutila,

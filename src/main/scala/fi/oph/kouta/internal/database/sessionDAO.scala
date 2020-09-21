@@ -14,13 +14,19 @@ class SessionDAO(db: KoutaDatabase) extends SQLHelpers {
   def store(session: Session): UUID = session match {
     case CasSession(ServiceTicket(ticket), personOid, authorities) =>
       val id = UUID.randomUUID()
-      db.runBlockingTransactionally(storeCasSession(id, ticket, personOid, authorities), timeout = Duration(1, TimeUnit.MINUTES))
-        .map(_ => id).get
+      db.runBlockingTransactionally(
+        storeCasSession(id, ticket, personOid, authorities),
+        timeout = Duration(1, TimeUnit.MINUTES)
+      ).map(_ => id)
+        .get
   }
 
   def store(session: CasSession, id: UUID): UUID =
-    db.runBlockingTransactionally(storeCasSession(id, session.casTicket.s, session.personOid, session.authorities), timeout = Duration(1, TimeUnit.MINUTES))
-      .map(_ => id).get
+    db.runBlockingTransactionally(
+      storeCasSession(id, session.casTicket.s, session.personOid, session.authorities),
+      timeout = Duration(1, TimeUnit.MINUTES)
+    ).map(_ => id)
+      .get
 
   def delete(id: UUID): Boolean =
     db.runBlockingTransactionally(deleteSession(id), timeout = Duration(10, TimeUnit.SECONDS)).get
@@ -36,13 +42,12 @@ class SessionDAO(db: KoutaDatabase) extends SQLHelpers {
     }
   }
 
-  private def storeCasSession(id: UUID,
-                                ticket: String,
-                                personOid: String,
-                                authorities: Set[Authority]) = {
+  private def storeCasSession(id: UUID, ticket: String, personOid: String, authorities: Set[Authority]) = {
     DBIO.seq(
       sqlu"""insert into sessions (id, cas_ticket, person) values ($id, $ticket, $personOid)""",
-      DBIO.sequence(authorities.map(a => sqlu"""insert into authorities (session, authority) values ($id, ${a.authority})""").toSeq)
+      DBIO.sequence(
+        authorities.map(a => sqlu"""insert into authorities (session, authority) values ($id, ${a.authority})""").toSeq
+      )
     )
   }
 
@@ -53,18 +58,18 @@ class SessionDAO(db: KoutaDatabase) extends SQLHelpers {
     sqlu"""delete from sessions where cas_ticket = ${ticket.s}""".map(_ > 0)
 
   private def getSession(id: UUID) =
-    getSessionQuery(id)
-      .flatMap {
-        case None =>
-          deleteSession(id).andThen(DBIO.successful(None))
-        case Some(t) =>
-          updateLastRead(id).andThen(DBIO.successful(Some(t)))
-      }
+    getSessionQuery(id).flatMap {
+      case None =>
+        deleteSession(id).andThen(DBIO.successful(None))
+      case Some(t) =>
+        updateLastRead(id).andThen(DBIO.successful(Some(t)))
+    }
 
   private def getSessionQuery(id: UUID) =
     sql"""select cas_ticket, person from sessions
           where id = $id and last_read > now() - interval '60 minutes'"""
-      .as[(Option[String], String)].headOption
+      .as[(Option[String], String)]
+      .headOption
 
   private def updateLastRead(id: UUID) =
     sqlu"""update sessions set last_read = now()

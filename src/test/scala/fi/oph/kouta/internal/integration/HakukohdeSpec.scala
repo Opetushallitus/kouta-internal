@@ -55,7 +55,10 @@ class HakukohdeSpec
   }
 
   it should "find hakukohde based on haku and tarjoaja OID" in {
-    val hakukohteet = get[Seq[Hakukohde]](s"$HakukohdePath/search?haku=${hakuOid.toString}&tarjoaja=${ParentOid.toString}", defaultSessionId)
+    val hakukohteet = get[Seq[Hakukohde]](
+      s"$HakukohdePath/search?haku=${hakuOid.toString}&tarjoaja=${ParentOid.toString}",
+      defaultSessionId
+    )
     hakukohteet.map(_.oid) should contain theSameElementsAs Seq(existingId)
   }
 

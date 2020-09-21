@@ -5,7 +5,15 @@ import java.util.UUID
 
 import fi.oph.kouta.internal.domain.enums.{Hakulomaketyyppi, Julkaisutila, Kieli, LiitteenToimitustapa}
 import fi.oph.kouta.internal.domain.oid.{HakuOid, HakukohdeOid, ToteutusOid}
-import fi.oph.kouta.internal.domain.{Ajanjakso, Hakukohde, Kielistetty, Liite, LiitteenToimitusosoite, WithTila, YhdenPaikanSaanto}
+import fi.oph.kouta.internal.domain.{
+  Ajanjakso,
+  Hakukohde,
+  Kielistetty,
+  Liite,
+  LiitteenToimitusosoite,
+  WithTila,
+  YhdenPaikanSaanto
+}
 
 case class HakukohdeIndexed(
     oid: HakukohdeOid,

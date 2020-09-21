@@ -2,8 +2,7 @@ package fi.oph.kouta.internal.domain
 
 import fi.oph.kouta.internal.swagger.SwaggerModel
 
-@SwaggerModel(
-  """    HakuMetadata:
+@SwaggerModel("""    HakuMetadata:
     |      type: object
     |      properties:
     |        yhteyshenkilot:

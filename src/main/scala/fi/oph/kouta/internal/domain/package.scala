@@ -9,8 +9,7 @@ import fi.oph.kouta.internal.swagger.SwaggerModel
 package object domain {
 
   // Kielistetyn swaggerit ovat tässä, koska pelkälle typelle ei voi asettaa annotaatiota
-  @SwaggerModel(
-    """    Teksti:
+  @SwaggerModel("""    Teksti:
       |      type: object
       |      properties:
       |        fi:
@@ -88,7 +87,8 @@ package object domain {
       |          description: Lisätiedon teksti eri kielillä. Kielet on määritetty kielivalinnassa.
       |          allOf:
       |            - $ref: '#/components/schemas/Teksti'
-      |""")
+      |"""
+  )
   case class Lisatieto(otsikkoKoodiUri: String, teksti: Kielistetty)
 
   @SwaggerModel(
@@ -120,7 +120,8 @@ package object domain {
       |          description: Yhteyshenkilön www-sivu eri kielillä. Kielet on määritetty kielivalinnassa.
       |          allOf:
       |            - $ref: '#/components/schemas/Teksti'
-      |""")
+      |"""
+  )
   case class Yhteyshenkilo(
       nimi: Kielistetty,
       titteli: Kielistetty,
@@ -129,8 +130,7 @@ package object domain {
       wwwSivu: Kielistetty
   )
 
-  @SwaggerModel(
-    """    Ajanjakso:
+  @SwaggerModel("""    Ajanjakso:
       |      type: object
       |      properties:
       |        alkaa:
@@ -164,7 +164,8 @@ package object domain {
       |          description: Valintakokeen järjestämistilaisuudet
       |          items:
       |            $ref: '#/components/schemas/Valintakoetilaisuus'
-      |""")
+      |"""
+  )
   case class Valintakoe(id: Option[UUID], tyyppi: Option[String], tilaisuudet: List[Valintakoetilaisuus])
 
   @SwaggerModel(
@@ -186,11 +187,11 @@ package object domain {
       |          description: Lisätietoja valintakokeesta eri kielillä. Kielet on määritetty kielivalinnassa.
       |          allOf:
       |            - $ref: '#/components/schemas/Teksti'
-      |""")
+      |"""
+  )
   case class Valintakoetilaisuus(osoite: Option[Osoite], aika: Option[Ajanjakso], lisatietoja: Kielistetty)
 
-  @SwaggerModel(
-    """    Osoite:
+  @SwaggerModel("""    Osoite:
       |      type: object
       |      properties:
       |        osoite:
@@ -210,9 +211,7 @@ package object domain {
       |""")
   case class Osoite(osoite: Kielistetty, postinumero: Option[String], postitoimipaikka: Kielistetty)
 
-
-  @SwaggerModel(
-    """    Ammattinimike:
+  @SwaggerModel("""    Ammattinimike:
       |      type: object
       |      properties:
       |        kieli:

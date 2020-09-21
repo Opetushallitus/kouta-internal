@@ -26,7 +26,8 @@ import fi.oph.kouta.internal.swagger.SwaggerModel
     |          items:
     |            type: object
     |            $ref: '#/components/schemas/Lisatieto'
-    |""")
+    |"""
+)
 sealed trait KoulutusMetadata {
   val tyyppi: Koulutustyyppi
   val kuvaus: Kielistetty
@@ -34,8 +35,7 @@ sealed trait KoulutusMetadata {
   val koulutusalaKoodiUrit: Seq[String]
 }
 
-@SwaggerModel(
-  """    AmmatillinenKoulutusMetadata:
+@SwaggerModel("""    AmmatillinenKoulutusMetadata:
     |      allOf:
     |        - $ref: '#/components/schemas/KoulutusMetadata'
     |        - type: object
@@ -76,15 +76,15 @@ case class AmmatillinenKoulutusMetadata(
     |          type: string
     |          description: "Tutkinnon laajuus. Viittaa koodistoon [koodistoon](https://virkailija.testiopintopolku.fi/koodisto-ui/html/koodisto/opintojenlaajuus/1)"
     |          example: opintojenlaajuus_40#1
-    |""")
+    |"""
+)
 trait KorkeakoulutusKoulutusMetadata extends KoulutusMetadata {
   val kuvauksenNimi: Kielistetty
   val tutkintonimikeKoodiUrit: Seq[String]
   val opintojenLaajuusKoodiUri: Option[String]
 }
 
-@SwaggerModel(
-  """    YliopistoKoulutusMetadata:
+@SwaggerModel("""    YliopistoKoulutusMetadata:
     |      allOf:
     |        - $ref: '#/components/schemas/KorkeakouluMetadata'
     |        - type: object
@@ -96,16 +96,17 @@ trait KorkeakoulutusKoulutusMetadata extends KoulutusMetadata {
     |              enum:
     |                - yo
     |""")
-case class YliopistoKoulutusMetadata(tyyppi: Koulutustyyppi,
-                                     kuvaus: Kielistetty,
-                                     lisatiedot: Seq[Lisatieto],
-                                     koulutusalaKoodiUrit: Seq[String],
-                                     tutkintonimikeKoodiUrit: Seq[String],
-                                     opintojenLaajuusKoodiUri: Option[String],
-                                     kuvauksenNimi: Kielistetty) extends KorkeakoulutusKoulutusMetadata
+case class YliopistoKoulutusMetadata(
+    tyyppi: Koulutustyyppi,
+    kuvaus: Kielistetty,
+    lisatiedot: Seq[Lisatieto],
+    koulutusalaKoodiUrit: Seq[String],
+    tutkintonimikeKoodiUrit: Seq[String],
+    opintojenLaajuusKoodiUri: Option[String],
+    kuvauksenNimi: Kielistetty
+) extends KorkeakoulutusKoulutusMetadata
 
-@SwaggerModel(
-  """    AmmattikorkeaKoulutusMetadata:
+@SwaggerModel("""    AmmattikorkeaKoulutusMetadata:
     |      allOf:
     |        - $ref: '#/components/schemas/KorkeakouluMetadata'
     |        - type: object
@@ -117,10 +118,12 @@ case class YliopistoKoulutusMetadata(tyyppi: Koulutustyyppi,
     |              enum:
     |                - amk
     |""")
-case class AmmattikorkeakouluKoulutusMetadata(tyyppi: Koulutustyyppi,
-                                              kuvaus: Kielistetty,
-                                              lisatiedot: Seq[Lisatieto],
-                                              koulutusalaKoodiUrit: Seq[String],
-                                              tutkintonimikeKoodiUrit: Seq[String],
-                                              opintojenLaajuusKoodiUri: Option[String],
-                                              kuvauksenNimi: Kielistetty) extends KorkeakoulutusKoulutusMetadata
+case class AmmattikorkeakouluKoulutusMetadata(
+    tyyppi: Koulutustyyppi,
+    kuvaus: Kielistetty,
+    lisatiedot: Seq[Lisatieto],
+    koulutusalaKoodiUrit: Seq[String],
+    tutkintonimikeKoodiUrit: Seq[String],
+    opintojenLaajuusKoodiUri: Option[String],
+    kuvauksenNimi: Kielistetty
+) extends KorkeakoulutusKoulutusMetadata

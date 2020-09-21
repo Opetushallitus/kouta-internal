@@ -12,7 +12,10 @@ import fi.vm.sade.utils.slf4j.Logging
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class ValintaperusteClient(val index: String, val client: ElasticClient) extends KoutaJsonFormats with Logging with ElasticsearchClient {
+class ValintaperusteClient(val index: String, val client: ElasticClient)
+    extends KoutaJsonFormats
+    with Logging
+    with ElasticsearchClient {
   def getValintaperuste(id: UUID): Future[Valintaperuste] =
     getItem[ValintaperusteIndexed](id.toString).map(_.toValintaperuste)
 }

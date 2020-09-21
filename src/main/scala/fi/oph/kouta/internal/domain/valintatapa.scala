@@ -41,7 +41,8 @@ import fi.oph.kouta.internal.swagger.SwaggerModel
     |          type: double
     |          description: Valintatavan vähimmäispisteet
     |          example: 10.0
-    |""")
+    |"""
+)
 sealed trait Valintatapa {
   def valintatapaKoodiUri: Option[String]
   def kuvaus: Kielistetty
@@ -52,8 +53,7 @@ sealed trait Valintatapa {
   def vahimmaispisteet: Option[Double]
 }
 
-@SwaggerModel(
-  """    AmmatillinenValintatapa:
+@SwaggerModel("""    AmmatillinenValintatapa:
     |      type: object
     |      description: Ammatillisen koulutuksen valintatapakuvaus
     |      allOf:
@@ -81,13 +81,13 @@ case class AmmatillinenValintatapa(
     |          description: Valintatapakuvauksen Opintopolussa näytettävä nimi eri kielillä. Kielet on määritetty valintaperusteen kielivalinnassa.
     |          allOf:
     |            - $ref: '#/components/schemas/Nimi'
-    |""")
+    |"""
+)
 sealed trait KorkeakoulutusValintatapa extends Valintatapa {
   def nimi: Kielistetty
 }
 
-@SwaggerModel(
-  """    AmmattikorkeakouluValintatapa:
+@SwaggerModel("""    AmmattikorkeakouluValintatapa:
     |      type: object
     |      description: Ammattikorkeakoulutuksen valintatapakuvaus
     |      allOf:
@@ -104,8 +104,7 @@ case class AmmattikorkeakouluValintatapa(
     vahimmaispisteet: Option[Double] = None
 ) extends KorkeakoulutusValintatapa
 
-@SwaggerModel(
-  """    YliopistoValintatapa:
+@SwaggerModel("""    YliopistoValintatapa:
     |      type: object
     |      description: Yliopistokoulutuksen valintatapakuvaus
     |      allOf:
@@ -165,7 +164,8 @@ sealed trait ValintatapaSisalto
     |                        Kielet on määritetty valintaperusteen kielivalinnassa.
     |                      allOf:
     |                        - $ref: '#/components/schemas/Teksti'
-    |""")
+    |"""
+)
 case class Taulukko(id: Option[UUID], nimi: Kielistetty = Map(), rows: Seq[Row] = Seq()) extends ValintatapaSisalto
 
 @SwaggerModel(
@@ -178,7 +178,8 @@ case class Taulukko(id: Option[UUID], nimi: Kielistetty = Map(), rows: Seq[Row] 
     |          description: Valintatavan Opintopolussa näytettävä kuvausteksti eri kielillä. Kielet on määritetty valintaperusteen kielivalinnassa.
     |          allOf:
     |            - $ref: '#/components/schemas/Teksti'
-    |""")
+    |"""
+)
 case class ValintatapaSisaltoTeksti(teksti: Kielistetty) extends ValintatapaSisalto
 
 case class Row(index: Int, isHeader: Boolean = false, columns: Seq[Column] = Seq())

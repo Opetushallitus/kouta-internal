@@ -42,9 +42,10 @@ trait AuthorizationService extends Logging {
       allowedOrganizations: Set[OrganisaatioOid],
       authorizedOrganizations: Iterable[OrganisaatioOid]
   )(r: R): R =
-    if (authorizedOrganizations.exists(
-          authorized => authorized == rootOrganisaatioOid || allowedOrganizations.contains(authorized)
-        )) {
+    if (
+      authorizedOrganizations
+        .exists(authorized => authorized == rootOrganisaatioOid || allowedOrganizations.contains(authorized))
+    ) {
       r
     } else {
       throw OrganizationAuthorizationFailedException(allowedOrganizations)

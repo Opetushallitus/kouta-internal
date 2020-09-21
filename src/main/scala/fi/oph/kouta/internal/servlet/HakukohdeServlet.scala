@@ -85,14 +85,14 @@ class HakukohdeServlet(hakukohdeService: HakukohdeService, val sessionDAO: Sessi
   get("/search") {
     implicit val authenticated: Authenticated = authenticate
 
-    val hakuOid = params.get("haku").map(HakuOid)
+    val hakuOid  = params.get("haku").map(HakuOid)
     val tarjoaja = params.get("tarjoaja").map(OrganisaatioOid)
 
     (hakuOid, tarjoaja) match {
-      case (None, None) => BadRequest("Query parameter is required")
+      case (None, None)                     => BadRequest("Query parameter is required")
       case (Some(oid), _) if !oid.isValid() => BadRequest(s"Invalid haku ${oid.toString}")
       case (_, Some(oid)) if !oid.isValid() => BadRequest(s"Invalid tarjoaja ${oid.toString}")
-      case (hakuOid, tarjoajaOid) => hakukohdeService.searchByHakuAndTarjoaja(hakuOid, tarjoajaOid)
+      case (hakuOid, tarjoajaOid)           => hakukohdeService.searchByHakuAndTarjoaja(hakuOid, tarjoajaOid)
     }
   }
 }

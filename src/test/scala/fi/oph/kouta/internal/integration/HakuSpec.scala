@@ -49,7 +49,7 @@ class HakuSpec extends HakuFixture with AccessControlSpec with GenericGetTests[H
   }
 
   it should "return 200 with an empty list if no haut are found" in {
-    get[Seq[Haku]](s"$HakuPath/search?ataruId=$ataruId3", defaultSessionId) should be (empty)
+    get[Seq[Haku]](s"$HakuPath/search?ataruId=$ataruId3", defaultSessionId) should be(empty)
   }
 
   it should "return 401 without a valid session" in {

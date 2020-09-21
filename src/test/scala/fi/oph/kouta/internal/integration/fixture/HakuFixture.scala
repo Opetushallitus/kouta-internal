@@ -14,7 +14,10 @@ import fi.oph.kouta.internal.{OrganisaatioServiceMock, TempElasticClient}
 trait HakuFixture extends KoutaIntegrationSpec {
   val HakuPath = "/haku"
 
-  addServlet(new HakuServlet(new HakuService(new HakuClient("haku-kouta", TempElasticClient.client)), sessionDAO), HakuPath)
+  addServlet(
+    new HakuServlet(new HakuService(new HakuClient("haku-kouta", TempElasticClient.client)), sessionDAO),
+    HakuPath
+  )
 
   def get(oid: HakuOid): Haku = get[Haku](HakuPath, oid)
 
@@ -39,7 +42,8 @@ trait HakuFixture extends KoutaIntegrationSpec {
         Map(KoutaFixtureTool.HakulomaketyyppiKey -> Ataru.toString, KoutaFixtureTool.HakulomakeIdKey -> id.toString)
     }
 
-    val haku = KoutaFixtureTool.DefaultHakuScala ++ hakulomakeFields + (KoutaFixtureTool.OrganisaatioKey -> organisaatioOid.s)
+    val haku =
+      KoutaFixtureTool.DefaultHakuScala ++ hakulomakeFields + (KoutaFixtureTool.OrganisaatioKey -> organisaatioOid.s)
     KoutaFixtureTool.addHaku(hakuOid.s, haku)
     indexHaku(hakuOid)
   }

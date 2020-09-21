@@ -12,13 +12,15 @@ object EmbeddedJettyLauncher extends Logging with KoutaConfigurationConstants {
   def main(args: Array[String]) {
     System.getProperty("kouta-internal.embedded", "true") match {
       case x if "false".equalsIgnoreCase(x) => TestSetups.setupWithoutEmbeddedPostgres()
-      case _ => TestSetups.setupWithEmbeddedPostgres()
+      case _                                => TestSetups.setupWithEmbeddedPostgres()
     }
 
     val port = System.getProperty("kouta-internal.port", DefaultPort).toInt
 
     val elasticStatus = ElasticsearchHealth.checkStatus()
-    logger.info(s"Status of Elasticsearch cluster is ${elasticStatus.toString} ${if (elasticStatus.healthy) '\u2714' else '\u274C'}")
+    logger.info(
+      s"Status of Elasticsearch cluster is ${elasticStatus.toString} ${if (elasticStatus.healthy) '\u2714' else '\u274C'}"
+    )
 
     logger.info(s"Starting standalone Kouta-internal Jetty on port $port...")
     logger.info(s"http://localhost:$port/kouta-internal/swagger")
@@ -41,7 +43,7 @@ trait KoutaConfigurationConstants {
 
 object TestSetups extends Logging with KoutaConfigurationConstants {
 
-  def setupWithTemplate(port:Int) = {
+  def setupWithTemplate(port: Int) = {
     logger.info(s"Setting up test template with Postgres port $port")
     Templates.createTestTemplate(port)
     System.setProperty(SystemPropertyNameTemplate, Templates.TestTemplateFilePath)
@@ -54,11 +56,13 @@ object TestSetups extends Logging with KoutaConfigurationConstants {
     setupWithTemplate(TempDb.port)
   }
 
-  def setupWithoutEmbeddedPostgres()=
-    (Option(System.getProperty(SystemPropertyNameConfigProfile)),
-      Option(System.getProperty(SystemPropertyNameTemplate))) match {
+  def setupWithoutEmbeddedPostgres() =
+    (
+      Option(System.getProperty(SystemPropertyNameConfigProfile)),
+      Option(System.getProperty(SystemPropertyNameTemplate))
+    ) match {
       case (Some(ConfigProfileTemplate), None) => setupWithDefaultTestTemplateFile()
-      case _ => Unit
+      case _                                   => Unit
     }
 
   def setupWithDefaultTestTemplateFile() = {
@@ -72,7 +76,7 @@ object TestSetups extends Logging with KoutaConfigurationConstants {
 object Templates {
 
   val DefaultTemplateFilePath = "src/test/resources/dev-vars.yml"
-  val TestTemplateFilePath = "src/test/resources/embedded-jetty-vars.yml"
+  val TestTemplateFilePath    = "src/test/resources/embedded-jetty-vars.yml"
 
   import java.io.{File, PrintWriter}
   import java.nio.file.Files
@@ -80,26 +84,29 @@ object Templates {
   import scala.io.Source
   import scala.util.{Failure, Success, Try}
 
-  def createTestTemplate(port:Int, deleteAutomatically:Boolean = false) = {
+  def createTestTemplate(port: Int, deleteAutomatically: Boolean = false) = {
     Try(new PrintWriter(new File(TestTemplateFilePath))) match {
       case Failure(t) =>
         t.printStackTrace()
         throw t
-      case Success(w) => try {
-        Source.fromFile(DefaultTemplateFilePath)
-          .getLines
-          .map {
-            case x if x.contains("host_postgresql_koutainternal_port") => s"host_postgresql_koutainternal_port: $port"
-            case x if x.contains("postgres_app_user") => "postgres_app_user: oph"
-            case x if x.contains("host_postgresql_koutainternal_app_password") => "host_postgresql_koutainternal_app_password:"
-            case x if x.contains("host_postgresql_koutainternal") => "host_postgresql_koutainternal: localhost"
-            case x => x
-          }
-          .foreach(l => w.println(l))
-        w.flush()
-      } finally {
-        w.close()
-      }
+      case Success(w) =>
+        try {
+          Source
+            .fromFile(DefaultTemplateFilePath)
+            .getLines
+            .map {
+              case x if x.contains("host_postgresql_koutainternal_port") => s"host_postgresql_koutainternal_port: $port"
+              case x if x.contains("postgres_app_user")                  => "postgres_app_user: oph"
+              case x if x.contains("host_postgresql_koutainternal_app_password") =>
+                "host_postgresql_koutainternal_app_password:"
+              case x if x.contains("host_postgresql_koutainternal") => "host_postgresql_koutainternal: localhost"
+              case x                                                => x
+            }
+            .foreach(l => w.println(l))
+          w.flush()
+        } finally {
+          w.close()
+        }
         if (deleteAutomatically) {
           Runtime.getRuntime.addShutdownHook(new Thread(() => Templates.deleteTestTemplate()))
         }

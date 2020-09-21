@@ -8,8 +8,7 @@ import fi.oph.kouta.internal.security.{Authenticated, Role, RoleEntity}
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class KoulutusService(koulutusClient: KoulutusClient)
-    extends RoleEntityAuthorizationService {
+class KoulutusService(koulutusClient: KoulutusClient) extends RoleEntityAuthorizationService {
 
   override val roleEntity: RoleEntity = Role.Koulutus
 

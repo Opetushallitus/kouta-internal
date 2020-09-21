@@ -49,13 +49,12 @@ class SwaggerServlet extends ScalatraServlet {
         |paths:
         |""".stripMargin
 
-    val paths = SwaggerPaths.paths.map {
-      case (path, op) =>
-        s"""  $path:
-           |    parameters:
-           |      - $$ref: '#/components/parameters/callerId'
-           |""".stripMargin +
-          op.mkString
+    val paths = SwaggerPaths.paths.map { case (path, op) =>
+      s"""  $path:
+         |    parameters:
+         |      - $$ref: '#/components/parameters/callerId'
+         |""".stripMargin +
+        op.mkString
     }.mkString
 
     val componentsHeader =

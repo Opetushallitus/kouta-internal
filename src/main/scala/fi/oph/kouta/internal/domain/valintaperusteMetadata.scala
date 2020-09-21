@@ -3,8 +3,7 @@ package fi.oph.kouta.internal.domain
 import fi.oph.kouta.internal.domain.enums.Koulutustyyppi
 import fi.oph.kouta.internal.swagger.SwaggerModel
 
-@SwaggerModel(
-  """    ValintaperusteMetadata:
+@SwaggerModel("""    ValintaperusteMetadata:
     |      type: object
     |      properties:
     |        kielitaitovaatimukset:
@@ -39,7 +38,8 @@ sealed trait ValintaperusteMetadata {
     |          description: Valintaperustekuvauksen kuvausteksti eri kielillä. Kielet on määritetty koulutuksen kielivalinnassa.
     |          allOf:
     |            - $ref: '#/components/schemas/Kuvaus'
-    |""")
+    |"""
+)
 sealed trait KorkeakoulutusValintaperusteMetadata extends ValintaperusteMetadata {
   def valintatavat: Seq[KorkeakoulutusValintatapa]
 
@@ -50,8 +50,7 @@ sealed trait KorkeakoulutusValintaperusteMetadata extends ValintaperusteMetadata
   def kuvaus: Kielistetty
 }
 
-@SwaggerModel(
-  """    AmmatillinenValintaperusteMetadata:
+@SwaggerModel("""    AmmatillinenValintaperusteMetadata:
     |      type: object
     |      allOf:
     |        - $ref: '#/components/schemas/ValintaperusteMetadata'
@@ -74,8 +73,7 @@ case class AmmatillinenValintaperusteMetadata(
     kielitaitovaatimukset: Seq[ValintaperusteKielitaitovaatimus]
 ) extends ValintaperusteMetadata
 
-@SwaggerModel(
-  """    YliopistoValintaperusteMetadata:
+@SwaggerModel("""    YliopistoValintaperusteMetadata:
     |      type: object
     |      allOf:
     |        - $ref: '#/components/schemas/KorkeakoulutusValintaperusteMetadata'
@@ -100,8 +98,7 @@ case class YliopistoValintaperusteMetadata(
     kuvaus: Kielistetty = Map()
 ) extends KorkeakoulutusValintaperusteMetadata
 
-@SwaggerModel(
-  """    AmmattikorkeakouluValintaperusteMetadata:
+@SwaggerModel("""    AmmattikorkeakouluValintaperusteMetadata:
     |      type: object
     |      allOf:
     |        - $ref: '#/components/schemas/KorkeakoulutusValintaperusteMetadata'
@@ -185,7 +182,8 @@ case class Kielitaito(kielitaitoKoodiUri: Option[String] = None, lisatieto: Kiel
     |                      type: string
     |                      description: Kielitaitovaatimuksen taso
     |                      example: A
-    |""")
+    |"""
+)
 case class Kielitaitovaatimus(
     kielitaitovaatimusKoodiUri: Option[String] = None,
     kielitaitovaatimusKuvaukset: Seq[KielitaitovaatimusKuvaus] = Seq()
