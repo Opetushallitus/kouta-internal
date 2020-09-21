@@ -13,13 +13,16 @@ import fi.oph.kouta.internal.servlet.HakukohdeServlet
 trait HakukohdeFixture extends KoutaIntegrationSpec {
   val HakukohdePath = "/hakukohde"
 
-  addServlet(new HakukohdeServlet(
-    new HakukohdeService(
-      new HakukohdeClient("hakukohde-kouta", TempElasticClient.client),
-      new HakuService(new HakuClient("haku-kouta", TempElasticClient.client))
+  addServlet(
+    new HakukohdeServlet(
+      new HakukohdeService(
+        new HakukohdeClient("hakukohde-kouta", TempElasticClient.client),
+        new HakuService(new HakuClient("haku-kouta", TempElasticClient.client))
+      ),
+      sessionDAO
     ),
-    sessionDAO
-  ), HakukohdePath)
+    HakukohdePath
+  )
 
   def get(oid: HakukohdeOid): Hakukohde = get[Hakukohde](HakukohdePath, oid)
 

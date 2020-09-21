@@ -13,7 +13,13 @@ import fi.oph.kouta.internal.servlet.ValintaperusteServlet
 trait ValintaperusteFixture extends KoutaIntegrationSpec {
   val ValintaperustePath = "/valintaperuste"
 
-  addServlet(new ValintaperusteServlet(new ValintaperusteService(new ValintaperusteClient("valintaperuste-kouta", TempElasticClient.client)), sessionDAO), ValintaperustePath)
+  addServlet(
+    new ValintaperusteServlet(
+      new ValintaperusteService(new ValintaperusteClient("valintaperuste-kouta", TempElasticClient.client)),
+      sessionDAO
+    ),
+    ValintaperustePath
+  )
 
   def get(id: UUID): Valintaperuste = get[Valintaperuste](ValintaperustePath, id)
 

@@ -2,8 +2,7 @@ package fi.oph.kouta.internal.domain.enums
 
 import fi.oph.kouta.internal.swagger.SwaggerModel
 
-@SwaggerModel(
-  """    Kieli:
+@SwaggerModel("""    Kieli:
     |      type: string
     |      enum:
     |        - fi

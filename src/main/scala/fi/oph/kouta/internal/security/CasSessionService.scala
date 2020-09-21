@@ -20,8 +20,11 @@ object CasSessionService
       SessionDAO
     )
 
-class CasSessionService(securityContext: SecurityContext, userDetailsService: KayttooikeusClient, sessionDAO: SessionDAO)
-    extends Logging {
+class CasSessionService(
+    securityContext: SecurityContext,
+    userDetailsService: KayttooikeusClient,
+    sessionDAO: SessionDAO
+) extends Logging {
   logger.info(s"Using security context ${securityContext.getClass.getSimpleName}")
 
   val serviceIdentifier: String = securityContext.casServiceIdentifier
@@ -33,10 +36,9 @@ class CasSessionService(securityContext: SecurityContext, userDetailsService: Ka
     val ServiceTicket(s) = ticket
     casClient
       .validateServiceTicket(securityContext.casServiceIdentifier)(s)
-      .handleWith {
-        case NonFatal(t) =>
-          logger.debug("Ticket validation error", t)
-          Task.fail(AuthenticationFailedException(s"Failed to validate service ticket $s", t))
+      .handleWith { case NonFatal(t) =>
+        logger.debug("Ticket validation error", t)
+        Task.fail(AuthenticationFailedException(s"Failed to validate service ticket $s", t))
       }
       .attemptRunFor(Duration(1, TimeUnit.SECONDS))
       .toEither

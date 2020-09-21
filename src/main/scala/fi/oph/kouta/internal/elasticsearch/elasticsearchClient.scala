@@ -23,29 +23,31 @@ trait ElasticsearchClient { this: KoutaJsonFormats with Logging =>
   val index: String
   val client: ElasticClient
 
-
-  def getItem[T <: WithTila : HitReader](id: String): Future[T] = {
+  def getItem[T <: WithTila: HitReader](id: String): Future[T] = {
     val request = get(id).from(index)
     logger.debug(s"Elasticsearch query: ${request.show}")
-    client.execute(request).flatMap {
-      case failure: RequestFailure =>
-        logger.debug(s"Elasticsearch status: {}", failure.status)
-        Future.failed(ElasticSearchException(failure.error))
-      case response: RequestSuccess[GetResponse] =>
-        logger.debug(s"Elasticsearch status: {}", response.status)
-        logger.debug(s"Elasticsearch response: {}", response.result.sourceAsString)
-        Future.successful(response.result.toOpt[T])
-    }.flatMap {
-      case None =>
-        Future.failed(new NoSuchElementException(s"Didn't find id $id from index $index"))
-      case Some(t) if t.tila == Tallennettu =>
-        Future.failed(new NoSuchElementException(s"Entity with id $id from index $index was in tila luonnos"))
-      case Some(t) =>
-        Future.successful(t)
-    }
+    client
+      .execute(request)
+      .flatMap {
+        case failure: RequestFailure =>
+          logger.debug(s"Elasticsearch status: {}", failure.status)
+          Future.failed(ElasticSearchException(failure.error))
+        case response: RequestSuccess[GetResponse] =>
+          logger.debug(s"Elasticsearch status: {}", response.status)
+          logger.debug(s"Elasticsearch response: {}", response.result.sourceAsString)
+          Future.successful(response.result.toOpt[T])
+      }
+      .flatMap {
+        case None =>
+          Future.failed(new NoSuchElementException(s"Didn't find id $id from index $index"))
+        case Some(t) if t.tila == Tallennettu =>
+          Future.failed(new NoSuchElementException(s"Entity with id $id from index $index was in tila luonnos"))
+        case Some(t) =>
+          Future.successful(t)
+      }
   }
 
-  def searchItems[T: HitReader : ClassTag](query: Query): Future[IndexedSeq[T]] = {
+  def searchItems[T: HitReader: ClassTag](query: Query): Future[IndexedSeq[T]] = {
     val request = search(index).bool(must(not(matchQuery("tila", "tallennettu")), query))
     logger.debug(s"Elasticsearch request: ${request.show}")
     client.execute(request).flatMap {
@@ -61,5 +63,7 @@ trait ElasticsearchClient { this: KoutaJsonFormats with Logging =>
 }
 
 object ElasticsearchClient {
-  val client = ElasticClient(ElasticProperties(KoutaConfigurationFactory.configuration.elasticSearchConfiguration.elasticUrl))
+  val client = ElasticClient(
+    ElasticProperties(KoutaConfigurationFactory.configuration.elasticSearchConfiguration.elasticUrl)
+  )
 }

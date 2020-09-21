@@ -7,8 +7,7 @@ import fi.oph.kouta.internal.security.{Authenticated, Role, RoleEntity}
 
 import scala.concurrent.Future
 
-class HakuService(hakuClient: HakuClient)
-    extends RoleEntityAuthorizationService {
+class HakuService(hakuClient: HakuClient) extends RoleEntityAuthorizationService {
 
   override val roleEntity: RoleEntity = Role.Haku
 

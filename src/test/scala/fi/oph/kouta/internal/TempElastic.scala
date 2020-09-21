@@ -8,7 +8,7 @@ import fi.vm.sade.utils.tcp.ChooseFreePort
 import pl.allegro.tech.embeddedelasticsearch.{EmbeddedElastic, PopularProperties}
 
 object TempElasticClient {
-  val url = s"http://localhost:${TempElastic.start()}"
+  val url    = s"http://localhost:${TempElastic.start()}"
   val client = ElasticClient(ElasticProperties(url))
 }
 

@@ -12,16 +12,24 @@ import fi.vm.sade.utils.slf4j.Logging
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class HakukohdeClient(val index: String, val client: ElasticClient) extends KoutaJsonFormats with Logging with ElasticsearchClient {
+class HakukohdeClient(val index: String, val client: ElasticClient)
+    extends KoutaJsonFormats
+    with Logging
+    with ElasticsearchClient {
   def getHakukohde(oid: HakukohdeOid): Future[Hakukohde] =
     getItem[HakukohdeIndexed](oid.s).map(_.toHakukohde)
 
-  def searchByHakuAndTarjoaja(hakuOid: Option[HakuOid], tarjoajaOid: Option[OrganisaatioOid]): Future[Seq[Hakukohde]] = {
+  def searchByHakuAndTarjoaja(
+      hakuOid: Option[HakuOid],
+      tarjoajaOid: Option[OrganisaatioOid]
+  ): Future[Seq[Hakukohde]] = {
     val hakuQuery = hakuOid.map(oid => matchQuery("hakuOid", oid.toString))
-    val tarjoajaQuery = tarjoajaOid.map(oid => should(
-      matchQuery("tarjoajat.oid", oid.toString),
-      not(existsQuery("tarjoajat")).must(matchQuery("toteutus.tarjoajat.oid", oid.toString)),
-    ))
+    val tarjoajaQuery = tarjoajaOid.map(oid =>
+      should(
+        matchQuery("tarjoajat.oid", oid.toString),
+        not(existsQuery("tarjoajat")).must(matchQuery("toteutus.tarjoajat.oid", oid.toString))
+      )
+    )
     searchItems[HakukohdeIndexed](must(hakuQuery ++ tarjoajaQuery)).map(_.map(_.toHakukohde))
   }
 }

@@ -1,6 +1,5 @@
 package fi.oph.kouta.internal.elasticsearch
 
-
 import com.sksamuel.elastic4s.http.ElasticClient
 import com.sksamuel.elastic4s.http.ElasticDsl._
 import com.sksamuel.elastic4s.json4s.ElasticJson4s.Implicits._
@@ -13,7 +12,10 @@ import fi.vm.sade.utils.slf4j.Logging
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class HakuClient(val index: String, val client: ElasticClient) extends KoutaJsonFormats with Logging with ElasticsearchClient {
+class HakuClient(val index: String, val client: ElasticClient)
+    extends KoutaJsonFormats
+    with Logging
+    with ElasticsearchClient {
   def getHaku(oid: HakuOid): Future[Haku] =
     getItem[HakuIndexed](oid.s)
       .map(_.toHaku)

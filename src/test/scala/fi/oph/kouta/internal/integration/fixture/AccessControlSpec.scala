@@ -33,22 +33,22 @@ trait AccessControlSpec extends ScalatraFlatSpec with OrganisaatioServiceMock {
     stopServiceMocking()
   }
 
-  val LonelyOid = OrganisaatioOid("1.2.246.562.10.99999999999")
+  val LonelyOid  = OrganisaatioOid("1.2.246.562.10.99999999999")
   val UnknownOid = OrganisaatioOid("1.2.246.562.10.99999999998")
-  val YoOid = OrganisaatioOid("1.2.246.562.10.46312206843")
+  val YoOid      = OrganisaatioOid("1.2.246.562.10.46312206843")
 
   //val testSessions: mutable.Map[Symbol, (String, String)] = mutable.Map.empty
   val crudSessions: mutable.Map[OrganisaatioOid, UUID] = mutable.Map.empty
   val readSessions: mutable.Map[OrganisaatioOid, UUID] = mutable.Map.empty
 
-  var indexerSession: UUID = _
+  var indexerSession: UUID     = _
   var fakeIndexerSession: UUID = _
-  var otherRoleSession: UUID = _
+  var otherRoleSession: UUID   = _
 
   def addTestSession(authorities: Seq[Authority]): UUID = {
     val sessionId = UUID.randomUUID()
-    val oid = s"1.2.246.562.24.${math.abs(sessionId.getLeastSignificantBits.toInt)}"
-    val user = TestUser(oid, s"user-$oid", sessionId)
+    val oid       = s"1.2.246.562.24.${math.abs(sessionId.getLeastSignificantBits.toInt)}"
+    val user      = TestUser(oid, s"user-$oid", sessionId)
     sessionDAO.store(CasSession(ServiceTicket(user.ticket), user.oid, authorities.toSet), user.sessionId)
     sessionId
   }

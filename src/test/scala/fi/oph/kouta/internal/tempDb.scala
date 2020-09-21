@@ -5,7 +5,7 @@ import fi.vm.sade.utils.tcp.PortFromSystemPropertyOrFindFree
 
 object TempDb extends Logging {
 
-  val port = new PortFromSystemPropertyOrFindFree("kouta-internal.db.port").chosenPort
+  val port   = new PortFromSystemPropertyOrFindFree("kouta-internal.db.port").chosenPort
   val dbName = "koutainternal"
 
   import java.io.File
@@ -18,7 +18,7 @@ object TempDb extends Logging {
   val dataDirectoryFile = new File(dataDirectoryName)
   val dataDirectoryPath = dataDirectoryFile.getAbsolutePath
 
-  val startStopRetries = 100
+  val startStopRetries             = 100
   val startStopRetryIntervalMillis = 100
 
   initDbDirectory()
@@ -32,7 +32,9 @@ object TempDb extends Logging {
         logger.info(s"PostgreSQL pid file cannot be read, starting:")
         run(s"postgres --config_file=postgresql/postgresql.conf -D $dataDirectoryPath -p $port")
         if (!tryTimes(startStopRetries, startStopRetryIntervalMillis)(isAcceptingConnections)) {
-          throw new RuntimeException(s"postgres not accepting connections in port $port after $startStopRetries attempts with $startStopRetryIntervalMillis ms intervals")
+          throw new RuntimeException(
+            s"postgres not accepting connections in port $port after $startStopRetries attempts with $startStopRetryIntervalMillis ms intervals"
+          )
         }
         runBlocking(s"dropdb -p $port --if-exists $dbName")
         runBlocking(s"createdb -E UTF8 --lc-collate C --lc-ctype C -p $port $dbName")
@@ -50,7 +52,9 @@ object TempDb extends Logging {
           logger.info(s"Killing PostgreSQL process $pid")
           runBlocking(s"kill -s SIGINT $pid")
           if (!tryTimes(startStopRetries, startStopRetryIntervalMillis)(() => readPid.isEmpty)) {
-            logger.warn(s"postgres in pid $pid did not stop gracefully after $startStopRetries attempts with $startStopRetryIntervalMillis ms intervals")
+            logger.warn(
+              s"postgres in pid $pid did not stop gracefully after $startStopRetries attempts with $startStopRetryIntervalMillis ms intervals"
+            )
           }
         }
         case None => logger.warn("No PostgreSQL pid found, not trying to stop it.")
@@ -76,13 +80,13 @@ object TempDb extends Logging {
 
   private def readPid: Option[Int] = {
     val pidFile = new File(dataDirectoryFile, "postmaster.pid")
-    if(pidFile.canRead) Some(FileUtils.readFileToString(pidFile, "UTF-8").split("\n")(0).toInt) else None
+    if (pidFile.canRead) Some(FileUtils.readFileToString(pidFile, "UTF-8").split("\n")(0).toInt) else None
   }
 
   private def tryTimes(times: Int, sleep: Int)(thunk: () => Boolean): Boolean = times match {
     case n if n < 1 => false
-    case 1 => thunk()
-    case n => thunk() || { Thread.sleep(sleep); tryTimes(n - 1, sleep)(thunk) }
+    case 1          => thunk()
+    case n          => thunk() || { Thread.sleep(sleep); tryTimes(n - 1, sleep)(thunk) }
   }
 
   private val isAcceptingConnections: () => Boolean = () => {
@@ -95,7 +99,6 @@ object CommandLine {
   import scala.sys.process.stringToProcess
 
   def run(command: String) = command.run()
-
 
   def runBlocking(command: String, failOnError: Boolean = true): Int = {
     val returnValue = command.!

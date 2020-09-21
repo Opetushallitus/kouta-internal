@@ -105,9 +105,12 @@ object KoutaConfigurationFactory extends Logging with KoutaConfigurationConstant
 
     implicit val applicationSettingsParser = new ApplicationSettingsParser[KoutaConfiguration] {
       override def parse(c: TypesafeConfig): KoutaConfiguration =
-        KoutaConfiguration(c, new OphProperties("src/test/resources/kouta-internal.properties") {
-          addDefault("host.virkailija", c.getString("host.virkailija"))
-        })
+        KoutaConfiguration(
+          c,
+          new OphProperties("src/test/resources/kouta-internal.properties") {
+            addDefault("host.virkailija", c.getString("host.virkailija"))
+          }
+        )
     }
 
     logger.info(s"Reading template variables from '${templateFilePath}'")

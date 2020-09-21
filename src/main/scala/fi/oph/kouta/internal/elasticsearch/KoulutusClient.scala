@@ -11,7 +11,10 @@ import fi.vm.sade.utils.slf4j.Logging
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class KoulutusClient(val index: String, val client: ElasticClient) extends KoutaJsonFormats with Logging with ElasticsearchClient {
+class KoulutusClient(val index: String, val client: ElasticClient)
+    extends KoutaJsonFormats
+    with Logging
+    with ElasticsearchClient {
   def getKoulutus(oid: KoulutusOid): Future[Koulutus] =
     getItem[KoulutusIndexed](oid.s).map(_.toKoulutus)
 }

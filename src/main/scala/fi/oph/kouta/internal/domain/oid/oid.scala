@@ -8,7 +8,7 @@ sealed trait Oid {
 
   override def toString: String = s
 
-  def isValid():Boolean = OidPattern.matcher(s).matches()
+  def isValid(): Boolean = OidPattern.matcher(s).matches()
 }
 
 case class GenericOid(s: String) extends Oid
@@ -18,7 +18,7 @@ case class KoulutusOid(s: String) extends Oid {
 }
 
 case class ToteutusOid(s: String) extends Oid {
-  override val OidPattern:  Pattern = Pattern.compile("""^1\.2\.246\.562\.17.+[\d]$""")
+  override val OidPattern: Pattern = Pattern.compile("""^1\.2\.246\.562\.17.+[\d]$""")
 }
 
 case class HakukohdeOid(s: String) extends Oid {
@@ -30,4 +30,4 @@ case class HakuOid(s: String) extends Oid {
 }
 
 case class OrganisaatioOid(s: String) extends Oid
-case class UserOid(s: String) extends Oid
+case class UserOid(s: String)         extends Oid

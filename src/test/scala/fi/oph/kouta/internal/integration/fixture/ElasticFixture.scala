@@ -21,7 +21,7 @@ trait ElasticFixture extends Logging {
     def status = client.execute(catIndices("haku-kouta")).await.result(0).status
 
     def recoveryStatuses = {
-      val recoveryBody = client.execute(recoverIndex("haku-kouta")).await.body.get
+      val recoveryBody     = client.execute(recoverIndex("haku-kouta")).await.body.get
       val recoveryResponse = read[RecoveryResponse](recoveryBody)
       recoveryResponse.`haku-kouta`.shards.map(_.stage)
     }

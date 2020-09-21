@@ -147,7 +147,8 @@ import fi.oph.kouta.internal.swagger.SwaggerModel
     |           format: date-time
     |           description: Toteutuksen viimeisin muokkausaika. Järjestelmän generoima
     |           example: 2019-08-23T09:55
-    |""")
+    |"""
+)
 case class Toteutus(
     oid: ToteutusOid,
     koulutusOid: KoulutusOid,

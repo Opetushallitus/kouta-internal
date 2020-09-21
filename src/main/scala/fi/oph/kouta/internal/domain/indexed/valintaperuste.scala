@@ -56,7 +56,7 @@ case class AmmatillinenValintaperusteMetadataIndexed(
 ) extends ValintaperusteMetadataIndexed {
   override def toValintaperusteMetadata: ValintaperusteMetadata = AmmatillinenValintaperusteMetadata(
     koulutustyyppi = koulutustyyppi,
-    valintatavat = valintatavat.map(_.toAmmatillinenValintatapa)                ,
+    valintatavat = valintatavat.map(_.toAmmatillinenValintatapa),
     kielitaitovaatimukset = kielitaitovaatimukset.map(_.toValintaperusteKielitaitovaatimus)
   )
 }
@@ -91,13 +91,14 @@ case class AmmattikorkeakouluValintaperusteMetadataIndexed(
     osaamistausta: Seq[KoodiUri],
     kuvaus: Kielistetty
 ) extends KorkeakoulutusValintaperusteMetadataIndexed {
-  override def toValintaperusteMetadata: AmmattikorkeakouluValintaperusteMetadata = AmmattikorkeakouluValintaperusteMetadata(
-    koulutustyyppi = koulutustyyppi,
-    valintatavat = valintatavat.map(_.toAmmattikorkeakouluValintatapa),
-    kielitaitovaatimukset = kielitaitovaatimukset.map(_.toValintaperusteKielitaitovaatimus),
-    osaamistaustaKoodiUrit = osaamistausta.map(_.koodiUri),
-    kuvaus = kuvaus
-  )
+  override def toValintaperusteMetadata: AmmattikorkeakouluValintaperusteMetadata =
+    AmmattikorkeakouluValintaperusteMetadata(
+      koulutustyyppi = koulutustyyppi,
+      valintatavat = valintatavat.map(_.toAmmattikorkeakouluValintatapa),
+      kielitaitovaatimukset = kielitaitovaatimukset.map(_.toValintaperusteKielitaitovaatimus),
+      osaamistaustaKoodiUrit = osaamistausta.map(_.koodiUri),
+      kuvaus = kuvaus
+    )
 }
 
 case class ValintaperusteKielitaitovaatimusIndexed(

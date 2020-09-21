@@ -102,7 +102,8 @@ import fi.oph.kouta.internal.swagger.SwaggerModel
     |          description: Koulutuksen toteutuksen stipendiä tarkentava kuvausteksti eri kielillä. Kielet on määritetty koulutuksen kielivalinnassa.
     |          allOf:
     |            - $ref: '#/components/schemas/Kuvaus'
-    |""")
+    |"""
+)
 case class Opetus(
     opetuskieliKoodiUrit: Seq[String],
     opetuskieletKuvaus: Kielistetty,

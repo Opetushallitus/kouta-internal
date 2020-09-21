@@ -12,14 +12,16 @@ import scala.concurrent.ExecutionContext.Implicits.global
 
 class ElasticsearchHealth(client: ElasticClient) extends KoutaJsonFormats with Logging {
   def checkStatus(): ElasticsearchHealthStatus =
-    client.execute(clusterHealth())
+    client
+      .execute(clusterHealth())
       .map {
         case e: RequestFailure =>
           logger.error(s"Elasticsearch error: ${write(e.error)}")
           ElasticsearchHealthStatus.Unreachable
         case response: RequestSuccess[ClusterHealthResponse] =>
           ElasticsearchHealthStatus(response.result.status)
-      }.await
+      }
+      .await
 }
 
 object ElasticsearchHealth extends ElasticsearchHealth(ElasticsearchClient.client)

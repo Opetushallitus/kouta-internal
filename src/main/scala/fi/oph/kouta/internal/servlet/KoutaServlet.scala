@@ -45,7 +45,10 @@ trait KoutaServlet extends ScalatraServlet with KoutaJsonFormats with JacksonJso
         case x if x.isSuccess =>
           Some(x.get)
         case Failure(e) =>
-          throw new IllegalArgumentException(s"Ei voitu jäsentää otsaketta If-Unmodified-Since muodossa $SampleHttpDate.", e)
+          throw new IllegalArgumentException(
+            s"Ei voitu jäsentää otsaketta If-Unmodified-Since muodossa $SampleHttpDate.",
+            e
+          )
       }
     case None => None
   }

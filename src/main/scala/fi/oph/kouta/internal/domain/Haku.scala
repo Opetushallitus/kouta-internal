@@ -125,7 +125,8 @@ import fi.oph.kouta.internal.domain.oid.{HakuOid, HakukohdeOid, OrganisaatioOid,
     |           format: date-time
     |           description: Haun viimeisin muokkausaika. Järjestelmän generoima
     |           example: 2019-08-23T09:55
-    |""")
+    |"""
+)
 case class Haku(
     oid: HakuOid,
     tila: Julkaisutila,
@@ -150,4 +151,3 @@ case class Haku(
     kielivalinta: Seq[Kieli],
     modified: Option[LocalDateTime]
 ) extends PerustiedotWithOid
-

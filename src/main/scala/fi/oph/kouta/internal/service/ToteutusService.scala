@@ -7,8 +7,7 @@ import fi.oph.kouta.internal.security.{Authenticated, Role, RoleEntity}
 
 import scala.concurrent.Future
 
-class ToteutusService(toteutusClient: ToteutusClient)
-    extends RoleEntityAuthorizationService {
+class ToteutusService(toteutusClient: ToteutusClient) extends RoleEntityAuthorizationService {
 
   override val roleEntity: RoleEntity = Role.Toteutus
 

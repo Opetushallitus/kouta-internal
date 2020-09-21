@@ -7,8 +7,7 @@ import fi.oph.kouta.internal.domain.enums.{Hakulomaketyyppi, Julkaisutila, Kieli
 import fi.oph.kouta.internal.domain.oid._
 import fi.oph.kouta.internal.swagger.SwaggerModel
 
-@SwaggerModel(
-  """    YhdenPaikanSaanto:
+@SwaggerModel("""    YhdenPaikanSaanto:
     |      type: object
     |      properties:
     |        voimassa:
@@ -18,9 +17,7 @@ import fi.oph.kouta.internal.swagger.SwaggerModel
     |          type: string
     |          description: Syy miksi ei ole yhden paikan säännön piirissä.
     |""")
-case class YhdenPaikanSaanto(
-  voimassa: Boolean,
-  syy: String)
+case class YhdenPaikanSaanto(voimassa: Boolean, syy: String)
 
 @SwaggerModel(
   """    Hakukohde:
@@ -201,7 +198,8 @@ case class YhdenPaikanSaanto(
     |           format: date-time
     |           description: Hakukohteen viimeisin muokkausaika. Järjestelmän generoima
     |           example: 2019-08-23T09:55
-    |""")
+    |"""
+)
 case class Hakukohde(
     oid: HakukohdeOid,
     toteutusOid: ToteutusOid,

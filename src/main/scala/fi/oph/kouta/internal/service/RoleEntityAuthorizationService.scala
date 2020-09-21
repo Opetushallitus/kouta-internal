@@ -15,13 +15,12 @@ trait RoleEntityAuthorizationService extends AuthorizationService {
   def authorizeGet[E <: Perustiedot](
       entityWithTime: Option[(E, Instant)]
   )(implicit authenticated: Authenticated): Option[(E, Instant)] =
-    entityWithTime.map {
-      case (entity, lastModified) =>
-        withAuthorizedChildOrganizationOids(roleEntity.readRoles) { authorizedOrganizations =>
-          authorize(entity.organisaatioOid, authorizedOrganizations) {
-            (entity, lastModified)
-          }
+    entityWithTime.map { case (entity, lastModified) =>
+      withAuthorizedChildOrganizationOids(roleEntity.readRoles) { authorizedOrganizations =>
+        authorize(entity.organisaatioOid, authorizedOrganizations) {
+          (entity, lastModified)
         }
+      }
     }
 
   def authorizeGet[E <: Perustiedot](entity: Future[E])(implicit authenticated: Authenticated): Future[E] =

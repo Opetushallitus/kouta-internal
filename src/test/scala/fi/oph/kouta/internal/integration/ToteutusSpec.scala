@@ -5,7 +5,11 @@ import fi.oph.kouta.internal.domain.oid.{KoulutusOid, ToteutusOid}
 import fi.oph.kouta.internal.integration.fixture.{AccessControlSpec, KoulutusFixture, ToteutusFixture}
 import fi.oph.kouta.internal.security.Role
 
-class ToteutusSpec extends ToteutusFixture with KoulutusFixture with AccessControlSpec with GenericGetTests[Toteutus, ToteutusOid] {
+class ToteutusSpec
+    extends ToteutusFixture
+    with KoulutusFixture
+    with AccessControlSpec
+    with GenericGetTests[Toteutus, ToteutusOid] {
 
   override val roleEntities               = Seq(Role.Toteutus)
   override val getPath: String            = ToteutusPath
