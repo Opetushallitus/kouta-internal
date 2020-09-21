@@ -30,7 +30,7 @@ class HakukohdeClient(val index: String, val client: ElasticClient)
         not(existsQuery("tarjoajat")).must(matchQuery("toteutus.tarjoajat.oid", oid.toString))
       )
     )
-    searchItems[HakukohdeIndexed](must(hakuQuery ++ tarjoajaQuery)).map(_.map(_.toHakukohde))
+    searchItems[HakukohdeIndexed](Some(must(hakuQuery ++ tarjoajaQuery))).map(_.map(_.toHakukohde))
   }
 }
 

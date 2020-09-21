@@ -14,6 +14,9 @@ class HakuService(hakuClient: HakuClient) extends RoleEntityAuthorizationService
   def get(oid: HakuOid)(implicit authenticated: Authenticated): Future[Haku] =
     authorizeGet(hakuClient.getHaku(oid))
 
+  def search(implicit authenticated: Authenticated): Future[Seq[Haku]] =
+    hakuClient.search
+
   def searchByAtaruId(ataruId: String)(implicit authenticated: Authenticated): Future[Seq[Haku]] =
     hakuClient.searchByAtaruId(ataruId)
 }
