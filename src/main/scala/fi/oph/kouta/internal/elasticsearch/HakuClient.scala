@@ -20,8 +20,11 @@ class HakuClient(val index: String, val client: ElasticClient)
     getItem[HakuIndexed](oid.s)
       .map(_.toHaku)
 
+  def search: Future[Seq[Haku]] =
+    searchItems[HakuIndexed](None).map(_.map(_.toHaku))
+
   def searchByAtaruId(id: String): Future[Seq[Haku]] =
-    searchItems[HakuIndexed](matchQuery("hakulomakeAtaruId", id)).map(_.map(_.toHaku))
+    searchItems[HakuIndexed](Some(matchQuery("hakulomakeAtaruId", id))).map(_.map(_.toHaku))
 }
 
 object HakuClient extends HakuClient("haku-kouta", ElasticsearchClient.client)

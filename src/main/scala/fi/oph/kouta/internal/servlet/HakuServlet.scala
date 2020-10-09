@@ -61,7 +61,6 @@ class HakuServlet(hakuService: HakuService, val sessionDAO: SessionDAO)
       |          name: ataruId
       |          schema:
       |            type: string
-      |          required: true
       |          description: Ataru-lomakkeen id
       |          example: 66b7b709-1ed0-49cc-bbef-e5b0420a81c9
       |      responses:
@@ -79,7 +78,7 @@ class HakuServlet(hakuService: HakuService, val sessionDAO: SessionDAO)
     implicit val authenticated: Authenticated = authenticate
 
     params.get("ataruId") match {
-      case None     => BadRequest("Query parameter ataruId is required")
+      case None     => hakuService.search
       case Some(id) => hakuService.searchByAtaruId(id)
     }
   }
