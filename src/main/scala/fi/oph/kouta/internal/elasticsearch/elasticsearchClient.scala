@@ -49,7 +49,7 @@ trait ElasticsearchClient { this: KoutaJsonFormats with Logging =>
   }
 
   def searchItems[T: HitReader: ClassTag](query: Option[Query]): Future[IndexedSeq[T]] = {
-    val notTallennettu = not(matchQuery("tila", "tallennettu"))
+    val notTallennettu = not(termsQuery("tila.keyword", "tallennettu"))
     query.fold[Future[IndexedSeq[T]]]({
       implicit val duration = Duration(10, TimeUnit.SECONDS)
       Future(
