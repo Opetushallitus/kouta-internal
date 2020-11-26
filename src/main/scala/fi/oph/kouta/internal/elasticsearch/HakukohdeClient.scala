@@ -23,11 +23,11 @@ class HakukohdeClient(val index: String, val client: ElasticClient)
       hakuOid: Option[HakuOid],
       tarjoajaOid: Option[OrganisaatioOid]
   ): Future[Seq[Hakukohde]] = {
-    val hakuQuery = hakuOid.map(oid => matchQuery("hakuOid", oid.toString))
+    val hakuQuery = hakuOid.map(oid => termsQuery("hakuOid", oid.toString))
     val tarjoajaQuery = tarjoajaOid.map(oid =>
       should(
-        matchQuery("tarjoajat.oid", oid.toString),
-        not(existsQuery("tarjoajat")).must(matchQuery("toteutus.tarjoajat.oid", oid.toString))
+        termsQuery("tarjoajat.oid", oid.toString),
+        not(existsQuery("tarjoajat")).must(termsQuery("toteutus.tarjoajat.oid", oid.toString))
       )
     )
     searchItems[HakukohdeIndexed](Some(must(hakuQuery ++ tarjoajaQuery))).map(_.map(_.toHakukohde))
