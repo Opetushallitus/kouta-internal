@@ -7,14 +7,19 @@ import fi.oph.kouta.internal.domain.enums.{Hakulomaketyyppi, Julkaisutila, Kieli
 import fi.oph.kouta.internal.domain.oid.{HakuOid, HakukohdeOid}
 import fi.oph.kouta.internal.domain._
 
+case class EmbeddedToteutusIndexed(tarjoajat: List[Organisaatio])
+
 case class EmbeddedHakukohdeIndexed(
-    oid: HakukohdeOid
+    oid: HakukohdeOid,
+    jarjestyspaikka: Option[Organisaatio],
+    toteutus: EmbeddedToteutusIndexed
 )
 
 case class HakuIndexed(
     oid: HakuOid,
     tila: Julkaisutila,
     nimi: Kielistetty,
+    hakukohteet: List[EmbeddedHakukohdeIndexed],
     hakutapa: Option[KoodiUri],
     hakukohteenLiittamisenTakaraja: Option[LocalDateTime],
     hakukohteenMuokkaamisenTakaraja: Option[LocalDateTime],

@@ -11,27 +11,33 @@ import scala.annotation.tailrec
 
 object OrganisaatioClient extends HttpClient with KoutaJsonFormats {
   val urlProperties: OphProperties = KoutaConfigurationFactory.configuration.urlProperties
+  private val rootOrganisaatioOid  = KoutaConfigurationFactory.configuration.securityConfiguration.rootOrganisaatio
 
   case class OrganisaatioResponse(numHits: Int, organisaatiot: List[OidAndChildren])
   case class OidAndChildren(oid: OrganisaatioOid, children: List[OidAndChildren], parentOidPath: String)
 
-  def getAllChildOidsFlat(oid: OrganisaatioOid): Seq[OrganisaatioOid] = getHierarkia(oid, children(oid, _))
+  def getAllChildOidsFlat(oid: OrganisaatioOid): Option[Set[OrganisaatioOid]] = getHierarkia(oid, children(oid, _))
+  def getAllChildOidsFlat(oids: Set[OrganisaatioOid]): Option[Set[OrganisaatioOid]] =
+    oids.foldLeft[Option[Set[OrganisaatioOid]]](Some(Set.empty))((result, oid) =>
+      result.flatMap(r => getAllChildOidsFlat(oid).map(r ++ _))
+    )
 
-  private def getHierarkia[R](oid: OrganisaatioOid, result: List[OidAndChildren] => R) = {
-    val url = urlProperties.url("organisaatio-service.organisaatio.hierarkia", queryParams(oid.toString))
-    get(url) { response =>
-      result(parse(response).extract[OrganisaatioResponse].organisaatiot)
+  private def getHierarkia[R](oid: OrganisaatioOid, result: List[OidAndChildren] => R): Option[R] = {
+    if (rootOrganisaatioOid == oid) {
+      None
+    } else {
+      val url = urlProperties.url("organisaatio-service.organisaatio.hierarkia", queryParams(oid.toString))
+      get(url) { response =>
+        Some(result(parse(response).extract[OrganisaatioResponse].organisaatiot))
+      }
     }
   }
 
   private def queryParams(oid: String) =
     toQueryParams("oid" -> oid, "aktiiviset" -> "true", "suunnitellut" -> "true", "lakkautetut" -> "false")
 
-  private def children(oid: OrganisaatioOid, organisaatiot: List[OidAndChildren]): Seq[OrganisaatioOid] =
-    find(oid, organisaatiot).map(x => x.oid +: childOidsFlat(x)).getOrElse(Seq()).distinct
-
-  private def parentsAndChildren(oid: OrganisaatioOid, organisaatiot: List[OidAndChildren]): Seq[OrganisaatioOid] =
-    find(oid, organisaatiot).map(x => parentOidsFlat(x) ++ Seq(x.oid) ++ childOidsFlat(x)).getOrElse(Seq()).distinct
+  private def children(oid: OrganisaatioOid, organisaatiot: List[OidAndChildren]): Set[OrganisaatioOid] =
+    find(oid, organisaatiot).fold(Set.empty[OrganisaatioOid])(x => childOidsFlat(x) + x.oid)
 
   @tailrec
   private def find(oid: OrganisaatioOid, level: List[OidAndChildren]): Option[OidAndChildren] =
@@ -41,10 +47,7 @@ object OrganisaatioClient extends HttpClient with KoutaJsonFormats {
       case None                  => find(oid, level.flatMap(_.children))
     }
 
-  private def childOidsFlat(item: OidAndChildren): Seq[OrganisaatioOid] =
-    item.children.flatMap(c => c.oid +: childOidsFlat(c))
-
-  private def parentOidsFlat(item: OidAndChildren): Seq[OrganisaatioOid] =
-    item.parentOidPath.split('/').toSeq.reverse.map(OrganisaatioOid)
+  private def childOidsFlat(item: OidAndChildren): Set[OrganisaatioOid] =
+    item.children.foldLeft(Set.empty[OrganisaatioOid])((s, c) => s ++ childOidsFlat(c) + c.oid)
 
 }

@@ -61,16 +61,25 @@ class HakukohdeServlet(hakukohdeService: HakukohdeService, val sessionDAO: Sessi
       |          name: haku
       |          schema:
       |            type: string
-      |          required: true
+      |          required: false
       |          description: Haun-oid
       |          example: 1.2.246.562.29.00000000000000000009
       |        - in: query
       |          name: tarjoaja
       |          schema:
-      |            type: string
+      |            type: array
+      |            items:
+      |              type: string
       |          required: false
       |          description: Organisaatio joka on hakukohteen tarjoaja
-      |          example: 1.2.246.562.10.00000000001
+      |          example: 1.2.246.562.10.00000000001,1.2.246.562.10.00000000002
+      |        - in: query
+      |          name: q
+      |          schema:
+      |            type: string
+      |          required: false
+      |          description: Tekstihaku hakukohteen ja sen järjestyspaikan nimeen
+      |          example: Autoalan perustutkinto
       |      responses:
       |        '200':
       |          description: Ok
@@ -86,13 +95,15 @@ class HakukohdeServlet(hakukohdeService: HakukohdeService, val sessionDAO: Sessi
     implicit val authenticated: Authenticated = authenticate
 
     val hakuOid  = params.get("haku").map(HakuOid)
-    val tarjoaja = params.get("tarjoaja").map(OrganisaatioOid)
+    val tarjoaja = params.get("tarjoaja").map(s => s.split(",").map(OrganisaatioOid).toSet)
+    val q        = params.get("q")
 
     (hakuOid, tarjoaja) match {
       case (None, None)                     => BadRequest("Query parameter is required")
       case (Some(oid), _) if !oid.isValid() => BadRequest(s"Invalid haku ${oid.toString}")
-      case (_, Some(oid)) if !oid.isValid() => BadRequest(s"Invalid tarjoaja ${oid.toString}")
-      case (hakuOid, tarjoajaOid)           => hakukohdeService.searchByHakuAndTarjoaja(hakuOid, tarjoajaOid)
+      case (_, Some(oids)) if oids.exists(!_.isValid()) =>
+        BadRequest(s"Invalid tarjoaja ${oids.find(!_.isValid()).get.toString}")
+      case (hakuOid, tarjoajaOids) => hakukohdeService.search(hakuOid, tarjoajaOids, q)
     }
   }
 }

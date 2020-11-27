@@ -1,26 +1,25 @@
 package fi.oph.kouta.internal.service
 
+import fi.oph.kouta.internal.client.OrganisaatioClient
 import fi.oph.kouta.internal.domain.Hakukohde
 import fi.oph.kouta.internal.domain.oid.{HakuOid, HakukohdeOid, OrganisaatioOid}
 import fi.oph.kouta.internal.elasticsearch.HakukohdeClient
-import fi.oph.kouta.internal.security.{Authenticated, Role, RoleEntity}
+import fi.oph.kouta.internal.security.Authenticated
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class HakukohdeService(hakukohdeClient: HakukohdeClient, hakuService: HakuService)
-    extends RoleEntityAuthorizationService {
-
-  override val roleEntity: RoleEntity = Role.Hakukohde
-
+class HakukohdeService(hakukohdeClient: HakukohdeClient, hakuService: HakuService) {
   def get(oid: HakukohdeOid)(implicit authenticated: Authenticated): Future[Hakukohde] =
-    authorizeGet(hakukohdeClient.getHakukohde(oid))
+    hakukohdeClient.getHakukohde(oid)
 
-  def searchByHakuAndTarjoaja(hakuOid: Option[HakuOid], tarjoajaOid: Option[OrganisaatioOid])(implicit
+  def search(hakuOid: Option[HakuOid], tarjoajaOids: Option[Set[OrganisaatioOid]], q: Option[String])(implicit
       authenticated: Authenticated
   ): Future[Seq[Hakukohde]] = {
     val checkHakuExists = hakuOid.fold(Future.successful(()))(hakuService.get(_).map(_ => ()))
-    checkHakuExists.flatMap(_ => hakukohdeClient.searchByHakuAndTarjoaja(hakuOid, tarjoajaOid))
+    checkHakuExists.flatMap(_ =>
+      hakukohdeClient.search(hakuOid, tarjoajaOids.flatMap(OrganisaatioClient.getAllChildOidsFlat), q)
+    )
   }
 }
 

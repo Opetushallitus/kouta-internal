@@ -34,29 +34,5 @@ trait GenericGetTests[E, ID] {
         body should include("Unauthorized")
       }
     }
-
-    it should s"allow a user of the $entityName organization to read the $entityName" in {
-      get(existingId, crudSessions(ChildOid))
-    }
-
-    it should s"deny a user without access to the $entityName organization" in {
-      get(existingId, crudSessions(LonelyOid), 403)
-    }
-
-    it should s"allow a user of an ancestor organization to read the $entityName" in {
-      get(existingId, crudSessions(ParentOid))
-    }
-
-    it should "deny a user with only access to a descendant organization" in {
-      get(existingId, crudSessions(GrandChildOid), 403)
-    }
-
-    it should "deny a user with the wrong role" in {
-      get(existingId, otherRoleSession, 403)
-    }
-
-    it should "deny indexer access" in {
-      get(existingId, indexerSession, 403)
-    }
   }
 }

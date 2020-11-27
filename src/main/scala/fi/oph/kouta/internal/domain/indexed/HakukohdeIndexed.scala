@@ -15,9 +15,11 @@ import fi.oph.kouta.internal.domain.{
   YhdenPaikanSaanto
 }
 
+case class HakukohdeToteutusIndexed(oid: ToteutusOid, tarjoajat: List[Organisaatio])
+
 case class HakukohdeIndexed(
     oid: HakukohdeOid,
-    toteutusOid: ToteutusOid,
+    toteutus: HakukohdeToteutusIndexed,
     hakuOid: HakuOid,
     tila: Julkaisutila,
     nimi: Kielistetty,
@@ -50,13 +52,14 @@ case class HakukohdeIndexed(
     valintakokeet: List[ValintakoeIndexed],
     hakuajat: List[Ajanjakso],
     muokkaaja: Muokkaaja,
+    jarjestyspaikka: Option[Organisaatio],
     organisaatio: Organisaatio,
     kielivalinta: Seq[Kieli],
     modified: Option[LocalDateTime]
 ) extends WithTila {
   def toHakukohde: Hakukohde = Hakukohde(
     oid = oid,
-    toteutusOid = toteutusOid,
+    toteutusOid = toteutus.oid,
     hakuOid = hakuOid,
     tila = tila,
     nimi = nimi,
@@ -89,6 +92,7 @@ case class HakukohdeIndexed(
     valintakokeet = valintakokeet.map(_.toValintakoe),
     hakuajat = hakuajat,
     muokkaaja = muokkaaja.oid,
+    tarjoajat = jarjestyspaikka.map(o => List(o.oid)).getOrElse(toteutus.tarjoajat.map(_.oid)),
     organisaatioOid = organisaatio.oid,
     kielivalinta = kielivalinta,
     modified = modified

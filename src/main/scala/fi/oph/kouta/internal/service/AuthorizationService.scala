@@ -14,19 +14,6 @@ trait AuthorizationService extends Logging {
 
   protected lazy val indexerRoles: Seq[Role] = Seq(Role.Indexer)
 
-  /** Checks if the the authenticated user has access to the given organization, then calls f with a sequence of descendants of that organization. */
-  def withAuthorizedChildOrganizationOids[R](oid: OrganisaatioOid, roles: Seq[Role])(
-      f: Seq[OrganisaatioOid] => R
-  )(implicit authenticated: Authenticated): R =
-    withAuthorizedChildOrganizationOids(roles) { children =>
-      authorize(oid, children) {
-        OrganisaatioClient.getAllChildOidsFlat(oid) match {
-          case oids if oids.isEmpty => throw OrganizationAuthorizationFailedException(oid)
-          case oids                 => f(oids)
-        }
-      }
-    }
-
   def withAuthorizedChildOrganizationOids[R](
       roles: Seq[Role]
   )(f: IterableView[OrganisaatioOid, Iterable[_]] => R)(implicit authenticated: Authenticated): R =
@@ -57,7 +44,7 @@ trait AuthorizationService extends Logging {
     }.fold(Set())(_ union _)
 
   private def lazyFlatChildren(orgs: Set[OrganisaatioOid]): IterableView[OrganisaatioOid, Iterable[_]] =
-    orgs.view.flatMap(oid => OrganisaatioClient.getAllChildOidsFlat(oid).toSet)
+    orgs.view.filterNot(_ == rootOrganisaatioOid).flatMap(oid => OrganisaatioClient.getAllChildOidsFlat(oid).get)
 
   def hasRootAccess(roles: Seq[Role])(implicit authenticated: Authenticated): Boolean =
     roles.exists { role =>

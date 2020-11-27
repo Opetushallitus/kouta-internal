@@ -189,6 +189,14 @@ case class YhdenPaikanSaanto(voimassa: Boolean, syy: String)
     |          type: string
     |          description: Hakukohdetta viimeksi muokanneen virkailijan henkilö-oid
     |          example: 1.2.246.562.10.00101010101
+    |        tarjoajat:
+    |          type: array
+    |          description: Hakukohteen tarjoajaorganisaatioiden oidit
+    |          items:
+    |            type: string
+    |          example:
+    |            - 1.2.246.562.10.00101010101
+    |            - 1.2.246.562.10.00101010102
     |        organisaatioOid:
     |           type: string
     |           description: Hakukohteen luoneen organisaation oid
@@ -235,6 +243,7 @@ case class Hakukohde(
     valintakokeet: List[Valintakoe],
     hakuajat: List[Ajanjakso],
     muokkaaja: UserOid,
+    tarjoajat: List[OrganisaatioOid],
     organisaatioOid: OrganisaatioOid,
     kielivalinta: Seq[Kieli],
     modified: Option[LocalDateTime]
