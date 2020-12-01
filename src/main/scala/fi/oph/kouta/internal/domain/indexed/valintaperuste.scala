@@ -5,6 +5,7 @@ import java.util.UUID
 
 import fi.oph.kouta.internal.domain.enums.{Julkaisutila, Kieli, Koulutustyyppi}
 import fi.oph.kouta.internal.domain._
+import fi.vm.sade.utils.slf4j.Logging
 
 case class ValintaperusteIndexed(
     id: Option[UUID],
@@ -21,23 +22,34 @@ case class ValintaperusteIndexed(
     muokkaaja: Muokkaaja,
     kielivalinta: Seq[Kieli],
     modified: Option[LocalDateTime]
-) extends WithTila {
-  def toValintaperuste: Valintaperuste = Valintaperuste(
-    id = id,
-    koulutustyyppi = koulutustyyppi,
-    tila = tila,
-    hakutapaKoodiUri = hakutapa.map(_.koodiUri),
-    kohdejoukkoKoodiUri = kohdejoukko.map(_.koodiUri),
-    kohdejoukonTarkenneKoodiUri = kohdejoukonTarkenne.map(_.koodiUri),
-    nimi = nimi,
-    julkinen = julkinen,
-    sorakuvausId = sorakuvaus.map(_.id),
-    metadata = metadata.map(_.toValintaperusteMetadata),
-    organisaatioOid = organisaatio.get.oid,
-    muokkaaja = muokkaaja.oid,
-    kielivalinta = kielivalinta,
-    modified = modified
-  )
+) extends WithTila
+    with Logging {
+  def toValintaperuste: Valintaperuste = {
+    try {
+      Valintaperuste(
+        id = id,
+        koulutustyyppi = koulutustyyppi,
+        tila = tila,
+        hakutapaKoodiUri = hakutapa.map(_.koodiUri),
+        kohdejoukkoKoodiUri = kohdejoukko.map(_.koodiUri),
+        kohdejoukonTarkenneKoodiUri = kohdejoukonTarkenne.map(_.koodiUri),
+        nimi = nimi,
+        julkinen = julkinen,
+        sorakuvausId = sorakuvaus.map(_.id),
+        metadata = metadata.map(_.toValintaperusteMetadata),
+        organisaatioOid = organisaatio.get.oid,
+        muokkaaja = muokkaaja.oid,
+        kielivalinta = kielivalinta,
+        modified = modified
+      )
+    } catch {
+      case e: Exception => {
+        val msg: String = s"Failed to create Valintaperuste (${id})"
+        logger.error(msg, e)
+        throw new RuntimeException(msg, e)
+      }
+    }
+  }
 }
 
 case class SorakuvausIndexed(id: UUID)

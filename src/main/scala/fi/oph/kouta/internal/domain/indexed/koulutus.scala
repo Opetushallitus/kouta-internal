@@ -5,6 +5,7 @@ import java.time.LocalDateTime
 import fi.oph.kouta.internal.domain._
 import fi.oph.kouta.internal.domain.enums._
 import fi.oph.kouta.internal.domain.oid._
+import fi.vm.sade.utils.slf4j.Logging
 
 case class KoulutusIndexed(
     oid: KoulutusOid,
@@ -20,22 +21,33 @@ case class KoulutusIndexed(
     organisaatio: Option[Organisaatio],
     kielivalinta: Seq[Kieli],
     modified: Option[LocalDateTime]
-) extends WithTila {
-  def toKoulutus: Koulutus = Koulutus(
-    oid = oid,
-    johtaaTutkintoon = johtaaTutkintoon,
-    koulutustyyppi = koulutustyyppi,
-    koulutusKoodiUri = koulutus.map(_.koodiUri),
-    tila = tila,
-    tarjoajat = tarjoajat.map(_.oid),
-    nimi = nimi,
-    metadata = metadata.map(_.toKoulutusMetadata),
-    julkinen = julkinen,
-    muokkaaja = muokkaaja.oid,
-    organisaatioOid = organisaatio.get.oid,
-    kielivalinta = kielivalinta,
-    modified = modified
-  )
+) extends WithTila
+    with Logging {
+  def toKoulutus: Koulutus = {
+    try {
+      Koulutus(
+        oid = oid,
+        johtaaTutkintoon = johtaaTutkintoon,
+        koulutustyyppi = koulutustyyppi,
+        koulutusKoodiUri = koulutus.map(_.koodiUri),
+        tila = tila,
+        tarjoajat = tarjoajat.map(_.oid),
+        nimi = nimi,
+        metadata = metadata.map(_.toKoulutusMetadata),
+        julkinen = julkinen,
+        muokkaaja = muokkaaja.oid,
+        organisaatioOid = organisaatio.get.oid,
+        kielivalinta = kielivalinta,
+        modified = modified
+      )
+    } catch {
+      case e: Exception => {
+        val msg: String = s"Failed to create Koulutus (${oid})"
+        logger.error(msg, e)
+        throw new RuntimeException(msg, e)
+      }
+    }
+  }
 }
 
 sealed trait KoulutusMetadataIndexed {
