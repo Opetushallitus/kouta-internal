@@ -4,6 +4,7 @@ import com.sksamuel.elastic4s.http.ElasticClient
 import com.sksamuel.elastic4s.http.ElasticDsl._
 import com.sksamuel.elastic4s.json4s.ElasticJson4s.Implicits._
 import fi.oph.kouta.internal.domain.Haku
+import fi.oph.kouta.internal.domain.enums.Julkaisutila.Tallennettu
 import fi.oph.kouta.internal.domain.indexed.HakuIndexed
 import fi.oph.kouta.internal.domain.oid.{HakuOid, OrganisaatioOid}
 import fi.oph.kouta.internal.util.KoutaJsonFormats
@@ -20,13 +21,14 @@ class HakuClient(val index: String, val client: ElasticClient)
     getItem[HakuIndexed](oid.s)
       .map(_.toHaku)
 
-  private def byTarjoaja(tarjoajaOids: Option[Set[OrganisaatioOid]], haku: HakuIndexed): Boolean =
+  private def byTarjoajaAndTila(tarjoajaOids: Option[Set[OrganisaatioOid]], haku: HakuIndexed): Boolean =
     tarjoajaOids.fold(true)(oids =>
-      haku.hakukohteet.exists(hakukohde =>
+      haku.hakukohteet.exists(hakukohde => {
+        hakukohde.tila match { case Tallennettu => return false }
         hakukohde.jarjestyspaikka.fold(hakukohde.toteutus.tarjoajat.exists(t => oids.contains(t.oid)))(j =>
           oids.contains(j.oid)
         )
-      )
+      })
     )
 
   def search(ataruId: Option[String], tarjoajaOids: Option[Set[OrganisaatioOid]]): Future[Seq[Haku]] = {
@@ -43,7 +45,7 @@ class HakuClient(val index: String, val client: ElasticClient)
     )
     val query = ataruIdQuery ++ tarjoajaQuery
     searchItems[HakuIndexed](if (query.isEmpty) None else Some(must(query)))
-      .map(_.filter(byTarjoaja(tarjoajaOids, _)).map(_.toHaku))
+      .map(_.filter(byTarjoajaAndTila(tarjoajaOids, _)).map(_.toHaku))
   }
 }
 

@@ -5,6 +5,7 @@ import java.time.LocalDateTime
 import fi.oph.kouta.internal.domain._
 import fi.oph.kouta.internal.domain.enums.{Julkaisutila, Kieli, Koulutustyyppi}
 import fi.oph.kouta.internal.domain.oid.{KoulutusOid, ToteutusOid}
+import fi.vm.sade.utils.slf4j.Logging
 
 case class ToteutusIndexed(
     oid: ToteutusOid,
@@ -14,22 +15,33 @@ case class ToteutusIndexed(
     nimi: Kielistetty,
     metadata: Option[ToteutusMetadataIndexed],
     muokkaaja: Muokkaaja,
-    organisaatio: Organisaatio,
+    organisaatio: Option[Organisaatio],
     kielivalinta: Seq[Kieli],
     modified: Option[LocalDateTime]
-) extends WithTila {
-  def toToteutus = Toteutus(
-    oid = oid,
-    koulutusOid = koulutusOid,
-    tila = tila,
-    tarjoajat = tarjoajat.map(_.oid),
-    nimi = nimi,
-    metadata = metadata.map(_.toToteutusMetadata),
-    muokkaaja = muokkaaja.oid,
-    organisaatioOid = organisaatio.oid,
-    kielivalinta = kielivalinta,
-    modified = modified
-  )
+) extends WithTila
+    with Logging {
+  def toToteutus: Toteutus = {
+    try {
+      Toteutus(
+        oid = oid,
+        koulutusOid = koulutusOid,
+        tila = tila,
+        tarjoajat = tarjoajat.map(_.oid),
+        nimi = nimi,
+        metadata = metadata.map(_.toToteutusMetadata),
+        muokkaaja = muokkaaja.oid,
+        organisaatioOid = organisaatio.get.oid,
+        kielivalinta = kielivalinta,
+        modified = modified
+      )
+    } catch {
+      case e: Exception => {
+        val msg: String = s"Failed to create Toteutus (${oid})"
+        logger.error(msg, e)
+        throw new RuntimeException(msg, e)
+      }
+    }
+  }
 }
 
 case class ToteutusMetadataIndexed(
