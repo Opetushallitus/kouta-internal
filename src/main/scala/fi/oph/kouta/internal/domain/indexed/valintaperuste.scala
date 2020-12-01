@@ -17,7 +17,7 @@ case class ValintaperusteIndexed(
     julkinen: Boolean,
     sorakuvaus: Option[SorakuvausIndexed],
     metadata: Option[ValintaperusteMetadataIndexed],
-    organisaatio: Organisaatio,
+    organisaatio: Option[Organisaatio],
     muokkaaja: Muokkaaja,
     kielivalinta: Seq[Kieli],
     modified: Option[LocalDateTime]
@@ -33,7 +33,7 @@ case class ValintaperusteIndexed(
     julkinen = julkinen,
     sorakuvausId = sorakuvaus.map(_.id),
     metadata = metadata.map(_.toValintaperusteMetadata),
-    organisaatioOid = organisaatio.oid,
+    organisaatioOid = organisaatio.get.oid,
     muokkaaja = muokkaaja.oid,
     kielivalinta = kielivalinta,
     modified = modified

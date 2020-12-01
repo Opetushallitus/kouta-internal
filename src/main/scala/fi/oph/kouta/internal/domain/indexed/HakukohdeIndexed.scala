@@ -53,7 +53,7 @@ case class HakukohdeIndexed(
     hakuajat: List[Ajanjakso],
     muokkaaja: Muokkaaja,
     jarjestyspaikka: Option[Organisaatio],
-    organisaatio: Organisaatio,
+    organisaatio: Option[Organisaatio],
     kielivalinta: Seq[Kieli],
     modified: Option[LocalDateTime]
 ) extends WithTila {
@@ -93,7 +93,7 @@ case class HakukohdeIndexed(
     hakuajat = hakuajat,
     muokkaaja = muokkaaja.oid,
     tarjoajat = jarjestyspaikka.map(o => List(o.oid)).getOrElse(toteutus.tarjoajat.map(_.oid)),
-    organisaatioOid = organisaatio.oid,
+    organisaatioOid = organisaatio.get.oid,
     kielivalinta = kielivalinta,
     modified = modified
   )

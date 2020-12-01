@@ -17,7 +17,7 @@ case class KoulutusIndexed(
     metadata: Option[KoulutusMetadataIndexed],
     julkinen: Boolean,
     muokkaaja: Muokkaaja,
-    organisaatio: Organisaatio,
+    organisaatio: Option[Organisaatio],
     kielivalinta: Seq[Kieli],
     modified: Option[LocalDateTime]
 ) extends WithTila {
@@ -32,7 +32,7 @@ case class KoulutusIndexed(
     metadata = metadata.map(_.toKoulutusMetadata),
     julkinen = julkinen,
     muokkaaja = muokkaaja.oid,
-    organisaatioOid = organisaatio.oid,
+    organisaatioOid = organisaatio.get.oid,
     kielivalinta = kielivalinta,
     modified = modified
   )

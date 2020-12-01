@@ -14,7 +14,7 @@ case class ToteutusIndexed(
     nimi: Kielistetty,
     metadata: Option[ToteutusMetadataIndexed],
     muokkaaja: Muokkaaja,
-    organisaatio: Organisaatio,
+    organisaatio: Option[Organisaatio],
     kielivalinta: Seq[Kieli],
     modified: Option[LocalDateTime]
 ) extends WithTila {
@@ -26,7 +26,7 @@ case class ToteutusIndexed(
     nimi = nimi,
     metadata = metadata.map(_.toToteutusMetadata),
     muokkaaja = muokkaaja.oid,
-    organisaatioOid = organisaatio.oid,
+    organisaatioOid = organisaatio.get.oid,
     kielivalinta = kielivalinta,
     modified = modified
   )
