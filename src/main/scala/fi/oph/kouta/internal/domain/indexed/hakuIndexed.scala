@@ -12,7 +12,8 @@ case class EmbeddedToteutusIndexed(tarjoajat: List[Organisaatio])
 case class EmbeddedHakukohdeIndexed(
     oid: HakukohdeOid,
     jarjestyspaikka: Option[Organisaatio],
-    toteutus: EmbeddedToteutusIndexed
+    toteutus: EmbeddedToteutusIndexed,
+    tila: Julkaisutila
 )
 
 case class HakuIndexed(
