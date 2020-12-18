@@ -39,13 +39,23 @@ trait ElasticsearchClient { this: KoutaJsonFormats with Logging =>
           logger.debug(s"Elasticsearch response: {}", response.result.sourceAsString)
           response.status match {
             case 404 => Future.successful(None)
-            case _ =>   response.result.safeTo[T] match {
-              case Success(x) => println(x)
-                Future.successful(Option(x))
-              case Failure(exception) =>
-                logger.error(s"Unable to read response entity with id $id from index $index. Not going to serve coffee from teapot!", exception)
-                Future.failed(TeapotException(s"Unable to read response entity with id $id from index $index. Not going to serve coffee from teapot!", exception))
-            }
+            case _ =>
+              response.result.safeTo[T] match {
+                case Success(x) =>
+                  println(x)
+                  Future.successful(Option(x))
+                case Failure(exception) =>
+                  logger.error(
+                    s"Unable to read response entity with id $id from index $index. Not going to serve coffee from teapot!",
+                    exception
+                  )
+                  Future.failed(
+                    TeapotException(
+                      s"Unable to read response entity with id $id from index $index. Not going to serve coffee from teapot!",
+                      exception
+                    )
+                  )
+              }
           }
       }
       .flatMap {
