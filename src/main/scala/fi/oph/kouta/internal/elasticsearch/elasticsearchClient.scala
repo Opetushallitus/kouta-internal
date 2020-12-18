@@ -19,6 +19,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 import scala.concurrent.duration.Duration
 import scala.reflect.ClassTag
+import scala.util.{Failure, Success}
 
 trait ElasticsearchClient { this: KoutaJsonFormats with Logging =>
   val index: String
@@ -36,7 +37,16 @@ trait ElasticsearchClient { this: KoutaJsonFormats with Logging =>
         case response: RequestSuccess[GetResponse] =>
           logger.debug(s"Elasticsearch status: {}", response.status)
           logger.debug(s"Elasticsearch response: {}", response.result.sourceAsString)
-          Future.successful(response.result.toOpt[T])
+          response.status match {
+            case 404 => Future.successful(None)
+            case _ =>   response.result.safeTo[T] match {
+              case Success(x) => println(x)
+                Future.successful(Option(x))
+              case Failure(exception) =>
+                logger.error(s"Unable to read response entity with id $id from index $index. Not going to serve coffee from teapot!", exception)
+                Future.failed(TeapotException(s"Unable to read response entity with id $id from index $index. Not going to serve coffee from teapot!", exception))
+            }
+          }
       }
       .flatMap {
         case None =>

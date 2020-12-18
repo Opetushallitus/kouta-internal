@@ -2,6 +2,7 @@ package fi.oph.kouta.internal.integration
 
 import java.util.UUID
 
+import fi.oph.kouta.internal.TempElasticClient
 import fi.oph.kouta.internal.domain.Haku
 import fi.oph.kouta.internal.domain.oid.HakuOid
 import fi.oph.kouta.internal.integration.fixture.{AccessControlSpec, HakuFixture}
@@ -57,5 +58,21 @@ class HakuSpec extends HakuFixture with AccessControlSpec with GenericGetTests[H
       status should equal(401)
       body should include("Unauthorized")
     }
+  }
+
+  private def updateExistingEntityWithUnknownTila(): Unit = {
+    import com.sksamuel.elastic4s.http.ElasticDsl._
+
+    import scala.concurrent.ExecutionContext.Implicits.global
+    TempElasticClient.client.execute {
+      update(existingId.s).in("haku-kouta/haku-kouta").doc(Map("tila" -> "outotila"))
+    }
+    //TempElasticClient.client.execute(com.sksamuel.elastic4s.http.ElasticDsl.get(existingId.s).from("haku-kouta")).map(println(_))
+  }
+
+  it should "return status code 418 if entity cannot be parsed" in {
+    get(existingId, crudSessions(ChildOid))
+    updateExistingEntityWithUnknownTila()
+    get(existingId, crudSessions(ChildOid), 418)
   }
 }
