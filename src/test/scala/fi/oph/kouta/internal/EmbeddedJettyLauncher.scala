@@ -52,8 +52,20 @@ object TestSetups extends Logging with KoutaConfigurationConstants {
 
   def setupWithEmbeddedPostgres() = {
     logger.info("Starting embedded PostgreSQL!")
+    System.getProperty("kouta-internal.embeddedPostgresType", "docker") match {
+      case x if "host".equalsIgnoreCase(x) => startHostPostgres()
+      case _ => startDockerPostgres()
+    }
+  }
+
+  private def startHostPostgres() = {
     TempDb.start()
     setupWithTemplate(TempDb.port)
+  }
+
+  private def startDockerPostgres() = {
+    TempDockerDb.start()
+    setupWithTemplate(TempDockerDb.port)
   }
 
   def setupWithoutEmbeddedPostgres() =
