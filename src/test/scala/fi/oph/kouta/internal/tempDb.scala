@@ -96,11 +96,12 @@ object TempDbUtils {
   @tailrec
   def tryTimes(times: Int, sleep: Int)(thunk: () => Boolean): Boolean = times match {
     case n if n < 1 => false
-    case 1 => thunk()
-    case n => thunk() || {
-      Thread.sleep(sleep);
-      tryTimes(n - 1, sleep)(thunk)
-    }
+    case 1          => thunk()
+    case n =>
+      thunk() || {
+        Thread.sleep(sleep);
+        tryTimes(n - 1, sleep)(thunk)
+      }
   }
 }
 

@@ -54,7 +54,7 @@ object TestSetups extends Logging with KoutaConfigurationConstants {
     logger.info("Starting embedded PostgreSQL!")
     System.getProperty("kouta-internal.embeddedPostgresType", "docker") match {
       case x if "host".equalsIgnoreCase(x) => startHostPostgres()
-      case _ => startDockerPostgres()
+      case _                               => startDockerPostgres()
     }
   }
 
@@ -108,10 +108,11 @@ object Templates {
             .getLines
             .map {
               case x if x.contains("host_postgresql_koutainternal_port") => s"host_postgresql_koutainternal_port: $port"
-              case x if x.contains("postgres_app_user") => "postgres_app_user: oph"
-              case x if x.contains("host_postgresql_koutainternal_app_password") => "host_postgresql_koutainternal_app_password:"
+              case x if x.contains("postgres_app_user")                  => "postgres_app_user: oph"
+              case x if x.contains("host_postgresql_koutainternal_app_password") =>
+                "host_postgresql_koutainternal_app_password:"
               case x if x.contains("host_postgresql_koutainternal") => "host_postgresql_koutainternal: localhost"
-              case x => x
+              case x                                                => x
             }
             .foreach(l => w.println(l))
           w.flush()
