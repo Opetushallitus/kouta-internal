@@ -110,7 +110,7 @@ object Templates {
               case x if x.contains("host_postgresql_koutainternal_port") => s"host_postgresql_koutainternal_port: $port"
               case x if x.contains("postgres_app_user")                  => "postgres_app_user: oph"
               case x if x.contains("host_postgresql_koutainternal_app_password") =>
-                "host_postgresql_koutainternal_app_password:"
+                "host_postgresql_koutainternal_app_password: oph"
               case x if x.contains("host_postgresql_koutainternal") => "host_postgresql_koutainternal: localhost"
               case x                                                => x
             }
