@@ -6,7 +6,12 @@ import fi.vm.sade.utils.tcp.ChooseFreePort
 
 import scala.annotation.tailrec
 
-object TempDockerElastic extends Logging {
+object TempElasticDockerClient {
+  val url                   = s"http://localhost:${TempDockerElastic.startUusi()}"
+  val client: ElasticClient = ElasticClient(ElasticProperties(url))
+}
+
+private object TempDockerElastic extends Logging {
 
   private val port = new ChooseFreePort().chosenPort
   private val containerName = "koutainternal-elastic"
@@ -68,9 +73,4 @@ object TempDockerElastic extends Logging {
     }
     returnValue
   }
-}
-
-object TempElasticDockerClient {
-  val url                   = s"http://localhost:${TempDockerElastic.startUusi()}"
-  val client: ElasticClient = ElasticClient(ElasticProperties(url))
 }
