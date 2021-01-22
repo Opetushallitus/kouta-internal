@@ -4,7 +4,7 @@ import com.sksamuel.elastic4s.http.{ElasticClient, ElasticProperties}
 import fi.vm.sade.utils.slf4j.Logging
 
 object TempElasticDockerClient {
-  val url                   = s"http://localhost:${TempDockerElastic.startUusi()}"
+  val url                   = s"http://localhost:${TempDockerElastic.start()}"
   val client: ElasticClient = ElasticClient(ElasticProperties(url))
 }
 
@@ -16,7 +16,7 @@ private object TempDockerElastic extends Logging {
   private val port = new ChooseFreePort().chosenPort
   private val containerName = "koutainternal-elastic"
 
-  def startUusi(): Int = {
+  def start(): Int = {
     try {
       if (!elasticIsRunning()) {
         startElasticContainer()
