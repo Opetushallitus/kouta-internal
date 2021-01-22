@@ -2,9 +2,6 @@ package fi.oph.kouta.internal
 
 import com.sksamuel.elastic4s.http.{ElasticClient, ElasticProperties}
 import fi.vm.sade.utils.slf4j.Logging
-import fi.vm.sade.utils.tcp.ChooseFreePort
-
-import scala.annotation.tailrec
 
 object TempElasticDockerClient {
   val url                   = s"http://localhost:${TempDockerElastic.startUusi()}"
@@ -12,6 +9,9 @@ object TempElasticDockerClient {
 }
 
 private object TempDockerElastic extends Logging {
+
+  import fi.vm.sade.utils.tcp.ChooseFreePort
+  import scala.annotation.tailrec
 
   private val port = new ChooseFreePort().chosenPort
   private val containerName = "koutainternal-elastic"
