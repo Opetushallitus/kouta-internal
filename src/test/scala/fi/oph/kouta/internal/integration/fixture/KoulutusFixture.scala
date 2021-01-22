@@ -8,14 +8,14 @@ import fi.oph.kouta.internal.domain.oid.{KoulutusOid, OrganisaatioOid}
 import fi.oph.kouta.internal.elasticsearch.KoulutusClient
 import fi.oph.kouta.internal.service.KoulutusService
 import fi.oph.kouta.internal.servlet.KoulutusServlet
-import fi.oph.kouta.internal.{OrganisaatioServiceMock, TempElasticClient}
+import fi.oph.kouta.internal.{OrganisaatioServiceMock, TempElasticDockerClient}
 
 trait KoulutusFixture extends KoutaIntegrationSpec {
   val KoulutusPath = "/koulutus"
 
   addServlet(
     new KoulutusServlet(
-      new KoulutusService(new KoulutusClient("koulutus-kouta", TempElasticClient.client)),
+      new KoulutusService(new KoulutusClient("koulutus-kouta", TempElasticDockerClient.client)),
       sessionDAO
     ),
     KoulutusPath
