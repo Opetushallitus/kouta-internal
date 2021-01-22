@@ -12,6 +12,7 @@ private object TempDockerElastic extends Logging {
 
   import fi.vm.sade.utils.tcp.ChooseFreePort
   import scala.annotation.tailrec
+  import scala.util.{Try, Failure, Success}
 
   private val port = new ChooseFreePort().chosenPort
   private val containerName = "koutainternal-elastic"
@@ -28,13 +29,16 @@ private object TempDockerElastic extends Logging {
   }
 
   private val elasticIsRunning: () => Boolean = () => {
-    runBlocking(s"curl 127.0.0.1:$port/_cluster/health") == 0
+    Try(runBlocking(s"curl --silent 127.0.0.1:$port/_cluster/health")) match {
+      case Success(value) => value == 0
+      case Failure(_) => false
+    }
   }
 
   private def startElasticContainer(): Unit = {
     logger.info("Starting Elasticsearch container:")
     runBlocking(
-      s"docker run --rm -d --name $containerName --env \"discovery.type=single-node\" -p 127.0.0.1:$port:9200 docker.elastic.co/elasticsearch/elasticsearch:6.8.13"
+      s"docker run --rm -d --name $containerName --env discovery.type=single-node -p 127.0.0.1:$port:9200 docker.elastic.co/elasticsearch/elasticsearch:6.8.13"
     )
 
     if (!elasticHasStarted()) {
