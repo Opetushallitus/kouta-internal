@@ -5,7 +5,7 @@ import java.util.{Map => JavaMap}
 import fi.vm.sade.utils.http.DefaultHttpClient
 import scalaj.http.HttpOptions._
 
-trait HttpClient {
+trait HttpClient extends CallerId {
   private val DefaultConnTimeout = 30000
   private val DefaultReadTimeout = 120000
 
@@ -15,8 +15,7 @@ trait HttpClient {
     followRedirects(doFollowRedirects)
   )
 
-  private val HeaderCallerId            = ("Caller-id", "kouta-internal")
-  private val HeaderClientSubSystemCode = ("clientSubSystemCode", "kouta-internal")
+  private val HeaderClientSubSystemCode = ("clientSubSystemCode", callerId)
 
   def get[T](
       url: String,
@@ -24,9 +23,8 @@ trait HttpClient {
       followRedirects: Boolean = false
   )(parse: String => T): T =
     DefaultHttpClient
-      .httpGet(url, defaultOptions(followRedirects): _*)
+      .httpGet(url, defaultOptions(followRedirects): _*)(callerId)
       .header(HeaderClientSubSystemCode._1, HeaderClientSubSystemCode._2)
-      .header(HeaderCallerId._1, HeaderCallerId._2)
       .responseWithHeaders match {
       case (200, _, response) => parse(response)
       case (xxx, _, response) => errorHandler(url, xxx, response)
