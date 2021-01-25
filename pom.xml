@@ -11,7 +11,7 @@
 
 
     <properties>
-        <scala.version>2.12.8</scala.version>
+        <scala.version>2.12.10</scala.version>
 
         <!-- Korjaa käännösvirheen:
              [ERROR] Source option 5 is no longer supported. Use 6 or later.
@@ -25,10 +25,10 @@
         <logback-access.version>1.2.3</logback-access.version>
 
         <!-- Cas properties -->
-        <scala-cas.version>1.0.1-SNAPSHOT</scala-cas.version>
+        <scala-cas.version>2.1.0-SNAPSHOT</scala-cas.version>
 
         <!-- Http related properties -->
-        <scalatra.version>2.7.0-RC1</scalatra.version>
+        <scalatra.version>2.7.0</scalatra.version>
         <javax.servlet-api.version>4.0.1</javax.servlet-api.version>
 
         <!-- Elasticsearch properties -->
@@ -40,8 +40,8 @@
         <jdbc.version>42.2.6</jdbc.version>
 
         <!-- Test properties -->
-        <scala-test.version>3.2.0-SNAP10</scala-test.version>
-        <scalatra-scalatest.version>2.7.0-RC1</scalatra-scalatest.version>
+        <scala-test.version>3.2.0-M4</scala-test.version>
+        <scalatra-scalatest.version>2.7.0</scalatra-scalatest.version>
         <jetty.version>9.4.17.v20190418</jetty.version>
         <embedded-elasticsearch.version>2.10.0</embedded-elasticsearch.version>
         <kouta-indeksoija.version>0.2.0-HLE-1064-SNAPSHOT</kouta-indeksoija.version>
