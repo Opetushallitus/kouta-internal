@@ -46,9 +46,9 @@
         <scalatra-scalatest.version>2.7.0</scalatra-scalatest.version>
         <jetty.version>9.4.17.v20190418</jetty.version>
         <embedded-elasticsearch.version>2.10.0</embedded-elasticsearch.version>
-        <kouta-indeksoija.version>0.2.0-HLE-1064-SNAPSHOT</kouta-indeksoija.version>
-        <kouta-backend.version>0.10-SNAPSHOT-KTO-382</kouta-backend.version>
-        <mockserver-netty.version>5.5.0</mockserver-netty.version>
+        <kouta-indeksoija.version>0.4.9-SNAPSHOT</kouta-indeksoija.version>
+        <kouta-backend.version>1.2.0-SNAPSHOT</kouta-backend.version>
+        <mockserver-netty.version>5.5.1</mockserver-netty.version>
         <commons.io.version>2.6</commons.io.version>
 
         <!-- Plugin properties -->
@@ -166,7 +166,7 @@
         <dependency>
             <groupId>fi.vm.sade</groupId>
             <artifactId>scala-properties_2.12</artifactId>
-            <version>${scala-utils.version}</version>
+            <version>${scala-properties.version}</version>
             <exclusions>
                 <exclusion>
                     <groupId>org.scala-lang</groupId>
@@ -177,7 +177,7 @@
         <dependency>
             <groupId>fi.vm.sade</groupId>
             <artifactId>scala-logging_2.12</artifactId>
-            <version>${scala-utils.version}</version>
+            <version>${scala-logging.version}</version>
             <exclusions>
                 <exclusion>
                     <groupId>org.scala-lang</groupId>
