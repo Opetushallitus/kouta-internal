@@ -1,7 +1,5 @@
 # kouta-internal
 
-
-
 ## 1. Palvelun tehtävä
 
 Tarjoaa rajapinnan OPH:n sisäisille palveluille uuden koulutustarjonnan indeksoituun dataan.
