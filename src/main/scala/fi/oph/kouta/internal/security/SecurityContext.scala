@@ -13,7 +13,7 @@ trait SecurityContext {
 case class ProductionSecurityContext(casUrl: String, casClient: CasClient, casServiceIdentifier: String)
     extends SecurityContext
 
-object ProductionSecurityContext extends CallerId{
+object ProductionSecurityContext extends CallerId {
   def apply(config: SecurityConfiguration): ProductionSecurityContext = {
     val casClient = new CasClient(config.casUrl, org.http4s.client.blaze.defaultClient, callerId)
     ProductionSecurityContext(config.casUrl, casClient, config.casServiceIdentifier)

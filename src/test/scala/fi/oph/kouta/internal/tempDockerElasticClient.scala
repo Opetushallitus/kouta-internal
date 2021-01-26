@@ -14,7 +14,7 @@ private object TempDockerElastic extends Logging {
   import scala.annotation.tailrec
   import scala.util.{Try, Failure, Success}
 
-  private val port = new ChooseFreePort().chosenPort
+  private val port          = new ChooseFreePort().chosenPort
   private val containerName = "koutainternal-elastic"
 
   def start(): Int = {
@@ -31,7 +31,7 @@ private object TempDockerElastic extends Logging {
   private val elasticIsRunning: () => Boolean = () => {
     Try(runBlocking(s"curl --silent 127.0.0.1:$port/_cluster/health")) match {
       case Success(value) => value == 0
-      case Failure(_) => false
+      case Failure(_)     => false
     }
   }
 
@@ -52,7 +52,7 @@ private object TempDockerElastic extends Logging {
     def tryTimes(times: Int)(thunk: () => Boolean): Boolean = {
       times match {
         case n if n < 1 => false
-        case 1 => thunk()
+        case 1          => thunk()
         case n =>
           thunk() || {
             Thread.sleep(1000)

@@ -10,7 +10,8 @@ class MockSecurityContext(
     val casUrl: String,
     val casServiceIdentifier: String,
     users: Map[String, KayttooikeusUserDetails]
-) extends SecurityContext with CallerId{
+) extends SecurityContext
+    with CallerId {
 
   val casClient: CasClient = new CasClient("", null, callerId) {
     override def validateServiceTicket(service: String)(ticket: String): Task[Username] =
