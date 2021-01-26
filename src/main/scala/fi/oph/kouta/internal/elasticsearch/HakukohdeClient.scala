@@ -19,18 +19,36 @@ class HakukohdeClient(val index: String, val client: ElasticClient)
   def getHakukohde(oid: HakukohdeOid): Future[Hakukohde] =
     getItem[HakukohdeIndexed](oid.s).map(_.toHakukohde)
 
-  def searchByHakuAndTarjoaja(
+  def search(
       hakuOid: Option[HakuOid],
-      tarjoajaOid: Option[OrganisaatioOid]
+      tarjoajaOids: Option[Set[OrganisaatioOid]],
+      q: Option[String]
   ): Future[Seq[Hakukohde]] = {
     val hakuQuery = hakuOid.map(oid => termsQuery("hakuOid", oid.toString))
-    val tarjoajaQuery = tarjoajaOid.map(oid =>
+    val tarjoajaQuery = tarjoajaOids.map(oids =>
       should(
-        termsQuery("tarjoajat.oid", oid.toString),
-        not(existsQuery("tarjoajat")).must(termsQuery("toteutus.tarjoajat.oid", oid.toString))
+        oids.map(oid =>
+          should(
+            termsQuery("jarjestyspaikka.oid", oid.toString),
+            not(existsQuery("jarjestyspaikka")).must(termsQuery("toteutus.tarjoajat.oid", oid.toString))
+          )
+        )
       )
     )
-    searchItems[HakukohdeIndexed](Some(must(hakuQuery ++ tarjoajaQuery))).map(_.map(_.toHakukohde))
+    val qQuery = q.map(q =>
+      should(
+        termsQuery("nimi.fi.keyword", q),
+        termsQuery("nimi.sv.keyword", q),
+        termsQuery("nimi.en.keyword", q),
+        termsQuery("jarjestyspaikka.nimi.fi.keyword", q),
+        termsQuery("jarjestyspaikka.nimi.sv.keyword", q),
+        termsQuery("jarjestyspaikka.nimi.en.keyword", q),
+        termsQuery("toteutus.tarjoajat.nimi.fi.keyword", q),
+        termsQuery("toteutus.tarjoajat.nimi.sv.keyword", q),
+        termsQuery("toteutus.tarjoajat.nimi.en.keyword", q)
+      )
+    )
+    searchItems[HakukohdeIndexed](Some(must(hakuQuery ++ tarjoajaQuery ++ qQuery))).map(_.map(_.toHakukohde))
   }
 }
 

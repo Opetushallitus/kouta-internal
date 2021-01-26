@@ -1,7 +1,7 @@
 package fi.oph.kouta.internal.servlet
 
 import fi.oph.kouta.internal.database.SessionDAO
-import fi.oph.kouta.internal.domain.oid.HakuOid
+import fi.oph.kouta.internal.domain.oid.{HakuOid, OrganisaatioOid}
 import fi.oph.kouta.internal.security.Authenticated
 import fi.oph.kouta.internal.service.HakuService
 import fi.oph.kouta.internal.swagger.SwaggerPaths.registerPath
@@ -61,8 +61,18 @@ class HakuServlet(hakuService: HakuService, val sessionDAO: SessionDAO)
       |          name: ataruId
       |          schema:
       |            type: string
+      |          required: false
       |          description: Ataru-lomakkeen id
       |          example: 66b7b709-1ed0-49cc-bbef-e5b0420a81c9
+      |        - in: query
+      |          name: tarjoaja
+      |          schema:
+      |            type: array
+      |            items:
+      |              type: string
+      |          required: false
+      |          description: Organisaatio joka on haun hakukohteen tarjoaja
+      |          example: 1.2.246.562.10.00000000001,1.2.246.562.10.00000000002
       |      responses:
       |        '200':
       |          description: Ok
@@ -77,9 +87,15 @@ class HakuServlet(hakuService: HakuService, val sessionDAO: SessionDAO)
   get("/search") {
     implicit val authenticated: Authenticated = authenticate
 
-    params.get("ataruId") match {
-      case None     => hakuService.search
-      case Some(id) => hakuService.searchByAtaruId(id)
+    val ataruId  = params.get("ataruId")
+    val tarjoaja = params.get("tarjoaja").map(_.split(",").map(OrganisaatioOid).toSet)
+
+    logger.info(s"Request: /haku/search | ataruId: ${ataruId} | tarjoaja: ${tarjoaja}")
+
+    tarjoaja match {
+      case Some(oids) if oids.exists(!_.isValid) =>
+        BadRequest(s"Invalid tarjoaja ${oids.find(!_.isValid()).get.toString}")
+      case tarjoaja => hakuService.search(ataruId, tarjoaja)
     }
   }
 }

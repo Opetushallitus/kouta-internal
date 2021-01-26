@@ -57,14 +57,14 @@ trait ElasticsearchClient { this: KoutaJsonFormats with Logging =>
       )
     })(q => {
       val request = search(index).bool(must(notTallennettu, q))
-      logger.debug(s"Elasticsearch request: ${request.show}")
+      logger.info(s"Elasticsearch request: ${request.show}")
       client.execute(request).flatMap {
         case failure: RequestFailure =>
           Future.failed(ElasticSearchException(failure.error))
 
         case response: RequestSuccess[SearchResponse] =>
-          logger.debug(s"Elasticsearch status: {}", response.status)
-          logger.debug(s"Elasticsearch response: [{}]", response.result.hits.hits.map(_.sourceAsString).mkString(","))
+          logger.info(s"Elasticsearch status: {}", response.status)
+          logger.info(s"Elasticsearch response: [{}]", response.result.hits.hits.map(_.sourceAsString).mkString(","))
           Future.successful(response.result.to[T])
       }
     })
