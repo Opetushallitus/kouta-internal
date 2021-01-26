@@ -2,7 +2,7 @@ package fi.oph.kouta.internal.integration.fixture
 
 import java.util.UUID
 import clojure.java.api.Clojure
-import fi.oph.kouta.internal.{TempElasticDockerClient}
+import fi.oph.kouta.internal.TempElasticDockerClient
 import fi.oph.kouta.internal.domain.oid._
 
 trait IndeksoijaFixture {
