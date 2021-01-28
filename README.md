@@ -22,9 +22,15 @@ Asenna haluamallasi tavalla koneellesi
    mutta idean Mavenilla pärjää kyllä hyvin, joten tämä ei ole pakollinen
 
 Lisäksi tarvitset Java SDK:n ja Scala SDK:n (Unix pohjaisissa käyttöjärjestelmissä auttaa esim. [SDKMAN!](https://sdkman.io/)). Katso [.travis.yml](.travis.yml) mitä versioita sovellus käyttää.
-Kirjoitushetkellä käytössä openJDK11 ja scala 2.12.10. 
-
+Kirjoitushetkellä käytössä openJDK11 ja scala 2.12.10.   
 (TODO huom. travis ymlissä 2.12.2 mutta pom.xml:ssä 2.12.10, pitäisi nostaa traviksen versiota!).
+
+PostgreSQL kontti-image buildataan (täytyy tehdä vain kerran) komennnolla: 
+``` shell
+# projektin juuressa
+cd postgresql/docker
+docker build --tag koutainternal-postgres .
+```
 
 Asetuksia voi muuttaa muokkaamalla '/src/test/resources/dev-vars.yml'-tiedostoa, tai
 ainakin luulen näin, koska kouta-backendissa on vastaava rakenne. Kunhan joku selvittää 
