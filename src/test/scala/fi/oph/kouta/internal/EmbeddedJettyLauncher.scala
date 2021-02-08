@@ -27,7 +27,7 @@ object EmbeddedJettyLauncher extends Logging with KoutaConfigurationConstants {
     new JettyLauncher(port).start().join()
   }
 
-  def setupForTestTemplate() = {
+  def setupForTestTemplate(): String = {
     System.setProperty(SystemPropertyNameConfigProfile, ConfigProfileTemplate)
     System.setProperty(SystemPropertyNameTemplate, TestTemplateFilePath)
   }
@@ -43,20 +43,32 @@ trait KoutaConfigurationConstants {
 
 object TestSetups extends Logging with KoutaConfigurationConstants {
 
-  def setupWithTemplate(port: Int) = {
+  def setupWithTemplate(port: Int): String = {
     logger.info(s"Setting up test template with Postgres port $port")
     Templates.createTestTemplate(port)
     System.setProperty(SystemPropertyNameTemplate, Templates.TestTemplateFilePath)
     System.setProperty(SystemPropertyNameConfigProfile, ConfigProfileTemplate)
   }
 
-  def setupWithEmbeddedPostgres() = {
+  def setupWithEmbeddedPostgres(): String = {
     logger.info("Starting embedded PostgreSQL!")
+    System.getProperty("kouta-internal.embeddedPostgresType", "docker") match {
+      case x if "host".equalsIgnoreCase(x) => startHostPostgres()
+      case _                               => startDockerPostgres()
+    }
+  }
+
+  private def startHostPostgres() = {
     TempDb.start()
     setupWithTemplate(TempDb.port)
   }
 
-  def setupWithoutEmbeddedPostgres() =
+  private def startDockerPostgres() = {
+    TempDockerDb.start()
+    setupWithTemplate(TempDockerDb.port)
+  }
+
+  def setupWithoutEmbeddedPostgres(): Object =
     (
       Option(System.getProperty(SystemPropertyNameConfigProfile)),
       Option(System.getProperty(SystemPropertyNameTemplate))
@@ -65,7 +77,7 @@ object TestSetups extends Logging with KoutaConfigurationConstants {
       case _                                   => Unit
     }
 
-  def setupWithDefaultTestTemplateFile() = {
+  def setupWithDefaultTestTemplateFile(): String = {
     logger.info(s"Using default test template ${Templates.DefaultTemplateFilePath}")
     System.setProperty(SystemPropertyNameTemplate, Templates.TestTemplateFilePath)
     System.setProperty(SystemPropertyNameTemplate, Templates.DefaultTemplateFilePath)
@@ -84,7 +96,7 @@ object Templates {
   import scala.io.Source
   import scala.util.{Failure, Success, Try}
 
-  def createTestTemplate(port: Int, deleteAutomatically: Boolean = false) = {
+  def createTestTemplate(port: Int, deleteAutomatically: Boolean = false): Unit = {
     Try(new PrintWriter(new File(TestTemplateFilePath))) match {
       case Failure(t) =>
         t.printStackTrace()
@@ -98,7 +110,7 @@ object Templates {
               case x if x.contains("host_postgresql_koutainternal_port") => s"host_postgresql_koutainternal_port: $port"
               case x if x.contains("postgres_app_user")                  => "postgres_app_user: oph"
               case x if x.contains("host_postgresql_koutainternal_app_password") =>
-                "host_postgresql_koutainternal_app_password:"
+                "host_postgresql_koutainternal_app_password: oph"
               case x if x.contains("host_postgresql_koutainternal") => "host_postgresql_koutainternal: localhost"
               case x                                                => x
             }
@@ -113,7 +125,7 @@ object Templates {
     }
   }
 
-  def deleteTestTemplate() = {
+  def deleteTestTemplate(): Boolean = {
     Files.deleteIfExists(new File(TestTemplateFilePath).toPath)
   }
 }

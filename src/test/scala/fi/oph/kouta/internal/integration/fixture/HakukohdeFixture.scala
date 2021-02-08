@@ -3,7 +3,7 @@ package fi.oph.kouta.internal.integration.fixture
 import java.util.UUID
 
 import fi.oph.kouta.external.KoutaFixtureTool
-import fi.oph.kouta.internal.TempElasticClient
+import fi.oph.kouta.internal.TempElasticDockerClient
 import fi.oph.kouta.internal.domain.Hakukohde
 import fi.oph.kouta.internal.domain.oid.{HakuOid, HakukohdeOid, OrganisaatioOid, ToteutusOid}
 import fi.oph.kouta.internal.elasticsearch.{HakuClient, HakukohdeClient}
@@ -16,8 +16,8 @@ trait HakukohdeFixture extends KoutaIntegrationSpec {
   addServlet(
     new HakukohdeServlet(
       new HakukohdeService(
-        new HakukohdeClient("hakukohde-kouta", TempElasticClient.client),
-        new HakuService(new HakuClient("haku-kouta", TempElasticClient.client))
+        new HakukohdeClient("hakukohde-kouta", TempElasticDockerClient.client),
+        new HakuService(new HakuClient("haku-kouta", TempElasticDockerClient.client))
       ),
       sessionDAO
     ),
@@ -36,13 +36,15 @@ trait HakukohdeFixture extends KoutaIntegrationSpec {
       organisaatioOid: OrganisaatioOid,
       hakuOid: HakuOid,
       toteutusOid: ToteutusOid,
-      valintaperusteId: UUID
+      valintaperusteId: UUID,
+      jarjestyspaikkaOid: OrganisaatioOid
   ): Unit = {
     val hakukohde = KoutaFixtureTool.DefaultHakukohdeScala +
-      (KoutaFixtureTool.OrganisaatioKey     -> organisaatioOid.s) +
-      (KoutaFixtureTool.HakuOidKey          -> hakuOid.s) +
-      (KoutaFixtureTool.ToteutusOidKey      -> toteutusOid.s) +
-      (KoutaFixtureTool.ValintaperusteIdKey -> valintaperusteId.toString)
+      (KoutaFixtureTool.OrganisaatioKey       -> organisaatioOid.s) +
+      (KoutaFixtureTool.HakuOidKey            -> hakuOid.s) +
+      (KoutaFixtureTool.ToteutusOidKey        -> toteutusOid.s) +
+      (KoutaFixtureTool.ValintaperusteIdKey   -> valintaperusteId.toString) +
+      (KoutaFixtureTool.JarjestyspaikkaOidKey -> jarjestyspaikkaOid.s)
     KoutaFixtureTool.addHakukohde(hakukohdeOid.s, hakukohde)
     indexHakukohde(hakukohdeOid)
   }

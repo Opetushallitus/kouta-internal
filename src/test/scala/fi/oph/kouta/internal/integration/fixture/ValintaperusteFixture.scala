@@ -3,7 +3,7 @@ package fi.oph.kouta.internal.integration.fixture
 import java.util.UUID
 
 import fi.oph.kouta.external.KoutaFixtureTool
-import fi.oph.kouta.internal.TempElasticClient
+import fi.oph.kouta.internal.TempElasticDockerClient
 import fi.oph.kouta.internal.domain.Valintaperuste
 import fi.oph.kouta.internal.domain.oid.OrganisaatioOid
 import fi.oph.kouta.internal.elasticsearch.ValintaperusteClient
@@ -15,7 +15,7 @@ trait ValintaperusteFixture extends KoutaIntegrationSpec {
 
   addServlet(
     new ValintaperusteServlet(
-      new ValintaperusteService(new ValintaperusteClient("valintaperuste-kouta", TempElasticClient.client)),
+      new ValintaperusteService(new ValintaperusteClient("valintaperuste-kouta", TempElasticDockerClient.client)),
       sessionDAO
     ),
     ValintaperustePath

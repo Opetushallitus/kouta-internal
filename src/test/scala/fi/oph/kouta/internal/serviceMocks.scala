@@ -68,7 +68,7 @@ trait OrganisaatioServiceMock extends ServiceMocks {
   val EvilCousin        = OrganisaatioOid("1.2.246.562.10.66634895666")
 
   val NotFoundOrganisaatioResponse = s"""{ "numHits": 0, "organisaatiot": []}"""
-  lazy val DefaultResponse         = responseFromResource("organisaatio")
+  lazy val DefaultResponse         = responseFromResource("organisaatiot")
 
   def singleOidOrganisaatioResponse(oid: String) =
     s"""{ "numHits": 1, "organisaatiot": [{"oid": "$oid", "parentOidPath": "$oid/$OphOid", "children" : []}]}"""

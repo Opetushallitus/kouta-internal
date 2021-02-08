@@ -22,11 +22,11 @@ class HakukohdeSpec
   override val existingId: HakukohdeOid    = HakukohdeOid("1.2.246.562.20.00000000000000000009")
   override val nonExistingId: HakukohdeOid = HakukohdeOid("1.2.246.562.20.0")
 
-  val hakuOid          = HakuOid("1.2.246.562.29.00000000000000000010")
-  val toteutusId       = ToteutusOid("1.2.246.562.17.00000000000000000010")
-  val koulutusOid      = KoulutusOid("1.2.246.562.13.00000000000000000010")
-  val valintaperusteId = UUID.fromString("fa7fcb96-3f80-4162-8d19-5b74731cf90c")
-  val sorakuvausId     = UUID.fromString("e17773b2-f5a0-418d-a49f-34578c4b3625")
+  val hakuOid: HakuOid         = HakuOid("1.2.246.562.29.00000000000000000010")
+  val toteutusId: ToteutusOid  = ToteutusOid("1.2.246.562.17.00000000000000000010")
+  val koulutusOid: KoulutusOid = KoulutusOid("1.2.246.562.13.00000000000000000010")
+  val valintaperusteId: UUID   = UUID.fromString("fa7fcb96-3f80-4162-8d19-5b74731cf90c")
+  val sorakuvausId: UUID       = UUID.fromString("e17773b2-f5a0-418d-a49f-34578c4b3625")
 
   override def beforeAll(): Unit = {
     super.beforeAll()
@@ -38,7 +38,7 @@ class HakukohdeSpec
     addMockSorakuvaus(sorakuvausId, ChildOid)
     addMockValintaperuste(valintaperusteId, ChildOid, sorakuvausId)
 
-    addMockHakukohde(existingId, ChildOid, hakuOid, toteutusId, valintaperusteId)
+    addMockHakukohde(existingId, ChildOid, hakuOid, toteutusId, valintaperusteId, jarjestyspaikkaOid = ChildOid)
   }
 
   getTests()
