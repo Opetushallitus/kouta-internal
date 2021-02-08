@@ -36,13 +36,15 @@ trait HakukohdeFixture extends KoutaIntegrationSpec {
       organisaatioOid: OrganisaatioOid,
       hakuOid: HakuOid,
       toteutusOid: ToteutusOid,
-      valintaperusteId: UUID
+      valintaperusteId: UUID,
+      jarjestyspaikkaOid: OrganisaatioOid
   ): Unit = {
     val hakukohde = KoutaFixtureTool.DefaultHakukohdeScala +
-      (KoutaFixtureTool.OrganisaatioKey     -> organisaatioOid.s) +
-      (KoutaFixtureTool.HakuOidKey          -> hakuOid.s) +
-      (KoutaFixtureTool.ToteutusOidKey      -> toteutusOid.s) +
-      (KoutaFixtureTool.ValintaperusteIdKey -> valintaperusteId.toString)
+      (KoutaFixtureTool.OrganisaatioKey -> organisaatioOid.s) +
+      (KoutaFixtureTool.HakuOidKey -> hakuOid.s) +
+      (KoutaFixtureTool.ToteutusOidKey -> toteutusOid.s) +
+      (KoutaFixtureTool.ValintaperusteIdKey -> valintaperusteId.toString) +
+      (KoutaFixtureTool.JarjestyspaikkaOidKey -> jarjestyspaikkaOid.s)
     KoutaFixtureTool.addHakukohde(hakukohdeOid.s, hakukohde)
     indexHakukohde(hakukohdeOid)
   }
