@@ -20,7 +20,7 @@ trait HttpClient extends CallerId {
   def get[T](
       url: String,
       errorHandler: (String, Int, String) => Nothing = defaultErrorHandler,
-      followRedirects: Boolean = false
+      followRedirects: Boolean = true
   )(parse: String => T): T =
     DefaultHttpClient
       .httpGet(url, defaultOptions(followRedirects): _*)(callerId)
