@@ -1,8 +1,5 @@
 package fi.oph.kouta.internal.elasticsearch
 
-import java.util.NoSuchElementException
-import java.util.concurrent.TimeUnit
-
 import com.sksamuel.elastic4s.HitReader
 import com.sksamuel.elastic4s.http.ElasticDsl._
 import com.sksamuel.elastic4s.http.get.GetResponse
@@ -15,9 +12,11 @@ import fi.oph.kouta.internal.domain.enums.Julkaisutila.Tallennettu
 import fi.oph.kouta.internal.util.KoutaJsonFormats
 import fi.vm.sade.utils.slf4j.Logging
 
+import java.util.NoSuchElementException
+import java.util.concurrent.TimeUnit
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
-import scala.concurrent.duration.Duration
+import scala.concurrent.duration.{Duration, FiniteDuration}
 import scala.reflect.ClassTag
 import scala.util.{Failure, Success}
 
@@ -71,7 +70,7 @@ trait ElasticsearchClient { this: KoutaJsonFormats with Logging =>
   def searchItems[T: HitReader: ClassTag](query: Option[Query]): Future[IndexedSeq[T]] = {
     val notTallennettu = not(termsQuery("tila.keyword", "tallennettu"))
     query.fold[Future[IndexedSeq[T]]]({
-      implicit val duration = Duration(10, TimeUnit.SECONDS)
+      implicit val duration: FiniteDuration = Duration(10, TimeUnit.SECONDS)
       Future(
         SearchIterator.iterate[T](client, search(index).query(notTallennettu).keepAlive("1m").size(50)).toIndexedSeq
       )
@@ -92,7 +91,7 @@ trait ElasticsearchClient { this: KoutaJsonFormats with Logging =>
 }
 
 object ElasticsearchClient {
-  val client = ElasticClient(
+  val client: ElasticClient = ElasticClient(
     ElasticProperties(KoutaConfigurationFactory.configuration.elasticSearchConfiguration.elasticUrl)
   )
 }
