@@ -1,12 +1,12 @@
 package fi.oph.kouta.internal.integration
 
-import java.util.UUID
-
-import fi.oph.kouta.internal.TempElasticClient
+import fi.oph.kouta.internal.TempElasticDockerClient
 import fi.oph.kouta.internal.domain.Haku
 import fi.oph.kouta.internal.domain.oid.HakuOid
 import fi.oph.kouta.internal.integration.fixture.{AccessControlSpec, HakuFixture}
 import fi.oph.kouta.internal.security.Role
+
+import java.util.UUID
 
 class HakuSpec extends HakuFixture with AccessControlSpec with GenericGetTests[Haku, HakuOid] {
 
@@ -64,7 +64,7 @@ class HakuSpec extends HakuFixture with AccessControlSpec with GenericGetTests[H
     import com.sksamuel.elastic4s.http.ElasticDsl._
 
     import scala.concurrent.ExecutionContext.Implicits.global
-    TempElasticClient.client.execute {
+    TempElasticDockerClient.client.execute {
       update(existingId.s).in("haku-kouta/haku-kouta").doc(Map("tila" -> "outotila"))
     }
     //TempElasticClient.client.execute(com.sksamuel.elastic4s.http.ElasticDsl.get(existingId.s).from("haku-kouta")).map(println(_))
