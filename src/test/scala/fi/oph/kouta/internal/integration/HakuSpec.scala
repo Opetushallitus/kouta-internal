@@ -10,8 +10,8 @@ import java.util.UUID
 
 class HakuSpec extends HakuFixture with AccessControlSpec {
 
-  override val roleEntities = Seq(Role.Haku)
-  val existingId: HakuOid = HakuOid("1.2.246.562.29.00000000000000000009")
+  override val roleEntities  = Seq(Role.Haku)
+  val existingId: HakuOid    = HakuOid("1.2.246.562.29.00000000000000000009")
   val nonExistingId: HakuOid = HakuOid("1.2.246.562.29.0")
 
   val ataruId1: UUID = UUID.randomUUID()
