@@ -9,13 +9,13 @@ import fi.oph.kouta.internal.domain.oid.{HakuOid, OrganisaatioOid}
 import fi.oph.kouta.internal.elasticsearch.HakuClient
 import fi.oph.kouta.internal.service.HakuService
 import fi.oph.kouta.internal.servlet.HakuServlet
-import fi.oph.kouta.internal.{OrganisaatioServiceMock, TempElasticClient}
+import fi.oph.kouta.internal.{OrganisaatioServiceMock, TempElasticDockerClient}
 
 trait HakuFixture extends KoutaIntegrationSpec {
   val HakuPath = "/haku"
 
   addServlet(
-    new HakuServlet(new HakuService(new HakuClient("haku-kouta", TempElasticClient.client)), sessionDAO),
+    new HakuServlet(new HakuService(new HakuClient("haku-kouta", TempElasticDockerClient.client)), sessionDAO),
     HakuPath
   )
 

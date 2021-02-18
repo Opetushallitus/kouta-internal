@@ -6,12 +6,12 @@
 
     <groupId>fi.oph.kouta</groupId>
     <artifactId>kouta-internal</artifactId>
-    <version>0.1-SNAPSHOT</version>
+    <version>1.0.0-SNAPSHOT</version>
     <name>kouta-internal</name>
 
 
     <properties>
-        <scala.version>2.12.8</scala.version>
+        <scala.version>2.12.10</scala.version>
 
         <!-- Korjaa käännösvirheen:
              [ERROR] Source option 5 is no longer supported. Use 6 or later.
@@ -20,15 +20,17 @@
         <maven.compiler.target>1.8</maven.compiler.target>
 
         <!-- Utility properties -->
-        <scala-utils.version>0.0.1-SNAPSHOT</scala-utils.version>
+        <scala-utils.version>1.2.1-SNAPSHOT</scala-utils.version>
+        <scala-logging.version>1.3.0-SNAPSHOT</scala-logging.version>
+        <scala-properties.version>1.3.0-SNAPSHOT</scala-properties.version>
         <json4s.version>3.6.7</json4s.version>
         <logback-access.version>1.2.3</logback-access.version>
 
         <!-- Cas properties -->
-        <scala-cas.version>1.0.1-SNAPSHOT</scala-cas.version>
+        <scala-cas.version>2.1.0-SNAPSHOT</scala-cas.version>
 
         <!-- Http related properties -->
-        <scalatra.version>2.7.0-RC1</scalatra.version>
+        <scalatra.version>2.7.0</scalatra.version>
         <javax.servlet-api.version>4.0.1</javax.servlet-api.version>
 
         <!-- Elasticsearch properties -->
@@ -36,17 +38,17 @@
 
         <!-- Database related properties -->
         <flyway.version>5.1.4</flyway.version>
-        <slick.version>3.3.2</slick.version>
+        <slick.version>3.2.3</slick.version>
         <jdbc.version>42.2.6</jdbc.version>
 
         <!-- Test properties -->
-        <scala-test.version>3.2.0-SNAP10</scala-test.version>
-        <scalatra-scalatest.version>2.7.0-RC1</scalatra-scalatest.version>
+        <scala-test.version>3.2.0-M4</scala-test.version>
+        <scalatra-scalatest.version>2.7.0</scalatra-scalatest.version>
         <jetty.version>9.4.17.v20190418</jetty.version>
         <embedded-elasticsearch.version>2.10.0</embedded-elasticsearch.version>
-        <kouta-indeksoija.version>0.2.0-HLE-1064-SNAPSHOT</kouta-indeksoija.version>
-        <kouta-backend.version>0.10-SNAPSHOT-KTO-382</kouta-backend.version>
-        <mockserver-netty.version>5.5.0</mockserver-netty.version>
+        <kouta-indeksoija.version>0.4.9-SNAPSHOT</kouta-indeksoija.version>
+        <kouta-backend.version>1.2.0-SNAPSHOT</kouta-backend.version>
+        <mockserver-netty.version>5.5.1</mockserver-netty.version>
         <commons.io.version>2.6</commons.io.version>
 
         <!-- Plugin properties -->
@@ -158,13 +160,21 @@
                     <groupId>org.scala-lang</groupId>
                     <artifactId>scala-library</artifactId>
                 </exclusion>
+                <exclusion>
+                    <groupId>org.checkerframework</groupId>
+                    <artifactId>checker-qual</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>com.github.cb372</groupId>
+                    <artifactId>scalacache-core_2.12</artifactId>
+                </exclusion>
             </exclusions>
         </dependency>
 
         <dependency>
             <groupId>fi.vm.sade</groupId>
             <artifactId>scala-properties_2.12</artifactId>
-            <version>${scala-utils.version}</version>
+            <version>${scala-properties.version}</version>
             <exclusions>
                 <exclusion>
                     <groupId>org.scala-lang</groupId>
@@ -175,7 +185,7 @@
         <dependency>
             <groupId>fi.vm.sade</groupId>
             <artifactId>scala-logging_2.12</artifactId>
-            <version>${scala-utils.version}</version>
+            <version>${scala-logging.version}</version>
             <exclusions>
                 <exclusion>
                     <groupId>org.scala-lang</groupId>
@@ -251,6 +261,10 @@
                     <artifactId>scalaz-core_2.12</artifactId>
                 </exclusion>
                 <exclusion>
+                    <groupId>org.scalaz</groupId>
+                    <artifactId>scalaz-concurrent_2.12</artifactId>
+                </exclusion>
+                <exclusion>
                     <groupId>org.log4s</groupId>
                     <artifactId>log4s_2.12</artifactId>
                 </exclusion>
@@ -264,7 +278,7 @@
         <dependency>
             <groupId>org.scalaz</groupId>
             <artifactId>scalaz-core_2.12</artifactId>
-            <version>7.1.13</version>
+            <version>7.2.30</version>
             <exclusions>
                 <exclusion>
                     <groupId>org.scala-lang</groupId>
@@ -277,6 +291,17 @@
                 <exclusion>
                     <groupId>org.scala-lang.modules</groupId>
                     <artifactId>scala-xml_2.12</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.scalaz</groupId>
+            <artifactId>scalaz-concurrent_2.12</artifactId>
+            <version>7.2.30</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.scala-lang</groupId>
+                    <artifactId>scala-library</artifactId>
                 </exclusion>
             </exclusions>
         </dependency>
@@ -325,6 +350,10 @@
                 <exclusion>
                     <groupId>org.json4s</groupId>
                     <artifactId>json4s-core_2.12</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.scala-lang</groupId>
+                    <artifactId>scala-library</artifactId>
                 </exclusion>
             </exclusions>
         </dependency>
@@ -402,6 +431,10 @@
                 <exclusion>
                     <groupId>org.eclipse.jetty</groupId>
                     <artifactId>jetty-webapp</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>junit</groupId>
+                    <artifactId>junit</artifactId>
                 </exclusion>
                 <exclusion>
                     <groupId>org.apache.httpcomponents</groupId>
@@ -801,12 +834,60 @@
                     <artifactId>slick_2.12</artifactId>
                 </exclusion>
                 <exclusion>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>slf4j-api</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.json4s</groupId>
+                    <artifactId>json4s-core_2.12</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.json4s</groupId>
+                    <artifactId>json4s-jackson_2.12</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.json4s</groupId>
+                    <artifactId>json4s-ast_2.12</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.spire-math</groupId>
+                    <artifactId>jawn-parser_2.12</artifactId>
+                </exclusion>
+                <exclusion>
                     <groupId>org.postgresql</groupId>
                     <artifactId>postgresql</artifactId>
                 </exclusion>
                 <exclusion>
                     <groupId>org.scala-lang</groupId>
                     <artifactId>scala-library</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.scala-lang</groupId>
+                    <artifactId>scala-reflect</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.scalaz</groupId>
+                    <artifactId>scalaz-core_2.12</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.scalaz</groupId>
+                    <artifactId>scalaz-concurrent_2.12</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>commons-io</groupId>
+                    <artifactId>commons-io</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>commons-logging</groupId>
+                    <artifactId>commons-logging</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>com.google.errorprone</groupId>
+                    <artifactId>error_prone_annotations</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>com.typesafe</groupId>
+                    <artifactId>config</artifactId>
                 </exclusion>
             </exclusions>
         </dependency>
@@ -834,8 +915,43 @@
                     <groupId>org.scala-lang</groupId>
                     <artifactId>scala-library</artifactId>
                 </exclusion>
+                <exclusion>
+                    <groupId>org.scalaz</groupId>
+                    <artifactId>scalaz-core_2.12</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.scalaz</groupId>
+                    <artifactId>scalaz-concurrent_2.12</artifactId>
+                </exclusion>
             </exclusions>
         </dependency>
+
+        <dependency>
+            <groupId>fi.oph.kouta</groupId>
+            <artifactId>kouta-common</artifactId>
+            <version>${kouta-backend.version}</version>
+            <classifier>tests</classifier>
+            <scope>test</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.scala-lang</groupId>
+                    <artifactId>scala-reflect</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.scala-lang</groupId>
+                    <artifactId>scala-library</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>slf4j-api</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>com.google.errorprone</groupId>
+                    <artifactId>error_prone_annotations</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
     </dependencies>
 
     <repositories>

@@ -5,6 +5,7 @@ import java.time.LocalDateTime
 import fi.oph.kouta.internal.domain._
 import fi.oph.kouta.internal.domain.enums.{Julkaisutila, Kieli, Koulutustyyppi}
 import fi.oph.kouta.internal.domain.oid.{KoulutusOid, ToteutusOid}
+import fi.vm.sade.utils.slf4j.Logging
 
 case class ToteutusIndexed(
     oid: ToteutusOid,
@@ -14,22 +15,33 @@ case class ToteutusIndexed(
     nimi: Kielistetty,
     metadata: Option[ToteutusMetadataIndexed],
     muokkaaja: Muokkaaja,
-    organisaatio: Organisaatio,
+    organisaatio: Option[Organisaatio],
     kielivalinta: Seq[Kieli],
     modified: Option[LocalDateTime]
-) extends WithTila {
-  def toToteutus = Toteutus(
-    oid = oid,
-    koulutusOid = koulutusOid,
-    tila = tila,
-    tarjoajat = tarjoajat.map(_.oid),
-    nimi = nimi,
-    metadata = metadata.map(_.toToteutusMetadata),
-    muokkaaja = muokkaaja.oid,
-    organisaatioOid = organisaatio.oid,
-    kielivalinta = kielivalinta,
-    modified = modified
-  )
+) extends WithTila
+    with Logging {
+  def toToteutus: Toteutus = {
+    try {
+      Toteutus(
+        oid = oid,
+        koulutusOid = koulutusOid,
+        tila = tila,
+        tarjoajat = tarjoajat.map(_.oid),
+        nimi = nimi,
+        metadata = metadata.map(_.toToteutusMetadata),
+        muokkaaja = muokkaaja.oid,
+        organisaatioOid = organisaatio.get.oid,
+        kielivalinta = kielivalinta,
+        modified = modified
+      )
+    } catch {
+      case e: Exception => {
+        val msg: String = s"Failed to create Toteutus (${oid})"
+        logger.error(msg, e)
+        throw new RuntimeException(msg, e)
+      }
+    }
+  }
 }
 
 case class ToteutusMetadataIndexed(
@@ -94,15 +106,12 @@ case class OpetusIndexed(
     onkoMaksullinen: Option[Boolean],
     maksullisuusKuvaus: Kielistetty,
     maksunMaara: Option[Double],
-    alkamiskausi: Option[KoodiUri],
-    alkamisvuosi: Option[String],
-    alkamisaikaKuvaus: Kielistetty,
+    koulutuksenTarkkaAlkamisaika: Option[Boolean],
+    koulutuksenAlkamiskausi: Option[KoodiUri],
+    koulutuksenAlkamisvuosi: Option[Int],
     lisatiedot: Seq[LisatietoIndexed],
-    onkoLukuvuosimaksua: Option[Boolean],
-    lukuvuosimaksu: Kielistetty,
-    lukuvuosimaksuKuvaus: Kielistetty,
     onkoStipendia: Option[Boolean],
-    stipendinMaara: Kielistetty,
+    stipendinMaara: Option[Double],
     stipendinKuvaus: Kielistetty
 ) {
   def toOpetus: Opetus = Opetus(
@@ -112,17 +121,14 @@ case class OpetusIndexed(
     opetusaikaKuvaus = opetusaikaKuvaus,
     opetustapaKoodiUrit = opetustapa.map(_.koodiUri),
     opetustapaKuvaus = opetustapaKuvaus,
-    onkoMaksullinen = onkoMaksullinen,
+    onkoMaksullinen = onkoMaksullinen.getOrElse(false),
     maksullisuusKuvaus = maksullisuusKuvaus,
     maksunMaara = maksunMaara,
-    alkamiskausiKoodiUri = alkamiskausi.map(_.koodiUri),
-    alkamisvuosi = alkamisvuosi,
-    alkamisaikaKuvaus = alkamisaikaKuvaus,
+    koulutuksenTarkkaAlkamisaika = koulutuksenTarkkaAlkamisaika.getOrElse(false),
+    alkamiskausiKoodiUri = koulutuksenAlkamiskausi.map(_.koodiUri),
+    alkamisvuosi = koulutuksenAlkamisvuosi.map(_.toString),
     lisatiedot = lisatiedot.map(_.toLisatieto),
-    onkoLukuvuosimaksua = onkoLukuvuosimaksua,
-    lukuvuosimaksu = lukuvuosimaksu,
-    lukuvuosimaksuKuvaus = lukuvuosimaksuKuvaus,
-    onkoStipendia = onkoStipendia,
+    onkoStipendia = onkoStipendia.getOrElse(false),
     stipendinMaara = stipendinMaara,
     stipendinKuvaus = stipendinKuvaus
   )
