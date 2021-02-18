@@ -74,7 +74,7 @@ class HakuSpec extends HakuFixture with AccessControlSpec {
     }
   }
 
-  private def updateExistingEntityWithUnknownTila(): Unit = {
+  private def updateExistingEntityToUnknownTila(): Unit = {
     import com.sksamuel.elastic4s.http.ElasticDsl._
     import scala.concurrent.ExecutionContext.Implicits.global
 
@@ -87,7 +87,7 @@ class HakuSpec extends HakuFixture with AccessControlSpec {
 
   it should "return status code 418 if entity cannot be parsed" in {
     get(existingId, crudSessions(ChildOid))
-    updateExistingEntityWithUnknownTila()
+    updateExistingEntityToUnknownTila()
     get(existingId, crudSessions(ChildOid), 418)
   }
 }
