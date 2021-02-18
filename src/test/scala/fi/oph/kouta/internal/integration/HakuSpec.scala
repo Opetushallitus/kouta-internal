@@ -8,11 +8,9 @@ import fi.oph.kouta.internal.security.Role
 
 import java.util.UUID
 
-class HakuSpec extends HakuFixture with AccessControlSpec with GenericGetTests[Haku, HakuOid] {
+class HakuSpec extends HakuFixture with AccessControlSpec {
 
   override val roleEntities = Seq(Role.Haku)
-  override val getPath: String = HakuPath
-  override val entityName   = "haku"
   val existingId: HakuOid = HakuOid("1.2.246.562.29.00000000000000000009")
   val nonExistingId: HakuOid = HakuOid("1.2.246.562.29.0")
 
@@ -32,7 +30,23 @@ class HakuSpec extends HakuFixture with AccessControlSpec with GenericGetTests[H
     addMockHaku(HakuOid("1.2.246.562.29.306"), EvilChildOid, Some(ataruId1))
   }
 
-  getTests()
+  "GET /:id" should s"get haku from elastic search" in {
+    get(existingId, defaultSessionId)
+  }
+
+  it should s"return 404 if haku not found" in {
+    get(s"$HakuPath/$nonExistingId", headers = Seq(defaultSessionHeader)) {
+      status should equal(404)
+      body should include(s"Didn't find id $nonExistingId")
+    }
+  }
+
+  it should "return 401 without a valid session" in {
+    get(s"$HakuPath/$nonExistingId") {
+      status should equal(401)
+      body should include("Unauthorized")
+    }
+  }
 
   "Search by Ataru ID" should "find haku based on Ataru ID" in {
     val haut = get[Seq[Haku]](s"$HakuPath/search?ataruId=$ataruId1", defaultSessionId)
