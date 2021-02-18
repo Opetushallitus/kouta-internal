@@ -76,12 +76,13 @@ class HakuSpec extends HakuFixture with AccessControlSpec {
 
   private def updateExistingEntityWithUnknownTila(): Unit = {
     import com.sksamuel.elastic4s.http.ElasticDsl._
-
     import scala.concurrent.ExecutionContext.Implicits.global
+
     TempElasticDockerClient.client.execute {
-      update(existingId.s).in("haku-kouta/haku-kouta").doc(Map("tila" -> "outotila"))
+      updateById("haku-kouta-virkailija", "_doc", existingId.s).doc("tila" -> "outotila")
     }
-    //TempElasticClient.client.execute(com.sksamuel.elastic4s.http.ElasticDsl.get(existingId.s).from("haku-kouta")).map(println(_))
+
+//    TempElasticDockerClient.client.execute(com.sksamuel.elastic4s.http.ElasticDsl.get("haku-kouta", "_doc", existingId.s)).map(println(_))
   }
 
   it should "return status code 418 if entity cannot be parsed" in {
