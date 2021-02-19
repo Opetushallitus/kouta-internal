@@ -36,26 +36,7 @@ trait ElasticsearchClient { this: KoutaJsonFormats with Logging =>
         case response: RequestSuccess[GetResponse] =>
           logger.debug(s"Elasticsearch status: {}", response.status)
           logger.debug(s"Elasticsearch response: {}", response.result.sourceAsString)
-          response.status match {
-            case 404 => Future.successful(None)
-            case _ =>
-              response.result.safeTo[T] match {
-                case Success(x) =>
-                  println(x)
-                  Future.successful(Option(x))
-                case Failure(exception) =>
-                  logger.error(
-                    s"Unable to read response entity with id $id from index $index. Not going to serve coffee from teapot!",
-                    exception
-                  )
-                  Future.failed(
-                    TeapotException(
-                      s"Unable to read response entity with id $id from index $index. Not going to serve coffee from teapot!",
-                      exception
-                    )
-                  )
-              }
-          }
+          handleSuccesfulReponse(id, response)
       }
       .flatMap {
         case None =>
@@ -65,6 +46,31 @@ trait ElasticsearchClient { this: KoutaJsonFormats with Logging =>
         case Some(t) =>
           Future.successful(t)
       }
+  }
+
+  private def handleSuccesfulReponse[T <: WithTila : HitReader](id: String, response: RequestSuccess[GetResponse]) = {
+    response.status match {
+      case 404 => Future.successful(None)
+      case _ => mapResultToEntity(id, response)
+    }
+  }
+
+  private def mapResultToEntity[T <: WithTila : HitReader](id: String, response: RequestSuccess[GetResponse]) = {
+    response.result.safeTo[T] match {
+      case Success(x) =>
+        Future.successful(Option(x))
+      case Failure(exception) =>
+        logger.error(
+          s"Unable to read response entity with id $id from index $index. Not going to serve coffee from teapot!",
+          exception
+        )
+        Future.failed(
+          TeapotException(
+            s"Unable to read response entity with id $id from index $index. Not going to serve coffee from teapot!",
+            exception
+          )
+        )
+    }
   }
 
   def searchItems[T: HitReader: ClassTag](query: Option[Query]): Future[IndexedSeq[T]] = {
