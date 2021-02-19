@@ -81,8 +81,6 @@ class HakuSpec extends HakuFixture with AccessControlSpec {
     TempElasticDockerClient.client.execute {
       updateById("haku-kouta-virkailija", "_doc", existingId.s).doc("tila" -> "outotila")
     }
-
-//    TempElasticDockerClient.client.execute(com.sksamuel.elastic4s.http.ElasticDsl.get("haku-kouta", "_doc", existingId.s)).map(println(_))
   }
 
   it should "return status code 418 if entity cannot be parsed" in {
