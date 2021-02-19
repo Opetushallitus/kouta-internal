@@ -48,14 +48,14 @@ trait ElasticsearchClient { this: KoutaJsonFormats with Logging =>
       }
   }
 
-  private def handleSuccesfulReponse[T <: WithTila : HitReader](id: String, response: RequestSuccess[GetResponse]) = {
+  private def handleSuccesfulReponse[T <: WithTila: HitReader](id: String, response: RequestSuccess[GetResponse]) = {
     response.status match {
       case 404 => Future.successful(None)
-      case _ => mapResultToEntity(id, response)
+      case _   => mapResultToEntity(id, response)
     }
   }
 
-  private def mapResultToEntity[T <: WithTila : HitReader](id: String, response: RequestSuccess[GetResponse]) = {
+  private def mapResultToEntity[T <: WithTila: HitReader](id: String, response: RequestSuccess[GetResponse]) = {
     response.result.safeTo[T] match {
       case Success(x) =>
         Future.successful(Option(x))
