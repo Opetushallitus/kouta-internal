@@ -84,9 +84,20 @@ trait ElasticsearchClient { this: KoutaJsonFormats with Logging =>
     })(q => {
       val request           = search(index).bool(must(notTallennettu, q)).keepAlive("1m").size(500)
       logger.info(s"Elasticsearch request: ${request.show}")
-      Future(
-        SearchIterator.iterate[T](client, request).toIndexedSeq
-      )
+      Future {
+        SearchIterator.hits(client, request)
+          .toIndexedSeq
+          .map(hit => hit.safeTo[T])
+          .flatMap(entity => entity match {
+            case Success(value) => Some(value)
+            case Failure(exception) =>
+              logger.error(
+                s"Unable to deserialize json response to entity: ",
+                exception
+              )
+              None
+          })
+      }
     })
   }
 }
