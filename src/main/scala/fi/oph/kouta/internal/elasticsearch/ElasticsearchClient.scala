@@ -78,20 +78,15 @@ trait ElasticsearchClient { this: KoutaJsonFormats with Logging =>
     query.fold[Future[IndexedSeq[T]]]({
       implicit val duration: FiniteDuration = Duration(10, TimeUnit.SECONDS)
       Future(
-        SearchIterator.iterate[T](client, search(index).query(notTallennettu).keepAlive("1m").size(50)).toIndexedSeq
+        SearchIterator.iterate[T](client, search(index).query(notTallennettu).keepAlive("1m").size(500)).toIndexedSeq
       )
     })(q => {
-      val request = search(index).bool(must(notTallennettu, q))
+      implicit val duration = Duration(10, TimeUnit.SECONDS)
+      val request           = search(index).bool(must(notTallennettu, q)).keepAlive("1m").size(500)
       logger.info(s"Elasticsearch request: ${request.show}")
-      client.execute(request).flatMap {
-        case failure: RequestFailure =>
-          Future.failed(ElasticSearchException(failure.error))
-
-        case response: RequestSuccess[SearchResponse] =>
-          logger.info(s"Elasticsearch status: {}", response.status)
-          logger.info(s"Elasticsearch response: [{}]", response.result.hits.hits.map(_.sourceAsString).mkString(","))
-          Future.successful(response.result.to[T])
-      }
+      Future(
+        SearchIterator.iterate[T](client, request).toIndexedSeq
+      )
     })
   }
 }
