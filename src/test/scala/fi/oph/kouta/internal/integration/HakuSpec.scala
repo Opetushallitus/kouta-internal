@@ -95,9 +95,15 @@ class HakuSpec extends HakuFixture with AccessControlSpec {
   private def updateExistingHakuToUnknownTila(hakuOid: String): Unit = {
     import com.sksamuel.elastic4s.http.ElasticDsl._
     import scala.concurrent.ExecutionContext.Implicits.global
+    import scala.concurrent.Await
+    import scala.concurrent.duration.Duration
 
-    TempElasticDockerClient.client.execute {
-      updateById("haku-kouta-virkailija", "_doc", existingId.s).doc("tila" -> "outotila")
+    val updateOperation = TempElasticDockerClient.client.execute {
+      updateById("haku-kouta-virkailija", "_doc", hakuOid).doc("tila" -> "outotila")
     }
+
+    Await.result(updateOperation, Duration.Inf)
+    // Elasticsearch refreshaa oletuksena sekunnin välein. Odotetaan sekunti että muokattu haku on haettavissa.
+    Thread.sleep(1000)
   }
 }
