@@ -74,7 +74,7 @@ trait ElasticsearchClient { this: KoutaJsonFormats with Logging =>
   }
 
   def searchItems[T: HitReader: ClassTag](query: Option[Query]): Future[IndexedSeq[T]] = {
-    val notTallennettu = not(termsQuery("tila.keyword", "tallennettu"))
+    val notTallennettu                    = not(termsQuery("tila.keyword", "tallennettu"))
     implicit val duration: FiniteDuration = Duration(10, TimeUnit.SECONDS)
 
     query.fold[Future[IndexedSeq[T]]]({
@@ -82,21 +82,24 @@ trait ElasticsearchClient { this: KoutaJsonFormats with Logging =>
         SearchIterator.iterate[T](client, search(index).query(notTallennettu).keepAlive("1m").size(500)).toIndexedSeq
       )
     })(q => {
-      val request           = search(index).bool(must(notTallennettu, q)).keepAlive("1m").size(500)
+      val request = search(index).bool(must(notTallennettu, q)).keepAlive("1m").size(500)
       logger.info(s"Elasticsearch request: ${request.show}")
       Future {
-        SearchIterator.hits(client, request)
+        SearchIterator
+          .hits(client, request)
           .toIndexedSeq
           .map(hit => hit.safeTo[T])
-          .flatMap(entity => entity match {
-            case Success(value) => Some(value)
-            case Failure(exception) =>
-              logger.error(
-                s"Unable to deserialize json response to entity: ",
-                exception
-              )
-              None
-          })
+          .flatMap(entity =>
+            entity match {
+              case Success(value) => Some(value)
+              case Failure(exception) =>
+                logger.error(
+                  s"Unable to deserialize json response to entity: ",
+                  exception
+                )
+                None
+            }
+          )
       }
     })
   }
