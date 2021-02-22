@@ -3,7 +3,7 @@ package fi.oph.kouta.internal.elasticsearch
 import com.sksamuel.elastic4s.HitReader
 import com.sksamuel.elastic4s.http.ElasticDsl._
 import com.sksamuel.elastic4s.http.get.GetResponse
-import com.sksamuel.elastic4s.http.search.{SearchIterator, SearchResponse}
+import com.sksamuel.elastic4s.http.search.SearchIterator
 import com.sksamuel.elastic4s.http.{ElasticClient, ElasticProperties, RequestFailure, RequestSuccess}
 import com.sksamuel.elastic4s.searches.queries.Query
 import fi.oph.kouta.internal.KoutaConfigurationFactory
