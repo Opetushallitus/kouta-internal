@@ -48,6 +48,12 @@ class HakuSpec extends HakuFixture with AccessControlSpec {
     }
   }
 
+  it should "return status code 418 if entity cannot be parsed" in {
+    get(existingId, crudSessions(ChildOid))
+    updateExistingEntityToUnknownTila(existingId.s)
+    get(existingId, crudSessions(ChildOid), 418)
+  }
+
   "Search by Ataru ID" should "find haku based on Ataru ID" in {
     val haut = get[Seq[Haku]](s"$HakuPath/search?ataruId=$ataruId1", defaultSessionId)
 
@@ -81,11 +87,5 @@ class HakuSpec extends HakuFixture with AccessControlSpec {
     TempElasticDockerClient.client.execute {
       updateById("haku-kouta-virkailija", "_doc", existingId.s).doc("tila" -> "outotila")
     }
-  }
-
-  it should "return status code 418 if entity cannot be parsed" in {
-    get(existingId, crudSessions(ChildOid))
-    updateExistingEntityToUnknownTila()
-    get(existingId, crudSessions(ChildOid), 418)
   }
 }
