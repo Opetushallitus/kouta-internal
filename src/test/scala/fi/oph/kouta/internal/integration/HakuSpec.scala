@@ -50,7 +50,7 @@ class HakuSpec extends HakuFixture with AccessControlSpec {
 
   it should "return status code 418 if entity cannot be parsed" in {
     get(existingId, crudSessions(ChildOid))
-    updateExistingEntityToUnknownTila(existingId.s)
+    updateExistingHakuToUnknownTila(existingId.s)
     get(existingId, crudSessions(ChildOid), 418)
   }
 
@@ -80,7 +80,19 @@ class HakuSpec extends HakuFixture with AccessControlSpec {
     }
   }
 
-  private def updateExistingEntityToUnknownTila(): Unit = {
+  it should "skip entities that can't be deserialized" in {
+    updateExistingHakuToUnknownTila("1.2.246.562.29.301")
+
+    val haut = get[Seq[Haku]](s"$HakuPath/search?ataruId=$ataruId1", defaultSessionId)
+
+    haut.map(_.oid) should contain theSameElementsAs Seq(
+      HakuOid("1.2.246.562.29.302"),
+      HakuOid("1.2.246.562.29.305"),
+      HakuOid("1.2.246.562.29.306")
+    )
+  }
+
+  private def updateExistingHakuToUnknownTila(hakuOid: String): Unit = {
     import com.sksamuel.elastic4s.http.ElasticDsl._
     import scala.concurrent.ExecutionContext.Implicits.global
 
