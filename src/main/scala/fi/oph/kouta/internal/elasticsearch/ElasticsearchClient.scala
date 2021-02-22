@@ -75,13 +75,13 @@ trait ElasticsearchClient { this: KoutaJsonFormats with Logging =>
 
   def searchItems[T: HitReader: ClassTag](query: Option[Query]): Future[IndexedSeq[T]] = {
     val notTallennettu = not(termsQuery("tila.keyword", "tallennettu"))
+    implicit val duration: FiniteDuration = Duration(10, TimeUnit.SECONDS)
+
     query.fold[Future[IndexedSeq[T]]]({
-      implicit val duration: FiniteDuration = Duration(10, TimeUnit.SECONDS)
       Future(
         SearchIterator.iterate[T](client, search(index).query(notTallennettu).keepAlive("1m").size(500)).toIndexedSeq
       )
     })(q => {
-      implicit val duration = Duration(10, TimeUnit.SECONDS)
       val request           = search(index).bool(must(notTallennettu, q)).keepAlive("1m").size(500)
       logger.info(s"Elasticsearch request: ${request.show}")
       Future(
