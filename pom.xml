@@ -13,6 +13,10 @@
     <properties>
         <scala.version>2.12.10</scala.version>
 
+        <kouta-indeksoija.version>0.4.9-SNAPSHOT</kouta-indeksoija.version>
+        <kouta-backend.version>1.2.0-SNAPSHOT</kouta-backend.version>
+        <kouta-common.version>1.2.0-SNAPSHOT</kouta-common.version>
+
         <!-- Korjaa käännösvirheen:
              [ERROR] Source option 5 is no longer supported. Use 6 or later.
              [ERROR] Target option 1.5 is no longer supported. Use 1.6 or later. -->
@@ -46,8 +50,6 @@
         <scalatra-scalatest.version>2.7.0</scalatra-scalatest.version>
         <jetty.version>9.4.17.v20190418</jetty.version>
         <embedded-elasticsearch.version>2.10.0</embedded-elasticsearch.version>
-        <kouta-indeksoija.version>0.4.9-SNAPSHOT</kouta-indeksoija.version>
-        <kouta-backend.version>1.2.0-SNAPSHOT</kouta-backend.version>
         <mockserver-netty.version>5.5.1</mockserver-netty.version>
         <commons.io.version>2.6</commons.io.version>
 
@@ -929,7 +931,7 @@
         <dependency>
             <groupId>fi.oph.kouta</groupId>
             <artifactId>kouta-common</artifactId>
-            <version>${kouta-backend.version}</version>
+            <version>${kouta-common.version}</version>
             <classifier>tests</classifier>
             <scope>test</scope>
             <exclusions>
