@@ -41,11 +41,10 @@ case class KoulutusIndexed(
         modified = modified
       )
     } catch {
-      case e: Exception => {
-        val msg: String = s"Failed to create Koulutus (${oid})"
+      case e: Exception =>
+        val msg: String = s"Failed to create Koulutus ($oid)"
         logger.error(msg, e)
         throw new RuntimeException(msg, e)
-      }
     }
   }
 }
