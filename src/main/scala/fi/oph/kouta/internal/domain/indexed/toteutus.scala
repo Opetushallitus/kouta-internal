@@ -1,11 +1,12 @@
 package fi.oph.kouta.internal.domain.indexed
 
-import java.time.LocalDateTime
-
+import fi.oph.kouta.domain.{Amk, Amm, Koulutustyyppi, Yo}
 import fi.oph.kouta.internal.domain._
-import fi.oph.kouta.internal.domain.enums.{Julkaisutila, Kieli, Koulutustyyppi}
+import fi.oph.kouta.internal.domain.enums.{Julkaisutila, Kieli}
 import fi.oph.kouta.internal.domain.oid.{KoulutusOid, ToteutusOid}
 import fi.vm.sade.utils.slf4j.Logging
+
+import java.time.LocalDateTime
 
 case class ToteutusIndexed(
     oid: ToteutusOid,
@@ -55,7 +56,7 @@ case class ToteutusMetadataIndexed(
     ylemmanKorkeakoulututkinnonOsaamisalat: Seq[KorkeakouluOsaamisala]
 ) {
   def toToteutusMetadata: ToteutusMetadata = tyyppi match {
-    case Koulutustyyppi.Amm =>
+    case Amm =>
       AmmatillinenToteutusMetadata(
         tyyppi = tyyppi,
         kuvaus = kuvaus,
@@ -65,7 +66,7 @@ case class ToteutusMetadataIndexed(
         ammattinimikkeet = ammattinimikkeet,
         yhteyshenkilot = yhteyshenkilot
       )
-    case Koulutustyyppi.Yo =>
+    case Yo =>
       YliopistoToteutusMetadata(
         tyyppi = tyyppi,
         kuvaus = kuvaus,
@@ -76,7 +77,7 @@ case class ToteutusMetadataIndexed(
         alemmanKorkeakoulututkinnonOsaamisalat = alemmanKorkeakoulututkinnonOsaamisalat,
         ylemmanKorkeakoulututkinnonOsaamisalat = ylemmanKorkeakoulututkinnonOsaamisalat
       )
-    case Koulutustyyppi.Amk =>
+    case Amk =>
       AmmattikorkeakouluToteutusMetadata(
         tyyppi = tyyppi,
         kuvaus = kuvaus,

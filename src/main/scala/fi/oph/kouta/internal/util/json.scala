@@ -123,12 +123,12 @@ sealed trait DefaultKoutaJsonFormats {
       implicit def formats: Formats = genericKoutaFormats
 
       Try(s \ "tyyppi").toOption.collect { case JString(tyyppi) =>
-        Koulutustyyppi(tyyppi)
-      }.getOrElse(Koulutustyyppi.Amm) match {
-        case Koulutustyyppi.Yo  => s.extract[YliopistoToteutusMetadata]
-        case Koulutustyyppi.Amm => s.extract[AmmatillinenToteutusMetadata]
-        case Koulutustyyppi.Amk => s.extract[AmmattikorkeakouluToteutusMetadata]
-        case kt                 => throw new UnsupportedOperationException(s"Unsupported koulutustyyppi $kt")
+        fi.oph.kouta.domain.Koulutustyyppi.withName(tyyppi)
+      }.getOrElse(fi.oph.kouta.domain.Amm) match {
+        case fi.oph.kouta.domain.Yo  => s.extract[YliopistoToteutusMetadata]
+        case fi.oph.kouta.domain.Amm => s.extract[AmmatillinenToteutusMetadata]
+        case fi.oph.kouta.domain.Amk => s.extract[AmmattikorkeakouluToteutusMetadata]
+        case kt                      => throw new UnsupportedOperationException(s"Unsupported koulutustyyppi $kt")
       }
   } { case j: ToteutusMetadata =>
     implicit def formats: Formats = genericKoutaFormats
