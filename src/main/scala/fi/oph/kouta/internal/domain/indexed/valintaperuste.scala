@@ -81,7 +81,7 @@ sealed trait KorkeakoulutusValintaperusteMetadataIndexed extends ValintaperusteM
 }
 
 case class YliopistoValintaperusteMetadataIndexed(
-    koulutustyyppi: Koulutustyyppi,
+    koulutustyyppi: Koulutustyyppi = Koulutustyyppi.Yo,
     valintatavat: Seq[YliopistoValintatapaIndexed],
     kielitaitovaatimukset: Seq[ValintaperusteKielitaitovaatimusIndexed],
     osaamistausta: Seq[KoodiUri],
@@ -97,7 +97,7 @@ case class YliopistoValintaperusteMetadataIndexed(
 }
 
 case class AmmattikorkeakouluValintaperusteMetadataIndexed(
-    koulutustyyppi: Koulutustyyppi,
+    koulutustyyppi: Koulutustyyppi = Koulutustyyppi.Amk,
     valintatavat: Seq[AmmattikorkeakouluValintatapaIndexed],
     kielitaitovaatimukset: Seq[ValintaperusteKielitaitovaatimusIndexed],
     osaamistausta: Seq[KoodiUri],
