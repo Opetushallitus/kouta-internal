@@ -1,11 +1,12 @@
 package fi.oph.kouta.internal.domain.indexed
 
-import java.time.LocalDateTime
-
+import fi.oph.kouta.domain.Koulutustyyppi
 import fi.oph.kouta.internal.domain._
-import fi.oph.kouta.internal.domain.enums._
+import fi.oph.kouta.internal.domain.enums.{Julkaisutila, Kieli}
 import fi.oph.kouta.internal.domain.oid._
 import fi.vm.sade.utils.slf4j.Logging
+
+import java.time.LocalDateTime
 
 case class KoulutusIndexed(
     oid: KoulutusOid,
