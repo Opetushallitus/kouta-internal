@@ -3,7 +3,8 @@ package fi.oph.kouta.internal.domain.indexed
 import java.time.LocalDateTime
 import java.util.UUID
 
-import fi.oph.kouta.internal.domain.enums.{Julkaisutila, Kieli, Koulutustyyppi}
+import fi.oph.kouta.domain.{Koulutustyyppi, Amm, Amk, Yo}
+import fi.oph.kouta.internal.domain.enums.{Julkaisutila, Kieli}
 import fi.oph.kouta.internal.domain._
 import fi.vm.sade.utils.slf4j.Logging
 
@@ -61,7 +62,7 @@ sealed trait ValintaperusteMetadataIndexed {
 }
 
 case class AmmatillinenValintaperusteMetadataIndexed(
-    koulutustyyppi: Koulutustyyppi = Koulutustyyppi.Amm,
+    koulutustyyppi: Koulutustyyppi = Amm,
     valintatavat: Seq[AmmatillinenValintatapaIndexed],
     kielitaitovaatimukset: Seq[ValintaperusteKielitaitovaatimusIndexed]
 ) extends ValintaperusteMetadataIndexed {
@@ -80,7 +81,7 @@ sealed trait KorkeakoulutusValintaperusteMetadataIndexed extends ValintaperusteM
 }
 
 case class YliopistoValintaperusteMetadataIndexed(
-    koulutustyyppi: Koulutustyyppi = Koulutustyyppi.Yo,
+    koulutustyyppi: Koulutustyyppi = Yo,
     valintatavat: Seq[YliopistoValintatapaIndexed],
     kielitaitovaatimukset: Seq[ValintaperusteKielitaitovaatimusIndexed],
     osaamistausta: Seq[KoodiUri],
@@ -96,7 +97,7 @@ case class YliopistoValintaperusteMetadataIndexed(
 }
 
 case class AmmattikorkeakouluValintaperusteMetadataIndexed(
-    koulutustyyppi: Koulutustyyppi = Koulutustyyppi.Amk,
+    koulutustyyppi: Koulutustyyppi = Amk,
     valintatavat: Seq[AmmattikorkeakouluValintatapaIndexed],
     kielitaitovaatimukset: Seq[ValintaperusteKielitaitovaatimusIndexed],
     osaamistausta: Seq[KoodiUri],

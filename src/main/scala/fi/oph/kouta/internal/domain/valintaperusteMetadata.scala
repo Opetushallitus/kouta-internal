@@ -1,6 +1,6 @@
 package fi.oph.kouta.internal.domain
 
-import fi.oph.kouta.internal.domain.enums.Koulutustyyppi
+import fi.oph.kouta.domain.{Koulutustyyppi, Amm, Amk, Yo}
 import fi.oph.kouta.internal.swagger.SwaggerModel
 
 @SwaggerModel("""    ValintaperusteMetadata:
@@ -68,7 +68,7 @@ sealed trait KorkeakoulutusValintaperusteMetadata extends ValintaperusteMetadata
     |            - amm
     |""")
 case class AmmatillinenValintaperusteMetadata(
-    koulutustyyppi: Koulutustyyppi = Koulutustyyppi.Amm,
+    koulutustyyppi: Koulutustyyppi = Amm,
     valintatavat: Seq[AmmatillinenValintatapa],
     kielitaitovaatimukset: Seq[ValintaperusteKielitaitovaatimus]
 ) extends ValintaperusteMetadata
@@ -91,7 +91,7 @@ case class AmmatillinenValintaperusteMetadata(
     |            - yo
     |""")
 case class YliopistoValintaperusteMetadata(
-    koulutustyyppi: Koulutustyyppi = Koulutustyyppi.Yo,
+    koulutustyyppi: Koulutustyyppi = Yo,
     valintatavat: Seq[YliopistoValintatapa],
     kielitaitovaatimukset: Seq[ValintaperusteKielitaitovaatimus],
     osaamistaustaKoodiUrit: Seq[String] = Seq(),
@@ -116,7 +116,7 @@ case class YliopistoValintaperusteMetadata(
     |            - amk
     |""")
 case class AmmattikorkeakouluValintaperusteMetadata(
-    koulutustyyppi: Koulutustyyppi = Koulutustyyppi.Amk,
+    koulutustyyppi: Koulutustyyppi = Amk,
     valintatavat: Seq[AmmattikorkeakouluValintatapa],
     kielitaitovaatimukset: Seq[ValintaperusteKielitaitovaatimus],
     osaamistaustaKoodiUrit: Seq[String] = Seq(),
