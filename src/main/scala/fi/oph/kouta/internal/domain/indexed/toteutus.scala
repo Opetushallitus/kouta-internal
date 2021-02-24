@@ -35,11 +35,10 @@ case class ToteutusIndexed(
         modified = modified
       )
     } catch {
-      case e: Exception => {
-        val msg: String = s"Failed to create Toteutus (${oid})"
+      case e: Exception =>
+        val msg: String = s"Failed to create Toteutus ($oid)"
         logger.error(msg, e)
         throw new RuntimeException(msg, e)
-      }
     }
   }
 }
@@ -93,7 +92,8 @@ case class ToteutusMetadataIndexed(
 }
 
 case class AmmatillinenOsaamisalaIndexed(koodi: KoodiUri, linkki: Kielistetty, otsikko: Kielistetty) {
-  def toAmmatillinenOsaamisala = AmmatillinenOsaamisala(koodi = koodi.koodiUri, linkki = linkki, otsikko = otsikko)
+  def toAmmatillinenOsaamisala: AmmatillinenOsaamisala =
+    AmmatillinenOsaamisala(koodi = koodi.koodiUri, linkki = linkki, otsikko = otsikko)
 }
 
 case class OpetusIndexed(
