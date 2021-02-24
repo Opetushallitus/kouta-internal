@@ -43,11 +43,10 @@ case class ValintaperusteIndexed(
         modified = modified
       )
     } catch {
-      case e: Exception => {
-        val msg: String = s"Failed to create Valintaperuste (${id})"
+      case e: Exception =>
+        val msg: String = s"Failed to create Valintaperuste ($id)"
         logger.error(msg, e)
         throw new RuntimeException(msg, e)
-      }
     }
   }
 }
@@ -168,7 +167,7 @@ case class AmmatillinenValintatapaIndexed(
     enimmaispisteet: Option[Double],
     vahimmaispisteet: Option[Double]
 ) extends ValintatapaIndexed {
-  def toAmmatillinenValintatapa = AmmatillinenValintatapa(
+  def toAmmatillinenValintatapa: AmmatillinenValintatapa = AmmatillinenValintatapa(
     valintatapaKoodiUri = valintatapa.map(_.koodiUri),
     kuvaus = kuvaus,
     sisalto = sisalto,
@@ -193,7 +192,7 @@ case class AmmattikorkeakouluValintatapaIndexed(
     enimmaispisteet: Option[Double],
     vahimmaispisteet: Option[Double]
 ) extends KorkeakoulutusValintatapaIndexed {
-  def toAmmattikorkeakouluValintatapa = AmmattikorkeakouluValintatapa(
+  def toAmmattikorkeakouluValintatapa: AmmattikorkeakouluValintatapa = AmmattikorkeakouluValintatapa(
     nimi = nimi,
     valintatapaKoodiUri = valintatapa.map(_.koodiUri),
     kuvaus = kuvaus,
@@ -215,7 +214,7 @@ case class YliopistoValintatapaIndexed(
     enimmaispisteet: Option[Double],
     vahimmaispisteet: Option[Double]
 ) extends KorkeakoulutusValintatapaIndexed {
-  def toYliopistoValintatapa = YliopistoValintatapa(
+  def toYliopistoValintatapa: YliopistoValintatapa = YliopistoValintatapa(
     nimi = nimi,
     valintatapaKoodiUri = valintatapa.map(_.koodiUri),
     kuvaus = kuvaus,
