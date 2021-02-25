@@ -100,6 +100,21 @@ case class TutkinnonOsaIndexed(
   )
 }
 
+case class AmmatillinenOsaamisalaKoulutusMetadataIndexed(
+    tyyppi: Koulutustyyppi,
+    kuvaus: Kielistetty,
+    lisatiedot: Seq[LisatietoIndexed],
+    osaamisala: Option[KoodiUri]
+) extends KoulutusMetadataIndexed {
+  override def toKoulutusMetadata: AmmatillinenOsaamisalaKoulutusMetadata =
+    AmmatillinenOsaamisalaKoulutusMetadata(
+      tyyppi = tyyppi,
+      kuvaus = kuvaus,
+      lisatiedot = lisatiedot.map(_.toLisatieto),
+      osaamisalaKoodiUri = osaamisala.map(_.koodiUri)
+    )
+}
+
 trait KorkeakoulutusKoulutusMetadataIndexed extends KoulutusMetadataIndexed {
   val kuvauksenNimi: Kielistetty
   val tutkintonimike: Seq[KoodiUri]
