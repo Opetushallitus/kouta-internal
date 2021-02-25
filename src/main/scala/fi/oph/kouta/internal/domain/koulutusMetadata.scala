@@ -43,6 +43,31 @@ case class AmmatillinenKoulutusMetadata(
     lisatiedot: Seq[Lisatieto]
 ) extends KoulutusMetadata
 
+@SwaggerModel(
+    """    AmmatillinenTutkinnonOsaKoulutusMetadata:
+      |      allOf:
+      |        - $ref: '#/components/schemas/KoulutusMetadata'
+      |        - type: object
+      |          properties:
+      |            tyyppi:
+      |              type: string
+      |              description: Koulutuksen metatiedon tyyppi
+      |              example: amm-tutkinnon-osa
+      |              enum:
+      |                - amm-tutkinnon-osa
+      |            lisatiedot:
+      |              type: array
+      |              description: Koulutukseen liittyviä lisätietoja, jotka näkyvät oppijalle Opintopolussa
+      |              items:
+      |                type: object
+      |                $ref: '#/components/schemas/Lisatieto'
+      |            tutkinnonOsat:
+      |              type: array
+      |              description: Tutkinnon osat
+      |              items:
+      |                type: object
+      |                $ref: '#/components/schemas/TutkinnonOsa'
+      |""")
 case class AmmatillinenTutkinnonOsaKoulutusMetadata(
     tyyppi: Koulutustyyppi,
     kuvaus: Kielistetty,
@@ -50,11 +75,55 @@ case class AmmatillinenTutkinnonOsaKoulutusMetadata(
     tutkinnonOsat: Seq[TutkinnonOsa]
 ) extends KoulutusMetadata
 
+@SwaggerModel(
+  """    TutkinnonOsa:
+    |      type: object
+    |      properties:
+    |        ePerusteId:
+    |          type: number
+    |          description: Tutkinnon osan käyttämän ePerusteen id.
+    |          example: 4804100
+    |        koulutusKoodiUri:
+    |          type: string
+    |          description: Koulutuksen koodi URI. Viittaa [koodistoon](https://virkailija.testiopintopolku.fi/koodisto-ui/html/koodisto/koulutus/11)
+    |          example: koulutus_371101#1
+    |        tutkinnonosaId:
+    |          type: number
+    |          description: Tutkinnon osan id ePerusteissa
+    |          example: 12345
+    |        tutkinnonosaViite:
+    |          type: number
+    |          description: Tutkinnon osan viite
+    |          example: 2449201
+    |""")
 case class TutkinnonOsa(ePerusteId: Option[Long],
                         koulutusKoodiUri: Option[String],
                         tutkinnonosaId: Option[Long],
                         tutkinnonosaViite: Option[Long])
 
+@SwaggerModel(
+  """    AmmatillinenOsaamisalaKoulutusMetadata:
+      |      allOf:
+      |        - $ref: '#/components/schemas/KoulutusMetadata'
+      |        - type: object
+      |          properties:
+      |            tyyppi:
+      |              type: string
+      |              description: Koulutuksen metatiedon tyyppi
+      |              example: amm
+      |              enum:
+      |                - amm
+      |            lisatiedot:
+      |              type: array
+      |              description: Koulutukseen liittyviä lisätietoja, jotka näkyvät oppijalle Opintopolussa
+      |              items:
+      |                type: object
+      |                $ref: '#/components/schemas/Lisatieto'
+      |            osaamisalaKoodiUri:
+      |              type: string
+      |              description: Osaamisala. Viittaa [koodistoon](https://virkailija.testiopintopolku.fi/koodisto-ui/html/koodisto/osaamisala/1)
+      |              example: osaamisala_10#1
+      |""")
 case class AmmatillinenOsaamisalaKoulutusMetadata(
     tyyppi: Koulutustyyppi,
     kuvaus: Kielistetty,
