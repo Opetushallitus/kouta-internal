@@ -32,4 +32,10 @@ class KoulutusSpec extends KoulutusFixture with AccessControlSpec {
       body should include("Unauthorized")
     }
   }
+
+  it should "get ammatillinen tutkinnon osa koulutus" in {
+    val tutkinnonOsaOid = KoulutusOid("1.2.246.562.13.00000000000000000019")
+    addMockTutkinnonOsaKoulutus(tutkinnonOsaOid)
+    get(tutkinnonOsaOid, defaultSessionId)
+  }
 }
