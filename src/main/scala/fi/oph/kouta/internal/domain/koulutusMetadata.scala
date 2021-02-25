@@ -7,14 +7,6 @@ import fi.oph.kouta.internal.swagger.SwaggerModel
   """    KoulutusMetadata:
     |      type: object
     |      properties:
-    |        koulutusalaKoodiUrit:
-    |          type: array
-    |          description: Lista koulutusaloja. Viittaa [koodistoon](https://virkailija.testiopintopolku.fi/koodisto-ui/html/koodisto/kansallinenkoulutusluokitus2016koulutusalataso2/1)
-    |          items:
-    |            type: string
-    |            example:
-    |              - kansallinenkoulutusluokitus2016koulutusalataso2_054#1
-    |              - kansallinenkoulutusluokitus2016koulutusalataso2_055#1
     |        kuvaus:
     |          type: object
     |          description: Koulutuksen kuvausteksti eri kielillä. Kielet on määritetty koulutuksen kielivalinnassa.
@@ -31,7 +23,6 @@ sealed trait KoulutusMetadata {
   val tyyppi: Koulutustyyppi
   val kuvaus: Kielistetty
   val lisatiedot: Seq[Lisatieto]
-  val koulutusalaKoodiUrit: Seq[String]
 }
 
 @SwaggerModel("""    AmmatillinenKoulutusMetadata:
@@ -49,8 +40,7 @@ sealed trait KoulutusMetadata {
 case class AmmatillinenKoulutusMetadata(
     tyyppi: Koulutustyyppi,
     kuvaus: Kielistetty,
-    lisatiedot: Seq[Lisatieto],
-    koulutusalaKoodiUrit: Seq[String]
+    lisatiedot: Seq[Lisatieto]
 ) extends KoulutusMetadata
 
 @SwaggerModel(
@@ -74,12 +64,21 @@ case class AmmatillinenKoulutusMetadata(
     |          type: string
     |          description: "Tutkinnon laajuus. Viittaa koodistoon [koodistoon](https://virkailija.testiopintopolku.fi/koodisto-ui/html/koodisto/opintojenlaajuus/1)"
     |          example: opintojenlaajuus_40#1
+    |        koulutusalaKoodiUrit:
+    |          type: array
+    |          description: Lista koulutusaloja. Viittaa [koodistoon](https://virkailija.testiopintopolku.fi/koodisto-ui/html/koodisto/kansallinenkoulutusluokitus2016koulutusalataso2/1)
+    |          items:
+    |            type: string
+    |            example:
+    |              - kansallinenkoulutusluokitus2016koulutusalataso2_054#1
+    |              - kansallinenkoulutusluokitus2016koulutusalataso2_055#1
     |"""
 )
 trait KorkeakoulutusKoulutusMetadata extends KoulutusMetadata {
   val kuvauksenNimi: Kielistetty
   val tutkintonimikeKoodiUrit: Seq[String]
   val opintojenLaajuusKoodiUri: Option[String]
+  val koulutusalaKoodiUrit: Seq[String]
 }
 
 @SwaggerModel("""    YliopistoKoulutusMetadata:
