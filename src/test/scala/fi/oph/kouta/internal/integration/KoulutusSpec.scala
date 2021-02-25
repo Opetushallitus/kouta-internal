@@ -38,4 +38,10 @@ class KoulutusSpec extends KoulutusFixture with AccessControlSpec {
     addMockTutkinnonOsaKoulutus(tutkinnonOsaOid)
     get(tutkinnonOsaOid, defaultSessionId)
   }
+
+  it should "get ammatillinen osaamisala koulutus" in {
+    val osaamisalaOid = KoulutusOid("1.2.246.562.13.00000000000000000020")
+    addMockOsaamisalaKoulutus(osaamisalaOid)
+    get(osaamisalaOid, defaultSessionId)
+  }
 }
