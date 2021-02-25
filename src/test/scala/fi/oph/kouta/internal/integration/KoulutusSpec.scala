@@ -6,7 +6,7 @@ import fi.oph.kouta.internal.security.Role
 
 class KoulutusSpec extends KoulutusFixture with AccessControlSpec {
 
-  override val roleEntities               = Seq(Role.Koulutus)
+  override val roleEntities      = Seq(Role.Koulutus)
   val existingId: KoulutusOid    = KoulutusOid("1.2.246.562.13.00000000000000000009")
   val nonExistingId: KoulutusOid = KoulutusOid("1.2.246.562.13.0")
 

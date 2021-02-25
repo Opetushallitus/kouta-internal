@@ -90,11 +90,11 @@ sealed trait DefaultKoutaJsonFormats {
       Try(s \ "tyyppi").toOption.collect { case JString(tyyppi) =>
         Koulutustyyppi.withName(tyyppi)
       }.getOrElse(Amm) match {
-        case Yo  => s.extract[YliopistoKoulutusMetadata]
-        case Amm => s.extract[AmmatillinenKoulutusMetadata]
-        case Amk => s.extract[AmmattikorkeakouluKoulutusMetadata]
+        case Yo              => s.extract[YliopistoKoulutusMetadata]
+        case Amm             => s.extract[AmmatillinenKoulutusMetadata]
+        case Amk             => s.extract[AmmattikorkeakouluKoulutusMetadata]
         case AmmTutkinnonOsa => s.extract[AmmatillinenTutkinnonOsaKoulutusMetadata]
-        case kt  => throw new UnsupportedOperationException(s"Unsupported koulutustyyppi $kt")
+        case kt              => throw new UnsupportedOperationException(s"Unsupported koulutustyyppi $kt")
       }
   } { case j: KoulutusMetadata =>
     implicit def formats: Formats = genericKoutaFormats
@@ -109,11 +109,11 @@ sealed trait DefaultKoutaJsonFormats {
       Try(s \ "tyyppi").toOption.collect { case JString(tyyppi) =>
         Koulutustyyppi.withName(tyyppi)
       }.getOrElse(Amm) match {
-        case Yo  => s.extract[YliopistoKoulutusMetadataIndexed]
-        case Amk => s.extract[AmmattikorkeakouluKoulutusMetadataIndexed]
-        case Amm => s.extract[AmmatillinenKoulutusMetadataIndexed]
+        case Yo              => s.extract[YliopistoKoulutusMetadataIndexed]
+        case Amk             => s.extract[AmmattikorkeakouluKoulutusMetadataIndexed]
+        case Amm             => s.extract[AmmatillinenKoulutusMetadataIndexed]
         case AmmTutkinnonOsa => s.extract[AmmatillinenTutkinnonOsaKoulutusMetadataIndexed]
-        case kt  => throw new UnsupportedOperationException(s"Unsupported koulutustyyppi $kt")
+        case kt              => throw new UnsupportedOperationException(s"Unsupported koulutustyyppi $kt")
       }
     } { case j: KoulutusMetadataIndexed =>
       implicit def formats: Formats = genericKoutaFormats
