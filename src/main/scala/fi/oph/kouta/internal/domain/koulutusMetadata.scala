@@ -43,8 +43,7 @@ case class AmmatillinenKoulutusMetadata(
     lisatiedot: Seq[Lisatieto]
 ) extends KoulutusMetadata
 
-@SwaggerModel(
-    """    AmmatillinenTutkinnonOsaKoulutusMetadata:
+@SwaggerModel("""    AmmatillinenTutkinnonOsaKoulutusMetadata:
       |      allOf:
       |        - $ref: '#/components/schemas/KoulutusMetadata'
       |        - type: object
@@ -95,11 +94,14 @@ case class AmmatillinenTutkinnonOsaKoulutusMetadata(
     |          type: number
     |          description: Tutkinnon osan viite
     |          example: 2449201
-    |""")
-case class TutkinnonOsa(ePerusteId: Option[Long],
-                        koulutusKoodiUri: Option[String],
-                        tutkinnonosaId: Option[Long],
-                        tutkinnonosaViite: Option[Long])
+    |"""
+)
+case class TutkinnonOsa(
+    ePerusteId: Option[Long],
+    koulutusKoodiUri: Option[String],
+    tutkinnonosaId: Option[Long],
+    tutkinnonosaViite: Option[Long]
+)
 
 @SwaggerModel(
   """    AmmatillinenOsaamisalaKoulutusMetadata:
@@ -123,7 +125,8 @@ case class TutkinnonOsa(ePerusteId: Option[Long],
       |              type: string
       |              description: Osaamisala. Viittaa [koodistoon](https://virkailija.testiopintopolku.fi/koodisto-ui/html/koodisto/osaamisala/1)
       |              example: osaamisala_10#1
-      |""")
+      |"""
+)
 case class AmmatillinenOsaamisalaKoulutusMetadata(
     tyyppi: Koulutustyyppi,
     kuvaus: Kielistetty,
