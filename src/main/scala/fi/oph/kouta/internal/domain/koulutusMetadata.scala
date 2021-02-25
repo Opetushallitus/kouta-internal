@@ -43,6 +43,25 @@ case class AmmatillinenKoulutusMetadata(
     lisatiedot: Seq[Lisatieto]
 ) extends KoulutusMetadata
 
+case class AmmatillinenTutkinnonOsaKoulutusMetadata(
+    tyyppi: Koulutustyyppi,
+    kuvaus: Kielistetty,
+    lisatiedot: Seq[Lisatieto],
+    tutkinnonOsat: Seq[TutkinnonOsa]
+) extends KoulutusMetadata
+
+case class TutkinnonOsa(ePerusteId: Option[Long],
+                        koulutusKoodiUri: Option[String],
+                        tutkinnonosaId: Option[Long],
+                        tutkinnonosaViite: Option[Long])
+
+case class AmmatillinenOsaamisalaKoulutusMetadata(
+    tyyppi: Koulutustyyppi,
+    kuvaus: Kielistetty,
+    lisatiedot: Seq[Lisatieto],
+    osaamisalaKoodiUri: Option[String]
+) extends KoulutusMetadata
+
 @SwaggerModel(
   """    KorkeakouluMetadata:
     |      allOf:
