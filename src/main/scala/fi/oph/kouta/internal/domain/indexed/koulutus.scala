@@ -71,6 +71,35 @@ case class AmmatillinenKoulutusMetadataIndexed(
     )
 }
 
+case class AmmatillinenTutkinnonOsaKoulutusMetadataIndexed(
+    tyyppi: Koulutustyyppi,
+    kuvaus: Kielistetty,
+    lisatiedot: Seq[LisatietoIndexed],
+    tutkinnonOsat: Seq[TutkinnonOsaIndexed]
+) extends KoulutusMetadataIndexed {
+  override def toKoulutusMetadata: AmmatillinenTutkinnonOsaKoulutusMetadata =
+    AmmatillinenTutkinnonOsaKoulutusMetadata(
+      tyyppi = tyyppi,
+      kuvaus = kuvaus,
+      lisatiedot = lisatiedot.map(_.toLisatieto),
+      tutkinnonOsat = tutkinnonOsat.map(_.toTutkinnonOsa)
+    )
+}
+
+case class TutkinnonOsaIndexed(
+    ePerusteId: Option[Long],
+    koulutus: Option[KoodiUri],
+    tutkinnonosaId: Option[Long],
+    tutkinnonosaViite: Option[Long]
+) {
+  def toTutkinnonOsa: TutkinnonOsa = TutkinnonOsa(
+    ePerusteId = ePerusteId,
+    koulutusKoodiUri = koulutus.map(_.koodiUri),
+    tutkinnonosaId = tutkinnonosaId,
+    tutkinnonosaViite = tutkinnonosaViite
+  )
+}
+
 trait KorkeakoulutusKoulutusMetadataIndexed extends KoulutusMetadataIndexed {
   val kuvauksenNimi: Kielistetty
   val tutkintonimike: Seq[KoodiUri]
