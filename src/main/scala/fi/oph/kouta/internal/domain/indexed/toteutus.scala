@@ -1,6 +1,6 @@
 package fi.oph.kouta.internal.domain.indexed
 
-import fi.oph.kouta.domain.{Amk, Amm, AmmTutkinnonOsa, Hakutermi, Koulutustyyppi, Yo}
+import fi.oph.kouta.domain.{Hakutermi, Koulutustyyppi}
 import fi.oph.kouta.internal.domain._
 import fi.oph.kouta.internal.domain.enums.{Hakulomaketyyppi, Julkaisutila, Kieli}
 import fi.oph.kouta.internal.domain.oid.{KoulutusOid, ToteutusOid}
@@ -73,6 +73,86 @@ case class AmmatillinenToteutusMetadataIndexed(
       asiasanat = asiasanat,
       ammattinimikkeet = ammattinimikkeet,
       yhteyshenkilot = yhteyshenkilot
+    )
+  }
+}
+
+sealed trait TutkintoonJohtamatonToteutusMetadataIndexed extends ToteutusMetadataIndexed {
+  val hakutermi: Option[Hakutermi]
+  val hakulomaketyyppi: Option[Hakulomaketyyppi]
+  val hakulomakeLinkki: Kielistetty
+  val lisatietoaHakeutumisesta: Kielistetty
+  val lisatietoaValintaperusteista: Kielistetty
+  val hakuaika: Option[Ajanjakso]
+  val aloituspaikat: Option[Int]
+}
+
+case class AmmatillinenTutkinnonOsaToteutusMetadataIndexed(
+    tyyppi: Koulutustyyppi,
+    kuvaus: Kielistetty,
+    osaamisalat: List[AmmatillinenOsaamisalaIndexed],
+    opetus: Option[OpetusIndexed],
+    asiasanat: List[Keyword],
+    ammattinimikkeet: List[Keyword],
+    yhteyshenkilot: Seq[Yhteyshenkilo],
+    hakutermi: Option[Hakutermi],
+    hakulomaketyyppi: Option[Hakulomaketyyppi],
+    hakulomakeLinkki: Kielistetty,
+    lisatietoaHakeutumisesta: Kielistetty,
+    lisatietoaValintaperusteista: Kielistetty,
+    hakuaika: Option[Ajanjakso],
+    aloituspaikat: Option[Int]
+) extends TutkintoonJohtamatonToteutusMetadataIndexed {
+  override def toToteutusMetadata: AmmatillinenTutkinnonOsaToteutusMetadata = {
+    AmmatillinenTutkinnonOsaToteutusMetadata(
+      tyyppi = tyyppi,
+      kuvaus = kuvaus,
+      opetus = opetus.map(_.toOpetus),
+      asiasanat = asiasanat,
+      ammattinimikkeet = ammattinimikkeet,
+      yhteyshenkilot = yhteyshenkilot,
+      hakutermi = hakutermi,
+      hakulomaketyyppi = hakulomaketyyppi,
+      hakulomakeLinkki = hakulomakeLinkki,
+      lisatietoaHakeutumisesta = lisatietoaHakeutumisesta,
+      lisatietoaValintaperusteista = lisatietoaValintaperusteista,
+      hakuaika = hakuaika,
+      aloituspaikat = aloituspaikat
+    )
+  }
+}
+
+case class AmmatillinenOsaamisalaToteutusMetadataIndexed(
+    tyyppi: Koulutustyyppi,
+    kuvaus: Kielistetty,
+    osaamisalat: List[AmmatillinenOsaamisalaIndexed],
+    opetus: Option[OpetusIndexed],
+    asiasanat: List[Keyword],
+    ammattinimikkeet: List[Keyword],
+    yhteyshenkilot: Seq[Yhteyshenkilo],
+    hakutermi: Option[Hakutermi],
+    hakulomaketyyppi: Option[Hakulomaketyyppi],
+    hakulomakeLinkki: Kielistetty,
+    lisatietoaHakeutumisesta: Kielistetty,
+    lisatietoaValintaperusteista: Kielistetty,
+    hakuaika: Option[Ajanjakso],
+    aloituspaikat: Option[Int]
+) extends TutkintoonJohtamatonToteutusMetadataIndexed {
+  override def toToteutusMetadata: AmmatillinenOsaamisalaToteutusMetadata = {
+    AmmatillinenOsaamisalaToteutusMetadata(
+      tyyppi = tyyppi,
+      kuvaus = kuvaus,
+      opetus = opetus.map(_.toOpetus),
+      asiasanat = asiasanat,
+      ammattinimikkeet = ammattinimikkeet,
+      yhteyshenkilot = yhteyshenkilot,
+      hakutermi = hakutermi,
+      hakulomaketyyppi = hakulomaketyyppi,
+      hakulomakeLinkki = hakulomakeLinkki,
+      lisatietoaHakeutumisesta = lisatietoaHakeutumisesta,
+      lisatietoaValintaperusteista = lisatietoaValintaperusteista,
+      hakuaika = hakuaika,
+      aloituspaikat = aloituspaikat
     )
   }
 }

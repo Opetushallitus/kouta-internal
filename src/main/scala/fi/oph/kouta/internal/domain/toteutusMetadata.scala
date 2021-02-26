@@ -1,6 +1,7 @@
 package fi.oph.kouta.internal.domain
 
-import fi.oph.kouta.domain.Koulutustyyppi
+import fi.oph.kouta.domain.{Hakutermi, Koulutustyyppi}
+import fi.oph.kouta.internal.domain.enums.Hakulomaketyyppi
 import fi.oph.kouta.internal.swagger.SwaggerModel
 
 @SwaggerModel(
@@ -89,6 +90,113 @@ case class AmmatillinenToteutusMetadata(
     ammattinimikkeet: List[Keyword],
     yhteyshenkilot: Seq[Yhteyshenkilo]
 ) extends ToteutusMetadata
+
+@SwaggerModel(
+  """TutkintoonJohtamatonToteutusMetadata:
+      |           allOf:
+      |             - $ref: '#/components/schemas/ToteutusMetadata'
+      |             - type: object
+      |               properties:
+      |                 hakutermi:
+      |                   type: object
+      |                   $ref: '#/components/schemas/Hakutermi'
+      |                 hakulomaketyyppi:
+      |                   type: string
+      |                   description: Hakulomakkeen tyyppi. Kertoo, käytetäänkö Atarun (hakemuspalvelun) hakulomaketta, muuta hakulomaketta
+      |                     (jolloin voidaan lisätä hakulomakkeeseen linkki) tai onko niin, ettei sähkököistä hakulomaketta ole lainkaan, jolloin sille olisi hyvä lisätä kuvaus.
+      |                   example: "ataru"
+      |                   enum:
+      |                     - ataru
+      |                     - haku-app
+      |                     - ei sähköistä
+      |                     - muu
+      |                 hakulomakeLinkki:
+      |                   type: object
+      |                   description: Hakulomakkeen linkki eri kielillä. Kielet on määritetty haun kielivalinnassa.
+      |                   $ref: '#/components/schemas/Linkki'
+      |                 lisatietoaHakeutumisesta:
+      |                   type: object
+      |                   description: Lisätietoa hakeutumisesta eri kielillä. Kielet on määritetty haun kielivalinnassa.
+      |                   $ref: '#/components/schemas/Teksti'
+      |                 lisatietoaValintaperusteista:
+      |                   type: object
+      |                   description: Lisätietoa valintaperusteista eri kielillä. Kielet on määritetty haun kielivalinnassa.
+      |                   $ref: '#/components/schemas/Teksti'
+      |                 hakuaika:
+      |                   type: array
+      |                   description: Toteutuksen hakuaika
+      |                   $ref: '#/components/schemas/Ajanjakso'
+      |                 aloituspaikat:
+      |                   type: integer
+      |                   description: Toteutuksen aloituspaikkojen lukumäärä
+      |                   example: 100
+      |"""
+)
+trait TutkintoonJohtamatonToteutusMetadata extends ToteutusMetadata {
+  val hakutermi: Option[Hakutermi]
+  val hakulomaketyyppi: Option[Hakulomaketyyppi]
+  val hakulomakeLinkki: Kielistetty
+  val lisatietoaHakeutumisesta: Kielistetty
+  val lisatietoaValintaperusteista: Kielistetty
+  val hakuaika: Option[Ajanjakso]
+  val aloituspaikat: Option[Int]
+}
+
+@SwaggerModel("""AmmatillinenTutkinnonOsaToteutusMetadata:
+      |           allOf:
+      |             - $ref: '#/components/schemas/TutkintoonJohtamatonToteutusMetadata'
+      |             - type: object
+      |               properties:
+      |                 tyyppi:
+      |                   type: string
+      |                   description: Koulutuksen metatiedon tyyppi
+      |                   example: amm-tutkinnon-osa
+      |                   enum:
+      |                     - amm-tutkinnon-osa
+      |""")
+case class AmmatillinenTutkinnonOsaToteutusMetadata(
+    tyyppi: Koulutustyyppi,
+    kuvaus: Kielistetty,
+    opetus: Option[Opetus],
+    asiasanat: List[Keyword],
+    ammattinimikkeet: List[Keyword],
+    yhteyshenkilot: Seq[Yhteyshenkilo],
+    hakutermi: Option[Hakutermi],
+    hakulomaketyyppi: Option[Hakulomaketyyppi],
+    hakulomakeLinkki: Kielistetty,
+    lisatietoaHakeutumisesta: Kielistetty,
+    lisatietoaValintaperusteista: Kielistetty,
+    hakuaika: Option[Ajanjakso],
+    aloituspaikat: Option[Int]
+) extends TutkintoonJohtamatonToteutusMetadata
+
+@SwaggerModel("""AmmatillinenOsaamisalaToteutusMetadata:
+      |            allOf:
+      |              - $ref: '#/components/schemas/TutkintoonJohtamatonToteutusMetadata'
+      |              - type: object
+      |                properties:
+      |                  tyyppi:
+      |                    type: string
+      |                    description: Koulutuksen metatiedon tyyppi
+      |                    example: amm-osaamisala
+      |                    enum:
+      |                      - amm-osaamisala
+      |""")
+case class AmmatillinenOsaamisalaToteutusMetadata(
+    tyyppi: Koulutustyyppi,
+    kuvaus: Kielistetty,
+    opetus: Option[Opetus],
+    asiasanat: List[Keyword],
+    ammattinimikkeet: List[Keyword],
+    yhteyshenkilot: Seq[Yhteyshenkilo],
+    hakutermi: Option[Hakutermi],
+    hakulomaketyyppi: Option[Hakulomaketyyppi],
+    hakulomakeLinkki: Kielistetty,
+    lisatietoaHakeutumisesta: Kielistetty,
+    lisatietoaValintaperusteista: Kielistetty,
+    hakuaika: Option[Ajanjakso],
+    aloituspaikat: Option[Int]
+) extends TutkintoonJohtamatonToteutusMetadata
 
 @SwaggerModel("""    YliopistoToteutusMetadata:
     |      allOf:
