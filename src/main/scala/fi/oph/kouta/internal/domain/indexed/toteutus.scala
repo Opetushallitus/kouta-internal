@@ -60,7 +60,7 @@ case class ToteutusMetadataIndexed(
       AmmatillinenToteutusMetadata(
         tyyppi = tyyppi,
         kuvaus = kuvaus,
-        osaamisalat = osaamisalat.map(_.toAmmatillinenOsaamisala),
+        osaamisalat = osaamisalat.map(_.toOsaamisala),
         opetus = opetus.map(_.toOpetus),
         asiasanat = asiasanat,
         ammattinimikkeet = ammattinimikkeet,
@@ -92,9 +92,27 @@ case class ToteutusMetadataIndexed(
   }
 }
 
-case class AmmatillinenOsaamisalaIndexed(koodi: KoodiUri, linkki: Kielistetty, otsikko: Kielistetty) {
-  def toAmmatillinenOsaamisala: AmmatillinenOsaamisala =
+sealed trait OsaamisalaIndexed {
+  val linkki: Kielistetty
+  val otsikko: Kielistetty
+
+  def toOsaamisala: Osaamisala
+}
+
+case class AmmatillinenOsaamisalaIndexed(koodi: KoodiUri, linkki: Kielistetty, otsikko: Kielistetty)
+    extends OsaamisalaIndexed {
+  override def toOsaamisala: AmmatillinenOsaamisala =
     AmmatillinenOsaamisala(koodi = koodi.koodiUri, linkki = linkki, otsikko = otsikko)
+}
+
+case class KorkeakouluOsaamisalaIndexed(
+    nimi: Kielistetty,
+    kuvaus: Kielistetty,
+    linkki: Kielistetty,
+    otsikko: Kielistetty
+) extends OsaamisalaIndexed {
+  override def toOsaamisala: KorkeakouluOsaamisala =
+    KorkeakouluOsaamisala(nimi = nimi, kuvaus = kuvaus, linkki = linkki, otsikko = otsikko)
 }
 
 case class OpetusIndexed(
