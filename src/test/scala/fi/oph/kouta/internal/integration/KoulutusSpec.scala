@@ -35,13 +35,13 @@ class KoulutusSpec extends KoulutusFixture with AccessControlSpec {
 
   it should "get ammatillinen tutkinnon osa koulutus" in {
     val tutkinnonOsaOid = KoulutusOid("1.2.246.562.13.00000000000000000019")
-    addMockTutkinnonOsaKoulutus(tutkinnonOsaOid)
+    addMockTutkinnonOsaKoulutus(tutkinnonOsaOid, ChildOid)
     get(tutkinnonOsaOid, defaultSessionId)
   }
 
   it should "get ammatillinen osaamisala koulutus" in {
     val osaamisalaOid = KoulutusOid("1.2.246.562.13.00000000000000000020")
-    addMockOsaamisalaKoulutus(osaamisalaOid)
+    addMockOsaamisalaKoulutus(osaamisalaOid, ChildOid)
     get(osaamisalaOid, defaultSessionId)
   }
 }

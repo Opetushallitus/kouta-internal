@@ -35,4 +35,20 @@ class ToteutusSpec extends ToteutusFixture with KoulutusFixture with AccessContr
       body should include("Unauthorized")
     }
   }
+
+  it should "get tutkinnon osa toteutus" in {
+    val tutkinnonOsaOid = ToteutusOid("1.2.246.562.17.791")
+    val koulutusOid = KoulutusOid("1.2.246.562.13.792")
+    addMockTutkinnonOsaKoulutus(koulutusOid, ChildOid)
+    addMockTutkinnonOsaToteutus(tutkinnonOsaOid, ChildOid, koulutusOid)
+    get(tutkinnonOsaOid, defaultSessionId)
+  }
+
+  it should "get osaamisala toteutus" in {
+    val tutkinnonOsaOid = ToteutusOid("1.2.246.562.17.793")
+    val koulutusOid = KoulutusOid("1.2.246.562.13.794")
+    addMockOsaamisalaKoulutus(koulutusOid, ChildOid)
+    addMockOsaamisalaToteutus(tutkinnonOsaOid, ChildOid, koulutusOid)
+    get(tutkinnonOsaOid, defaultSessionId)
+  }
 }

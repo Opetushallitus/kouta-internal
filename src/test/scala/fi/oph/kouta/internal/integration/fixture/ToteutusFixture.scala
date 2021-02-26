@@ -1,7 +1,6 @@
 package fi.oph.kouta.internal.integration.fixture
 
-import java.util.UUID
-
+import fi.oph.kouta.domain.{AmmOsaamisala, AmmTutkinnonOsa}
 import fi.oph.kouta.external.KoutaFixtureTool
 import fi.oph.kouta.internal.TempElasticDockerClient
 import fi.oph.kouta.internal.domain.Toteutus
@@ -9,6 +8,8 @@ import fi.oph.kouta.internal.domain.oid.{KoulutusOid, OrganisaatioOid, ToteutusO
 import fi.oph.kouta.internal.elasticsearch.ToteutusClient
 import fi.oph.kouta.internal.service.ToteutusService
 import fi.oph.kouta.internal.servlet.ToteutusServlet
+
+import java.util.UUID
 
 trait ToteutusFixture extends KoutaIntegrationSpec {
   val ToteutusPath = "/toteutus"
@@ -33,6 +34,36 @@ trait ToteutusFixture extends KoutaIntegrationSpec {
       (KoutaFixtureTool.OrganisaatioKey -> organisaatioOid.s) +
       (KoutaFixtureTool.KoulutusOidKey  -> koulutusOid.s) +
       (KoutaFixtureTool.TarjoajatKey    -> organisaatioOid.s)
+    KoutaFixtureTool.addToteutus(toteutusOid.s, toteutus)
+    indexToteutus(toteutusOid)
+  }
+
+  def addMockTutkinnonOsaToteutus(
+      toteutusOid: ToteutusOid,
+      organisaatioOid: OrganisaatioOid,
+      koulutusOid: KoulutusOid
+  ): Unit = {
+    val toteutus = KoutaFixtureTool.DefaultToteutusScala +
+      (KoutaFixtureTool.OrganisaatioKey   -> organisaatioOid.s) +
+      (KoutaFixtureTool.KoulutusOidKey    -> koulutusOid.s) +
+      (KoutaFixtureTool.TarjoajatKey      -> organisaatioOid.s) +
+      (KoutaFixtureTool.MetadataKey       -> KoutaFixtureTool.ammTutkinnonOsaToteutusMetadata) +
+      (KoutaFixtureTool.KoulutustyyppiKey -> AmmTutkinnonOsa.name)
+    KoutaFixtureTool.addToteutus(toteutusOid.s, toteutus)
+    indexToteutus(toteutusOid)
+  }
+
+  def addMockOsaamisalaToteutus(
+      toteutusOid: ToteutusOid,
+      organisaatioOid: OrganisaatioOid,
+      koulutusOid: KoulutusOid
+  ): Unit = {
+    val toteutus = KoutaFixtureTool.DefaultToteutusScala +
+      (KoutaFixtureTool.OrganisaatioKey   -> organisaatioOid.s) +
+      (KoutaFixtureTool.KoulutusOidKey    -> koulutusOid.s) +
+      (KoutaFixtureTool.TarjoajatKey      -> organisaatioOid.s) +
+      (KoutaFixtureTool.MetadataKey       -> KoutaFixtureTool.ammOsaamisalaToteutusMetadata) +
+      (KoutaFixtureTool.KoulutustyyppiKey -> AmmOsaamisala.name)
     KoutaFixtureTool.addToteutus(toteutusOid.s, toteutus)
     indexToteutus(toteutusOid)
   }
