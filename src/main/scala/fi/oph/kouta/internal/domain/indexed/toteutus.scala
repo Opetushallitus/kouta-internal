@@ -1,8 +1,8 @@
 package fi.oph.kouta.internal.domain.indexed
 
-import fi.oph.kouta.domain.{Amk, Amm, Koulutustyyppi, Yo}
+import fi.oph.kouta.domain.{Amk, Amm, AmmTutkinnonOsa, Hakutermi, Koulutustyyppi, Yo}
 import fi.oph.kouta.internal.domain._
-import fi.oph.kouta.internal.domain.enums.{Julkaisutila, Kieli}
+import fi.oph.kouta.internal.domain.enums.{Hakulomaketyyppi, Julkaisutila, Kieli}
 import fi.oph.kouta.internal.domain.oid.{KoulutusOid, ToteutusOid}
 import fi.vm.sade.utils.slf4j.Logging
 
@@ -14,7 +14,7 @@ case class ToteutusIndexed(
     tila: Julkaisutila,
     tarjoajat: List[Organisaatio],
     nimi: Kielistetty,
-    metadata: Option[ToteutusMetadataIndexed],
+    metadata: Option[ToteutusMetadataIndexedUUSI],
     muokkaaja: Muokkaaja,
     organisaatio: Option[Organisaatio],
     kielivalinta: Seq[Kieli],
@@ -41,6 +41,92 @@ case class ToteutusIndexed(
         logger.error(msg, e)
         throw new RuntimeException(msg, e)
     }
+  }
+}
+
+sealed trait ToteutusMetadataIndexedUUSI {
+  val tyyppi: Koulutustyyppi
+  val kuvaus: Kielistetty
+  val opetus: Option[OpetusIndexed]
+  val asiasanat: List[Keyword]
+  val ammattinimikkeet: List[Keyword]
+  val yhteyshenkilot: Seq[Yhteyshenkilo]
+
+  def toToteutusMetadata: ToteutusMetadata
+}
+
+case class AmmatillinenToteutusMetadataIndexed(
+    tyyppi: Koulutustyyppi,
+    kuvaus: Kielistetty,
+    osaamisalat: List[AmmatillinenOsaamisalaIndexed],
+    opetus: Option[OpetusIndexed],
+    asiasanat: List[Keyword],
+    ammattinimikkeet: List[Keyword],
+    yhteyshenkilot: Seq[Yhteyshenkilo]
+) extends ToteutusMetadataIndexedUUSI {
+  override def toToteutusMetadata: AmmatillinenToteutusMetadata = {
+    AmmatillinenToteutusMetadata(
+      tyyppi = tyyppi,
+      kuvaus = kuvaus,
+      osaamisalat = osaamisalat.map(_.toOsaamisala),
+      opetus = opetus.map(_.toOpetus),
+      asiasanat = asiasanat,
+      ammattinimikkeet = ammattinimikkeet,
+      yhteyshenkilot = yhteyshenkilot
+    )
+  }
+}
+
+sealed trait KorkeakouluToteutusMetadataIndexed extends ToteutusMetadataIndexedUUSI {
+  val alemmanKorkeakoulututkinnonOsaamisalat: Seq[KorkeakouluOsaamisalaIndexed]
+  val ylemmanKorkeakoulututkinnonOsaamisalat: Seq[KorkeakouluOsaamisalaIndexed]
+}
+
+case class YliopistoToteutusMetadataIndexed(
+    tyyppi: Koulutustyyppi,
+    kuvaus: Kielistetty,
+    opetus: Option[OpetusIndexed],
+    asiasanat: List[Keyword],
+    ammattinimikkeet: List[Keyword],
+    yhteyshenkilot: Seq[Yhteyshenkilo],
+    alemmanKorkeakoulututkinnonOsaamisalat: Seq[KorkeakouluOsaamisalaIndexed],
+    ylemmanKorkeakoulututkinnonOsaamisalat: Seq[KorkeakouluOsaamisalaIndexed]
+) extends KorkeakouluToteutusMetadataIndexed {
+  override def toToteutusMetadata: YliopistoToteutusMetadata = {
+    YliopistoToteutusMetadata(
+      tyyppi = tyyppi,
+      kuvaus = kuvaus,
+      opetus = opetus.map(_.toOpetus),
+      asiasanat = asiasanat,
+      ammattinimikkeet = ammattinimikkeet,
+      yhteyshenkilot = yhteyshenkilot,
+      alemmanKorkeakoulututkinnonOsaamisalat = alemmanKorkeakoulututkinnonOsaamisalat.map(_.toOsaamisala),
+      ylemmanKorkeakoulututkinnonOsaamisalat = ylemmanKorkeakoulututkinnonOsaamisalat.map(_.toOsaamisala)
+    )
+  }
+}
+
+case class AmmattikorkeakouluToteutusMetadataIndexed(
+    tyyppi: Koulutustyyppi,
+    kuvaus: Kielistetty,
+    opetus: Option[OpetusIndexed],
+    asiasanat: List[Keyword],
+    ammattinimikkeet: List[Keyword],
+    yhteyshenkilot: Seq[Yhteyshenkilo],
+    alemmanKorkeakoulututkinnonOsaamisalat: Seq[KorkeakouluOsaamisalaIndexed],
+    ylemmanKorkeakoulututkinnonOsaamisalat: Seq[KorkeakouluOsaamisalaIndexed]
+) extends KorkeakouluToteutusMetadataIndexed {
+  override def toToteutusMetadata: AmmattikorkeakouluToteutusMetadata = {
+    AmmattikorkeakouluToteutusMetadata(
+      tyyppi = tyyppi,
+      kuvaus = kuvaus,
+      opetus = opetus.map(_.toOpetus),
+      asiasanat = asiasanat,
+      ammattinimikkeet = ammattinimikkeet,
+      yhteyshenkilot = yhteyshenkilot,
+      alemmanKorkeakoulututkinnonOsaamisalat = alemmanKorkeakoulututkinnonOsaamisalat.map(_.toOsaamisala),
+      ylemmanKorkeakoulututkinnonOsaamisalat = ylemmanKorkeakoulututkinnonOsaamisalat.map(_.toOsaamisala)
+    )
   }
 }
 

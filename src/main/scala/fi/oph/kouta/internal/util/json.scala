@@ -30,6 +30,7 @@ sealed trait DefaultKoutaJsonFormats {
     koulutusMetadataSerializer,
     koulutusMetadataIndexedSerializer,
     toteutusMetadataSerializer,
+    toteutusMetadataIndexedSerializer,
     valintatapaSisaltoSerializer,
     valintaperusteMetadataSerializer,
     valintaperusteMetadataIndexedSerializer
@@ -139,6 +140,26 @@ sealed trait DefaultKoutaJsonFormats {
 
     Extraction.decompose(j)
   }
+
+  private def toteutusMetadataIndexedSerializer: CustomSerializer[ToteutusMetadataIndexedUUSI] =
+    serializer[ToteutusMetadataIndexedUUSI] { case s: JObject =>
+      implicit def formats: Formats = genericKoutaFormats
+
+      Try(s \ "tyyppi").toOption.collect { case JString(tyyppi) =>
+        Koulutustyyppi.withName(tyyppi)
+      }.getOrElse(Amm) match {
+        case Yo              => s.extract[YliopistoToteutusMetadataIndexed]
+        case Amk             => s.extract[AmmattikorkeakouluToteutusMetadataIndexed]
+        case Amm             => s.extract[AmmatillinenToteutusMetadataIndexed]
+//        case AmmTutkinnonOsa => s.extract[AmmatillinenTutkinnonOsaToteutusMetadataIndexed]
+//        case AmmOsaamisala   => s.extract[AmmatillinenOsaamisalaToteutusMetadataIndexed]
+        case kt              => throw new UnsupportedOperationException(s"Unsupported toteutustyyppi $kt")
+      }
+    } { case j: ToteutusMetadataIndexed =>
+      implicit def formats: Formats = genericKoutaFormats
+
+      Extraction.decompose(j)
+    }
 
   private def valintaperusteMetadataSerializer: CustomSerializer[ValintaperusteMetadata] =
     serializer[ValintaperusteMetadata] { case s: JObject =>
