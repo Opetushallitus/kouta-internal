@@ -130,10 +130,12 @@ sealed trait DefaultKoutaJsonFormats {
       Try(s \ "tyyppi").toOption.collect { case JString(tyyppi) =>
         Koulutustyyppi.withName(tyyppi)
       }.getOrElse(Amm) match {
-        case Yo  => s.extract[YliopistoToteutusMetadata]
-        case Amm => s.extract[AmmatillinenToteutusMetadata]
-        case Amk => s.extract[AmmattikorkeakouluToteutusMetadata]
-        case kt  => throw new UnsupportedOperationException(s"Unsupported koulutustyyppi $kt")
+        case Yo              => s.extract[YliopistoToteutusMetadata]
+        case Amm             => s.extract[AmmatillinenToteutusMetadata]
+        case Amk             => s.extract[AmmattikorkeakouluToteutusMetadata]
+        case AmmTutkinnonOsa => s.extract[AmmatillinenTutkinnonOsaToteutusMetadata]
+        case AmmOsaamisala   => s.extract[AmmatillinenOsaamisalaToteutusMetadata]
+        case kt              => throw new UnsupportedOperationException(s"Unsupported koulutustyyppi $kt")
       }
   } { case j: ToteutusMetadata =>
     implicit def formats: Formats = genericKoutaFormats
@@ -148,12 +150,12 @@ sealed trait DefaultKoutaJsonFormats {
       Try(s \ "tyyppi").toOption.collect { case JString(tyyppi) =>
         Koulutustyyppi.withName(tyyppi)
       }.getOrElse(Amm) match {
-        case Yo  => s.extract[YliopistoToteutusMetadataIndexed]
-        case Amk => s.extract[AmmattikorkeakouluToteutusMetadataIndexed]
-        case Amm => s.extract[AmmatillinenToteutusMetadataIndexed]
-//        case AmmTutkinnonOsa => s.extract[AmmatillinenTutkinnonOsaToteutusMetadataIndexed]
-//        case AmmOsaamisala   => s.extract[AmmatillinenOsaamisalaToteutusMetadataIndexed]
-        case kt => throw new UnsupportedOperationException(s"Unsupported toteutustyyppi $kt")
+        case Yo              => s.extract[YliopistoToteutusMetadataIndexed]
+        case Amk             => s.extract[AmmattikorkeakouluToteutusMetadataIndexed]
+        case Amm             => s.extract[AmmatillinenToteutusMetadataIndexed]
+        case AmmTutkinnonOsa => s.extract[AmmatillinenTutkinnonOsaToteutusMetadataIndexed]
+        case AmmOsaamisala   => s.extract[AmmatillinenOsaamisalaToteutusMetadataIndexed]
+        case kt              => throw new UnsupportedOperationException(s"Unsupported toteutustyyppi $kt")
       }
     } { case j: ToteutusMetadataIndexed =>
       implicit def formats: Formats = genericKoutaFormats
