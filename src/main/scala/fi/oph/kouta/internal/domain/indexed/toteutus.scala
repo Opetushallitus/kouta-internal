@@ -130,54 +130,6 @@ case class AmmattikorkeakouluToteutusMetadataIndexed(
   }
 }
 
-case class ToteutusMetadataIndexed(
-    tyyppi: Koulutustyyppi,
-    kuvaus: Kielistetty,
-    osaamisalat: List[AmmatillinenOsaamisalaIndexed],
-    opetus: Option[OpetusIndexed],
-    asiasanat: List[Keyword],
-    ammattinimikkeet: List[Keyword],
-    yhteyshenkilot: Seq[Yhteyshenkilo],
-    alemmanKorkeakoulututkinnonOsaamisalat: Seq[KorkeakouluOsaamisala],
-    ylemmanKorkeakoulututkinnonOsaamisalat: Seq[KorkeakouluOsaamisala]
-) {
-  def toToteutusMetadata: ToteutusMetadata = tyyppi match {
-    case Amm =>
-      AmmatillinenToteutusMetadata(
-        tyyppi = tyyppi,
-        kuvaus = kuvaus,
-        osaamisalat = osaamisalat.map(_.toOsaamisala),
-        opetus = opetus.map(_.toOpetus),
-        asiasanat = asiasanat,
-        ammattinimikkeet = ammattinimikkeet,
-        yhteyshenkilot = yhteyshenkilot
-      )
-    case Yo =>
-      YliopistoToteutusMetadata(
-        tyyppi = tyyppi,
-        kuvaus = kuvaus,
-        opetus = opetus.map(_.toOpetus),
-        asiasanat = asiasanat,
-        ammattinimikkeet = ammattinimikkeet,
-        yhteyshenkilot = yhteyshenkilot,
-        alemmanKorkeakoulututkinnonOsaamisalat = alemmanKorkeakoulututkinnonOsaamisalat,
-        ylemmanKorkeakoulututkinnonOsaamisalat = ylemmanKorkeakoulututkinnonOsaamisalat
-      )
-    case Amk =>
-      AmmattikorkeakouluToteutusMetadata(
-        tyyppi = tyyppi,
-        kuvaus = kuvaus,
-        opetus = opetus.map(_.toOpetus),
-        asiasanat = asiasanat,
-        ammattinimikkeet = ammattinimikkeet,
-        yhteyshenkilot = yhteyshenkilot,
-        alemmanKorkeakoulututkinnonOsaamisalat = alemmanKorkeakoulututkinnonOsaamisalat,
-        ylemmanKorkeakoulututkinnonOsaamisalat = ylemmanKorkeakoulututkinnonOsaamisalat
-      )
-    case kt => throw new UnsupportedOperationException(s"Unsupported koulutustyyppi $kt")
-  }
-}
-
 sealed trait OsaamisalaIndexed {
   val linkki: Kielistetty
   val otsikko: Kielistetty
