@@ -14,7 +14,7 @@ case class ToteutusIndexed(
     tila: Julkaisutila,
     tarjoajat: List[Organisaatio],
     nimi: Kielistetty,
-    metadata: Option[ToteutusMetadataIndexedUUSI],
+    metadata: Option[ToteutusMetadataIndexed],
     muokkaaja: Muokkaaja,
     organisaatio: Option[Organisaatio],
     kielivalinta: Seq[Kieli],
@@ -44,7 +44,7 @@ case class ToteutusIndexed(
   }
 }
 
-sealed trait ToteutusMetadataIndexedUUSI {
+sealed trait ToteutusMetadataIndexed {
   val tyyppi: Koulutustyyppi
   val kuvaus: Kielistetty
   val opetus: Option[OpetusIndexed]
@@ -63,7 +63,7 @@ case class AmmatillinenToteutusMetadataIndexed(
     asiasanat: List[Keyword],
     ammattinimikkeet: List[Keyword],
     yhteyshenkilot: Seq[Yhteyshenkilo]
-) extends ToteutusMetadataIndexedUUSI {
+) extends ToteutusMetadataIndexed {
   override def toToteutusMetadata: AmmatillinenToteutusMetadata = {
     AmmatillinenToteutusMetadata(
       tyyppi = tyyppi,
@@ -77,7 +77,7 @@ case class AmmatillinenToteutusMetadataIndexed(
   }
 }
 
-sealed trait KorkeakouluToteutusMetadataIndexed extends ToteutusMetadataIndexedUUSI {
+sealed trait KorkeakouluToteutusMetadataIndexed extends ToteutusMetadataIndexed {
   val alemmanKorkeakoulututkinnonOsaamisalat: Seq[KorkeakouluOsaamisalaIndexed]
   val ylemmanKorkeakoulututkinnonOsaamisalat: Seq[KorkeakouluOsaamisalaIndexed]
 }

@@ -141,8 +141,8 @@ sealed trait DefaultKoutaJsonFormats {
     Extraction.decompose(j)
   }
 
-  private def toteutusMetadataIndexedSerializer: CustomSerializer[ToteutusMetadataIndexedUUSI] =
-    serializer[ToteutusMetadataIndexedUUSI] { case s: JObject =>
+  private def toteutusMetadataIndexedSerializer: CustomSerializer[ToteutusMetadataIndexed] =
+    serializer[ToteutusMetadataIndexed] { case s: JObject =>
       implicit def formats: Formats = genericKoutaFormats
 
       Try(s \ "tyyppi").toOption.collect { case JString(tyyppi) =>
