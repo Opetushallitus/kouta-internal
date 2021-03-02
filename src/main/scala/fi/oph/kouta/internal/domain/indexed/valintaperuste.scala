@@ -3,7 +3,8 @@ package fi.oph.kouta.internal.domain.indexed
 import java.time.LocalDateTime
 import java.util.UUID
 
-import fi.oph.kouta.internal.domain.enums.{Julkaisutila, Kieli, Koulutustyyppi}
+import fi.oph.kouta.domain.{Koulutustyyppi, Amm, Amk, Yo}
+import fi.oph.kouta.internal.domain.enums.{Julkaisutila, Kieli}
 import fi.oph.kouta.internal.domain._
 import fi.vm.sade.utils.slf4j.Logging
 
@@ -43,11 +44,10 @@ case class ValintaperusteIndexed(
         modified = modified
       )
     } catch {
-      case e: Exception => {
-        val msg: String = s"Failed to create Valintaperuste (${id})"
+      case e: Exception =>
+        val msg: String = s"Failed to create Valintaperuste ($id)"
         logger.error(msg, e)
         throw new RuntimeException(msg, e)
-      }
     }
   }
 }
@@ -62,7 +62,7 @@ sealed trait ValintaperusteMetadataIndexed {
 }
 
 case class AmmatillinenValintaperusteMetadataIndexed(
-    koulutustyyppi: Koulutustyyppi = Koulutustyyppi.Amm,
+    koulutustyyppi: Koulutustyyppi = Amm,
     valintatavat: Seq[AmmatillinenValintatapaIndexed],
     kielitaitovaatimukset: Seq[ValintaperusteKielitaitovaatimusIndexed]
 ) extends ValintaperusteMetadataIndexed {
@@ -81,7 +81,7 @@ sealed trait KorkeakoulutusValintaperusteMetadataIndexed extends ValintaperusteM
 }
 
 case class YliopistoValintaperusteMetadataIndexed(
-    koulutustyyppi: Koulutustyyppi,
+    koulutustyyppi: Koulutustyyppi = Yo,
     valintatavat: Seq[YliopistoValintatapaIndexed],
     kielitaitovaatimukset: Seq[ValintaperusteKielitaitovaatimusIndexed],
     osaamistausta: Seq[KoodiUri],
@@ -97,7 +97,7 @@ case class YliopistoValintaperusteMetadataIndexed(
 }
 
 case class AmmattikorkeakouluValintaperusteMetadataIndexed(
-    koulutustyyppi: Koulutustyyppi,
+    koulutustyyppi: Koulutustyyppi = Amk,
     valintatavat: Seq[AmmattikorkeakouluValintatapaIndexed],
     kielitaitovaatimukset: Seq[ValintaperusteKielitaitovaatimusIndexed],
     osaamistausta: Seq[KoodiUri],
@@ -168,7 +168,7 @@ case class AmmatillinenValintatapaIndexed(
     enimmaispisteet: Option[Double],
     vahimmaispisteet: Option[Double]
 ) extends ValintatapaIndexed {
-  def toAmmatillinenValintatapa = AmmatillinenValintatapa(
+  def toAmmatillinenValintatapa: AmmatillinenValintatapa = AmmatillinenValintatapa(
     valintatapaKoodiUri = valintatapa.map(_.koodiUri),
     kuvaus = kuvaus,
     sisalto = sisalto,
@@ -193,7 +193,7 @@ case class AmmattikorkeakouluValintatapaIndexed(
     enimmaispisteet: Option[Double],
     vahimmaispisteet: Option[Double]
 ) extends KorkeakoulutusValintatapaIndexed {
-  def toAmmattikorkeakouluValintatapa = AmmattikorkeakouluValintatapa(
+  def toAmmattikorkeakouluValintatapa: AmmattikorkeakouluValintatapa = AmmattikorkeakouluValintatapa(
     nimi = nimi,
     valintatapaKoodiUri = valintatapa.map(_.koodiUri),
     kuvaus = kuvaus,
@@ -215,7 +215,7 @@ case class YliopistoValintatapaIndexed(
     enimmaispisteet: Option[Double],
     vahimmaispisteet: Option[Double]
 ) extends KorkeakoulutusValintatapaIndexed {
-  def toYliopistoValintatapa = YliopistoValintatapa(
+  def toYliopistoValintatapa: YliopistoValintatapa = YliopistoValintatapa(
     nimi = nimi,
     valintatapaKoodiUri = valintatapa.map(_.koodiUri),
     kuvaus = kuvaus,

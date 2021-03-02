@@ -3,7 +3,8 @@ package fi.oph.kouta.internal.domain
 import java.time.LocalDateTime
 import java.util.UUID
 
-import fi.oph.kouta.internal.domain.enums.{Julkaisutila, Kieli, Koulutustyyppi}
+import fi.oph.kouta.domain.Koulutustyyppi
+import fi.oph.kouta.internal.domain.enums.{Julkaisutila, Kieli}
 import fi.oph.kouta.internal.domain.oid.{OrganisaatioOid, UserOid}
 import fi.oph.kouta.internal.swagger.SwaggerModel
 
