@@ -2,7 +2,8 @@ package fi.oph.kouta.internal.domain
 
 import java.time.LocalDateTime
 
-import fi.oph.kouta.internal.domain.enums._
+import fi.oph.kouta.domain.Koulutustyyppi
+import fi.oph.kouta.internal.domain.enums.{Kieli, Julkaisutila}
 import fi.oph.kouta.internal.domain.oid.{KoulutusOid, OrganisaatioOid, UserOid}
 import fi.oph.kouta.internal.swagger.SwaggerModel
 

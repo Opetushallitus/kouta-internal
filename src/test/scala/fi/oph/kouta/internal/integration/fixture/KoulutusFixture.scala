@@ -1,7 +1,7 @@
 package fi.oph.kouta.internal.integration.fixture
 
 import java.util.UUID
-
+import fi.oph.kouta.domain.{AmmOsaamisala, AmmTutkinnonOsa}
 import fi.oph.kouta.external.KoutaFixtureTool
 import fi.oph.kouta.internal.domain.Koulutus
 import fi.oph.kouta.internal.domain.oid.{KoulutusOid, OrganisaatioOid}
@@ -33,6 +33,34 @@ trait KoulutusFixture extends KoutaIntegrationSpec {
       organisaatioOid: OrganisaatioOid = OrganisaatioServiceMock.ChildOid
   ): Unit = {
     val koulutus = KoutaFixtureTool.DefaultKoulutusScala + (KoutaFixtureTool.OrganisaatioKey -> organisaatioOid.s)
+    KoutaFixtureTool.addKoulutus(koulutusOid.s, koulutus)
+    indexKoulutus(koulutusOid)
+  }
+
+  def addMockTutkinnonOsaKoulutus(
+      koulutusOid: KoulutusOid,
+      organisaatioOid: OrganisaatioOid = OrganisaatioServiceMock.ChildOid
+  ): Unit = {
+    val koulutus = KoutaFixtureTool.DefaultKoulutusScala +
+      (KoutaFixtureTool.MetadataKey         -> KoutaFixtureTool.ammTutkinnonOsaKoulutusMetadata) +
+      (KoutaFixtureTool.KoulutustyyppiKey   -> AmmTutkinnonOsa.name) +
+      (KoutaFixtureTool.JohtaaTutkintoonKey -> "false") +
+      (KoutaFixtureTool.EPerusteIdKey       -> null) +
+      (KoutaFixtureTool.KoulutusKoodiUriKey -> null) +
+      (KoutaFixtureTool.OrganisaatioKey     -> organisaatioOid.s)
+    KoutaFixtureTool.addKoulutus(koulutusOid.s, koulutus)
+    indexKoulutus(koulutusOid)
+  }
+
+  def addMockOsaamisalaKoulutus(
+      koulutusOid: KoulutusOid,
+      organisaatioOid: OrganisaatioOid = OrganisaatioServiceMock.ChildOid
+  ): Unit = {
+    val koulutus = KoutaFixtureTool.DefaultKoulutusScala +
+      (KoutaFixtureTool.MetadataKey         -> KoutaFixtureTool.ammOsaamisalaKoulutusMetadata) +
+      (KoutaFixtureTool.KoulutustyyppiKey   -> AmmOsaamisala.name) +
+      (KoutaFixtureTool.JohtaaTutkintoonKey -> "false") +
+      (KoutaFixtureTool.OrganisaatioKey     -> organisaatioOid.s)
     KoutaFixtureTool.addKoulutus(koulutusOid.s, koulutus)
     indexKoulutus(koulutusOid)
   }

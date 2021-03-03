@@ -13,6 +13,10 @@
     <properties>
         <scala.version>2.12.10</scala.version>
 
+        <kouta-indeksoija.version>1.1.0-SNAPSHOT</kouta-indeksoija.version>
+        <kouta-backend.version>1.5.0-SNAPSHOT</kouta-backend.version>
+        <kouta-common.version>1.3.0-SNAPSHOT</kouta-common.version>
+
         <!-- Korjaa käännösvirheen:
              [ERROR] Source option 5 is no longer supported. Use 6 or later.
              [ERROR] Target option 1.5 is no longer supported. Use 1.6 or later. -->
@@ -27,7 +31,7 @@
         <logback-access.version>1.2.3</logback-access.version>
 
         <!-- Cas properties -->
-        <scala-cas.version>2.1.0-SNAPSHOT</scala-cas.version>
+        <scala-cas.version>2.2.1-SNAPSHOT</scala-cas.version>
 
         <!-- Http related properties -->
         <scalatra.version>2.7.0</scalatra.version>
@@ -46,8 +50,6 @@
         <scalatra-scalatest.version>2.7.0</scalatra-scalatest.version>
         <jetty.version>9.4.17.v20190418</jetty.version>
         <embedded-elasticsearch.version>2.10.0</embedded-elasticsearch.version>
-        <kouta-indeksoija.version>0.4.11-SNAPSHOT</kouta-indeksoija.version>
-        <kouta-backend.version>1.3.0-SNAPSHOT</kouta-backend.version>
         <mockserver-netty.version>5.5.1</mockserver-netty.version>
         <commons.io.version>2.6</commons.io.version>
 
@@ -929,7 +931,7 @@
         <dependency>
             <groupId>fi.oph.kouta</groupId>
             <artifactId>kouta-common</artifactId>
-            <version>${kouta-backend.version}</version>
+            <version>${kouta-common.version}</version>
             <classifier>tests</classifier>
             <scope>test</scope>
             <exclusions>
@@ -948,6 +950,38 @@
                 <exclusion>
                     <groupId>com.google.errorprone</groupId>
                     <artifactId>error_prone_annotations</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+        <dependency>
+            <groupId>fi.oph.kouta</groupId>
+            <artifactId>kouta-common</artifactId>
+            <version>${kouta-common.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.scala-lang</groupId>
+                    <artifactId>scala-reflect</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.scala-lang</groupId>
+                    <artifactId>scala-library</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>slf4j-api</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>com.google.errorprone</groupId>
+                    <artifactId>error_prone_annotations</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>commons-io</groupId>
+                    <artifactId>commons-io</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>commons-logging</groupId>
+                    <artifactId>commons-logging</artifactId>
                 </exclusion>
             </exclusions>
         </dependency>
@@ -1007,6 +1041,12 @@
                             <style>GOOGLE</style>
                         </googleJavaFormat>
                     </java>
+                    <scala>
+                        <scalafmt>
+                            <version>2.7.1</version>
+                            <file>${project.basedir}/.scalafmt.conf</file>
+                        </scalafmt>
+                    </scala>
                 </configuration>
                 <executions>
                     <execution>
@@ -1016,19 +1056,6 @@
                         </goals>
                     </execution>
                 </executions>
-            </plugin>
-            <plugin>
-                <groupId>com.diffplug.spotless</groupId>
-                <artifactId>spotless-maven-plugin</artifactId>
-                <version>2.0.1</version>
-                <configuration>
-                    <scala>
-                        <scalafmt>
-                            <version>2.7.1</version>
-                            <file>${project.basedir}/.scalafmt.conf</file>
-                        </scalafmt>
-                    </scala>
-                </configuration>
             </plugin>
             <plugin>
                 <groupId>net.alchim31.maven</groupId>
