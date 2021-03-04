@@ -16,29 +16,57 @@ class SessionDAO(db: KoutaDatabase) extends SQLHelpers {
       val id = UUID.randomUUID()
       db.runBlockingTransactionally(
         storeCasSession(id, ticket, personOid, authorities),
-        timeout = Duration(1, TimeUnit.MINUTES)
-      ).map(_ => id)
-        .get
+        timeout = Duration(10, TimeUnit.SECONDS),
+        s"Storing session id: ${id.toString}"
+      ) match {
+        case Right(_) => id
+        case Left(e)  => throw e
+      }
   }
 
   def store(session: CasSession, id: UUID): UUID =
     db.runBlockingTransactionally(
       storeCasSession(id, session.casTicket.s, session.personOid, session.authorities),
-      timeout = Duration(1, TimeUnit.MINUTES)
-    ).map(_ => id)
-      .get
+      timeout = Duration(10, TimeUnit.SECONDS),
+      s"Storing session: ${session.toString}"
+    ) match {
+      case Right(_) => id
+      case Left(e)  => throw e
+    }
 
   def delete(id: UUID): Boolean =
-    db.runBlockingTransactionally(deleteSession(id), timeout = Duration(10, TimeUnit.SECONDS)).get
+    db.runBlockingTransactionally(
+      deleteSession(id),
+      timeout = Duration(10, TimeUnit.SECONDS),
+      s"Deleting session id: ${id.toString}"
+    ) match {
+      case Right(result) => result
+      case Left(e)       => throw e
+    }
 
   def delete(ticket: ServiceTicket): Boolean =
-    db.runBlockingTransactionally(deleteSession(ticket), timeout = Duration(10, TimeUnit.SECONDS)).get
+    db.runBlockingTransactionally(
+      deleteSession(ticket),
+      timeout = Duration(10, TimeUnit.SECONDS),
+      s"Deleting session: ${ticket.toString}"
+    ) match {
+      case Right(result) => result
+      case Left(e)       => throw e
+    }
 
   def get(id: UUID): Option[Session] = {
-    db.runBlockingTransactionally(getSession(id), timeout = Duration(2, TimeUnit.SECONDS)).get.map {
-      case (casTicket, personOid) =>
-        val authorities = db.runBlocking(searchAuthoritiesBySession(id), Duration(2, TimeUnit.SECONDS))
-        CasSession(ServiceTicket(casTicket.get), personOid, authorities.map(Authority(_)).toSet)
+    db.runBlockingTransactionally(
+      getSession(id),
+      timeout = Duration(2, TimeUnit.SECONDS),
+      s"Fetching session: ${id.toString}"
+    ) match {
+      case Right(result) => {
+        result.map { case (casTicket, personOid) =>
+          val authorities = db.runBlocking(searchAuthoritiesBySession(id), Duration(2, TimeUnit.SECONDS))
+          CasSession(ServiceTicket(casTicket.get), personOid, authorities.map(Authority(_)).toSet)
+        }
+      }
+      case Left(e) => throw e
     }
   }
 
