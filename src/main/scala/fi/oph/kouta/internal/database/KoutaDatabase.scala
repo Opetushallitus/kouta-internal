@@ -40,7 +40,7 @@ class KoutaDatabase(settings: KoutaDatabaseConfiguration) extends Logging {
     } catch {
       case e: PSQLException if e.getSQLState == SERIALIZATION_VIOLATION =>
         if (retries > 0) {
-          logger.warn(s"$description failed because of an concurrent action, retrying after $wait ms")
+          logger.warn(s"$description failed because of an concurrent action, retrying after $wait")
           Thread.sleep(wait.toMillis)
           runBlockingTransactionally(operations, timeout, description, wait + wait, retries - 1)
         } else {
