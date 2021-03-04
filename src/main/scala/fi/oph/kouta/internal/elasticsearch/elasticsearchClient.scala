@@ -61,7 +61,7 @@ trait ElasticsearchClient { this: KoutaJsonFormats with Logging =>
       })(q => {
         implicit val duration = Duration(10, TimeUnit.MINUTES)
         val request           = search(index).bool(must(notTallennettu, q)).keepAlive("1m").size(500)
-        logger.info(s"Elasticsearch request: ${request.show}")
+        logger.debug(s"Elasticsearch request: ${request.show}")
         Future(
           SearchIterator.iterate[T](client, request).toIndexedSeq
         )
