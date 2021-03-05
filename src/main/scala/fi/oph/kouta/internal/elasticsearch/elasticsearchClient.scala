@@ -20,11 +20,13 @@ import scala.concurrent.Future
 import scala.concurrent.duration.Duration
 import scala.reflect.ClassTag
 
+import fi.vm.sade.utils.Timer.timed
+
 trait ElasticsearchClient { this: KoutaJsonFormats with Logging =>
   val index: String
   val client: ElasticClient
 
-  def getItem[T <: WithTila: HitReader](id: String): Future[T] = {
+  def getItem[T <: WithTila: HitReader](id: String): Future[T] = timed(s"GetItem from ElasticSearch (Id: ${id}", 100) {
     val request = get(id).from(index)
     logger.debug(s"Elasticsearch query: ${request.show}")
     client
@@ -48,22 +50,23 @@ trait ElasticsearchClient { this: KoutaJsonFormats with Logging =>
       }
   }
 
-  def searchItems[T: HitReader: ClassTag](query: Option[Query]): Future[IndexedSeq[T]] = {
-    val notTallennettu = not(termsQuery("tila.keyword", "tallennettu"))
-    query.fold[Future[IndexedSeq[T]]]({
-      implicit val duration = Duration(10, TimeUnit.SECONDS)
-      Future(
-        SearchIterator.iterate[T](client, search(index).query(notTallennettu).keepAlive("1m").size(500)).toIndexedSeq
-      )
-    })(q => {
-      implicit val duration = Duration(10, TimeUnit.SECONDS)
-      val request           = search(index).bool(must(notTallennettu, q)).keepAlive("1m").size(500)
-      logger.info(s"Elasticsearch request: ${request.show}")
-      Future(
-        SearchIterator.iterate[T](client, request).toIndexedSeq
-      )
-    })
-  }
+  def searchItems[T: HitReader: ClassTag](query: Option[Query]): Future[IndexedSeq[T]] =
+    timed(s"SearchItems from ElasticSearch (Query: ${query}", 100) {
+      val notTallennettu = not(termsQuery("tila.keyword", "tallennettu"))
+      query.fold[Future[IndexedSeq[T]]]({
+        implicit val duration = Duration(10, TimeUnit.MINUTES)
+        Future(
+          SearchIterator.iterate[T](client, search(index).query(notTallennettu).keepAlive("1m").size(500)).toIndexedSeq
+        )
+      })(q => {
+        implicit val duration = Duration(10, TimeUnit.MINUTES)
+        val request           = search(index).bool(must(notTallennettu, q)).keepAlive("1m").size(500)
+        logger.debug(s"Elasticsearch request: ${request.show}")
+        Future(
+          SearchIterator.iterate[T](client, request).toIndexedSeq
+        )
+      })
+    }
 }
 
 object ElasticsearchClient {

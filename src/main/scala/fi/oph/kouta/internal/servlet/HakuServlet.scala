@@ -90,7 +90,7 @@ class HakuServlet(hakuService: HakuService, val sessionDAO: SessionDAO)
     val ataruId  = params.get("ataruId")
     val tarjoaja = params.get("tarjoaja").map(_.split(",").map(OrganisaatioOid).toSet)
 
-    logger.info(s"Request: /haku/search | ataruId: ${ataruId} | tarjoaja: ${tarjoaja}")
+    logger.debug(s"Request: /haku/search | ataruId: ${ataruId} | tarjoaja: ${tarjoaja}")
 
     tarjoaja match {
       case Some(oids) if oids.exists(!_.isValid) =>
