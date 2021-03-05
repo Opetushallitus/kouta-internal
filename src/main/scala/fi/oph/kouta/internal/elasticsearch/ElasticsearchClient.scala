@@ -20,11 +20,13 @@ import scala.concurrent.duration.{Duration, FiniteDuration}
 import scala.reflect.ClassTag
 import scala.util.{Failure, Success}
 
+import fi.vm.sade.utils.Timer.timed
+
 trait ElasticsearchClient { this: KoutaJsonFormats with Logging =>
   val index: String
   val client: ElasticClient
 
-  def getItem[T <: WithTila: HitReader](id: String): Future[T] = {
+  def getItem[T <: WithTila: HitReader](id: String): Future[T] = timed(s"GetItem from ElasticSearch (Id: ${id}", 100) {
     val request = get(id).from(index)
     logger.debug(s"Elasticsearch query: ${request.show}")
     client
@@ -74,34 +76,36 @@ trait ElasticsearchClient { this: KoutaJsonFormats with Logging =>
   }
 
   def searchItems[T: HitReader: ClassTag](query: Option[Query]): Future[IndexedSeq[T]] = {
-    val notTallennettu                    = not(termsQuery("tila.keyword", "tallennettu"))
-    implicit val duration: FiniteDuration = Duration(10, TimeUnit.SECONDS)
+    timed(s"SearchItems from ElasticSearch (Query: ${query}", 100) {
+      val notTallennettu                    = not(termsQuery("tila.keyword", "tallennettu"))
+      implicit val duration: FiniteDuration = Duration(10, TimeUnit.SECONDS)
 
-    query.fold[Future[IndexedSeq[T]]]({
-      Future(
-        SearchIterator.iterate[T](client, search(index).query(notTallennettu).keepAlive("1m").size(500)).toIndexedSeq
-      )
-    })(q => {
-      val request = search(index).bool(must(notTallennettu, q)).keepAlive("1m").size(500)
-      logger.info(s"Elasticsearch request: ${request.show}")
-      Future {
-        SearchIterator
-          .hits(client, request)
-          .toIndexedSeq
-          .map(hit => hit.safeTo[T])
-          .flatMap(entity =>
-            entity match {
-              case Success(value) => Some(value)
-              case Failure(exception) =>
-                logger.error(
-                  s"Unable to deserialize json response to entity: ",
-                  exception
-                )
-                None
-            }
-          )
-      }
-    })
+      query.fold[Future[IndexedSeq[T]]]({
+        Future(
+          SearchIterator.iterate[T](client, search(index).query(notTallennettu).keepAlive("1m").size(500)).toIndexedSeq
+        )
+      })(q => {
+        val request = search(index).bool(must(notTallennettu, q)).keepAlive("1m").size(500)
+        logger.info(s"Elasticsearch request: ${request.show}")
+        Future {
+          SearchIterator
+            .hits(client, request)
+            .toIndexedSeq
+            .map(hit => hit.safeTo[T])
+            .flatMap(entity =>
+              entity match {
+                case Success(value) => Some(value)
+                case Failure(exception) =>
+                  logger.error(
+                    s"Unable to deserialize json response to entity: ",
+                    exception
+                  )
+                  None
+              }
+            )
+        }
+      })
+    }
   }
 }
 

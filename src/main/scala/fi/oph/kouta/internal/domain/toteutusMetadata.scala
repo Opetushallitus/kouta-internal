@@ -92,7 +92,7 @@ case class AmmatillinenToteutusMetadata(
 ) extends ToteutusMetadata
 
 @SwaggerModel(
-  """TutkintoonJohtamatonToteutusMetadata:
+  """    TutkintoonJohtamatonToteutusMetadata:
       |           allOf:
       |             - $ref: '#/components/schemas/ToteutusMetadata'
       |             - type: object
@@ -142,18 +142,18 @@ trait TutkintoonJohtamatonToteutusMetadata extends ToteutusMetadata {
   val aloituspaikat: Option[Int]
 }
 
-@SwaggerModel("""AmmatillinenTutkinnonOsaToteutusMetadata:
-      |           allOf:
-      |             - $ref: '#/components/schemas/TutkintoonJohtamatonToteutusMetadata'
-      |             - type: object
-      |               properties:
-      |                 tyyppi:
-      |                   type: string
-      |                   description: Koulutuksen metatiedon tyyppi
-      |                   example: amm-tutkinnon-osa
-      |                   enum:
-      |                     - amm-tutkinnon-osa
-      |""")
+@SwaggerModel("""    AmmatillinenTutkinnonOsaToteutusMetadata:
+          |           allOf:
+          |             - $ref: '#/components/schemas/TutkintoonJohtamatonToteutusMetadata'
+          |             - type: object
+          |               properties:
+          |                 tyyppi:
+          |                   type: string
+          |                   description: Koulutuksen metatiedon tyyppi
+          |                   example: amm-tutkinnon-osa
+          |                   enum:
+          |                     - amm-tutkinnon-osa
+          |""")
 case class AmmatillinenTutkinnonOsaToteutusMetadata(
     tyyppi: Koulutustyyppi,
     kuvaus: Kielistetty,
@@ -170,18 +170,18 @@ case class AmmatillinenTutkinnonOsaToteutusMetadata(
     aloituspaikat: Option[Int]
 ) extends TutkintoonJohtamatonToteutusMetadata
 
-@SwaggerModel("""AmmatillinenOsaamisalaToteutusMetadata:
-      |            allOf:
-      |              - $ref: '#/components/schemas/TutkintoonJohtamatonToteutusMetadata'
-      |              - type: object
-      |                properties:
-      |                  tyyppi:
-      |                    type: string
-      |                    description: Koulutuksen metatiedon tyyppi
-      |                    example: amm-osaamisala
-      |                    enum:
-      |                      - amm-osaamisala
-      |""")
+@SwaggerModel("""    AmmatillinenOsaamisalaToteutusMetadata:
+          |            allOf:
+          |              - $ref: '#/components/schemas/TutkintoonJohtamatonToteutusMetadata'
+          |              - type: object
+          |                properties:
+          |                  tyyppi:
+          |                    type: string
+          |                    description: Koulutuksen metatiedon tyyppi
+          |                    example: amm-osaamisala
+          |                    enum:
+          |                      - amm-osaamisala
+          |""")
 case class AmmatillinenOsaamisalaToteutusMetadata(
     tyyppi: Koulutustyyppi,
     kuvaus: Kielistetty,
