@@ -65,20 +65,15 @@ docker run --rm --name koutainternal-elastic --env "discovery.type=single-node" 
 ```
 
 tämän jälkeen käynnistä Ideassa embeddedJettyLauncher.scala (right-click -> Run). Tämä käynnistää samalla
-postgresql kontin. Sovellus käynnistyy porttiin 8098. Kirjoitushetkellä sovellus heittää
-kuitenkin virhettä SecurityContext.scala tiedoston casClientistä, joten lokaali ajo ei onnistu. 
-Tämä pitää ratkoa.
+postgresql kontin. Sovellus käynnistyy porttiin 8098 ja Swagger löytyy osoitteesta
+`http://localhost:8098/kouta-internal/swagger`.  
 
-### 3.5. Käyttöliittymä
-
-Olettettavasti sovellus käynnistyy `localhost:8098/kouta-internal/swagger` osoitteeseen.
-
-### 3.6. Kehitystyökalut
+### 3.5. Kehitystyökalut
 
 Suositeltava kehitysympäristö on [IntelliJ IDEA](https://www.jetbrains.com/idea/) + 
 [scala plugin](https://plugins.jetbrains.com/plugin/1347-scala)
 
-### 3.7. Testidata
+### 3.6. Testidata
 
 Katso kouta-indeksoijan readme:stä kuinka saat lokaaliin elasticsearchiin indeksoitua dataa.
 Tämän jälkeen käynnistä kouta-internal tätä lokaalia elasticsearchia vasten.
