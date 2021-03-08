@@ -1,13 +1,11 @@
 package fi.oph.kouta.internal.service
 
-import java.time.Instant
-
 import fi.oph.kouta.internal.domain.Perustiedot
 import fi.oph.kouta.internal.security.{Authenticated, RoleEntity}
 
-import scala.concurrent.Future
+import java.time.Instant
 import scala.concurrent.ExecutionContext.Implicits.global
-import scala.util.{Success, Try}
+import scala.concurrent.Future
 
 trait RoleEntityAuthorizationService extends AuthorizationService {
   protected val roleEntity: RoleEntity
