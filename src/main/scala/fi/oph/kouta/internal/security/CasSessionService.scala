@@ -40,7 +40,7 @@ class CasSessionService(
         logger.debug("Ticket validation error", t)
         Task.fail(AuthenticationFailedException(s"Failed to validate service ticket $s", t))
       }
-      .unsafePerformSyncAttemptFor(Duration(1, TimeUnit.SECONDS))
+      .unsafePerformSyncAttemptFor(Duration(10, TimeUnit.SECONDS))
       .toEither
   }
 
