@@ -4,7 +4,7 @@ import java.time.format.DateTimeFormatter
 import java.time.{Instant, ZoneId, ZonedDateTime}
 import java.util.{ConcurrentModificationException, NoSuchElementException}
 
-import fi.oph.kouta.internal.elasticsearch.ElasticSearchException
+import fi.oph.kouta.internal.elasticsearch.{ElasticSearchException, TeapotException}
 import fi.oph.kouta.internal.security._
 import fi.oph.kouta.internal.util.KoutaJsonFormats
 import fi.vm.sade.utils.slf4j.Logging
@@ -91,6 +91,9 @@ trait KoutaServlet extends ScalatraServlet with KoutaJsonFormats with JacksonJso
     case e: ElasticSearchException =>
       logger.error(s"Elasticsearch error: ${write(e.error)}")
       InternalServerError("error" -> "500 Internal Server Error")
+    case e: TeapotException =>
+      ActionResult(418, "error" -> "Cannot serve requested entity", Map.empty)
+
     case NonFatal(e) =>
       logger.error(errorMsgFromRequest(), e)
       InternalServerError("error" -> "500 Internal Server Error")

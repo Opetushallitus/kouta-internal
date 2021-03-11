@@ -1,23 +1,22 @@
 package fi.oph.kouta.internal.integration
 
-import java.util.UUID
-
+import fi.oph.kouta.internal.TempElasticDockerClient
 import fi.oph.kouta.internal.domain.Haku
 import fi.oph.kouta.internal.domain.oid.HakuOid
 import fi.oph.kouta.internal.integration.fixture.{AccessControlSpec, HakuFixture}
 import fi.oph.kouta.internal.security.Role
 
-class HakuSpec extends HakuFixture with AccessControlSpec with GenericGetTests[Haku, HakuOid] {
+import java.util.UUID
 
-  override val roleEntities = Seq(Role.Haku)
-  override val getPath      = HakuPath
-  override val entityName   = "haku"
-  val existingId            = HakuOid("1.2.246.562.29.00000000000000000009")
-  val nonExistingId         = HakuOid("1.2.246.562.29.0")
+class HakuSpec extends HakuFixture with AccessControlSpec {
 
-  val ataruId1 = UUID.randomUUID()
-  val ataruId2 = UUID.randomUUID()
-  val ataruId3 = UUID.randomUUID()
+  override val roleEntities  = Seq(Role.Haku)
+  val existingId: HakuOid    = HakuOid("1.2.246.562.29.00000000000000000009")
+  val nonExistingId: HakuOid = HakuOid("1.2.246.562.29.0")
+
+  val ataruId1: UUID = UUID.randomUUID()
+  val ataruId2: UUID = UUID.randomUUID()
+  val ataruId3: UUID = UUID.randomUUID()
 
   override def beforeAll(): Unit = {
     super.beforeAll()
@@ -31,7 +30,29 @@ class HakuSpec extends HakuFixture with AccessControlSpec with GenericGetTests[H
     addMockHaku(HakuOid("1.2.246.562.29.306"), EvilChildOid, Some(ataruId1))
   }
 
-  getTests()
+  "GET /:id" should s"get haku from elastic search" in {
+    get(existingId, defaultSessionId)
+  }
+
+  it should s"return 404 if haku not found" in {
+    get(s"$HakuPath/$nonExistingId", headers = Seq(defaultSessionHeader)) {
+      status should equal(404)
+      body should include(s"Didn't find id $nonExistingId")
+    }
+  }
+
+  it should "return 401 without a valid session" in {
+    get(s"$HakuPath/$nonExistingId") {
+      status should equal(401)
+      body should include("Unauthorized")
+    }
+  }
+
+  it should "return status code 418 if entity cannot be parsed" in {
+    get(existingId, crudSessions(ChildOid))
+    updateExistingHakuToUnknownTila(existingId.s)
+    get(existingId, crudSessions(ChildOid), 418)
+  }
 
   "Search by Ataru ID" should "find haku based on Ataru ID" in {
     val haut = get[Seq[Haku]](s"$HakuPath/search?ataruId=$ataruId1", defaultSessionId)
@@ -57,5 +78,32 @@ class HakuSpec extends HakuFixture with AccessControlSpec with GenericGetTests[H
       status should equal(401)
       body should include("Unauthorized")
     }
+  }
+
+  it should "skip entities that can't be deserialized" in {
+    updateExistingHakuToUnknownTila("1.2.246.562.29.301")
+
+    val haut = get[Seq[Haku]](s"$HakuPath/search?ataruId=$ataruId1", defaultSessionId)
+
+    haut.map(_.oid) should contain theSameElementsAs Seq(
+      HakuOid("1.2.246.562.29.302"),
+      HakuOid("1.2.246.562.29.305"),
+      HakuOid("1.2.246.562.29.306")
+    )
+  }
+
+  private def updateExistingHakuToUnknownTila(hakuOid: String): Unit = {
+    import com.sksamuel.elastic4s.http.ElasticDsl._
+    import scala.concurrent.ExecutionContext.Implicits.global
+    import scala.concurrent.Await
+    import scala.concurrent.duration.Duration
+
+    val updateOperation = TempElasticDockerClient.client.execute {
+      updateById("haku-kouta-virkailija", "_doc", hakuOid).doc("tila" -> "outotila")
+    }
+
+    Await.result(updateOperation, Duration.Inf)
+    // Elasticsearch refreshaa oletuksena sekunnin välein. Odotetaan sekunti että muokattu haku on haettavissa.
+    Thread.sleep(1000)
   }
 }
