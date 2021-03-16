@@ -6,6 +6,7 @@ import fi.oph.kouta.internal.domain.Hakukohde
 import fi.oph.kouta.internal.domain.oid.{HakuOid, HakukohdeOid, KoulutusOid, ToteutusOid}
 import fi.oph.kouta.internal.integration.fixture._
 import fi.oph.kouta.internal.security.Role
+import org.json4s.jackson.JsonMethods.parse
 
 class HakukohdeSpec
     extends HakukohdeFixture
@@ -68,4 +69,15 @@ class HakukohdeSpec
       body should include(s"Didn't find id 1.2.246.562.29.00000000000000000001")
     }
   }
+
+  it should "find hakukohteet based on array of OIDs" in {
+    val oidSeq = Seq(existingId.toString, nonExistingId.toString)
+    post(s"$HakukohdePath/findbyoids", bytes(oidSeq), Seq(defaultSessionHeader)) {
+      status should equal(200)
+
+      val parsedResponse = parse(body).extract[Set[Hakukohde]]
+      parsedResponse.map(_.oid) should contain theSameElementsAs Seq(existingId)
+    }
+  }
+
 }

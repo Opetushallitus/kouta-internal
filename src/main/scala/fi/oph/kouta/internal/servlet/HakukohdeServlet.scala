@@ -106,6 +106,40 @@ class HakukohdeServlet(hakukohdeService: HakukohdeService, val sessionDAO: Sessi
       case (hakuOid, tarjoajaOids) => hakukohdeService.search(hakuOid, tarjoajaOids, q)
     }
   }
+
+  registerPath(
+    "/hakukohde/findbyoids",
+    """    post:
+      |      summary: Etsi hakukohteita oideilla
+      |      operationId: Etsi hakukohteita oideilla
+      |      description: Etsii hakukohteista annetuilla oideilla
+      |      tags:
+      |        - Hakukohde
+      |      requestBody:
+      |          description: Palautettavien hakukohteiden oidit JSON-arrayna
+      |          example: ["1.2.246.562.10.00000000001","1.2.246.562.10.00000000002"]
+      |          content:
+      |             application/json:
+      |               schema:
+      |                 type: array
+      |                 items:
+      |                   type: string
+      |      responses:
+      |        '200':
+      |          description: Ok
+      |          content:
+      |            application/json:
+      |              schema:
+      |                type: array
+      |                items:
+      |                  $ref: '#/components/schemas/Hakukohde'
+      |""".stripMargin
+  )
+  post("/findbyoids") {
+    implicit val authenticated: Authenticated = authenticate
+
+    hakukohdeService.findByOids(parsedBody.extract[Set[HakukohdeOid]])
+  }
 }
 
 object HakukohdeServlet extends HakukohdeServlet(HakukohdeService, SessionDAO)

@@ -50,6 +50,11 @@ class HakukohdeClient(val index: String, val client: ElasticClient)
     )
     searchItems[HakukohdeIndexed](Some(must(hakuQuery ++ tarjoajaQuery ++ qQuery))).map(_.map(_.toHakukohde))
   }
+
+  def findByOids(hakukohteetOids: Set[HakukohdeOid]): Future[Seq[Hakukohde]] = {
+    val hakukohteetQuery = should(termsQuery("oid", hakukohteetOids.map(_.toString)))
+    searchItems[HakukohdeIndexed](Some(must(hakukohteetQuery))).map(_.map(_.toHakukohde))
+  }
 }
 
 object HakukohdeClient extends HakukohdeClient("hakukohde-kouta", ElasticsearchClient.client)
