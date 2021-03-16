@@ -28,7 +28,7 @@ class AuthServlet(casSessionService: CasSessionService) extends KoutaServlet {
       |          name: ticket
       |          schema:
       |            type: string
-      |          required: true
+      |          required: false
       |          description: CAS-tiketti
       |      responses:
       |        '200':
