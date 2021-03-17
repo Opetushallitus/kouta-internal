@@ -18,6 +18,8 @@ import fi.vm.sade.utils.slf4j.Logging
 
 case class HakukohdeToteutusIndexed(oid: ToteutusOid, tarjoajat: List[Organisaatio])
 
+case class HakukohdeMetadataIndexed(kaytetaanHaunAlkamiskautta: Option[Boolean])
+
 case class HakukohdeIndexed(
     oid: HakukohdeOid,
     toteutus: HakukohdeToteutusIndexed,
@@ -26,7 +28,6 @@ case class HakukohdeIndexed(
     nimi: Kielistetty,
     alkamiskausi: Option[KoodiUri],
     alkamisvuosi: Option[String],
-    kaytetaanHaunAlkamiskautta: Option[Boolean],
     hakulomaketyyppi: Option[Hakulomaketyyppi],
     hakulomakeAtaruId: Option[UUID],
     hakulomakeKuvaus: Kielistetty,
@@ -56,7 +57,8 @@ case class HakukohdeIndexed(
     jarjestyspaikka: Option[Organisaatio],
     organisaatio: Option[Organisaatio],
     kielivalinta: Seq[Kieli],
-    modified: Option[LocalDateTime]
+    modified: Option[LocalDateTime],
+    metadata: Option[HakukohdeMetadataIndexed]
 ) extends WithTila
     with Logging {
   def toHakukohde: Hakukohde = {
@@ -69,7 +71,7 @@ case class HakukohdeIndexed(
         nimi = nimi,
         alkamiskausiKoodiUri = alkamiskausi.map(_.koodiUri),
         alkamisvuosi = alkamisvuosi,
-        kaytetaanHaunAlkamiskautta = kaytetaanHaunAlkamiskautta,
+        kaytetaanHaunAlkamiskautta = metadata.flatMap(_.kaytetaanHaunAlkamiskautta),
         hakulomaketyyppi = hakulomaketyyppi,
         hakulomakeAtaruId = hakulomakeAtaruId,
         hakulomakeKuvaus = hakulomakeKuvaus,
