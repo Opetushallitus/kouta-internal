@@ -28,10 +28,14 @@ import fi.oph.kouta.internal.swagger.SwaggerModel
     |            - lk
     |            - muu
     |          example: amm
-    |        koulutusKoodiUri:
-    |          type: string
-    |          description: Koulutuksen koodi URI. Viittaa [koodistoon](https://virkailija.testiopintopolku.fi/koodisto-ui/html/koodisto/koulutus/11)
-    |          example: koulutus_371101#1
+    |        koulutusKoodiUrit:
+    |          type: array
+    |          description: Koulutuksen koodi URIt. Viittaa [koodistoon](https://virkailija.testiopintopolku.fi/koodisto-ui/html/koodisto/koulutus/11)
+    |          items:
+    |            type: string
+    |          example:
+    |            - koulutus_371101#1
+    |            - koulutus_201000#1
     |        tila:
     |          type: string
     |          example: "julkaistu"
@@ -102,7 +106,7 @@ case class Koulutus(
     oid: KoulutusOid,
     johtaaTutkintoon: Boolean,
     koulutustyyppi: Option[Koulutustyyppi],
-    koulutusKoodiUri: Option[String],
+    koulutusKoodiUrit: Seq[String],
     tila: Julkaisutila,
     tarjoajat: List[OrganisaatioOid],
     nimi: Kielistetty,

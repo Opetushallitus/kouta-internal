@@ -42,12 +42,12 @@ trait KoulutusFixture extends KoutaIntegrationSpec {
       organisaatioOid: OrganisaatioOid = OrganisaatioServiceMock.ChildOid
   ): Unit = {
     val koulutus = KoutaFixtureTool.DefaultKoulutusScala +
-      (KoutaFixtureTool.MetadataKey         -> KoutaFixtureTool.ammTutkinnonOsaKoulutusMetadata) +
-      (KoutaFixtureTool.KoulutustyyppiKey   -> AmmTutkinnonOsa.name) +
-      (KoutaFixtureTool.JohtaaTutkintoonKey -> "false") +
-      (KoutaFixtureTool.EPerusteIdKey       -> null) +
-      (KoutaFixtureTool.KoulutusKoodiUriKey -> null) +
-      (KoutaFixtureTool.OrganisaatioKey     -> organisaatioOid.s)
+      (KoutaFixtureTool.MetadataKey            -> KoutaFixtureTool.ammTutkinnonOsaKoulutusMetadata) +
+      (KoutaFixtureTool.KoulutustyyppiKey      -> AmmTutkinnonOsa.name) +
+      (KoutaFixtureTool.JohtaaTutkintoonKey    -> "false") +
+      (KoutaFixtureTool.EPerusteIdKey          -> null) +
+      (KoutaFixtureTool.KoulutuksetKoodiUriKey -> null) +
+      (KoutaFixtureTool.OrganisaatioKey        -> organisaatioOid.s)
     KoutaFixtureTool.addKoulutus(koulutusOid.s, koulutus)
     indexKoulutus(koulutusOid)
   }
