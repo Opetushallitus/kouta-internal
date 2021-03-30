@@ -21,6 +21,10 @@ class HakukohdeService(hakukohdeClient: HakukohdeClient, hakuService: HakuServic
       hakukohdeClient.search(hakuOid, tarjoajaOids.flatMap(OrganisaatioClient.getAllChildOidsFlat), q)
     )
   }
+
+  def findByOids(hakukohteetOids: Set[HakukohdeOid])(implicit authenticated: Authenticated): Future[Seq[Hakukohde]] = {
+    hakukohdeClient.findByOids(hakukohteetOids)
+  }
 }
 
 object HakukohdeService extends HakukohdeService(HakukohdeClient, HakuService)
