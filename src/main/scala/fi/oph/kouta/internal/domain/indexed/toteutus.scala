@@ -1,6 +1,6 @@
 package fi.oph.kouta.internal.domain.indexed
 
-import fi.oph.kouta.domain.{Hakutermi, Koulutustyyppi}
+import fi.oph.kouta.domain.{Hakutermi, Koulutustyyppi, Maksullisuustyyppi}
 import fi.oph.kouta.internal.domain._
 import fi.oph.kouta.internal.domain.enums.{Hakulomaketyyppi, Julkaisutila, Kieli}
 import fi.oph.kouta.internal.domain.oid.{KoulutusOid, ToteutusOid}
@@ -240,7 +240,8 @@ case class OpetusIndexed(
     opetusaikaKuvaus: Kielistetty,
     opetustapa: Seq[KoodiUri],
     opetustapaKuvaus: Kielistetty,
-    onkoMaksullinen: Option[Boolean],
+    @deprecated("Tämän korvaa maksullisuustyyppi") onkoMaksullinen: Option[Boolean],
+    maksullisuustyyppi: Option[Maksullisuustyyppi],
     maksullisuusKuvaus: Kielistetty,
     maksunMaara: Option[Double],
     koulutuksenTarkkaAlkamisaika: Option[Boolean],
@@ -259,6 +260,7 @@ case class OpetusIndexed(
     opetustapaKoodiUrit = opetustapa.map(_.koodiUri),
     opetustapaKuvaus = opetustapaKuvaus,
     onkoMaksullinen = onkoMaksullinen.getOrElse(false),
+    maksullisuustyyppi = maksullisuustyyppi,
     maksullisuusKuvaus = maksullisuusKuvaus,
     maksunMaara = maksunMaara,
     koulutuksenTarkkaAlkamisaika = koulutuksenTarkkaAlkamisaika.getOrElse(false),
