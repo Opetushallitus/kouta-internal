@@ -1,5 +1,6 @@
 package fi.oph.kouta.internal.domain
 
+import fi.oph.kouta.domain.Maksullisuustyyppi
 import fi.oph.kouta.internal.swagger.SwaggerModel
 
 @SwaggerModel(
@@ -47,6 +48,7 @@ import fi.oph.kouta.internal.swagger.SwaggerModel
     |            - $ref: '#/components/schemas/Kuvaus'
     |        onkoMaksullinen:
     |          type: boolean
+    |          deprecated: true
     |          decription: "Onko koulutus maksullinen?"
     |        maksullisuusKuvaus:
     |          type: object
@@ -114,7 +116,8 @@ case class Opetus(
     opetusaikaKuvaus: Kielistetty,
     opetustapaKoodiUrit: Seq[String],
     opetustapaKuvaus: Kielistetty,
-    onkoMaksullinen: Boolean,
+    @deprecated("Kentän korvaa maksullisuustyyppi") onkoMaksullinen: Boolean,
+    maksullisuustyyppi: Option[Maksullisuustyyppi] = None,
     maksullisuusKuvaus: Kielistetty,
     maksunMaara: Option[Double],
     koulutuksenTarkkaAlkamisaika: Boolean,
