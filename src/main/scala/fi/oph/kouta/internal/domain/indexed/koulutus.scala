@@ -14,7 +14,7 @@ case class KoulutusIndexed(
     koulutustyyppi: Option[Koulutustyyppi],
     koulutukset: Seq[KoodiUri],
     tila: Julkaisutila,
-    tarjoajat: List[Organisaatio],
+    tarjoajat: Option[List[Organisaatio]],
     nimi: Kielistetty,
     metadata: Option[KoulutusMetadataIndexed],
     julkinen: Boolean,
@@ -35,7 +35,7 @@ case class KoulutusIndexed(
         ), //TODO poista kunhan internalista riippuvat palvelut käyttävät koulutusKoodiUrit-kenttää
         koulutusKoodiUrit = koulutukset.map(_.koodiUri),
         tila = tila,
-        tarjoajat = tarjoajat.map(_.oid),
+        tarjoajat = tarjoajat.toList.flatten.map(_.oid),
         nimi = nimi,
         metadata = metadata.map(_.toKoulutusMetadata),
         julkinen = julkinen,
