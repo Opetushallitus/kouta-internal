@@ -80,6 +80,13 @@ class HakukohdeServlet(hakukohdeService: HakukohdeService, val sessionDAO: Sessi
       |          required: false
       |          description: Tekstihaku hakukohteen ja sen järjestyspaikan nimeen
       |          example: Autoalan perustutkinto
+      |        - in: query
+      |          name: all
+      |          schema:
+      |            type: boolean
+      |          required: false
+      |          description: Haetaanko myös muiden, kuin annettujen tarjoajien hakukohteet
+      |          example: true
       |      responses:
       |        '200':
       |          description: Ok
@@ -97,13 +104,17 @@ class HakukohdeServlet(hakukohdeService: HakukohdeService, val sessionDAO: Sessi
     val hakuOid  = params.get("haku").map(HakuOid)
     val tarjoaja = params.get("tarjoaja").map(s => s.split(",").map(OrganisaatioOid).toSet)
     val q        = params.get("q")
+    val all = params.get("all").exists {
+      case "true"  => true
+      case "false" => false
+    }
 
     (hakuOid, tarjoaja) match {
       case (None, None)                     => BadRequest("Query parameter is required")
       case (Some(oid), _) if !oid.isValid() => BadRequest(s"Invalid haku ${oid.toString}")
       case (_, Some(oids)) if oids.exists(!_.isValid()) =>
         BadRequest(s"Invalid tarjoaja ${oids.find(!_.isValid()).get.toString}")
-      case (hakuOid, tarjoajaOids) => hakukohdeService.search(hakuOid, tarjoajaOids, q)
+      case (hakuOid, tarjoajaOids) => hakukohdeService.search(hakuOid, tarjoajaOids, q, all)
     }
   }
 
@@ -115,6 +126,16 @@ class HakukohdeServlet(hakukohdeService: HakukohdeService, val sessionDAO: Sessi
       |      description: Etsii hakukohteista annetuilla oideilla
       |      tags:
       |        - Hakukohde
+      |      parameters:
+      |        - in: query
+      |          name: tarjoaja
+      |          schema:
+      |            type: array
+      |            items:
+      |              type: string
+      |          required: false
+      |          description: Organisaatio joka on hakukohteen tarjoaja
+      |          example: 1.2.246.562.10.00000000001,1.2.246.562.10.00000000002
       |      requestBody:
       |          description: Palautettavien hakukohteiden oidit JSON-arrayna
       |          example: ["1.2.246.562.10.00000000001","1.2.246.562.10.00000000002"]
@@ -138,7 +159,16 @@ class HakukohdeServlet(hakukohdeService: HakukohdeService, val sessionDAO: Sessi
   post("/findbyoids") {
     implicit val authenticated: Authenticated = authenticate
 
-    hakukohdeService.findByOids(parsedBody.extract[Set[HakukohdeOid]])
+    val tarjoaja  = params.get("tarjoaja").map(s => s.split(",").map(OrganisaatioOid).toSet)
+    val hakukohde = parsedBody.extract[Set[HakukohdeOid]]
+
+    (tarjoaja, hakukohde) match {
+      case (Some(oids), _) if oids.exists(!_.isValid()) =>
+        BadRequest(s"Invalid tarjoaja ${oids.find(!_.isValid()).get.toString}")
+      case (_, oids) if oids.exists(!_.isValid()) =>
+        BadRequest(s"Invalid hakukohdeOids ${oids.find(!_.isValid()).get.toString}")
+      case (tarjoajaOids, hakukohdeOids) => hakukohdeService.findByOids(tarjoajaOids, hakukohdeOids)
+    }
   }
 }
 

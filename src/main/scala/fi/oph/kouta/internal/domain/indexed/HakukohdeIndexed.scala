@@ -4,7 +4,7 @@ import java.time.LocalDateTime
 import java.util.UUID
 
 import fi.oph.kouta.internal.domain.enums.{Hakulomaketyyppi, Julkaisutila, Kieli, LiitteenToimitustapa}
-import fi.oph.kouta.internal.domain.oid.{HakuOid, HakukohdeOid, ToteutusOid}
+import fi.oph.kouta.internal.domain.oid.{HakuOid, HakukohdeOid, OrganisaatioOid, ToteutusOid}
 import fi.oph.kouta.internal.domain.{
   Ajanjakso,
   Hakukohde,
@@ -65,8 +65,9 @@ case class HakukohdeIndexed(
     metadata: Option[HakukohdeMetadataIndexed]
 ) extends WithTila
     with Logging {
-  def toHakukohde: Hakukohde = {
+  def toHakukohde(oikeusHakukohteeseenFn: Set[OrganisaatioOid] => Option[Boolean]): Hakukohde = {
     try {
+      val tarjoajat = jarjestyspaikka.map(o => Set(o.oid)).getOrElse(toteutus.tarjoajat.map(_.oid).toSet)
       Hakukohde(
         oid = oid,
         toteutusOid = toteutus.oid,
@@ -105,10 +106,11 @@ case class HakukohdeIndexed(
         valintakokeet = valintakokeet.map(_.toValintakoe),
         hakuajat = hakuajat,
         muokkaaja = muokkaaja.oid,
-        tarjoajat = jarjestyspaikka.map(o => List(o.oid)).getOrElse(toteutus.tarjoajat.map(_.oid)),
+        tarjoajat = tarjoajat,
         organisaatioOid = organisaatio.get.oid,
         kielivalinta = kielivalinta,
-        modified = modified
+        modified = modified,
+        oikeusHakukohteeseen = oikeusHakukohteeseenFn(tarjoajat)
       )
     } catch {
       case e: Exception => {
@@ -117,5 +119,9 @@ case class HakukohdeIndexed(
         throw new RuntimeException(msg, e)
       }
     }
+  }
+
+  def toHakukohde: Hakukohde = {
+    toHakukohde(_ => None)
   }
 }
