@@ -13,8 +13,8 @@
     <properties>
         <scala.version>2.12.10</scala.version>
 
-        <kouta-indeksoija.version>5.0.0-SNAPSHOT</kouta-indeksoija.version>
-        <kouta-backend.version>5.0.0-SNAPSHOT</kouta-backend.version>
+        <kouta-indeksoija.version>7.0.0-SNAPSHOT</kouta-indeksoija.version>
+        <kouta-backend.version>6.2.0-SNAPSHOT</kouta-backend.version>
         <kouta-common.version>2.2.0-SNAPSHOT</kouta-common.version>
 
         <!-- Korjaa käännösvirheen:
