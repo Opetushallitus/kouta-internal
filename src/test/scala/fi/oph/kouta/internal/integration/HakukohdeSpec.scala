@@ -33,7 +33,8 @@ class HakukohdeSpec
     super.beforeAll()
 
     addMockHaku(hakuOid, ParentOid)
-    addMockKoulutus(koulutusOid, ParentOid)
+    addMockSorakuvaus(sorakuvausId, ChildOid)
+    addMockKoulutus(koulutusOid, ParentOid, sorakuvausId)
     addMockToteutus(toteutusId, ParentOid, koulutusOid)
 
     addMockSorakuvaus(sorakuvausId, ChildOid)
