@@ -29,19 +29,11 @@ trait ValintaperusteFixture extends KoutaIntegrationSpec {
 
   def addMockValintaperuste(
       id: UUID,
-      organisaatioOid: OrganisaatioOid,
-      sorakuvausId: UUID
+      organisaatioOid: OrganisaatioOid
   ): Unit = {
     val valintaperuste = KoutaFixtureTool.DefaultValintaperusteScala +
-      (KoutaFixtureTool.OrganisaatioKey -> organisaatioOid.s) +
-      (KoutaFixtureTool.SorakuvausIdKey -> sorakuvausId.toString)
+      (KoutaFixtureTool.OrganisaatioKey -> organisaatioOid.s)
     KoutaFixtureTool.addValintaperuste(id.toString, valintaperuste)
     indexValintaperuste(id)
-  }
-
-  def addMockSorakuvaus(id: UUID, organisaatioOid: OrganisaatioOid) = {
-    val sorakuvaus = KoutaFixtureTool.DefaultSorakuvausScala + (KoutaFixtureTool.OrganisaatioKey -> organisaatioOid.s)
-    KoutaFixtureTool.addSorakuvaus(id.toString, sorakuvaus)
-    indexSorakuvaus(id)
   }
 }

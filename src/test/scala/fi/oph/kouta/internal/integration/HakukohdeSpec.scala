@@ -37,8 +37,7 @@ class HakukohdeSpec
     addMockKoulutus(koulutusOid, ParentOid, sorakuvausId)
     addMockToteutus(toteutusId, ParentOid, koulutusOid)
 
-    addMockSorakuvaus(sorakuvausId, ChildOid)
-    addMockValintaperuste(valintaperusteId, ChildOid, sorakuvausId)
+    addMockValintaperuste(valintaperusteId, ChildOid)
 
     addMockHakukohde(existingId, ChildOid, hakuOid, toteutusId, valintaperusteId, jarjestyspaikkaOid = ChildOid)
   }
