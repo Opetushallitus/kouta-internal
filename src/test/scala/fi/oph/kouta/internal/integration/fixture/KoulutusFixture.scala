@@ -30,16 +30,20 @@ trait KoulutusFixture extends KoutaIntegrationSpec {
 
   def addMockKoulutus(
       koulutusOid: KoulutusOid,
-      organisaatioOid: OrganisaatioOid = OrganisaatioServiceMock.ChildOid
+      organisaatioOid: OrganisaatioOid = OrganisaatioServiceMock.ChildOid,
+      sorakuvausId: UUID
   ): Unit = {
-    val koulutus = KoutaFixtureTool.DefaultKoulutusScala + (KoutaFixtureTool.OrganisaatioKey -> organisaatioOid.s)
+    val koulutus = KoutaFixtureTool.DefaultKoulutusScala +
+      (KoutaFixtureTool.OrganisaatioKey -> organisaatioOid.s) +
+      (KoutaFixtureTool.SorakuvausIdKey -> sorakuvausId.toString)
     KoutaFixtureTool.addKoulutus(koulutusOid.s, koulutus)
     indexKoulutus(koulutusOid)
   }
 
   def addMockTutkinnonOsaKoulutus(
       koulutusOid: KoulutusOid,
-      organisaatioOid: OrganisaatioOid = OrganisaatioServiceMock.ChildOid
+      organisaatioOid: OrganisaatioOid = OrganisaatioServiceMock.ChildOid,
+      sorakuvausId: UUID
   ): Unit = {
     val koulutus = KoutaFixtureTool.DefaultKoulutusScala +
       (KoutaFixtureTool.MetadataKey            -> KoutaFixtureTool.ammTutkinnonOsaKoulutusMetadata) +
@@ -47,21 +51,30 @@ trait KoulutusFixture extends KoutaIntegrationSpec {
       (KoutaFixtureTool.JohtaaTutkintoonKey    -> "false") +
       (KoutaFixtureTool.EPerusteIdKey          -> null) +
       (KoutaFixtureTool.KoulutuksetKoodiUriKey -> null) +
-      (KoutaFixtureTool.OrganisaatioKey        -> organisaatioOid.s)
+      (KoutaFixtureTool.OrganisaatioKey        -> organisaatioOid.s) +
+      (KoutaFixtureTool.SorakuvausIdKey        -> sorakuvausId.toString)
     KoutaFixtureTool.addKoulutus(koulutusOid.s, koulutus)
     indexKoulutus(koulutusOid)
   }
 
   def addMockOsaamisalaKoulutus(
       koulutusOid: KoulutusOid,
-      organisaatioOid: OrganisaatioOid = OrganisaatioServiceMock.ChildOid
+      organisaatioOid: OrganisaatioOid = OrganisaatioServiceMock.ChildOid,
+      sorakuvausId: UUID
   ): Unit = {
     val koulutus = KoutaFixtureTool.DefaultKoulutusScala +
       (KoutaFixtureTool.MetadataKey         -> KoutaFixtureTool.ammOsaamisalaKoulutusMetadata) +
       (KoutaFixtureTool.KoulutustyyppiKey   -> AmmOsaamisala.name) +
       (KoutaFixtureTool.JohtaaTutkintoonKey -> "false") +
-      (KoutaFixtureTool.OrganisaatioKey     -> organisaatioOid.s)
+      (KoutaFixtureTool.OrganisaatioKey     -> organisaatioOid.s) +
+      (KoutaFixtureTool.SorakuvausIdKey     -> sorakuvausId.toString)
     KoutaFixtureTool.addKoulutus(koulutusOid.s, koulutus)
     indexKoulutus(koulutusOid)
+  }
+
+  def addMockSorakuvaus(id: UUID, organisaatioOid: OrganisaatioOid): Unit = {
+    val sorakuvaus = KoutaFixtureTool.DefaultSorakuvausScala + (KoutaFixtureTool.OrganisaatioKey -> organisaatioOid.s)
+    KoutaFixtureTool.addSorakuvaus(id.toString, sorakuvaus)
+    indexSorakuvaus(id)
   }
 }

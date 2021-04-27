@@ -48,6 +48,7 @@ import fi.oph.kouta.internal.swagger.SwaggerModel
     |          example: haunkohdejoukontarkenne_1#1
     |        sorakuvausId:
     |          type: string
+    |          deprecated: true
     |          description: Valintaperustekuvaukseen liittyvän SORA-kuvauksen yksilöivä tunniste
     |          example: "ea596a9c-5940-497e-b5b7-aded3a2352a7"
     |        julkinen:
@@ -145,7 +146,7 @@ case class Valintaperuste(
     kohdejoukonTarkenneKoodiUri: Option[String],
     nimi: Kielistetty,
     julkinen: Boolean,
-    sorakuvausId: Option[UUID],
+    @deprecated("Kenttä siirretty koulutukselle") sorakuvausId: Option[UUID],
     metadata: Option[ValintaperusteMetadata],
     organisaatioOid: OrganisaatioOid,
     muokkaaja: UserOid,

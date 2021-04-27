@@ -17,7 +17,7 @@ case class ValintaperusteIndexed(
     kohdejoukonTarkenne: Option[KoodiUri],
     nimi: Kielistetty,
     julkinen: Boolean,
-    sorakuvaus: Option[SorakuvausIndexed],
+    @deprecated("Kenttä siirretty koulutukselle") sorakuvaus: Option[SorakuvausIndexed],
     metadata: Option[ValintaperusteMetadataIndexed],
     organisaatio: Option[Organisaatio],
     muokkaaja: Muokkaaja,

@@ -4,6 +4,8 @@ import fi.oph.kouta.internal.domain.oid.{KoulutusOid, ToteutusOid}
 import fi.oph.kouta.internal.integration.fixture.{AccessControlSpec, KoulutusFixture, ToteutusFixture}
 import fi.oph.kouta.internal.security.Role
 
+import java.util.UUID
+
 class ToteutusSpec extends ToteutusFixture with KoulutusFixture with AccessControlSpec {
 
   override val roleEntities      = Seq(Role.Toteutus)
@@ -11,10 +13,12 @@ class ToteutusSpec extends ToteutusFixture with KoulutusFixture with AccessContr
   val nonExistingId: ToteutusOid = ToteutusOid("1.2.246.562.17.0")
 
   val koulutusOid: KoulutusOid = KoulutusOid("1.2.246.562.13.789")
+  val sorakuvausId: UUID       = UUID.fromString("9267884f-fba1-4b85-8bb3-3eb77440c197")
 
   override def beforeAll(): Unit = {
     super.beforeAll()
-    addMockKoulutus(koulutusOid, ChildOid)
+    addMockSorakuvaus(sorakuvausId, ChildOid)
+    addMockKoulutus(koulutusOid, ChildOid, sorakuvausId)
     addMockToteutus(existingId, ChildOid, koulutusOid)
   }
 
@@ -39,7 +43,7 @@ class ToteutusSpec extends ToteutusFixture with KoulutusFixture with AccessContr
   it should "get tutkinnon osa toteutus" in {
     val tutkinnonOsaOid = ToteutusOid("1.2.246.562.17.791")
     val koulutusOid     = KoulutusOid("1.2.246.562.13.792")
-    addMockTutkinnonOsaKoulutus(koulutusOid, ChildOid)
+    addMockTutkinnonOsaKoulutus(koulutusOid, ChildOid, sorakuvausId)
     addMockTutkinnonOsaToteutus(tutkinnonOsaOid, ChildOid, koulutusOid)
     get(tutkinnonOsaOid, defaultSessionId)
   }
@@ -47,7 +51,7 @@ class ToteutusSpec extends ToteutusFixture with KoulutusFixture with AccessContr
   it should "get osaamisala toteutus" in {
     val tutkinnonOsaOid = ToteutusOid("1.2.246.562.17.793")
     val koulutusOid     = KoulutusOid("1.2.246.562.13.794")
-    addMockOsaamisalaKoulutus(koulutusOid, ChildOid)
+    addMockOsaamisalaKoulutus(koulutusOid, ChildOid, sorakuvausId)
     addMockOsaamisalaToteutus(tutkinnonOsaOid, ChildOid, koulutusOid)
     get(tutkinnonOsaOid, defaultSessionId)
   }
