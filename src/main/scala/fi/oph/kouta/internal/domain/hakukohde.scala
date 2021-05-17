@@ -19,6 +19,15 @@ import fi.oph.kouta.internal.swagger.SwaggerModel
     |""")
 case class YhdenPaikanSaanto(voimassa: Boolean, syy: String)
 
+@SwaggerModel("""    SORA-kuvaus:
+    |      type: object
+    |      properties:
+    |        tila:
+    |          type: string
+    |          description: SORA-kuvauksen tila
+    |""")
+case class Sora(tila: String)
+
 @SwaggerModel(
   """    Hakukohde:
     |      type: object
@@ -234,12 +243,14 @@ case class Hakukohde(
     kaytetaanHaunAikataulua: Option[Boolean],
     valintaperusteId: Option[UUID],
     yhdenPaikanSaanto: YhdenPaikanSaanto,
+    koulutustyypit: Option[Seq[String]],
     liitteetOnkoSamaToimitusaika: Option[Boolean],
     liitteetOnkoSamaToimitusosoite: Option[Boolean],
     liitteidenToimitusaika: Option[LocalDateTime],
     liitteidenToimitustapa: Option[LiitteenToimitustapa],
     liitteidenToimitusosoite: Option[LiitteenToimitusosoite],
     liitteet: List[Liite],
+    sora: Option[Sora],
     valintakokeet: List[Valintakoe],
     hakuajat: List[Ajanjakso],
     muokkaaja: UserOid,
