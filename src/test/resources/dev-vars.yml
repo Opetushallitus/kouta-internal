@@ -1,8 +1,8 @@
 ---
 host_postgresql_koutainternal: localhost
-host_postgresql_koutainternal_port: 5476
+host_postgresql_koutainternal_port: 5432
 postgres_app_user: oph
-host_postgresql_koutainternal_app_password: oph
+host_postgresql_koutainternal_app_password:
 
 cas_url: https://virkailija.hahtuvaopintopolku.fi/cas
 kouta_internal_cas_service: http://localhost:8098/kouta-internal/auth/login

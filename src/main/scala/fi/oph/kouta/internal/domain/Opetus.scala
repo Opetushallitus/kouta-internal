@@ -116,10 +116,15 @@ case class Opetus(
     opetusaikaKuvaus: Kielistetty,
     opetustapaKoodiUrit: Seq[String],
     opetustapaKuvaus: Kielistetty,
+    @deprecated("Kentän korvaa maksullisuustyyppi") onkoMaksullinen: Boolean,
     maksullisuustyyppi: Option[Maksullisuustyyppi] = None,
     maksullisuusKuvaus: Kielistetty,
     maksunMaara: Option[Double],
+    koulutuksenTarkkaAlkamisaika: Boolean,
     alkamiskausiKoodiUri: Option[String],
     alkamisvuosi: Option[String],
-    lisatiedot: Seq[Lisatieto]
+    lisatiedot: Seq[Lisatieto],
+    onkoStipendia: Boolean,
+    stipendinMaara: Option[Double],
+    stipendinKuvaus: Kielistetty
 )

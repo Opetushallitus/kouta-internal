@@ -1,6 +1,6 @@
 package fi.oph.kouta.internal.domain.indexed
 
-import fi.oph.kouta.domain.{Alkamiskausityyppi, Hakutermi, Koulutustyyppi, Maksullisuustyyppi}
+import fi.oph.kouta.domain.{Hakutermi, Koulutustyyppi, Maksullisuustyyppi}
 import fi.oph.kouta.internal.domain._
 import fi.oph.kouta.internal.domain.enums.{Hakulomaketyyppi, Julkaisutila, Kieli}
 import fi.oph.kouta.internal.domain.oid.{KoulutusOid, ToteutusOid}
@@ -233,12 +233,6 @@ case class KorkeakouluOsaamisalaIndexed(
     KorkeakouluOsaamisala(nimi = nimi, kuvaus = kuvaus, linkki = linkki, otsikko = otsikko)
 }
 
-case class KoulutuksenAlkamiskausi(
-    alkamiskausityyppi: Alkamiskausityyppi,
-    koulutuksenAlkamiskausi: Option[KoodiUri],
-    koulutuksenAlkamisvuosi: Option[String]
-)
-
 case class OpetusIndexed(
     opetuskieli: Seq[KoodiUri],
     opetuskieletKuvaus: Kielistetty,
@@ -246,11 +240,17 @@ case class OpetusIndexed(
     opetusaikaKuvaus: Kielistetty,
     opetustapa: Seq[KoodiUri],
     opetustapaKuvaus: Kielistetty,
+    @deprecated("Tämän korvaa maksullisuustyyppi") onkoMaksullinen: Option[Boolean],
     maksullisuustyyppi: Option[Maksullisuustyyppi],
     maksullisuusKuvaus: Kielistetty,
     maksunMaara: Option[Double],
-    koulutuksenAlkamiskausi: Option[KoulutuksenAlkamiskausi],
-    lisatiedot: Seq[LisatietoIndexed]
+    koulutuksenTarkkaAlkamisaika: Option[Boolean],
+    koulutuksenAlkamiskausi: Option[KoodiUri],
+    koulutuksenAlkamisvuosi: Option[Int],
+    lisatiedot: Seq[LisatietoIndexed],
+    onkoStipendia: Option[Boolean],
+    stipendinMaara: Option[Double],
+    stipendinKuvaus: Kielistetty
 ) {
   def toOpetus: Opetus = Opetus(
     opetuskieliKoodiUrit = opetuskieli.map(_.koodiUri),
@@ -259,11 +259,16 @@ case class OpetusIndexed(
     opetusaikaKuvaus = opetusaikaKuvaus,
     opetustapaKoodiUrit = opetustapa.map(_.koodiUri),
     opetustapaKuvaus = opetustapaKuvaus,
+    onkoMaksullinen = onkoMaksullinen.getOrElse(false),
     maksullisuustyyppi = maksullisuustyyppi,
     maksullisuusKuvaus = maksullisuusKuvaus,
     maksunMaara = maksunMaara,
-    alkamiskausiKoodiUri = koulutuksenAlkamiskausi.flatMap(_.koulutuksenAlkamiskausi.map(_.koodiUri)),
-    alkamisvuosi = koulutuksenAlkamiskausi.flatMap(_.koulutuksenAlkamisvuosi),
-    lisatiedot = lisatiedot.map(_.toLisatieto)
+    koulutuksenTarkkaAlkamisaika = koulutuksenTarkkaAlkamisaika.getOrElse(false),
+    alkamiskausiKoodiUri = koulutuksenAlkamiskausi.map(_.koodiUri),
+    alkamisvuosi = koulutuksenAlkamisvuosi.map(_.toString),
+    lisatiedot = lisatiedot.map(_.toLisatieto),
+    onkoStipendia = onkoStipendia.getOrElse(false),
+    stipendinMaara = stipendinMaara,
+    stipendinKuvaus = stipendinKuvaus
   )
 }

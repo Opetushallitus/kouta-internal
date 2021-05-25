@@ -17,11 +17,7 @@ case class LisatietoIndexed(otsikko: KoodiUri, teksti: Kielistetty) {
   def toLisatieto = Lisatieto(otsikkoKoodiUri = otsikko.koodiUri, teksti)
 }
 
-case class ValintakoeIndexed(
-    id: Option[UUID],
-    tyyppi: Option[KoodiUri],
-    tilaisuudet: Option[List[Valintakoetilaisuus]]
-) {
+case class ValintakoeIndexed(id: Option[UUID], tyyppi: Option[KoodiUri], tilaisuudet: List[Valintakoetilaisuus]) {
   def toValintakoe: Valintakoe = Valintakoe(
     id = id,
     tyyppi = tyyppi.map(_.koodiUri),
