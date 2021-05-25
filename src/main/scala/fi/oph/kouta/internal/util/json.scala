@@ -3,7 +3,7 @@ package fi.oph.kouta.internal.util
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.util.UUID
-import fi.oph.kouta.domain.{Amk, Amm, AmmOsaamisala, AmmTutkinnonOsa, Koulutustyyppi, Yo}
+import fi.oph.kouta.domain.{Amk, Amm, AmmOsaamisala, AmmTutkinnonOsa, Koulutustyyppi, Maksullisuustyyppi, Yo}
 import fi.oph.kouta.internal.domain._
 import fi.oph.kouta.internal.domain.enums.{Hakulomaketyyppi, Julkaisutila, Kieli, LiitteenToimitustapa}
 import fi.oph.kouta.internal.domain.indexed._
@@ -37,6 +37,7 @@ sealed trait DefaultKoutaJsonFormats {
   )
 
   private def genericKoutaFormats: Formats = DefaultFormats
+    //.withStrictOptionParsing
     .addKeySerializers(Seq(kieliKeySerializer)) ++
     Seq(
       localDateTimeSerializer,
@@ -52,7 +53,10 @@ sealed trait DefaultKoutaJsonFormats {
       stringSerializer(ToteutusOid),
       stringSerializer(OrganisaatioOid),
       stringSerializer(UserOid),
-      stringSerializer(GenericOid)
+      stringSerializer(GenericOid),
+      stringSerializer(fi.oph.kouta.domain.Maksullisuustyyppi.withName),
+      stringSerializer(fi.oph.kouta.domain.Alkamiskausityyppi.withName),
+      stringSerializer(fi.oph.kouta.domain.Hakutermi.withName)
     )
 
   private def serializer[A: Manifest](deserializer: PartialFunction[JValue, A])(
