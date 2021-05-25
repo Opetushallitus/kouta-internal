@@ -64,7 +64,17 @@ Ennen lokaalia ajoa täytyy olla elasticsearch pyörimässä. Kontin saa pystyyn
 docker run --rm --name koutainternal-elastic --env "discovery.type=single-node" -p 127.0.0.1:9200:9200 -p 127.0.0.1:9300:9300 docker.elastic.co/elasticsearch/elasticsearch:6.8.13
 ```
 
-tämän jälkeen käynnistä Ideassa embeddedJettyLauncher.scala (right-click -> Run). Tämä käynnistää samalla
+Jonkin testiympäristön Elasticsearchia voi hyödyntää helposti seuraavanlaisen ssh-tunnelin avulla:
+```
+-L9200:konfo.es.hahtuvaopintopolku.fi:80
+```
+
+Lokaalin postgres-kannan voi käynnistää dockerilla (sen jälkeen kun kouta-internalin oma kontti-image on buildattu):
+```shell
+docker run --rm --name koutainternal-db -p 5476:5432 -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=ophoph -d koutainternal-postgres
+```
+
+Tämän jälkeen käynnistä Ideassa embeddedJettyLauncher.scala (right-click -> Run). Tämä käynnistää samalla
 postgresql kontin. Sovellus käynnistyy porttiin 8098 ja Swagger löytyy osoitteesta
 `http://localhost:8098/kouta-internal/swagger`.  
 
