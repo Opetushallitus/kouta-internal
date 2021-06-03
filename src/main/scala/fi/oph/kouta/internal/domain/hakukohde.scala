@@ -244,6 +244,7 @@ case class Hakukohde(
     valintaperusteId: Option[UUID],
     yhdenPaikanSaanto: YhdenPaikanSaanto,
     koulutustyypit: Option[Seq[String]],
+    onkoHarkinnanvarainenKoulutus: Option[Boolean],
     liitteetOnkoSamaToimitusaika: Option[Boolean],
     liitteetOnkoSamaToimitusosoite: Option[Boolean],
     liitteidenToimitusaika: Option[LocalDateTime],
