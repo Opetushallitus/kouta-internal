@@ -3,6 +3,7 @@ package fi.oph.kouta.internal.elasticsearch
 import com.sksamuel.elastic4s.http.ElasticClient
 import com.sksamuel.elastic4s.http.ElasticDsl._
 import com.sksamuel.elastic4s.json4s.ElasticJson4s.Implicits._
+import com.sksamuel.elastic4s.searches.queries.BoolQuery
 import fi.oph.kouta.internal.domain.Hakukohde
 import fi.oph.kouta.internal.domain.indexed.HakukohdeIndexed
 import fi.oph.kouta.internal.domain.oid.{HakuOid, HakukohdeOid, OrganisaatioOid}
@@ -22,7 +23,8 @@ class HakukohdeClient(val index: String, val client: ElasticClient)
   def search(
       hakuOid: Option[HakuOid],
       tarjoajaOids: Option[Set[OrganisaatioOid]],
-      q: Option[String]
+      q: Option[String],
+      oikeusHakukohteeseenFn: Set[OrganisaatioOid] => Option[Boolean]
   ): Future[Seq[Hakukohde]] = {
     val hakuQuery = hakuOid.map(oid => termsQuery("hakuOid", oid.toString))
     val tarjoajaQuery = tarjoajaOids.map(oids =>
@@ -48,12 +50,16 @@ class HakukohdeClient(val index: String, val client: ElasticClient)
         termsQuery("toteutus.tarjoajat.nimi.en.keyword", q)
       )
     )
-    searchItems[HakukohdeIndexed](Some(must(hakuQuery ++ tarjoajaQuery ++ qQuery))).map(_.map(_.toHakukohde))
+    searchItems[HakukohdeIndexed](Some(must(hakuQuery ++ tarjoajaQuery ++ qQuery)))
+      .map(_.map(_.toHakukohde(oikeusHakukohteeseenFn)))
   }
 
-  def findByOids(hakukohteetOids: Set[HakukohdeOid]): Future[Seq[Hakukohde]] = {
+  def findByOids(
+      hakukohteetOids: Set[HakukohdeOid],
+      oikeusHakukohteeseenFn: Set[OrganisaatioOid] => Option[Boolean]
+  ): Future[Seq[Hakukohde]] = {
     val hakukohteetQuery = should(termsQuery("oid", hakukohteetOids.map(_.toString)))
-    searchItems[HakukohdeIndexed](Some(must(hakukohteetQuery))).map(_.map(_.toHakukohde))
+    searchItems[HakukohdeIndexed](Some(must(hakukohteetQuery))).map(_.map(_.toHakukohde(oikeusHakukohteeseenFn)))
   }
 }
 

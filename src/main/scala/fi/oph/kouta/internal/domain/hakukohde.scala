@@ -255,8 +255,9 @@ case class Hakukohde(
     valintakokeet: List[Valintakoe],
     hakuajat: List[Ajanjakso],
     muokkaaja: UserOid,
-    tarjoajat: List[OrganisaatioOid],
+    tarjoajat: Set[OrganisaatioOid],
     organisaatioOid: OrganisaatioOid,
     kielivalinta: Seq[Kieli],
-    modified: Option[LocalDateTime]
+    modified: Option[LocalDateTime],
+    oikeusHakukohteeseen: Option[Boolean]
 ) extends PerustiedotWithOid
