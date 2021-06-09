@@ -24,9 +24,8 @@ class HakuClient(val index: String, val client: ElasticClient)
   private def byTarjoajaAndTila(tarjoajaOids: Option[Set[OrganisaatioOid]], haku: HakuIndexed): Boolean =
     tarjoajaOids.fold(true)(oids =>
       haku.hakukohteet.exists(hakukohde => {
-        logger.info("Hakukohde: {}", hakukohde)
         hakukohde.tila match {
-          case Tallennettu => return false
+          case Tallennettu => false
           case _ =>
             hakukohde.jarjestyspaikka.fold(hakukohde.toteutus.tarjoajat.exists(t => oids.contains(t.oid)))(j =>
               oids.contains(j.oid)
