@@ -41,11 +41,6 @@ class SwaggerServlet extends ScalatraServlet {
         |    url: "http://www.osor.eu/eupl/"
         |servers:
         |  - url: /kouta-internal/
-        |  - url: http://localhost:8098/kouta-internal/
-        |  - url: https://virkailija.untuvaopintopolku.fi/kouta-internal/
-        |  - url: https://virkailija.hahtuvaopintopolku.fi/kouta-internal/
-        |  - url: https://virkailija.testiopintopolku.fi/kouta-internal/
-        |  - url: https://virkailija.opintopolku.fi/kouta-internal/
         |paths:
         |""".stripMargin
 
