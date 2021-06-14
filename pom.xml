@@ -14,7 +14,7 @@
         <scala.version>2.12.10</scala.version>
 
         <kouta-indeksoija.version>7.4.0-SNAPSHOT</kouta-indeksoija.version>
-        <kouta-backend.version>6.3.0-SNAPSHOT</kouta-backend.version>
+        <kouta-backend.version>6.9.0-SNAPSHOT</kouta-backend.version>
         <kouta-common.version>2.3.0-SNAPSHOT</kouta-common.version>
 
         <!-- Korjaa käännösvirheen:
