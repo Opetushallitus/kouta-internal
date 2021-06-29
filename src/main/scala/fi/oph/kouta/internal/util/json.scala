@@ -37,6 +37,11 @@ sealed trait DefaultKoutaJsonFormats {
   )
 
   private def genericKoutaFormats: Formats = DefaultFormats
+    /*
+    Ilman alla olevaa riviä, case classien optinaaliset tiedot jätetään vain pois jos sinne tuleva data on vääränmuotoista.
+    Tarkoituksella näin tuotannossa ainakin toistaiseksi.
+    Virheitä selviteltäessä rivin voi poistaa kommenteista jolloin näkee lokilta miksi jotain jää puuttumaan.
+     */
     //.withStrictOptionParsing
     .addKeySerializers(Seq(kieliKeySerializer)) ++
     Seq(
