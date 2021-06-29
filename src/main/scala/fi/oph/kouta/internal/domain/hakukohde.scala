@@ -262,7 +262,7 @@ case class Hakukohde(
     hakuajat: List[Ajanjakso],
     muokkaaja: UserOid,
     @deprecated tarjoajat: Set[OrganisaatioOid],
-    tarjoaja: OrganisaatioOid,
+    tarjoaja: Option[OrganisaatioOid],
     organisaatioOid: OrganisaatioOid,
     kielivalinta: Seq[Kieli],
     modified: Option[LocalDateTime],
