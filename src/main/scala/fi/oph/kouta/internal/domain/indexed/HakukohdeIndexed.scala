@@ -68,7 +68,7 @@ case class HakukohdeIndexed(
   def toHakukohde(oikeusHakukohteeseenFn: OrganisaatioOid => Option[Boolean]): Hakukohde = {
     try {
       val tarjoajat = jarjestyspaikka.map(o => Set(o.oid)).getOrElse(Set())
-      val tarjoaja  = jarjestyspaikka.get.oid
+      val tarjoaja  = jarjestyspaikka.map(o => o.oid)
       Hakukohde(
         oid = oid,
         toteutusOid = toteutus.oid,
@@ -112,7 +112,7 @@ case class HakukohdeIndexed(
         organisaatioOid = organisaatio.get.oid,
         kielivalinta = kielivalinta,
         modified = modified,
-        oikeusHakukohteeseen = oikeusHakukohteeseenFn(tarjoaja)
+        oikeusHakukohteeseen = tarjoaja.flatMap(t => oikeusHakukohteeseenFn(t))
       )
     } catch {
       case e: Exception => {
