@@ -166,7 +166,7 @@ package object domain {
       |            $ref: '#/components/schemas/Valintakoetilaisuus'
       |"""
   )
-  case class Valintakoe(id: Option[UUID], tyyppi: Option[String], tilaisuudet: List[Valintakoetilaisuus])
+  case class Valintakoe(id: Option[UUID], tyyppi: Option[String], tilaisuudet: Option[List[Valintakoetilaisuus]])
 
   @SwaggerModel(
     """    Valintakoetilaisuus:
@@ -209,7 +209,7 @@ package object domain {
       |          allOf:
       |            - $ref: '#/components/schemas/Teksti'
       |""")
-  case class Osoite(osoite: Kielistetty, postinumero: Option[String], postitoimipaikka: Kielistetty)
+  case class Osoite(osoite: Option[Kielistetty], postinumero: Option[String], postitoimipaikka: Option[Kielistetty])
 
   @SwaggerModel("""    Ammattinimike:
       |      type: object

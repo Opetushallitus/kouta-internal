@@ -19,33 +19,28 @@ class SwaggerServlet extends ScalatraServlet {
         |info:
         |  title: kouta-internal
         |  description: >
-        |    Uuden koulutustarjonnan ulkoinen API.
-        |
-        |
-        |    Ohjeet kirjautumiseen rajapintojen kutsujalle:
-        |    [https://confluence.csc.fi/display/oppija/Rajapintojen+autentikaatio](https://confluence.csc.fi/display/oppija/Rajapintojen+autentikaatio)
-        |
-        |
-        |    Helpoin tapa kirjautua sisään Swagger-ui:n käyttäjälle on avata
-        |    [/kouta-internal/auth/login](/kouta-internal/auth/login) uuteen selainikkunaan.
-        |    Jos näkyviin tulee `{"personOid":"1.2.246.562.24.xxxx"}` on kirjautuminen onnistunut. Jos näkyviin tulee
-        |    opintopolun kirjautumisikkuna, kirjaudu sisään.
-        |  version: 0.1-SNAPSHOT
+        |    <p><strong>Uuden koulutustarjonnan Opintopolun sisäisille palveluille tarkoitetut rajapinnat.</strong></p>
+        |    <p>Ohjeita rajapintojen kutsujalle:
+        |    <ul>
+        |    <li><a href="https://wiki.eduuni.fi/x/L95cCw" target="_blank">Autentikaatio</a></li>
+        |    <li><a href="https://wiki.eduuni.fi/x/0MeKCg" target="_blank">Kutsujan tunniste (caller-id)</a></li>
+        |    <li><a href="https://wiki.eduuni.fi/x/EL_hCw" target="_blank">CSRF-suojaus</a></li>
+        |    </ul>
+        |    </p>
+        |    <p>Helpoin tapa kirjautua sisään Swagger-ui:n käyttäjälle on avata
+        |    <a href="/kouta-internal/auth/login" target="_blank">/kouta-internal/auth/login</a> uuteen selainikkunaan.
+        |    Jos näkyviin tulee <code>{"personOid":"1.2.246.562.24.xxxx"}</code> on kirjautuminen onnistunut. Jos näkyviin tulee
+        |    opintopolun kirjautumisikkuna, kirjaudu sisään.</p>
         |  termsOfService: https://opintopolku.fi/wp/fi/opintopolku/tietoa-palvelusta/
         |  contact:
-        |    name: ""
+        |    name: "Opetushallitus"
         |    email: verkkotoimitus_opintopolku@oph.fi
-        |    url: ""
+        |    url: "https://www.oph.fi/"
         |  license:
         |    name: "EUPL 1.1 or latest approved by the European Commission"
         |    url: "http://www.osor.eu/eupl/"
         |servers:
         |  - url: /kouta-internal/
-        |  - url: http://localhost:8098/kouta-internal/
-        |  - url: https://virkailija.untuvaopintopolku.fi/kouta-internal/
-        |  - url: https://virkailija.hahtuvaopintopolku.fi/kouta-internal/
-        |  - url: https://virkailija.testiopintopolku.fi/kouta-internal/
-        |  - url: https://virkailija.opintopolku.fi/kouta-internal/
         |paths:
         |""".stripMargin
 
@@ -68,7 +63,7 @@ class SwaggerServlet extends ScalatraServlet {
          |        type: string
          |        default: kouta-internal-swagger
          |      required: true
-         |      description: Kutsujan <a href="https://confluence.csc.fi/pages/viewpage.action?pageId=50858064">Caller ID</a>
+         |      description: <p>Kutsujan <a href="https://wiki.eduuni.fi/x/0MeKCg" target="_blank">Caller ID</a></p>
          |  schemas:
          |""".stripMargin
 

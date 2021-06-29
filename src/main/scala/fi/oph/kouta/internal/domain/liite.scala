@@ -50,9 +50,9 @@ import fi.oph.kouta.internal.swagger.SwaggerModel
 )
 case class Liite(
     id: Option[UUID],
-    tyyppi: Option[String],
+    koodiUri: Option[String],
     nimi: Kielistetty,
-    kuvaus: Kielistetty,
+    kuvaus: Option[Kielistetty],
     toimitusaika: Option[LocalDateTime],
     toimitustapa: Option[LiitteenToimitustapa],
     toimitusosoite: Option[LiitteenToimitusosoite]
@@ -72,4 +72,4 @@ case class Liite(
     |          allOf:
     |            - $ref: '#/components/schemas/Teksti'
     |""")
-case class LiitteenToimitusosoite(osoite: Osoite, sahkoposti: Option[String])
+case class LiitteenToimitusosoite(osoite: Option[Osoite], sahkoposti: Option[String])

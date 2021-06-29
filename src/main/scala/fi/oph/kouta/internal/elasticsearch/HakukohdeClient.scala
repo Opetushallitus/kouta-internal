@@ -24,7 +24,7 @@ class HakukohdeClient(val index: String, val client: ElasticClient)
       hakuOid: Option[HakuOid],
       tarjoajaOids: Option[Set[OrganisaatioOid]],
       q: Option[String],
-      oikeusHakukohteeseenFn: Set[OrganisaatioOid] => Option[Boolean]
+      oikeusHakukohteeseenFn: OrganisaatioOid => Option[Boolean]
   ): Future[Seq[Hakukohde]] = {
     val hakuQuery = hakuOid.map(oid => termsQuery("hakuOid", oid.toString))
     val tarjoajaQuery = tarjoajaOids.map(oids =>
@@ -56,7 +56,7 @@ class HakukohdeClient(val index: String, val client: ElasticClient)
 
   def findByOids(
       hakukohteetOids: Set[HakukohdeOid],
-      oikeusHakukohteeseenFn: Set[OrganisaatioOid] => Option[Boolean]
+      oikeusHakukohteeseenFn: OrganisaatioOid => Option[Boolean]
   ): Future[Seq[Hakukohde]] = {
     val hakukohteetQuery = should(termsQuery("oid", hakukohteetOids.map(_.toString)))
     searchItems[HakukohdeIndexed](Some(must(hakukohteetQuery))).map(_.map(_.toHakukohde(oikeusHakukohteeseenFn)))

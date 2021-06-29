@@ -65,9 +65,10 @@ case class HakukohdeIndexed(
     metadata: Option[HakukohdeMetadataIndexed]
 ) extends WithTila
     with Logging {
-  def toHakukohde(oikeusHakukohteeseenFn: Set[OrganisaatioOid] => Option[Boolean]): Hakukohde = {
+  def toHakukohde(oikeusHakukohteeseenFn: OrganisaatioOid => Option[Boolean]): Hakukohde = {
     try {
-      val tarjoajat = jarjestyspaikka.map(o => Set(o.oid)).getOrElse(toteutus.tarjoajat.map(_.oid).toSet)
+      val tarjoajat = jarjestyspaikka.map(o => Set(o.oid)).getOrElse(Set())
+      val tarjoaja  = jarjestyspaikka.get.oid
       Hakukohde(
         oid = oid,
         toteutusOid = toteutus.oid,
@@ -107,10 +108,11 @@ case class HakukohdeIndexed(
         hakuajat = hakuajat,
         muokkaaja = muokkaaja.oid,
         tarjoajat = tarjoajat,
+        tarjoaja = tarjoaja,
         organisaatioOid = organisaatio.get.oid,
         kielivalinta = kielivalinta,
         modified = modified,
-        oikeusHakukohteeseen = oikeusHakukohteeseenFn(tarjoajat)
+        oikeusHakukohteeseen = oikeusHakukohteeseenFn(tarjoaja)
       )
     } catch {
       case e: Exception => {

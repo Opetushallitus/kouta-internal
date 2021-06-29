@@ -16,12 +16,12 @@ class HakukohdeService(hakukohdeClient: HakukohdeClient, hakuService: HakuServic
   private def createOikeusFn(
       withRootOikeus: Boolean,
       tarjoajaOids: Option[Set[OrganisaatioOid]]
-  ): Set[OrganisaatioOid] => Option[Boolean] = { (tarjoajat: Set[OrganisaatioOid]) =>
+  ): OrganisaatioOid => Option[Boolean] = { (tarjoaja: OrganisaatioOid) =>
     {
       if (withRootOikeus) {
         Some(true)
       } else {
-        tarjoajaOids.map(oids => (oids & tarjoajat).nonEmpty)
+        tarjoajaOids.map(oids => oids.contains(tarjoaja))
       }
     }
   }
