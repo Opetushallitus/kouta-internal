@@ -19,7 +19,12 @@ import fi.vm.sade.utils.slf4j.Logging
 
 case class HakukohdeToteutusIndexed(oid: ToteutusOid, tarjoajat: List[Organisaatio])
 
-case class HakukohdeMetadataIndexed(kaytetaanHaunAlkamiskautta: Option[Boolean])
+case class AloituspaikatIndexed(lukumaara: Option[Int], ensikertalaisille: Option[Int])
+
+case class HakukohdeMetadataIndexed(
+    kaytetaanHaunAlkamiskautta: Option[Boolean],
+    aloituspaikat: Option[AloituspaikatIndexed]
+)
 
 case class HakukohdeIndexed(
     oid: HakukohdeOid,
@@ -34,12 +39,6 @@ case class HakukohdeIndexed(
     hakulomakeKuvaus: Kielistetty,
     hakulomakeLinkki: Kielistetty,
     kaytetaanHaunHakulomaketta: Option[Boolean],
-    aloituspaikat: Option[Int],
-    minAloituspaikat: Option[Int],
-    maxAloituspaikat: Option[Int],
-    ensikertalaisenAloituspaikat: Option[Int],
-    minEnsikertalaisenAloituspaikat: Option[Int],
-    maxEnsikertalaisenAloituspaikat: Option[Int],
     pohjakoulutusvaatimus: Seq[KoodiUri],
     muuPohjakoulutusvaatimus: Kielistetty,
     toinenAsteOnkoKaksoistutkinto: Option[Boolean],
@@ -83,12 +82,8 @@ case class HakukohdeIndexed(
         hakulomakeKuvaus = hakulomakeKuvaus,
         hakulomakeLinkki = hakulomakeLinkki,
         kaytetaanHaunHakulomaketta = kaytetaanHaunHakulomaketta,
-        aloituspaikat = aloituspaikat,
-        minAloituspaikat = minAloituspaikat,
-        maxAloituspaikat = maxAloituspaikat,
-        ensikertalaisenAloituspaikat = ensikertalaisenAloituspaikat,
-        minEnsikertalaisenAloituspaikat = minEnsikertalaisenAloituspaikat,
-        maxEnsikertalaisenAloituspaikat = maxEnsikertalaisenAloituspaikat,
+        aloituspaikat = metadata.flatMap(_.aloituspaikat.flatMap(_.lukumaara)),
+        ensikertalaisenAloituspaikat = metadata.flatMap(_.aloituspaikat.flatMap(_.ensikertalaisille)),
         pohjakoulutusvaatimusKoodiUrit = pohjakoulutusvaatimus.map(_.koodiUri),
         muuPohjakoulutusvaatimus = muuPohjakoulutusvaatimus,
         toinenAsteOnkoKaksoistutkinto = toinenAsteOnkoKaksoistutkinto,
