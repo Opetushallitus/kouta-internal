@@ -1,11 +1,7 @@
 package fi.oph.kouta.internal
 
-import java.io.File
-import java.util.concurrent.TimeUnit
-
 import com.sksamuel.elastic4s.http.{ElasticClient, ElasticProperties}
-import fi.vm.sade.utils.tcp.ChooseFreePort
-import pl.allegro.tech.embeddedelasticsearch.{EmbeddedElastic, PopularProperties}
+import org.testcontainers.elasticsearch.ElasticsearchContainer
 
 object TempElasticClient {
   val url    = s"http://localhost:${TempElastic.start()}"
@@ -13,33 +9,26 @@ object TempElasticClient {
 }
 
 object TempElastic {
-  var elasticInstance: Option[EmbeddedElastic] = None
+  var elastic: Option[ElasticsearchContainer] = None
+  var port: Int                               = -1
 
-  private val port            = new ChooseFreePort().chosenPort
-  private val timeoutInMillis = 60 * 1000
+  def start(): Int = port
 
-  def start(): Int = get().getHttpPort
+  def create(): ElasticsearchContainer = {
+    val embeddedElastic = new ElasticsearchContainer("docker.elastic.co/elasticsearch/elasticsearch:7.10.2")
 
-  def create(): EmbeddedElastic = {
-    val embeddedElastic = EmbeddedElastic
-      .builder()
-      .withElasticVersion("6.7.2")
-      .withInstallationDirectory(new File("target/embeddedElasticsearch"))
-      .withSetting(PopularProperties.HTTP_PORT, port)
-      .withSetting("path.repo", "embeddedElasticsearch")
-      .withSetting(PopularProperties.CLUSTER_NAME, "elasticsearch")
-      .withSetting("discovery.zen.ping.unicast.hosts", s"127.0.0.1:$port")
-      .withStartTimeout(timeoutInMillis, TimeUnit.MILLISECONDS)
-      .build
-
-    elasticInstance = Some(embeddedElastic.start())
-    elasticInstance.get
+    embeddedElastic.start()
+    port = embeddedElastic.getMappedPort(9200)
+    elastic = Some(embeddedElastic)
+    embeddedElastic
   }
 
   def stop(): Unit = {
-    elasticInstance.foreach(_.stop())
-    elasticInstance = None
+    elastic.foreach(_.stop())
+    elastic.foreach(_.close())
+    port = -1
+    elastic = None
   }
 
-  def get(): EmbeddedElastic = elasticInstance.getOrElse(create())
+  def get(): ElasticsearchContainer = elastic.getOrElse(create())
 }
