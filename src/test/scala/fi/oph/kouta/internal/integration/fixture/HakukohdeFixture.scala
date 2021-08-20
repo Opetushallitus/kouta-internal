@@ -2,7 +2,7 @@ package fi.oph.kouta.internal.integration.fixture
 
 import java.util.UUID
 import fi.oph.kouta.external.KoutaFixtureTool
-import fi.oph.kouta.internal.TempElasticDockerClient
+import fi.oph.kouta.internal.TempElasticClient
 import fi.oph.kouta.internal.domain.Hakukohde
 import fi.oph.kouta.internal.domain.oid.{HakuOid, HakukohdeOid, OrganisaatioOid, ToteutusOid}
 import fi.oph.kouta.internal.elasticsearch.{HakuClient, HakukohdeClient}
@@ -16,8 +16,8 @@ trait HakukohdeFixture extends KoutaIntegrationSpec {
   addServlet(
     new HakukohdeServlet(
       new HakukohdeService(
-        new HakukohdeClient("hakukohde-kouta", TempElasticDockerClient.client),
-        new HakuService(new HakuClient("haku-kouta", TempElasticDockerClient.client))
+        new HakukohdeClient("hakukohde-kouta", TempElasticClient.client),
+        new HakuService(new HakuClient("haku-kouta", TempElasticClient.client))
       ),
       sessionDAO
     ),

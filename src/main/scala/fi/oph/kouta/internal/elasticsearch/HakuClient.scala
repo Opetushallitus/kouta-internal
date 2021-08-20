@@ -1,7 +1,7 @@
 package fi.oph.kouta.internal.elasticsearch
 
-import com.sksamuel.elastic4s.http.ElasticClient
-import com.sksamuel.elastic4s.http.ElasticDsl._
+import com.sksamuel.elastic4s.ElasticClient
+import com.sksamuel.elastic4s.ElasticDsl._
 import com.sksamuel.elastic4s.json4s.ElasticJson4s.Implicits._
 import fi.oph.kouta.internal.domain.Haku
 import fi.oph.kouta.internal.domain.enums.Julkaisutila.Tallennettu

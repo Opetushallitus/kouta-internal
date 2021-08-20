@@ -1,24 +1,29 @@
 package fi.oph.kouta.internal
 
-import com.sksamuel.elastic4s.http.{ElasticClient, ElasticProperties}
+import com.sksamuel.elastic4s.http.JavaClient
+import com.sksamuel.elastic4s.{ElasticClient, ElasticProperties}
 import org.testcontainers.elasticsearch.ElasticsearchContainer
 
 object TempElasticClient {
   val url    = s"http://localhost:${TempElastic.start()}"
-  val client = ElasticClient(ElasticProperties(url))
+  val client = ElasticClient(JavaClient(ElasticProperties(url)))
 }
 
-object TempElastic {
+private object TempElastic {
   var elastic: Option[ElasticsearchContainer] = None
-  var port: Int                               = -1
 
-  def start(): Int = port
+  def start(): Int = {
+    try {
+      get().getMappedPort(9200)
+    } finally {
+      Runtime.getRuntime.addShutdownHook(new Thread(() => stop()))
+    }
+  }
 
   def create(): ElasticsearchContainer = {
     val embeddedElastic = new ElasticsearchContainer("docker.elastic.co/elasticsearch/elasticsearch:7.10.2")
 
     embeddedElastic.start()
-    port = embeddedElastic.getMappedPort(9200)
     elastic = Some(embeddedElastic)
     embeddedElastic
   }
@@ -26,7 +31,6 @@ object TempElastic {
   def stop(): Unit = {
     elastic.foreach(_.stop())
     elastic.foreach(_.close())
-    port = -1
     elastic = None
   }
 
