@@ -18,6 +18,8 @@ class ScalatraBootstrap extends LifeCycle {
 
     context.mount(HealthcheckServlet, "/healthcheck", "healthcheck")
     context.mount(new SwaggerServlet, "/swagger")
+
+    context.mount(OdwServlet, "/odw", "odw")
   }
 
   override def destroy(context: ServletContext): Unit = {

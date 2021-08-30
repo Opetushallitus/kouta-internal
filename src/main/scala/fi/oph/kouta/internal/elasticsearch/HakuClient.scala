@@ -4,6 +4,7 @@ import com.sksamuel.elastic4s.http.ElasticClient
 import com.sksamuel.elastic4s.http.ElasticDsl._
 import com.sksamuel.elastic4s.json4s.ElasticJson4s.Implicits._
 import fi.oph.kouta.internal.domain.Haku
+import fi.oph.kouta.internal.domain.enums.Julkaisutila
 import fi.oph.kouta.internal.domain.enums.Julkaisutila.Tallennettu
 import fi.oph.kouta.internal.domain.indexed.HakuIndexed
 import fi.oph.kouta.internal.domain.oid.{HakuOid, OrganisaatioOid}
@@ -49,6 +50,20 @@ class HakuClient(val index: String, val client: ElasticClient)
     val query = ataruIdQuery ++ tarjoajaQuery
     searchItems[HakuIndexed](if (query.isEmpty) None else Some(must(query)))
       .map(_.filter(byTarjoajaAndTila(tarjoajaOids, _)).map(_.toHaku))
+  }
+
+  def hautByJulkaisutila(julkaisuTilat: Option[Seq[Julkaisutila]]): Future[Seq[Haku]] = {
+    val query = julkaisuTilat.map(tilat =>
+      should(
+        tilat.map(tila =>
+          should(
+            termsQuery("tila.keyword", tila.name)
+          )
+        )
+      )
+    )
+    searchItems[HakuIndexed](if (query.isEmpty) Some(matchAllQuery()) else
+      Some(must(query.get))).map(_.map(_.toHaku))
   }
 }
 
