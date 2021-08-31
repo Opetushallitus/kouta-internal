@@ -108,10 +108,14 @@ trait ElasticsearchClient { this: KoutaJsonFormats with Logging =>
     }
   }
 
-  def searchItemBulks[T: HitReader: ClassTag](query: Option[Query], offset: Int, limit: Option[Int]): Future[IndexedSeq[T]] = {
+  def searchItemBulks[T: HitReader: ClassTag](
+      query: Option[Query],
+      offset: Int,
+      limit: Option[Int]
+  ): Future[IndexedSeq[T]] = {
     timed(s"Search item bulks from ElasticSearch (Query: ${query}, offset: ${offset}, limit: ${limit})", 100) {
       implicit val duration: FiniteDuration = Duration(1, TimeUnit.MINUTES)
-      val request = search(index).query(query.get).keepAlive("1m").size(500)
+      val request                           = search(index).query(query.get).keepAlive("1m").size(500)
       logger.info(s"Elasticsearch request: ${request.show}")
       Future {
         SearchIterator

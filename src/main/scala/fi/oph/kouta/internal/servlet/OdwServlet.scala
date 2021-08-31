@@ -40,7 +40,7 @@ class OdwServlet(odwService: OdwService, val sessionDAO: SessionDAO)
     implicit val authenticated: Authenticated = authenticate
 
     val offset = Try(params("offset").toInt).toOption
-    val limit = Try(params("limit").toInt).toOption
+    val limit  = Try(params("limit").toInt).toOption
 
     odwService.listAllHaut(offset.getOrElse(0), limit)
   }
