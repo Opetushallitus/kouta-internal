@@ -7,7 +7,8 @@ import fi.oph.kouta.internal.elasticsearch.HakuClient
 import scala.concurrent.Future
 
 class OdwService(hakuClient: HakuClient) {
-  def listAllHaut: Future[Seq[Haku]] = hakuClient.hautByJulkaisutila(Some(Seq(Julkaisutila.Julkaistu, Julkaisutila.Arkistoitu)))
+  def listAllHaut: Future[Seq[Haku]] =
+    hakuClient.hautByJulkaisutila(Some(Seq(Julkaisutila.Julkaistu, Julkaisutila.Arkistoitu)))
 
 }
 
