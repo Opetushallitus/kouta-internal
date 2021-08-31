@@ -62,8 +62,11 @@ class HakuClient(val index: String, val client: ElasticClient)
         )
       )
     )
-    searchItems[HakuIndexed](if (query.isEmpty) Some(matchAllQuery()) else
-      Some(must(query.get))).map(_.map(_.toHaku))
+    searchItems[HakuIndexed](
+      if (query.isEmpty) Some(matchAllQuery())
+      else
+        Some(must(query.get))
+    ).map(_.map(_.toHaku))
   }
 }
 
