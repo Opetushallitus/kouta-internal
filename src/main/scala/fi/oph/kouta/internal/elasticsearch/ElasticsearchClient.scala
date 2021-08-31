@@ -3,8 +3,9 @@ package fi.oph.kouta.internal.elasticsearch
 import com.sksamuel.elastic4s.HitReader
 import com.sksamuel.elastic4s.http.ElasticDsl._
 import com.sksamuel.elastic4s.http.get.GetResponse
-import com.sksamuel.elastic4s.http.search.SearchIterator
-import com.sksamuel.elastic4s.http.{ElasticClient, ElasticProperties, RequestFailure, RequestSuccess}
+import com.sksamuel.elastic4s.http.search.{SearchIterator, SearchResponse}
+import com.sksamuel.elastic4s.http.{ElasticClient, ElasticProperties, ElasticRequest, RequestFailure, RequestSuccess}
+import com.sksamuel.elastic4s.searches.SearchRequest
 import com.sksamuel.elastic4s.searches.queries.Query
 import fi.oph.kouta.internal.KoutaConfigurationFactory
 import fi.oph.kouta.internal.domain.WithTila
@@ -19,7 +20,6 @@ import scala.concurrent.Future
 import scala.concurrent.duration.{Duration, FiniteDuration}
 import scala.reflect.ClassTag
 import scala.util.{Failure, Success}
-
 import fi.vm.sade.utils.Timer.timed
 
 trait ElasticsearchClient { this: KoutaJsonFormats with Logging =>
@@ -105,6 +105,31 @@ trait ElasticsearchClient { this: KoutaJsonFormats with Logging =>
             )
         }
       })
+    }
+  }
+
+  def searchItemBulks[T: HitReader: ClassTag](query: Option[Query], offset: Int, limit: Option[Int]): Future[IndexedSeq[T]] = {
+    timed(s"Search item bulks from ElasticSearch (Query: ${query}, offset: ${offset}, limit: ${limit})", 100) {
+      implicit val duration: FiniteDuration = Duration(1, TimeUnit.MINUTES)
+      val request = search(index).query(query.get).keepAlive("1m").size(500)
+      logger.info(s"Elasticsearch request: ${request.show}")
+      Future {
+        SearchIterator
+          .hits(client, request)
+          .toIndexedSeq
+          .map(hit => hit.safeTo[T])
+          .flatMap(entity =>
+            entity match {
+              case Success(value) => Some(value)
+              case Failure(exception) =>
+                logger.error(
+                  s"Unable to deserialize json response to entity: ",
+                  exception
+                )
+                None
+            }
+          )
+      }
     }
   }
 }
