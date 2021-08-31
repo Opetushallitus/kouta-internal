@@ -52,7 +52,7 @@ class HakuClient(val index: String, val client: ElasticClient)
       .map(_.filter(byTarjoajaAndTila(tarjoajaOids, _)).map(_.toHaku))
   }
 
-  def hautByJulkaisutila(julkaisuTilat: Option[Seq[Julkaisutila]]): Future[Seq[Haku]] = {
+  def hautByJulkaisutila(julkaisuTilat: Option[Seq[Julkaisutila]], offset: Int, limit: Option[Int]): Future[Seq[Haku]] = {
     val query = julkaisuTilat.map(tilat =>
       should(
         tilat.map(tila =>
@@ -62,10 +62,12 @@ class HakuClient(val index: String, val client: ElasticClient)
         )
       )
     )
-    searchItems[HakuIndexed](
-      if (query.isEmpty) Some(matchAllQuery())
+    searchItemBulks[HakuIndexed](
+      if (query.isEmpty) None
       else
-        Some(must(query.get))
+        Some(must(query.get)),
+      offset,
+      limit
     ).map(_.map(_.toHaku))
   }
 }
