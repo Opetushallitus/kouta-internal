@@ -7,7 +7,7 @@ import fi.oph.kouta.internal.domain.oid.{OrganisaatioOid, UserOid}
 
 case class Muokkaaja(oid: UserOid)
 
-case class Organisaatio(oid: OrganisaatioOid)
+case class Organisaatio(oid: OrganisaatioOid, nimi: Kielistetty)
 
 case class KoodiUri(koodiUri: String)
 

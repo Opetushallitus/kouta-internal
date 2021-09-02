@@ -105,6 +105,7 @@ case class HakukohdeIndexed(
         tarjoajat = tarjoajat,
         tarjoaja = tarjoaja,
         organisaatioOid = organisaatio.get.oid,
+        organisaatioNimi = organisaatio.get.nimi,
         kielivalinta = kielivalinta,
         modified = modified,
         oikeusHakukohteeseen = tarjoaja.flatMap(t => oikeusHakukohteeseenFn(t))

@@ -4,7 +4,8 @@ import com.sksamuel.elastic4s.http.ElasticClient
 import com.sksamuel.elastic4s.http.ElasticDsl._
 import com.sksamuel.elastic4s.json4s.ElasticJson4s.Implicits._
 import com.sksamuel.elastic4s.searches.queries.BoolQuery
-import fi.oph.kouta.internal.domain.Hakukohde
+import fi.oph.kouta.internal.domain.enums.Kieli.Fi
+import fi.oph.kouta.internal.domain.{Hakukohde, Kielistetty}
 import fi.oph.kouta.internal.domain.indexed.HakukohdeIndexed
 import fi.oph.kouta.internal.domain.oid.{HakuOid, HakukohdeOid, OrganisaatioOid}
 import fi.oph.kouta.internal.util.KoutaJsonFormats
@@ -50,8 +51,12 @@ class HakukohdeClient(val index: String, val client: ElasticClient)
         matchQuery("toteutus.tarjoajat.nimi.en", q)
       ).minimumShouldMatch(1)
     )
+    //
+    implicit val userOrdering: Ordering[Kielistetty] = Ordering.by(_.get(Fi))
+
     searchItems[HakukohdeIndexed](Some(must(hakuQuery ++ tarjoajaQuery ++ qQuery)))
       .map(_.map(_.toHakukohde(oikeusHakukohteeseenFn)))
+      .map(res => res.sortBy(hk => hk.organisaatioNimi))
   }
 
   def findByOids(
