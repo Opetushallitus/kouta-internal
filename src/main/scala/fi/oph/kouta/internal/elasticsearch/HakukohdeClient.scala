@@ -38,19 +38,20 @@ class HakukohdeClient(val index: String, val client: ElasticClient)
         )
       )
     )
-    val qQuery = q.map(q =>
+    val qQuery = q.map(q => {
+      val wildcardQ = "*" + q + "*"
       should(
-        matchQuery("nimi.fi", q),
-        matchQuery("nimi.sv", q),
-        matchQuery("nimi.en", q),
-        matchQuery("jarjestyspaikka.nimi.fi", q),
-        matchQuery("jarjestyspaikka.nimi.sv", q),
-        matchQuery("jarjestyspaikka.nimi.en", q),
-        matchQuery("toteutus.tarjoajat.nimi.fi", q),
-        matchQuery("toteutus.tarjoajat.nimi.sv", q),
-        matchQuery("toteutus.tarjoajat.nimi.en", q)
+        wildcardQuery("nimi.fi", wildcardQ),
+        wildcardQuery("nimi.sv", wildcardQ),
+        wildcardQuery("nimi.en", wildcardQ),
+        wildcardQuery("jarjestyspaikka.nimi.fi", wildcardQ),
+        wildcardQuery("jarjestyspaikka.nimi.sv", wildcardQ),
+        wildcardQuery("jarjestyspaikka.nimi.en", wildcardQ),
+        wildcardQuery("toteutus.tarjoajat.nimi.fi", wildcardQ),
+        wildcardQuery("toteutus.tarjoajat.nimi.sv", wildcardQ),
+        wildcardQuery("toteutus.tarjoajat.nimi.en", wildcardQ)
       ).minimumShouldMatch(1)
-    )
+    })
     //
     implicit val userOrdering: Ordering[Kielistetty] = Ordering.by(_.get(Fi))
 
