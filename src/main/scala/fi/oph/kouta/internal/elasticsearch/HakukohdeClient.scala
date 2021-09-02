@@ -39,16 +39,16 @@ class HakukohdeClient(val index: String, val client: ElasticClient)
     )
     val qQuery = q.map(q =>
       should(
-        termsQuery("nimi.fi.keyword", q),
-        termsQuery("nimi.sv.keyword", q),
-        termsQuery("nimi.en.keyword", q),
-        termsQuery("jarjestyspaikka.nimi.fi.keyword", q),
-        termsQuery("jarjestyspaikka.nimi.sv.keyword", q),
-        termsQuery("jarjestyspaikka.nimi.en.keyword", q),
-        termsQuery("toteutus.tarjoajat.nimi.fi.keyword", q),
-        termsQuery("toteutus.tarjoajat.nimi.sv.keyword", q),
-        termsQuery("toteutus.tarjoajat.nimi.en.keyword", q)
-      )
+        matchQuery("nimi.fi", q),
+        matchQuery("nimi.sv", q),
+        matchQuery("nimi.en", q),
+        matchQuery("jarjestyspaikka.nimi.fi", q),
+        matchQuery("jarjestyspaikka.nimi.sv", q),
+        matchQuery("jarjestyspaikka.nimi.en", q),
+        matchQuery("toteutus.tarjoajat.nimi.fi", q),
+        matchQuery("toteutus.tarjoajat.nimi.sv", q),
+        matchQuery("toteutus.tarjoajat.nimi.en", q)
+      ).minimumShouldMatch(1)
     )
     searchItems[HakukohdeIndexed](Some(must(hakuQuery ++ tarjoajaQuery ++ qQuery)))
       .map(_.map(_.toHakukohde(oikeusHakukohteeseenFn)))
