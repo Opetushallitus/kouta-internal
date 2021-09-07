@@ -3,7 +3,7 @@ package fi.oph.kouta.internal.util
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.util.UUID
-import fi.oph.kouta.domain.{Amk, Amm, AmmOsaamisala, AmmTutkinnonOsa, Koulutustyyppi, Maksullisuustyyppi, Yo}
+import fi.oph.kouta.domain.{Amk, Amm, AmmOsaamisala, AmmTutkinnonOsa, Koulutustyyppi, Maksullisuustyyppi, Yo, Tuva}
 import fi.oph.kouta.internal.domain._
 import fi.oph.kouta.internal.domain.enums.{Hakulomaketyyppi, Julkaisutila, Kieli, LiitteenToimitustapa}
 import fi.oph.kouta.internal.domain.indexed._
@@ -104,6 +104,7 @@ sealed trait DefaultKoutaJsonFormats {
         case Amk             => s.extract[AmmattikorkeakouluKoulutusMetadata]
         case AmmTutkinnonOsa => s.extract[AmmatillinenTutkinnonOsaKoulutusMetadata]
         case AmmOsaamisala   => s.extract[AmmatillinenOsaamisalaKoulutusMetadata]
+        case Tuva            => s.extract[TuvaKoulutusMetadata]
         case kt              => throw new UnsupportedOperationException(s"Unsupported koulutustyyppi $kt")
       }
   } { case j: KoulutusMetadata =>
@@ -124,6 +125,7 @@ sealed trait DefaultKoutaJsonFormats {
         case Amm             => s.extract[AmmatillinenKoulutusMetadataIndexed]
         case AmmTutkinnonOsa => s.extract[AmmatillinenTutkinnonOsaKoulutusMetadataIndexed]
         case AmmOsaamisala   => s.extract[AmmatillinenOsaamisalaKoulutusMetadataIndexed]
+        case Tuva            => s.extract[TuvaKoulutusMetadataIndexed]
         case kt              => throw new UnsupportedOperationException(s"Unsupported koulutustyyppi $kt")
       }
     } { case j: KoulutusMetadataIndexed =>
