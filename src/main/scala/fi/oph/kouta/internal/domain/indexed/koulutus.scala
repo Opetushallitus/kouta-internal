@@ -165,12 +165,13 @@ case class AmmattikorkeakouluKoulutusMetadataIndexed(
   )
 }
 
-case class TuvaKoulutusMetadataIndexed(tyyppi: Koulutustyyppi,
-                                kuvaus: Kielistetty,
-                                lisatiedot: Seq[LisatietoIndexed],
-                                linkkiEPerusteisiin: Kielistetty,
-                                opintojenLaajuusKoodiUri: Option[KoodiUri] = None
-                               ) extends KoulutusMetadataIndexed {
+case class TuvaKoulutusMetadataIndexed(
+    tyyppi: Koulutustyyppi,
+    kuvaus: Kielistetty,
+    lisatiedot: Seq[LisatietoIndexed],
+    linkkiEPerusteisiin: Kielistetty,
+    opintojenLaajuusKoodiUri: Option[KoodiUri] = None
+) extends KoulutusMetadataIndexed {
   override def toKoulutusMetadata: TuvaKoulutusMetadata =
     TuvaKoulutusMetadata(
       tyyppi = tyyppi,

@@ -157,20 +157,22 @@ case class AmmatillinenOsaamisalaToteutusMetadataIndexed(
   }
 }
 
-case class TuvaToteutusMetadataIndexed(tyyppi: Koulutustyyppi,
-                                kuvaus: Kielistetty,
-                                opetus: Option[OpetusIndexed],
-                                asiasanat: List[Keyword],
-                                ammattinimikkeet: List[Keyword],
-                                yhteyshenkilot: Seq[Yhteyshenkilo],
-                                hakutermi: Option[Hakutermi],
-                                hakulomaketyyppi: Option[Hakulomaketyyppi],
-                                hakulomakeLinkki: Kielistetty,
-                                lisatietoaHakeutumisesta: Kielistetty,
-                                lisatietoaValintaperusteista: Kielistetty,
-                                hakuaika: Option[Ajanjakso],
-                                aloituspaikat: Option[Int],
-                                tuvaErityisopetuksena: Boolean) extends TutkintoonJohtamatonToteutusMetadataIndexed {
+case class TuvaToteutusMetadataIndexed(
+    tyyppi: Koulutustyyppi,
+    kuvaus: Kielistetty,
+    opetus: Option[OpetusIndexed],
+    asiasanat: List[Keyword],
+    ammattinimikkeet: List[Keyword],
+    yhteyshenkilot: Seq[Yhteyshenkilo],
+    hakutermi: Option[Hakutermi],
+    hakulomaketyyppi: Option[Hakulomaketyyppi],
+    hakulomakeLinkki: Kielistetty,
+    lisatietoaHakeutumisesta: Kielistetty,
+    lisatietoaValintaperusteista: Kielistetty,
+    hakuaika: Option[Ajanjakso],
+    aloituspaikat: Option[Int],
+    tuvaErityisopetuksena: Boolean
+) extends TutkintoonJohtamatonToteutusMetadataIndexed {
   override def toToteutusMetadata: TuvaToteutusMetadata = {
     TuvaToteutusMetadata(
       tyyppi = tyyppi,
@@ -186,7 +188,7 @@ case class TuvaToteutusMetadataIndexed(tyyppi: Koulutustyyppi,
       lisatietoaValintaperusteista = lisatietoaValintaperusteista,
       hakuaika = hakuaika,
       aloituspaikat = aloituspaikat,
-      tuvaErityisopetuksena = tuvaErityisopetuksena,
+      tuvaErityisopetuksena = tuvaErityisopetuksena
     )
   }
 }

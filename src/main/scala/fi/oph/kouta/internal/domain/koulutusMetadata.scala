@@ -229,10 +229,12 @@ case class AmmattikorkeakouluKoulutusMetadata(
     |              type: string
     |              description: "Tutkinnon laajuus. Viittaa koodistoon [koodistoon](https://virkailija.testiopintopolku.fi/koodisto-ui/html/koodisto/opintojenlaajuus/1)"
     |              example: opintojenlaajuus_38#1
-    |""")
-case class TuvaKoulutusMetadata(tyyppi: Koulutustyyppi,
-                                kuvaus: Kielistetty,
-                                lisatiedot: Seq[Lisatieto],
-                                linkkiEPerusteisiin: Kielistetty,
-                                opintojenLaajuusKoodiUri: Option[String] = None
-                               ) extends KoulutusMetadata
+    |"""
+)
+case class TuvaKoulutusMetadata(
+    tyyppi: Koulutustyyppi,
+    kuvaus: Kielistetty,
+    lisatiedot: Seq[Lisatieto],
+    linkkiEPerusteisiin: Kielistetty,
+    opintojenLaajuusKoodiUri: Option[String] = None
+) extends KoulutusMetadata
