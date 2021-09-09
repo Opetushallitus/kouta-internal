@@ -186,6 +186,7 @@ sealed trait DefaultKoutaJsonFormats {
         case Yo  => s.extract[YliopistoValintaperusteMetadata]
         case Amm => s.extract[AmmatillinenValintaperusteMetadata]
         case Amk => s.extract[AmmattikorkeakouluValintaperusteMetadata]
+        case Tuva => s.extract[TuvaValintaperusteMetadata]
         case kt  => throw new UnsupportedOperationException(s"Unsupported koulutustyyppi $kt")
       }
     } { case j: ValintaperusteMetadata =>
@@ -204,6 +205,7 @@ sealed trait DefaultKoutaJsonFormats {
         case Yo  => s.extract[YliopistoValintaperusteMetadataIndexed]
         case Amm => s.extract[AmmatillinenValintaperusteMetadataIndexed]
         case Amk => s.extract[AmmattikorkeakouluValintaperusteMetadataIndexed]
+        case Tuva => s.extract[TuvaValintaperusteMetadataIndexed]
         case kt  => throw new UnsupportedOperationException(s"Unsupported koulutustyyppi $kt")
       }
     } { case j: ValintaperusteMetadata =>

@@ -1,6 +1,6 @@
 package fi.oph.kouta.internal.domain
 
-import fi.oph.kouta.domain.{Koulutustyyppi, Amm, Amk, Yo}
+import fi.oph.kouta.domain.{Koulutustyyppi, Amm, Amk, Yo, Tuva}
 import fi.oph.kouta.internal.swagger.SwaggerModel
 
 @SwaggerModel("""    ValintaperusteMetadata:
@@ -71,6 +71,29 @@ case class AmmatillinenValintaperusteMetadata(
     koulutustyyppi: Koulutustyyppi = Amm,
     valintatavat: Seq[AmmatillinenValintatapa],
     kielitaitovaatimukset: Seq[ValintaperusteKielitaitovaatimus]
+) extends ValintaperusteMetadata
+
+@SwaggerModel("""    TuvaValintaperusteMetadata:
+                |      type: object
+                |      allOf:
+                |        - $ref: '#/components/schemas/ValintaperusteMetadata'
+                |      properties:
+                |        valintatavat:
+                |          type: array
+                |          description: Lista valintaperustekuvauksen valintatavoista
+                |          items:
+                |            $ref: '#/components/schemas/AmmatillinenValintatapa'
+                |        koulutustyyppi:
+                |          type: string
+                |          description: Valintaperustekuvauksen metatiedon tyyppi
+                |          example: tuva
+                |          enum:
+                |            - tuva
+                |""")
+case class TuvaValintaperusteMetadata(
+  koulutustyyppi: Koulutustyyppi = Tuva,
+  valintatavat: Seq[AmmatillinenValintatapa],
+  kielitaitovaatimukset: Seq[ValintaperusteKielitaitovaatimus]
 ) extends ValintaperusteMetadata
 
 @SwaggerModel("""    YliopistoValintaperusteMetadata:
