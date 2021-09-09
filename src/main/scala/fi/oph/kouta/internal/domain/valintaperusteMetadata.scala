@@ -91,9 +91,9 @@ case class AmmatillinenValintaperusteMetadata(
                 |            - tuva
                 |""")
 case class TuvaValintaperusteMetadata(
-  koulutustyyppi: Koulutustyyppi = Tuva,
-  valintatavat: Seq[AmmatillinenValintatapa],
-  kielitaitovaatimukset: Seq[ValintaperusteKielitaitovaatimus]
+    koulutustyyppi: Koulutustyyppi = Tuva,
+    valintatavat: Seq[AmmatillinenValintatapa],
+    kielitaitovaatimukset: Seq[ValintaperusteKielitaitovaatimus]
 ) extends ValintaperusteMetadata
 
 @SwaggerModel("""    YliopistoValintaperusteMetadata:

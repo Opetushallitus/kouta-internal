@@ -183,11 +183,11 @@ sealed trait DefaultKoutaJsonFormats {
       Try(s \ "tyyppi").toOption.collect { case JString(tyyppi) =>
         Koulutustyyppi.withName(tyyppi)
       }.getOrElse(Amm) match {
-        case Yo  => s.extract[YliopistoValintaperusteMetadata]
-        case Amm => s.extract[AmmatillinenValintaperusteMetadata]
-        case Amk => s.extract[AmmattikorkeakouluValintaperusteMetadata]
+        case Yo   => s.extract[YliopistoValintaperusteMetadata]
+        case Amm  => s.extract[AmmatillinenValintaperusteMetadata]
+        case Amk  => s.extract[AmmattikorkeakouluValintaperusteMetadata]
         case Tuva => s.extract[TuvaValintaperusteMetadata]
-        case kt  => throw new UnsupportedOperationException(s"Unsupported koulutustyyppi $kt")
+        case kt   => throw new UnsupportedOperationException(s"Unsupported koulutustyyppi $kt")
       }
     } { case j: ValintaperusteMetadata =>
       implicit def formats: Formats = genericKoutaFormats + valintatapaSisaltoSerializer
@@ -202,11 +202,11 @@ sealed trait DefaultKoutaJsonFormats {
       Try(s \ "tyyppi").toOption.collect { case JString(tyyppi) =>
         Koulutustyyppi.withName(tyyppi)
       }.getOrElse(Amm) match {
-        case Yo  => s.extract[YliopistoValintaperusteMetadataIndexed]
-        case Amm => s.extract[AmmatillinenValintaperusteMetadataIndexed]
-        case Amk => s.extract[AmmattikorkeakouluValintaperusteMetadataIndexed]
+        case Yo   => s.extract[YliopistoValintaperusteMetadataIndexed]
+        case Amm  => s.extract[AmmatillinenValintaperusteMetadataIndexed]
+        case Amk  => s.extract[AmmattikorkeakouluValintaperusteMetadataIndexed]
         case Tuva => s.extract[TuvaValintaperusteMetadataIndexed]
-        case kt  => throw new UnsupportedOperationException(s"Unsupported koulutustyyppi $kt")
+        case kt   => throw new UnsupportedOperationException(s"Unsupported koulutustyyppi $kt")
       }
     } { case j: ValintaperusteMetadata =>
       implicit def formats: Formats = genericKoutaFormats + valintatapaSisaltoSerializer
