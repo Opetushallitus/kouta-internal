@@ -180,7 +180,7 @@ sealed trait DefaultKoutaJsonFormats {
     serializer[ValintaperusteMetadata] { case s: JObject =>
       implicit def formats: Formats = genericKoutaFormats + valintatapaSisaltoSerializer
 
-      Try(s \ "koulutustyyppi").toOption.collect { case JString(tyyppi) =>
+      Try(s \ "tyyppi").toOption.collect { case JString(tyyppi) =>
         Koulutustyyppi.withName(tyyppi)
       }.getOrElse(Amm) match {
         case Yo  => s.extract[YliopistoValintaperusteMetadata]
@@ -198,7 +198,7 @@ sealed trait DefaultKoutaJsonFormats {
     serializer[ValintaperusteMetadataIndexed] { case s: JObject =>
       implicit def formats: Formats = genericKoutaFormats + valintatapaSisaltoSerializer
 
-      Try(s \ "koulutustyyppi").toOption.collect { case JString(tyyppi) =>
+      Try(s \ "tyyppi").toOption.collect { case JString(tyyppi) =>
         Koulutustyyppi.withName(tyyppi)
       }.getOrElse(Amm) match {
         case Yo  => s.extract[YliopistoValintaperusteMetadataIndexed]
