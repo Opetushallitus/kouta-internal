@@ -263,5 +263,6 @@ case class Hakukohde(
     organisaatioNimi: Kielistetty,
     kielivalinta: Seq[Kieli],
     modified: Option[LocalDateTime],
-    oikeusHakukohteeseen: Option[Boolean]
+    oikeusHakukohteeseen: Option[Boolean],
+    externalId: Option[String]
 ) extends PerustiedotWithOid
