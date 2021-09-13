@@ -260,6 +260,7 @@ case class Hakukohde(
     @deprecated tarjoajat: Set[OrganisaatioOid],
     tarjoaja: Option[OrganisaatioOid],
     organisaatioOid: OrganisaatioOid,
+    organisaatioNimi: Kielistetty,
     kielivalinta: Seq[Kieli],
     modified: Option[LocalDateTime],
     oikeusHakukohteeseen: Option[Boolean]

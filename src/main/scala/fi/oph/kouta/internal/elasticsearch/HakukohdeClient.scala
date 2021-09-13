@@ -4,7 +4,8 @@ import com.sksamuel.elastic4s.http.ElasticClient
 import com.sksamuel.elastic4s.http.ElasticDsl._
 import com.sksamuel.elastic4s.json4s.ElasticJson4s.Implicits._
 import com.sksamuel.elastic4s.searches.queries.BoolQuery
-import fi.oph.kouta.internal.domain.Hakukohde
+import fi.oph.kouta.internal.domain.enums.Kieli.Fi
+import fi.oph.kouta.internal.domain.{Hakukohde, Kielistetty}
 import fi.oph.kouta.internal.domain.indexed.HakukohdeIndexed
 import fi.oph.kouta.internal.domain.oid.{HakuOid, HakukohdeOid, OrganisaatioOid}
 import fi.oph.kouta.internal.util.KoutaJsonFormats
@@ -37,21 +38,26 @@ class HakukohdeClient(val index: String, val client: ElasticClient)
         )
       )
     )
-    val qQuery = q.map(q =>
+    val qQuery = q.map(q => {
+      val wildcardQ = "*" + q + "*"
       should(
-        termsQuery("nimi.fi.keyword", q),
-        termsQuery("nimi.sv.keyword", q),
-        termsQuery("nimi.en.keyword", q),
-        termsQuery("jarjestyspaikka.nimi.fi.keyword", q),
-        termsQuery("jarjestyspaikka.nimi.sv.keyword", q),
-        termsQuery("jarjestyspaikka.nimi.en.keyword", q),
-        termsQuery("toteutus.tarjoajat.nimi.fi.keyword", q),
-        termsQuery("toteutus.tarjoajat.nimi.sv.keyword", q),
-        termsQuery("toteutus.tarjoajat.nimi.en.keyword", q)
-      )
-    )
+        wildcardQuery("nimi.fi", wildcardQ),
+        wildcardQuery("nimi.sv", wildcardQ),
+        wildcardQuery("nimi.en", wildcardQ),
+        wildcardQuery("jarjestyspaikka.nimi.fi", wildcardQ),
+        wildcardQuery("jarjestyspaikka.nimi.sv", wildcardQ),
+        wildcardQuery("jarjestyspaikka.nimi.en", wildcardQ),
+        wildcardQuery("toteutus.tarjoajat.nimi.fi", wildcardQ),
+        wildcardQuery("toteutus.tarjoajat.nimi.sv", wildcardQ),
+        wildcardQuery("toteutus.tarjoajat.nimi.en", wildcardQ)
+      ).minimumShouldMatch(1)
+    })
+    //
+    implicit val userOrdering: Ordering[Kielistetty] = Ordering.by(_.get(Fi))
+
     searchItems[HakukohdeIndexed](Some(must(hakuQuery ++ tarjoajaQuery ++ qQuery)))
       .map(_.map(_.toHakukohde(oikeusHakukohteeseenFn)))
+      .map(res => res.sortBy(hk => hk.organisaatioNimi))
   }
 
   def findByOids(
