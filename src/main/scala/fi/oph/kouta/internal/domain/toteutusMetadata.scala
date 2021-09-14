@@ -243,3 +243,20 @@ case class AmmattikorkeakouluToteutusMetadata(
     alemmanKorkeakoulututkinnonOsaamisalat: Seq[KorkeakouluOsaamisala],
     ylemmanKorkeakoulututkinnonOsaamisalat: Seq[KorkeakouluOsaamisala]
 ) extends KorkeakoulutusToteutusMetadata
+
+case class TuvaToteutusMetadata(
+    tyyppi: Koulutustyyppi,
+    kuvaus: Kielistetty,
+    opetus: Option[Opetus],
+    asiasanat: List[Keyword],
+    ammattinimikkeet: List[Keyword],
+    yhteyshenkilot: Seq[Yhteyshenkilo],
+    hakutermi: Option[Hakutermi],
+    hakulomaketyyppi: Option[Hakulomaketyyppi],
+    hakulomakeLinkki: Kielistetty,
+    lisatietoaHakeutumisesta: Kielistetty,
+    lisatietoaValintaperusteista: Kielistetty,
+    hakuaika: Option[Ajanjakso],
+    aloituspaikat: Option[Int],
+    tuvaErityisopetuksena: Boolean
+) extends TutkintoonJohtamatonToteutusMetadata
