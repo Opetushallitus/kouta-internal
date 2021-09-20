@@ -49,6 +49,9 @@ import fi.oph.kouta.internal.swagger.SwaggerModel
     |            - $ref: '#/components/schemas/YliopistoToteutusMetadata'
     |            - $ref: '#/components/schemas/AmmatillinenToteutusMetadata'
     |            - $ref: '#/components/schemas/AmmattikorkeaToteutusMetadata'
+    |            - $ref: '#/components/schemas/TuvaToteutusMetadata'
+    |            - $ref: '#/components/schemas/VapaaSivistystyoOpistovuosiToteutusMetadata'
+    |            - $ref: '#/components/schemas/VapaasivistystyoMuuToteutusMetadata'
     |          example:
     |            tyyppi: amm
     |            kuvaus:

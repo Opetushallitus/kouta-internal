@@ -181,3 +181,20 @@ case class TuvaKoulutusMetadataIndexed(
       opintojenLaajuusKoodiUri = opintojenLaajuusKoodiUri.map(_.koodiUri)
     )
 }
+
+case class VapaaSivistystyoKoulutusMetadataIndexed(
+    tyyppi: Koulutustyyppi,
+    kuvaus: Kielistetty,
+    lisatiedot: Seq[LisatietoIndexed],
+    linkkiEPerusteisiin: Kielistetty,
+    opintojenLaajuusKoodiUri: Option[KoodiUri] = None
+) extends KoulutusMetadataIndexed {
+  override def toKoulutusMetadata: VapaaSivistystyoKoulutusMetadata =
+    VapaaSivistystyoKoulutusMetadata(
+      tyyppi = tyyppi,
+      kuvaus = kuvaus,
+      lisatiedot = lisatiedot.map(_.toLisatieto),
+      linkkiEPerusteisiin = linkkiEPerusteisiin,
+      opintojenLaajuusKoodiUri = opintojenLaajuusKoodiUri.map(_.koodiUri)
+    )
+}

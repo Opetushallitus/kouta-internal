@@ -3,7 +3,18 @@ package fi.oph.kouta.internal.util
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.util.UUID
-import fi.oph.kouta.domain.{Amk, Amm, AmmOsaamisala, AmmTutkinnonOsa, Koulutustyyppi, Maksullisuustyyppi, Yo, Tuva}
+import fi.oph.kouta.domain.{
+  Amk,
+  Amm,
+  AmmOsaamisala,
+  AmmTutkinnonOsa,
+  Koulutustyyppi,
+  Maksullisuustyyppi,
+  Tuva,
+  VapaaSivistystyoMuu,
+  VapaaSivistystyoOpistovuosi,
+  Yo
+}
 import fi.oph.kouta.internal.domain._
 import fi.oph.kouta.internal.domain.enums.{Hakulomaketyyppi, Julkaisutila, Kieli, LiitteenToimitustapa}
 import fi.oph.kouta.internal.domain.indexed._
@@ -99,13 +110,15 @@ sealed trait DefaultKoutaJsonFormats {
       Try(s \ "tyyppi").toOption.collect { case JString(tyyppi) =>
         Koulutustyyppi.withName(tyyppi)
       }.getOrElse(Amm) match {
-        case Yo              => s.extract[YliopistoKoulutusMetadata]
-        case Amm             => s.extract[AmmatillinenKoulutusMetadata]
-        case Amk             => s.extract[AmmattikorkeakouluKoulutusMetadata]
-        case AmmTutkinnonOsa => s.extract[AmmatillinenTutkinnonOsaKoulutusMetadata]
-        case AmmOsaamisala   => s.extract[AmmatillinenOsaamisalaKoulutusMetadata]
-        case Tuva            => s.extract[TuvaKoulutusMetadata]
-        case kt              => throw new UnsupportedOperationException(s"Unsupported koulutustyyppi $kt")
+        case Yo                          => s.extract[YliopistoKoulutusMetadata]
+        case Amm                         => s.extract[AmmatillinenKoulutusMetadata]
+        case Amk                         => s.extract[AmmattikorkeakouluKoulutusMetadata]
+        case AmmTutkinnonOsa             => s.extract[AmmatillinenTutkinnonOsaKoulutusMetadata]
+        case AmmOsaamisala               => s.extract[AmmatillinenOsaamisalaKoulutusMetadata]
+        case Tuva                        => s.extract[TuvaKoulutusMetadata]
+        case VapaaSivistystyoOpistovuosi => s.extract[VapaaSivistystyoKoulutusMetadata]
+        case VapaaSivistystyoMuu         => s.extract[VapaaSivistystyoKoulutusMetadata]
+        case kt                          => throw new UnsupportedOperationException(s"Unsupported koulutustyyppi $kt")
       }
   } { case j: KoulutusMetadata =>
     implicit def formats: Formats = genericKoutaFormats
@@ -120,13 +133,15 @@ sealed trait DefaultKoutaJsonFormats {
       Try(s \ "tyyppi").toOption.collect { case JString(tyyppi) =>
         Koulutustyyppi.withName(tyyppi)
       }.getOrElse(Amm) match {
-        case Yo              => s.extract[YliopistoKoulutusMetadataIndexed]
-        case Amk             => s.extract[AmmattikorkeakouluKoulutusMetadataIndexed]
-        case Amm             => s.extract[AmmatillinenKoulutusMetadataIndexed]
-        case AmmTutkinnonOsa => s.extract[AmmatillinenTutkinnonOsaKoulutusMetadataIndexed]
-        case AmmOsaamisala   => s.extract[AmmatillinenOsaamisalaKoulutusMetadataIndexed]
-        case Tuva            => s.extract[TuvaKoulutusMetadataIndexed]
-        case kt              => throw new UnsupportedOperationException(s"Unsupported koulutustyyppi $kt")
+        case Yo                          => s.extract[YliopistoKoulutusMetadataIndexed]
+        case Amk                         => s.extract[AmmattikorkeakouluKoulutusMetadataIndexed]
+        case Amm                         => s.extract[AmmatillinenKoulutusMetadataIndexed]
+        case AmmTutkinnonOsa             => s.extract[AmmatillinenTutkinnonOsaKoulutusMetadataIndexed]
+        case AmmOsaamisala               => s.extract[AmmatillinenOsaamisalaKoulutusMetadataIndexed]
+        case Tuva                        => s.extract[TuvaKoulutusMetadataIndexed]
+        case VapaaSivistystyoOpistovuosi => s.extract[VapaaSivistystyoKoulutusMetadataIndexed]
+        case VapaaSivistystyoMuu         => s.extract[VapaaSivistystyoKoulutusMetadataIndexed]
+        case kt                          => throw new UnsupportedOperationException(s"Unsupported koulutustyyppi $kt")
       }
     } { case j: KoulutusMetadataIndexed =>
       implicit def formats: Formats = genericKoutaFormats
@@ -141,13 +156,15 @@ sealed trait DefaultKoutaJsonFormats {
       Try(s \ "tyyppi").toOption.collect { case JString(tyyppi) =>
         Koulutustyyppi.withName(tyyppi)
       }.getOrElse(Amm) match {
-        case Yo              => s.extract[YliopistoToteutusMetadata]
-        case Amm             => s.extract[AmmatillinenToteutusMetadata]
-        case Amk             => s.extract[AmmattikorkeakouluToteutusMetadata]
-        case AmmTutkinnonOsa => s.extract[AmmatillinenTutkinnonOsaToteutusMetadata]
-        case AmmOsaamisala   => s.extract[AmmatillinenOsaamisalaToteutusMetadata]
-        case Tuva            => s.extract[TuvaToteutusMetadata]
-        case kt              => throw new UnsupportedOperationException(s"Unsupported koulutustyyppi $kt")
+        case Yo                          => s.extract[YliopistoToteutusMetadata]
+        case Amm                         => s.extract[AmmatillinenToteutusMetadata]
+        case Amk                         => s.extract[AmmattikorkeakouluToteutusMetadata]
+        case AmmTutkinnonOsa             => s.extract[AmmatillinenTutkinnonOsaToteutusMetadata]
+        case AmmOsaamisala               => s.extract[AmmatillinenOsaamisalaToteutusMetadata]
+        case Tuva                        => s.extract[TuvaToteutusMetadata]
+        case VapaaSivistystyoOpistovuosi => s.extract[VapaaSivistystyoOpistovuosiToteutusMetadata]
+        case VapaaSivistystyoMuu         => s.extract[VapaaSivistystyoMuuToteutusMetadata]
+        case kt                          => throw new UnsupportedOperationException(s"Unsupported koulutustyyppi $kt")
       }
   } { case j: ToteutusMetadata =>
     implicit def formats: Formats = genericKoutaFormats
@@ -162,13 +179,15 @@ sealed trait DefaultKoutaJsonFormats {
       Try(s \ "tyyppi").toOption.collect { case JString(tyyppi) =>
         Koulutustyyppi.withName(tyyppi)
       }.getOrElse(Amm) match {
-        case Yo              => s.extract[YliopistoToteutusMetadataIndexed]
-        case Amk             => s.extract[AmmattikorkeakouluToteutusMetadataIndexed]
-        case Amm             => s.extract[AmmatillinenToteutusMetadataIndexed]
-        case AmmTutkinnonOsa => s.extract[AmmatillinenTutkinnonOsaToteutusMetadataIndexed]
-        case AmmOsaamisala   => s.extract[AmmatillinenOsaamisalaToteutusMetadataIndexed]
-        case Tuva            => s.extract[TuvaToteutusMetadataIndexed]
-        case kt              => throw new UnsupportedOperationException(s"Unsupported toteutustyyppi $kt")
+        case Yo                          => s.extract[YliopistoToteutusMetadataIndexed]
+        case Amk                         => s.extract[AmmattikorkeakouluToteutusMetadataIndexed]
+        case Amm                         => s.extract[AmmatillinenToteutusMetadataIndexed]
+        case AmmTutkinnonOsa             => s.extract[AmmatillinenTutkinnonOsaToteutusMetadataIndexed]
+        case AmmOsaamisala               => s.extract[AmmatillinenOsaamisalaToteutusMetadataIndexed]
+        case Tuva                        => s.extract[TuvaToteutusMetadataIndexed]
+        case VapaaSivistystyoOpistovuosi => s.extract[VapaaSivistystyoOpistovuosiToteutusMetadataIndexed]
+        case VapaaSivistystyoMuu         => s.extract[VapaaSivistystyoMuuToteutusMetadataIndexed]
+        case kt                          => throw new UnsupportedOperationException(s"Unsupported toteutustyyppi $kt")
       }
     } { case j: ToteutusMetadataIndexed =>
       implicit def formats: Formats = genericKoutaFormats
@@ -183,11 +202,13 @@ sealed trait DefaultKoutaJsonFormats {
       Try(s \ "tyyppi").toOption.collect { case JString(tyyppi) =>
         Koulutustyyppi.withName(tyyppi)
       }.getOrElse(Amm) match {
-        case Yo   => s.extract[YliopistoValintaperusteMetadata]
-        case Amm  => s.extract[AmmatillinenValintaperusteMetadata]
-        case Amk  => s.extract[AmmattikorkeakouluValintaperusteMetadata]
-        case Tuva => s.extract[TuvaValintaperusteMetadata]
-        case kt   => throw new UnsupportedOperationException(s"Unsupported koulutustyyppi $kt")
+        case Yo                          => s.extract[YliopistoValintaperusteMetadata]
+        case Amm                         => s.extract[AmmatillinenValintaperusteMetadata]
+        case Amk                         => s.extract[AmmattikorkeakouluValintaperusteMetadata]
+        case Tuva                        => s.extract[TuvaValintaperusteMetadata]
+        case VapaaSivistystyoOpistovuosi => s.extract[VapaaSivistystyoValintaperusteMetadata]
+        case VapaaSivistystyoMuu         => s.extract[VapaaSivistystyoValintaperusteMetadata]
+        case kt                          => throw new UnsupportedOperationException(s"Unsupported koulutustyyppi $kt")
       }
     } { case j: ValintaperusteMetadata =>
       implicit def formats: Formats = genericKoutaFormats + valintatapaSisaltoSerializer
@@ -202,11 +223,13 @@ sealed trait DefaultKoutaJsonFormats {
       Try(s \ "tyyppi").toOption.collect { case JString(tyyppi) =>
         Koulutustyyppi.withName(tyyppi)
       }.getOrElse(Amm) match {
-        case Yo   => s.extract[YliopistoValintaperusteMetadataIndexed]
-        case Amm  => s.extract[AmmatillinenValintaperusteMetadataIndexed]
-        case Amk  => s.extract[AmmattikorkeakouluValintaperusteMetadataIndexed]
-        case Tuva => s.extract[TuvaValintaperusteMetadataIndexed]
-        case kt   => throw new UnsupportedOperationException(s"Unsupported koulutustyyppi $kt")
+        case Yo                          => s.extract[YliopistoValintaperusteMetadataIndexed]
+        case Amm                         => s.extract[AmmatillinenValintaperusteMetadataIndexed]
+        case Amk                         => s.extract[AmmattikorkeakouluValintaperusteMetadataIndexed]
+        case Tuva                        => s.extract[TuvaValintaperusteMetadataIndexed]
+        case VapaaSivistystyoOpistovuosi => s.extract[VapaaSivistystyoValintaperusteMetadataIndexed]
+        case VapaaSivistystyoMuu         => s.extract[VapaaSivistystyoValintaperusteMetadataIndexed]
+        case kt                          => throw new UnsupportedOperationException(s"Unsupported koulutustyyppi $kt")
       }
     } { case j: ValintaperusteMetadata =>
       implicit def formats: Formats = genericKoutaFormats + valintatapaSisaltoSerializer
