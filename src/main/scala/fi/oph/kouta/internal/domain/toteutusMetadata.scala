@@ -1,6 +1,6 @@
 package fi.oph.kouta.internal.domain
 
-import fi.oph.kouta.domain.{Hakutermi, Koulutustyyppi}
+import fi.oph.kouta.domain._
 import fi.oph.kouta.internal.domain.enums.Hakulomaketyyppi
 import fi.oph.kouta.internal.swagger.SwaggerModel
 
@@ -244,8 +244,23 @@ case class AmmattikorkeakouluToteutusMetadata(
     ylemmanKorkeakoulututkinnonOsaamisalat: Seq[KorkeakouluOsaamisala]
 ) extends KorkeakoulutusToteutusMetadata
 
+@SwaggerModel("""    TuvaToteutusMetadata:
+    |      allOf:
+    |        - $ref: '#/components/schemas/TutkintoonJohtamatonToteutusMetadata'
+    |        - type: object
+    |          properties:
+    |            koulutustyyppi:
+    |              type: string
+    |              description: Koulutuksen metatiedon tyyppi
+    |              example: tuva
+    |              enum:
+    |                - tuva
+    |            tuvaErityisopetuksena:
+    |              type: boolean
+    |              description: Tieto siitä järjestetäänkö toteutus erityisopetuksena
+    |""")
 case class TuvaToteutusMetadata(
-    tyyppi: Koulutustyyppi,
+    tyyppi: Koulutustyyppi = Tuva,
     kuvaus: Kielistetty,
     opetus: Option[Opetus],
     asiasanat: List[Keyword],
@@ -263,18 +278,18 @@ case class TuvaToteutusMetadata(
 
 @SwaggerModel("""    VapaaSivistystyoOpistovuosiToteutusMetadata:
     |      allOf:
-    |        - $ref: '#/components/schemas/KorkeakouluToteutusMetadata'
+    |        - $ref: '#/components/schemas/ToteutusMetadata'
     |        - type: object
     |          properties:
     |            koulutustyyppi:
     |              type: string
     |              description: Koulutuksen metatiedon tyyppi
-    |              example: amk
+    |              example: vapaa-sivistystyo-opistovuosi
     |              enum:
-    |                - amk
+    |                - vapaa-sivistystyo-opistovuosi
     |""")
 case class VapaaSivistystyoOpistovuosiToteutusMetadata(
-    tyyppi: Koulutustyyppi,
+    tyyppi: Koulutustyyppi = VapaaSivistystyoOpistovuosi,
     kuvaus: Kielistetty,
     opetus: Option[Opetus],
     asiasanat: List[Keyword],
@@ -284,18 +299,18 @@ case class VapaaSivistystyoOpistovuosiToteutusMetadata(
 
 @SwaggerModel("""    VapaaSivistystyoMuuToteutusMetadata:
     |      allOf:
-    |        - $ref: '#/components/schemas/KorkeakouluToteutusMetadata'
+    |        - $ref: '#/components/schemas/TutkintoonJohtamatonToteutusMetadata'
     |        - type: object
     |          properties:
     |            koulutustyyppi:
     |              type: string
     |              description: Koulutuksen metatiedon tyyppi
-    |              example: amk
+    |              example: vapaa-sivistystyo-muu
     |              enum:
-    |                - amk
+    |                - vapaa-sivistystyo-muu
     |""")
 case class VapaaSivistystyoMuuToteutusMetadata(
-    tyyppi: Koulutustyyppi,
+    tyyppi: Koulutustyyppi = VapaaSivistystyoMuu,
     kuvaus: Kielistetty,
     opetus: Option[Opetus],
     asiasanat: List[Keyword],
