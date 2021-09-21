@@ -126,6 +126,9 @@ import fi.oph.kouta.internal.swagger.SwaggerModel
     |           format: date-time
     |           description: Valintaperustekuvauksen viimeisin muokkausaika. Järjestelmän generoima
     |           example: 2019-08-23T09:55
+    |        externalId:
+    |           type: string
+    |           description: Ulkoinen tunniste (esim. oppilaitoksen järjestelmän yksilöivä tunniste)
     |"""
 )
 case class Valintaperuste(
@@ -142,5 +145,6 @@ case class Valintaperuste(
     organisaatioOid: OrganisaatioOid,
     muokkaaja: UserOid,
     kielivalinta: Seq[Kieli],
-    modified: Option[LocalDateTime]
+    modified: Option[LocalDateTime],
+    externalId: Option[String]
 ) extends PerustiedotWithId

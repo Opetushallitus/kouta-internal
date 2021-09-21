@@ -18,7 +18,8 @@ case class ToteutusIndexed(
     muokkaaja: Muokkaaja,
     organisaatio: Option[Organisaatio],
     kielivalinta: Seq[Kieli],
-    modified: Option[LocalDateTime]
+    modified: Option[LocalDateTime],
+    externalId: Option[String]
 ) extends WithTila
     with Logging {
   def toToteutus: Toteutus = {
@@ -33,7 +34,8 @@ case class ToteutusIndexed(
         muokkaaja = muokkaaja.oid,
         organisaatioOid = organisaatio.get.oid,
         kielivalinta = kielivalinta,
-        modified = modified
+        modified = modified,
+        externalId = externalId
       )
     } catch {
       case e: Exception =>
