@@ -80,6 +80,16 @@ case class TuvaValintaperusteMetadataIndexed(
   )
 }
 
+case class VapaaSivistystyoValintaperusteMetadataIndexed(
+    koulutustyyppi: Koulutustyyppi,
+    valintatavat: Seq[AmmatillinenValintatapaIndexed]
+) extends ValintaperusteMetadataIndexed {
+  override def toValintaperusteMetadata: ValintaperusteMetadata = VapaaSivistystyoValintaperusteMetadata(
+    koulutustyyppi = koulutustyyppi,
+    valintatavat = valintatavat.map(_.toAmmatillinenValintatapa)
+  )
+}
+
 sealed trait KorkeakoulutusValintaperusteMetadataIndexed extends ValintaperusteMetadataIndexed {
   def valintatavat: Seq[KorkeakoulutusValintatapaIndexed]
   def kuvaus: Kielistetty

@@ -32,6 +32,9 @@ import fi.oph.kouta.internal.swagger.SwaggerModel
     |            - yo
     |            - amk
     |            - lk
+    |            - tuva
+    |            - vapaa-sivistystyo-opistovuosi
+    |            - vapaa-sivistystyo-muu
     |            - muu
     |          example: amm
     |        hakutapaKoodiUri:

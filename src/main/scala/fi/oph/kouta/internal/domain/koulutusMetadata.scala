@@ -238,3 +238,26 @@ case class TuvaKoulutusMetadata(
     linkkiEPerusteisiin: Kielistetty,
     opintojenLaajuusKoodiUri: Option[String] = None
 ) extends KoulutusMetadata
+
+@SwaggerModel(
+  """    VapaaSivistystyoKoulutusMetadata:
+    |      allOf:
+    |        - $ref: '#/components/schemas/KoulutusMetadata'
+    |        - type: object
+    |          properties:
+    |            linkkiEPerusteisiin:
+    |              type: object
+    |              description: Linkit koulutuksen käyttämiin ePerusteisiin, eri kielisiin versioihin. Kielet on määritetty koulutuksen kielivalinnassa.
+    |            opintojenLaajuusKoodiUri:
+    |              type: string
+    |              description: "Tutkinnon laajuus. Viittaa koodistoon [koodistoon](https://virkailija.testiopintopolku.fi/koodisto-ui/html/koodisto/opintojenlaajuus/1)"
+    |              example: opintojenlaajuus_38#1
+    |"""
+)
+case class VapaaSivistystyoKoulutusMetadata(
+    tyyppi: Koulutustyyppi,
+    kuvaus: Kielistetty,
+    lisatiedot: Seq[Lisatieto],
+    linkkiEPerusteisiin: Kielistetty,
+    opintojenLaajuusKoodiUri: Option[String] = None
+) extends KoulutusMetadata
