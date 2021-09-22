@@ -9,6 +9,7 @@ import fi.oph.kouta.domain.{
   AmmOsaamisala,
   AmmTutkinnonOsa,
   Koulutustyyppi,
+  Lk,
   Maksullisuustyyppi,
   Tuva,
   VapaaSivistystyoMuu,
