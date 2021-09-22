@@ -94,9 +94,10 @@ class SessionDAO(db: KoutaDatabase) extends SQLHelpers {
         if (t._3.before(new Timestamp(System.currentTimeMillis() - (1000 * 60 * 5)))) {
           logger.info(s"HOTFIX Updating session with id $id as last update was over 5 minutes ago")
           updateLastRead(id).andThen(DBIO.successful(Some(t)))
-        } else
+        } else {
           logger.info(s"HOTFIX No need to update session with id $id")
-        DBIO.successful(Some(t))
+          DBIO.successful(Some(t))
+        }
     }
 
   private def getSessionQuery(id: UUID) =
