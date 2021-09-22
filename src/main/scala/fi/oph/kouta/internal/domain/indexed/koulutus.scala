@@ -1,12 +1,13 @@
 package fi.oph.kouta.internal.domain.indexed
 
-import fi.oph.kouta.domain.Koulutustyyppi
+import fi.oph.kouta.domain.{Koulutustyyppi, Lk}
 import fi.oph.kouta.internal.domain._
 import fi.oph.kouta.internal.domain.enums.{Julkaisutila, Kieli}
 import fi.oph.kouta.internal.domain.oid._
 import fi.vm.sade.utils.slf4j.Logging
 
 import java.time.LocalDateTime
+import java.util.UUID
 
 case class KoulutusIndexed(
     oid: KoulutusOid,
@@ -18,7 +19,7 @@ case class KoulutusIndexed(
     nimi: Kielistetty,
     metadata: Option[KoulutusMetadataIndexed],
     julkinen: Boolean,
-    sorakuvaus: Option[SorakuvausIndexed],
+    sorakuvausId: Option[UUID],
     muokkaaja: Muokkaaja,
     organisaatio: Option[Organisaatio],
     kielivalinta: Seq[Kieli],
@@ -37,7 +38,7 @@ case class KoulutusIndexed(
         nimi = nimi,
         metadata = metadata.map(_.toKoulutusMetadata),
         julkinen = julkinen,
-        sorakuvausId = sorakuvaus.map(_.id),
+        sorakuvausId = sorakuvausId,
         muokkaaja = muokkaaja.oid,
         organisaatioOid = organisaatio.get.oid,
         kielivalinta = kielivalinta,
@@ -161,6 +162,21 @@ case class AmmattikorkeakouluKoulutusMetadataIndexed(
     tutkintonimikeKoodiUrit = tutkintonimike.map(_.koodiUri),
     opintojenLaajuusKoodiUri = opintojenLaajuus.map(_.koodiUri),
     kuvauksenNimi = kuvauksenNimi
+  )
+}
+case class LukioKoulutusMetadataIndexed(
+    tyyppi: Koulutustyyppi = Lk,
+    kuvaus: Kielistetty = Map.empty,
+    lisatiedot: Seq[LisatietoIndexed] = Seq.empty,
+    opintojenLaajuus: Option[KoodiUri],
+    koulutusala: Seq[KoodiUri]
+) extends KoulutusMetadataIndexed {
+  override def toKoulutusMetadata: LukioKoulutusMetadata = LukioKoulutusMetadata(
+    tyyppi = tyyppi,
+    kuvaus = kuvaus,
+    lisatiedot = lisatiedot.map(_.toLisatieto),
+    opintojenLaajuusKoodiUri = opintojenLaajuus.map(_.koodiUri),
+    koulutusalaKoodiUrit = koulutusala.map(_.koodiUri)
   )
 }
 

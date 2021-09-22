@@ -71,6 +71,8 @@ import fi.oph.kouta.internal.swagger.SwaggerModel
     |            - $ref: '#/components/schemas/YliopistoValintaperusteMetadata'
     |            - $ref: '#/components/schemas/AmmatillinenValintaperusteMetadata'
     |            - $ref: '#/components/schemas/AmmattikorkeakouluValintaperusteMetadata'
+    |            - $ref: '#/components/schemas/LukioValintaperusteMetadata'
+    |            - $ref: '#/components/schemas/TuvaValintaperusteMetadata'
     |          example:
     |            koulutustyyppi: amm
     |            valintatavat:

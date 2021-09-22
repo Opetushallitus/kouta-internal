@@ -1,6 +1,6 @@
 package fi.oph.kouta.internal.domain
 
-import fi.oph.kouta.domain.{Koulutustyyppi, Amm, Amk, Yo, Tuva, VapaaSivistystyoOpistovuosi, VapaaSivistystyoMuu}
+import fi.oph.kouta.domain.{Amk, Amm, Koulutustyyppi, Lk, Tuva, Yo}
 import fi.oph.kouta.internal.swagger.SwaggerModel
 
 @SwaggerModel("""    ValintaperusteMetadata:
@@ -158,3 +158,21 @@ case class AmmattikorkeakouluValintaperusteMetadata(
     valintatavat: Seq[AmmattikorkeakouluValintatapa],
     kuvaus: Kielistetty = Map()
 ) extends KorkeakoulutusValintaperusteMetadata
+
+@SwaggerModel("""    LukioValintaperusteMetadata:
+    |      type: object
+    |      allOf:
+    |        - $ref: '#/components/schemas/ValintaperusteMetadata'
+    |      properties:
+    |        tyyppi:
+    |          type: string
+    |          description: Valintaperustekuvauksen metatiedon tyyppi
+    |          example: lk
+    |          enum:
+    |            - lk
+    |""")
+case class LukioValintaperusteMetadata(
+    koulutustyyppi: Koulutustyyppi = Lk,
+    valintatavat: Seq[LukioValintatapa],
+    kuvaus: Kielistetty = Map()
+) extends ValintaperusteMetadata

@@ -83,6 +83,7 @@ import java.util.UUID
     |            - $ref: '#/components/schemas/YliopistoKoulutusMetadata'
     |            - $ref: '#/components/schemas/AmmatillinenKoulutusMetadata'
     |            - $ref: '#/components/schemas/AmmattikorkeaKoulutusMetadata'
+    |            - $ref: '#/components/schemas/LukioKoulutusMetadata'
     |            - $ref: '#/components/schemas/TuvaKoulutusMetadata'
     |            - $ref: '#/components/schemas/VapaaSivistystyoKoulutusMetadata'
     |          example:
@@ -100,7 +101,6 @@ import java.util.UUID
     |                  sv: Opintojen ruotsinkielinen lisätietokuvaus
     |        sorakuvausId:
     |          type: string
-    |          deprecated: true
     |          description: Koulutukseen liittyvän SORA-kuvauksen yksilöivä tunniste
     |          example: "ea596a9c-5940-497e-b5b7-aded3a2352a7"
     |        muokkaaja:
