@@ -26,6 +26,9 @@ import fi.oph.kouta.internal.swagger.SwaggerModel
     |            - yo
     |            - amk
     |            - lk
+    |            - tuva
+    |            - vapaa-sivistystyo-opistovuosi
+    |            - vapaa-sivistystyo-muu
     |            - muu
     |          example: amm
     |        koulutusKoodiUri:
@@ -79,6 +82,8 @@ import fi.oph.kouta.internal.swagger.SwaggerModel
     |            - $ref: '#/components/schemas/YliopistoKoulutusMetadata'
     |            - $ref: '#/components/schemas/AmmatillinenKoulutusMetadata'
     |            - $ref: '#/components/schemas/AmmattikorkeaKoulutusMetadata'
+    |            - $ref: '#/components/schemas/TuvaKoulutusMetadata'
+    |            - $ref: '#/components/schemas/VapaaSivistystyoKoulutusMetadata'
     |          example:
     |            koulutustyyppi: amm
     |            koulutusalaKoodiUrit:

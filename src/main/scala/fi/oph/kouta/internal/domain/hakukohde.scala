@@ -221,6 +221,12 @@ case class Sora(tila: String)
     |           format: date-time
     |           description: Hakukohteen viimeisin muokkausaika. Järjestelmän generoima
     |           example: 2019-08-23T09:55
+    |        oikeusHakukohteeseen:
+    |           type: boolean
+    |           description: Annetulla tarjoajalla on oikeus hakukohteeseen
+    |        jarjestaaUrheilijanAmmKoulutusta:
+    |           type: boolean
+    |           description: Järjestääkö hakukohde urheilijan ammatillista koulutusta
     |"""
 )
 case class Hakukohde(
@@ -260,7 +266,9 @@ case class Hakukohde(
     @deprecated tarjoajat: Set[OrganisaatioOid],
     tarjoaja: Option[OrganisaatioOid],
     organisaatioOid: OrganisaatioOid,
+    organisaatioNimi: Kielistetty,
     kielivalinta: Seq[Kieli],
     modified: Option[LocalDateTime],
-    oikeusHakukohteeseen: Option[Boolean]
+    oikeusHakukohteeseen: Option[Boolean],
+    jarjestaaUrheilijanAmmKoulutusta: Option[Boolean]
 ) extends PerustiedotWithOid
