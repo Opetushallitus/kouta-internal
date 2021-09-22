@@ -1,12 +1,14 @@
 package fi.oph.kouta.internal.servlet
 
 import fi.oph.kouta.internal.database.SessionDAO
-import fi.oph.kouta.internal.domain.oid.HakuOid
+import fi.oph.kouta.internal.domain.oid.{HakuOid, HakukohdeOid, KoulutusOid, ToteutusOid}
 import fi.oph.kouta.internal.security.Authenticated
 import fi.oph.kouta.internal.service.OdwService
 import fi.oph.kouta.internal.swagger.SwaggerPaths.registerPath
 import org.scalatra.{BadRequest, FutureSupport}
 
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 import scala.concurrent.ExecutionContext
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.util.Try
@@ -42,6 +44,14 @@ class OdwServlet(odwService: OdwService, val sessionDAO: SessionDAO)
       |        operationId: Listaa hakujen OIDit
       |        tags:
       |          - Odw
+      |        parameters:
+      |          - in: query
+      |            name: fromDate
+      |            schema:
+      |              type: string
+      |            required: false
+      |            description: Listaa ainoastaan ko. päivämäärän jälkeen muutetut
+      |            example: 2021-09-13
       |        responses:
       |          '200':
       |            description: Ok
@@ -56,10 +66,12 @@ class OdwServlet(odwService: OdwService, val sessionDAO: SessionDAO)
   get("/listHakuOids") {
     implicit val authenticated: Authenticated = authenticate
 
+    val modifiedDateStartFrom =
+      Try(LocalDate.parse(params("fromDate"), DateTimeFormatter.ofPattern("yyyy-MM-dd"))).toOption
     val offset = Try(params("offset").toInt).toOption
     val limit  = Try(params("limit").toInt).toOption
 
-    odwService.listAllHakuOids(offset.getOrElse(0), limit)
+    odwService.listAllHakuOids(modifiedDateStartFrom, offset.getOrElse(0), limit)
   }
 
   registerPath(
@@ -72,14 +84,12 @@ class OdwServlet(odwService: OdwService, val sessionDAO: SessionDAO)
       |        - Odw
       |      requestBody:
       |          description: Palautettavien hakujen oidit JSON-arrayna
-      |          example: ["1.2.246.562.29.00000000000000000071", "1.2.246.562.29.00000000000000001183"]
       |          content:
       |             application/json:
       |               schema:
       |                 type: array
       |                 items:
       |                   type: string
-      |                   example: ["1.2.246.562.29.00000000000000000071", "1.2.246.562.29.00000000000000001183"]
       |      responses:
       |        '200':
       |          description: Ok
@@ -95,10 +105,236 @@ class OdwServlet(odwService: OdwService, val sessionDAO: SessionDAO)
     implicit val authenticated: Authenticated = authenticate
     val hakuOids                              = parsedBody.extract[Set[HakuOid]]
 
-    if (hakuOids.exists(!_.isValid())) {
-      BadRequest(s"Invalid hakuOids ${hakuOids.find(!_.isValid()).get.toString}")
-    } else {
-      odwService.findByOids(hakuOids)
+    hakuOids match {
+      case (oids) if (oids.exists(!_.isValid())) =>
+        BadRequest(s"Invalid hakuOids ${oids.find(!_.isValid()).get.toString}")
+      case (oids) => odwService.findHautByOids(oids)
+    }
+  }
+
+  registerPath(
+    "/odw/listHakukohdeOids",
+    """    get:
+      |        summary: Listaa julkaistujen ja arkistoitujen hakukohteiden OIDit
+      |        description: Listaa kaikkien julkaistujen ja/tai arkistoitujen hakukohteiden OIDit
+      |        operationId: Listaa hakukohteiden OIDit
+      |        tags:
+      |          - Odw
+      |        parameters:
+      |          - in: query
+      |            name: fromDate
+      |            schema:
+      |              type: string
+      |            required: false
+      |            description: Listaa ainoastaan ko. päivämäärän jälkeen muutetut
+      |            example: 2021-09-13
+      |        responses:
+      |          '200':
+      |            description: Ok
+      |            content:
+      |              application/json:
+      |                schema:
+      |                  type: array
+      |                  items: string
+      |                  example: ["1.2.246.562.20.00000000000000002074", "1.2.246.562.20.00000000000000002142"]
+      |""".stripMargin
+  )
+  get("/listHakukohdeOids") {
+    implicit val authenticated: Authenticated = authenticate
+
+    val modifiedDateStartFrom =
+      Try(LocalDate.parse(params("fromDate"), DateTimeFormatter.ofPattern("yyyy-MM-dd"))).toOption
+    val offset = Try(params("offset").toInt).toOption
+    val limit  = Try(params("limit").toInt).toOption
+
+    odwService.listAllHakukohdeOids(modifiedDateStartFrom, offset.getOrElse(0), limit)
+  }
+
+  registerPath(
+    "/odw/findHakukohteetByOids",
+    """    post:
+      |      summary: Etsi hakukohteita oideilla
+      |      operationId: Etsi hakukohteita oideilla
+      |      description: Etsii hakukohteita annetuilla oideilla
+      |      tags:
+      |        - Odw
+      |      requestBody:
+      |          description: Palautettavien hakukohteiden oidit JSON-arrayna
+      |          content:
+      |             application/json:
+      |               schema:
+      |                 type: array
+      |                 items:
+      |                   type: string
+      |      responses:
+      |        '200':
+      |          description: Ok
+      |          content:
+      |            application/json:
+      |              schema:
+      |                type: array
+      |                items:
+      |                  $ref: '#/components/schemas/Hakukohde'
+      |""".stripMargin
+  )
+  post("/findHakukohteetByOids") {
+    implicit val authenticated: Authenticated = authenticate
+    val hakukohdeOids                         = parsedBody.extract[Set[HakukohdeOid]]
+
+    hakukohdeOids match {
+      case (oids) if (oids.exists(!_.isValid())) =>
+        BadRequest(s"Invalid hakukohdeOids ${oids.find(!_.isValid()).get.toString}")
+      case (oids) => odwService.findHakukohteetByOids(oids)
+    }
+  }
+
+  registerPath(
+    "/odw/listKoulutusOids",
+    """    get:
+      |        summary: Listaa julkaistujen ja arkistoitujen koulutusten OIDit
+      |        description: Listaa kaikkien julkaistujen ja/tai arkistoitujen koulutusten OIDit
+      |        operationId: Listaa koulutusten OIDit
+      |        tags:
+      |          - Odw
+      |        parameters:
+      |          - in: query
+      |            name: fromDate
+      |            schema:
+      |              type: string
+      |            required: false
+      |            description: Listaa ainoastaan ko. päivämäärän jälkeen muutetut
+      |            example: 2021-09-13
+      |        responses:
+      |          '200':
+      |            description: Ok
+      |            content:
+      |              application/json:
+      |                schema:
+      |                  type: array
+      |                  items: string
+      |                  example: ["1.2.246.562.13.00000000000000000445", "1.2.246.562.13.00000000000000000505"]
+      |""".stripMargin
+  )
+  get("/listKoulutusOids") {
+    implicit val authenticated: Authenticated = authenticate
+
+    val modifiedDateStartFrom =
+      Try(LocalDate.parse(params("fromDate"), DateTimeFormatter.ofPattern("yyyy-MM-dd"))).toOption
+    val offset = Try(params("offset").toInt).toOption
+    val limit  = Try(params("limit").toInt).toOption
+
+    odwService.listAllKoulutusOids(modifiedDateStartFrom, offset.getOrElse(0), limit)
+  }
+
+  registerPath(
+    "/odw/findKoulutuksetByOids",
+    """    post:
+      |      summary: Etsi koulutuksia oideilla
+      |      operationId: Etsi koulutuksia oideilla
+      |      description: Etsii koulutuksia annetuilla oideilla
+      |      tags:
+      |        - Odw
+      |      requestBody:
+      |          description: Palautettavien koulutusten oidit JSON-arrayna
+      |          content:
+      |             application/json:
+      |               schema:
+      |                 type: array
+      |                 items:
+      |                   type: string
+      |      responses:
+      |        '200':
+      |          description: Ok
+      |          content:
+      |            application/json:
+      |              schema:
+      |                type: array
+      |                items:
+      |                  $ref: '#/components/schemas/Koulutus'
+      |""".stripMargin
+  )
+  post("/findKoulutuksetByOids") {
+    implicit val authenticated: Authenticated = authenticate
+    val koulutusOids                          = parsedBody.extract[Set[KoulutusOid]]
+    koulutusOids match {
+      case (oids) if (oids.exists(!_.isValid())) =>
+        BadRequest(s"Invalid koulutusOids ${oids.find(!_.isValid()).get.toString}")
+      case (oids) => odwService.findKoulutuksetByOids(oids)
+    }
+  }
+
+  registerPath(
+    "/odw/listToteutusOids",
+    """    get:
+      |        summary: Listaa julkaistujen ja arkistoitujen toteutusten OIDit
+      |        description: Listaa kaikkien julkaistujen ja/tai arkistoitujen toteutusten OIDit
+      |        operationId: Listaa toteutusten OIDit
+      |        tags:
+      |          - Odw
+      |        parameters:
+      |          - in: query
+      |            name: fromDate
+      |            schema:
+      |              type: string
+      |            required: false
+      |            description: Listaa ainoastaan ko. päivämäärän jälkeen muutetut
+      |            example: 2021-09-13
+      |        responses:
+      |          '200':
+      |            description: Ok
+      |            content:
+      |              application/json:
+      |                schema:
+      |                  type: array
+      |                  items: string
+      |                  example: ["1.2.246.562.17.00000000000000000267", "1.2.246.562.17.00000000000000000772"]
+      |""".stripMargin
+  )
+  get("/listToteutusOids") {
+    implicit val authenticated: Authenticated = authenticate
+
+    val modifiedDateStartFrom =
+      Try(LocalDate.parse(params("fromDate"), DateTimeFormatter.ofPattern("yyyy-MM-dd"))).toOption
+    val offset = Try(params("offset").toInt).toOption
+    val limit  = Try(params("limit").toInt).toOption
+
+    odwService.listAllToteutusOids(modifiedDateStartFrom, offset.getOrElse(0), limit)
+  }
+
+  registerPath(
+    "/odw/findToteutuksetByOids",
+    """    post:
+      |      summary: Etsi toteutuksia oideilla
+      |      operationId: Etsi toteutuksia oideilla
+      |      description: Etsii toteutuksia annetuilla oideilla
+      |      tags:
+      |        - Odw
+      |      requestBody:
+      |          description: Palautettavien toteutusten oidit JSON-arrayna
+      |          content:
+      |             application/json:
+      |               schema:
+      |                 type: array
+      |                 items:
+      |                   type: string
+      |      responses:
+      |        '200':
+      |          description: Ok
+      |          content:
+      |            application/json:
+      |              schema:
+      |                type: array
+      |                items:
+      |                  $ref: '#/components/schemas/Toteutus'
+      |""".stripMargin
+  )
+  post("/findToteutuksetByOids") {
+    implicit val authenticated: Authenticated = authenticate
+    val toteutusOids                          = parsedBody.extract[Set[ToteutusOid]]
+    toteutusOids match {
+      case (oids) if (oids.exists(!_.isValid())) =>
+        BadRequest(s"Invalid toteutusOids ${oids.find(!_.isValid()).get.toString}")
+      case (oids) => odwService.findToteutuksetByOids(oids)
     }
   }
 }
