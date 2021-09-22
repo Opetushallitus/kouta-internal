@@ -1,5 +1,6 @@
 package fi.oph.kouta.internal.database
 
+import java.sql.Timestamp
 import java.util.UUID
 import java.util.concurrent.TimeUnit
 
@@ -61,7 +62,7 @@ class SessionDAO(db: KoutaDatabase) extends SQLHelpers {
       s"Fetching session: ${id.toString}"
     ) match {
       case Right(result) => {
-        result.map { case (casTicket, personOid) =>
+        result.map { case (casTicket, personOid, _) =>
           val authorities = db.runBlocking(searchAuthoritiesBySession(id), Duration(2, TimeUnit.SECONDS))
           CasSession(ServiceTicket(casTicket.get), personOid, authorities.map(Authority(_)).toSet)
         }
@@ -90,13 +91,19 @@ class SessionDAO(db: KoutaDatabase) extends SQLHelpers {
       case None =>
         deleteSession(id).andThen(DBIO.successful(None))
       case Some(t) =>
-        updateLastRead(id).andThen(DBIO.successful(Some(t)))
+        if (t._3.before(new Timestamp(System.currentTimeMillis() - (1000 * 60 * 5)))) {
+          logger.info(s"HOTFIX Updating session with id $id as last update was over 5 minutes ago")
+          updateLastRead(id).andThen(DBIO.successful(Some(t)))
+        } else {
+          logger.info(s"HOTFIX No need to update session with id $id")
+          DBIO.successful(Some(t))
+        }
     }
 
   private def getSessionQuery(id: UUID) =
-    sql"""select cas_ticket, person from sessions
+    sql"""select cas_ticket, person, last_read from sessions
           where id = $id and last_read > now() - interval '60 minutes'"""
-      .as[(Option[String], String)]
+      .as[(Option[String], String, java.sql.Timestamp)]
       .headOption
 
   private def updateLastRead(id: UUID) =
