@@ -103,7 +103,6 @@ case class HakukohdeIndexed(
         valintakokeet = valintakokeet.map(_.toValintakoe),
         hakuajat = hakuajat,
         muokkaaja = muokkaaja.oid,
-        tarjoajat = tarjoajat,
         tarjoaja = tarjoaja,
         organisaatioOid = organisaatio.get.oid,
         organisaatioNimi = organisaatio.get.nimi,

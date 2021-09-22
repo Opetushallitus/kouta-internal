@@ -116,10 +116,6 @@ case class Koulutus(
     oid: KoulutusOid,
     johtaaTutkintoon: Boolean,
     koulutustyyppi: Option[Koulutustyyppi],
-    @deprecated(
-      "KoulutusKoodiUrit on nykyään lista, vanha kenttä tullaan poistamaan kunhan kouta-internalia käyttävät palvelut ovat siirtyneet uuteen versioon"
-    )
-    koulutusKoodiUri: Option[String],
     koulutusKoodiUrit: Seq[String],
     tila: Julkaisutila,
     tarjoajat: List[OrganisaatioOid],

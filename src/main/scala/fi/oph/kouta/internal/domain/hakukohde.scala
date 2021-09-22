@@ -263,7 +263,6 @@ case class Hakukohde(
     valintakokeet: List[Valintakoe],
     hakuajat: List[Ajanjakso],
     muokkaaja: UserOid,
-    @deprecated tarjoajat: Set[OrganisaatioOid],
     tarjoaja: Option[OrganisaatioOid],
     organisaatioOid: OrganisaatioOid,
     organisaatioNimi: Kielistetty,

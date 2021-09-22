@@ -30,9 +30,6 @@ case class KoulutusIndexed(
         oid = oid,
         johtaaTutkintoon = johtaaTutkintoon,
         koulutustyyppi = koulutustyyppi,
-        koulutusKoodiUri = koulutukset.headOption.map(
-          _.koodiUri
-        ), //TODO poista kunhan internalista riippuvat palvelut käyttävät koulutusKoodiUrit-kenttää
         koulutusKoodiUrit = koulutukset.map(_.koodiUri),
         tila = tila,
         tarjoajat = tarjoajat.toList.flatten.map(_.oid),
