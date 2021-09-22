@@ -1,11 +1,12 @@
 package fi.oph.kouta.internal.domain
 
 import java.time.LocalDateTime
-
 import fi.oph.kouta.domain.Koulutustyyppi
-import fi.oph.kouta.internal.domain.enums.{Kieli, Julkaisutila}
+import fi.oph.kouta.internal.domain.enums.{Julkaisutila, Kieli}
 import fi.oph.kouta.internal.domain.oid.{KoulutusOid, OrganisaatioOid, UserOid}
 import fi.oph.kouta.internal.swagger.SwaggerModel
+
+import java.util.UUID
 
 @SwaggerModel(
   """    Koulutus:
@@ -97,6 +98,11 @@ import fi.oph.kouta.internal.swagger.SwaggerModel
     |                teksti:
     |                  fi: Opintojen suomenkielinen lisätietokuvaus
     |                  sv: Opintojen ruotsinkielinen lisätietokuvaus
+    |        sorakuvausId:
+    |          type: string
+    |          deprecated: true
+    |          description: Koulutukseen liittyvän SORA-kuvauksen yksilöivä tunniste
+    |          example: "ea596a9c-5940-497e-b5b7-aded3a2352a7"
     |        muokkaaja:
     |          type: string
     |          description: Koulutusta viimeksi muokanneen virkailijan henkilö-oid
@@ -119,16 +125,13 @@ case class Koulutus(
     oid: KoulutusOid,
     johtaaTutkintoon: Boolean,
     koulutustyyppi: Option[Koulutustyyppi],
-    @deprecated(
-      "KoulutusKoodiUrit on nykyään lista, vanha kenttä tullaan poistamaan kunhan kouta-internalia käyttävät palvelut ovat siirtyneet uuteen versioon"
-    )
-    koulutusKoodiUri: Option[String],
     koulutusKoodiUrit: Seq[String],
     tila: Julkaisutila,
     tarjoajat: List[OrganisaatioOid],
     nimi: Kielistetty,
     metadata: Option[KoulutusMetadata],
     julkinen: Boolean,
+    sorakuvausId: Option[UUID],
     muokkaaja: UserOid,
     organisaatioOid: OrganisaatioOid,
     kielivalinta: Seq[Kieli],
