@@ -14,8 +14,8 @@
         <scala.version>2.12.10</scala.version>
 
         <kouta-indeksoija.version>9.0.1-SNAPSHOT</kouta-indeksoija.version>
-        <kouta-backend.version>6.16.0-SNAPSHOT</kouta-backend.version>
-        <kouta-common.version>2.5.0-SNAPSHOT</kouta-common.version>
+        <kouta-backend.version>6.17.0-SNAPSHOT</kouta-backend.version>
+        <kouta-common.version>2.6.0-SNAPSHOT</kouta-common.version>
 
         <!-- Korjaa käännösvirheen:
              [ERROR] Source option 5 is no longer supported. Use 6 or later.
