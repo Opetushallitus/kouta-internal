@@ -4,7 +4,6 @@ import com.sksamuel.elastic4s.ElasticClient
 import com.sksamuel.elastic4s.ElasticDsl._
 import com.sksamuel.elastic4s.json4s.ElasticJson4s.Implicits._
 import fi.oph.kouta.internal.domain.Hakukohde
-import com.sksamuel.elastic4s.searches.queries.BoolQuery
 import fi.oph.kouta.internal.domain.enums.Kieli.Fi
 import fi.oph.kouta.internal.domain.{Hakukohde, Kielistetty}
 import fi.oph.kouta.internal.domain.indexed.HakukohdeIndexed
