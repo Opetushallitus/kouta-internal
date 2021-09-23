@@ -1,6 +1,6 @@
 package fi.oph.kouta.internal.integration
 
-import fi.oph.kouta.internal.TempElasticDockerClient
+import fi.oph.kouta.internal.TempElasticClient
 import fi.oph.kouta.internal.domain.Haku
 import fi.oph.kouta.internal.domain.oid.HakuOid
 import fi.oph.kouta.internal.integration.fixture.{AccessControlSpec, HakuFixture}
@@ -93,13 +93,13 @@ class HakuSpec extends HakuFixture with AccessControlSpec {
   }
 
   private def updateExistingHakuToUnknownTila(hakuOid: String): Unit = {
-    import com.sksamuel.elastic4s.http.ElasticDsl._
+    import com.sksamuel.elastic4s.ElasticDsl._
     import scala.concurrent.ExecutionContext.Implicits.global
     import scala.concurrent.Await
     import scala.concurrent.duration.Duration
 
-    val updateOperation = TempElasticDockerClient.client.execute {
-      updateById("haku-kouta-virkailija", "_doc", hakuOid).doc("tila" -> "outotila")
+    val updateOperation = TempElasticClient.client.execute {
+      updateById("haku-kouta-virkailija", hakuOid).doc("tila" -> "outotila")
     }
 
     Await.result(updateOperation, Duration.Inf)
