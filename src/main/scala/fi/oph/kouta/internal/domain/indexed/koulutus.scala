@@ -18,10 +18,12 @@ case class KoulutusIndexed(
     nimi: Kielistetty,
     metadata: Option[KoulutusMetadataIndexed],
     julkinen: Boolean,
+    sorakuvaus: Option[SorakuvausIndexed],
     muokkaaja: Muokkaaja,
     organisaatio: Option[Organisaatio],
     kielivalinta: Seq[Kieli],
-    modified: Option[LocalDateTime]
+    modified: Option[LocalDateTime],
+    externalId: Option[String]
 ) extends WithTila
     with Logging {
   def toKoulutus: Koulutus = {
@@ -30,19 +32,18 @@ case class KoulutusIndexed(
         oid = oid,
         johtaaTutkintoon = johtaaTutkintoon,
         koulutustyyppi = koulutustyyppi,
-        koulutusKoodiUri = koulutukset.headOption.map(
-          _.koodiUri
-        ), //TODO poista kunhan internalista riippuvat palvelut käyttävät koulutusKoodiUrit-kenttää
         koulutusKoodiUrit = koulutukset.map(_.koodiUri),
         tila = tila,
         tarjoajat = tarjoajat.toList.flatten.map(_.oid),
         nimi = nimi,
         metadata = metadata.map(_.toKoulutusMetadata),
         julkinen = julkinen,
+        sorakuvausId = sorakuvaus.map(_.id),
         muokkaaja = muokkaaja.oid,
         organisaatioOid = organisaatio.get.oid,
         kielivalinta = kielivalinta,
-        modified = modified
+        modified = modified,
+        externalId = externalId
       )
     } catch {
       case e: Exception =>

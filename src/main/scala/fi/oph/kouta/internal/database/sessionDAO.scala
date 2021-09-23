@@ -1,5 +1,6 @@
 package fi.oph.kouta.internal.database
 
+import java.sql.Timestamp
 import java.util.UUID
 import java.util.concurrent.TimeUnit
 
@@ -57,7 +58,7 @@ class SessionDAO(db: KoutaDatabase) extends SQLHelpers {
   def get(id: UUID): Option[Session] = {
     db.runBlockingTransactionally(
       getSession(id),
-      timeout = Duration(2, TimeUnit.SECONDS),
+      timeout = Duration(10, TimeUnit.SECONDS),
       s"Fetching session: ${id.toString}"
     ) match {
       case Right(result) => {
@@ -90,18 +91,14 @@ class SessionDAO(db: KoutaDatabase) extends SQLHelpers {
       case None =>
         deleteSession(id).andThen(DBIO.successful(None))
       case Some(t) =>
-        updateLastRead(id).andThen(DBIO.successful(Some(t)))
+        DBIO.successful(Some(t))
     }
 
   private def getSessionQuery(id: UUID) =
     sql"""select cas_ticket, person from sessions
-          where id = $id and last_read > now() - interval '60 minutes'"""
+          where id = $id and last_read > now() - interval '4 hours'"""
       .as[(Option[String], String)]
       .headOption
-
-  private def updateLastRead(id: UUID) =
-    sqlu"""update sessions set last_read = now()
-           where id = $id and last_read < now() - interval '30 minutes'"""
 
   private def searchAuthoritiesBySession(sessionId: UUID) =
     sql"""select authority from authorities where session = $sessionId""".as[String]

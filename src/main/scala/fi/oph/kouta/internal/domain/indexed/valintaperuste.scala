@@ -17,12 +17,12 @@ case class ValintaperusteIndexed(
     kohdejoukonTarkenne: Option[KoodiUri],
     nimi: Kielistetty,
     julkinen: Boolean,
-    @deprecated("Kenttä siirretty koulutukselle") sorakuvaus: Option[SorakuvausIndexed],
     metadata: Option[ValintaperusteMetadataIndexed],
     organisaatio: Option[Organisaatio],
     muokkaaja: Muokkaaja,
     kielivalinta: Seq[Kieli],
-    modified: Option[LocalDateTime]
+    modified: Option[LocalDateTime],
+    externalId: Option[String]
 ) extends WithTila
     with Logging {
   def toValintaperuste: Valintaperuste = {
@@ -36,12 +36,12 @@ case class ValintaperusteIndexed(
         kohdejoukonTarkenneKoodiUri = kohdejoukonTarkenne.map(_.koodiUri),
         nimi = nimi,
         julkinen = julkinen,
-        sorakuvausId = sorakuvaus.map(_.id),
         metadata = metadata.map(_.toValintaperusteMetadata),
         organisaatioOid = organisaatio.get.oid,
         muokkaaja = muokkaaja.oid,
         kielivalinta = kielivalinta,
-        modified = modified
+        modified = modified,
+        externalId = externalId
       )
     } catch {
       case e: Exception =>

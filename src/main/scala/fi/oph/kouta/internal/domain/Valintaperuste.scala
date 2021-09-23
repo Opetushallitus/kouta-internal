@@ -49,11 +49,6 @@ import fi.oph.kouta.internal.swagger.SwaggerModel
     |          type: string
     |          description: Valintaperustekuvaukseen liittyvä kohdejoukon tarkenne. Viittaa [koodistoon](https://virkailija.testiopintopolku.fi/koodisto-ui/html/koodisto/haunkohdejoukontarkenne/1)
     |          example: haunkohdejoukontarkenne_1#1
-    |        sorakuvausId:
-    |          type: string
-    |          deprecated: true
-    |          description: Valintaperustekuvaukseen liittyvän SORA-kuvauksen yksilöivä tunniste
-    |          example: "ea596a9c-5940-497e-b5b7-aded3a2352a7"
     |        julkinen:
     |          type: boolean
     |          description: Voivatko muut oppilaitokset käyttää valintaperustekuvausta
@@ -126,6 +121,9 @@ import fi.oph.kouta.internal.swagger.SwaggerModel
     |           format: date-time
     |           description: Valintaperustekuvauksen viimeisin muokkausaika. Järjestelmän generoima
     |           example: 2019-08-23T09:55
+    |        externalId:
+    |           type: string
+    |           description: Ulkoinen tunniste (esim. oppilaitoksen järjestelmän yksilöivä tunniste)
     |"""
 )
 case class Valintaperuste(
@@ -137,10 +135,10 @@ case class Valintaperuste(
     kohdejoukonTarkenneKoodiUri: Option[String],
     nimi: Kielistetty,
     julkinen: Boolean,
-    @deprecated("Kenttä siirretty koulutukselle") sorakuvausId: Option[UUID],
     metadata: Option[ValintaperusteMetadata],
     organisaatioOid: OrganisaatioOid,
     muokkaaja: UserOid,
     kielivalinta: Seq[Kieli],
-    modified: Option[LocalDateTime]
+    modified: Option[LocalDateTime],
+    externalId: Option[String]
 ) extends PerustiedotWithId
