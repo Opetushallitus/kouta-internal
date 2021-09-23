@@ -91,24 +91,14 @@ class SessionDAO(db: KoutaDatabase) extends SQLHelpers {
       case None =>
         deleteSession(id).andThen(DBIO.successful(None))
       case Some(t) =>
-        if (t._3.before(new Timestamp(System.currentTimeMillis() - (1000 * 60 * 5)))) {
-          logger.info(s"HOTFIX Updating session with id $id as last update was over 5 minutes ago")
-          updateLastRead(id).andThen(DBIO.successful(Some(t)))
-        } else {
-          logger.info(s"HOTFIX No need to update session with id $id")
-          DBIO.successful(Some(t))
-        }
+        DBIO.successful(Some(t))
     }
 
   private def getSessionQuery(id: UUID) =
-    sql"""select cas_ticket, person, last_read from sessions
-          where id = $id and last_read > now() - interval '60 minutes'"""
-      .as[(Option[String], String, java.sql.Timestamp)]
+    sql"""select cas_ticket, person from sessions
+          where id = $id and last_read > now() - interval '4 hours'"""
+      .as[(Option[String], String)]
       .headOption
-
-  private def updateLastRead(id: UUID) =
-    sqlu"""update sessions set last_read = now()
-           where id = $id and last_read < now() - interval '30 minutes'"""
 
   private def searchAuthoritiesBySession(sessionId: UUID) =
     sql"""select authority from authorities where session = $sessionId""".as[String]
