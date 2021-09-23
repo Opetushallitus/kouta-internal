@@ -200,11 +200,11 @@ case class TuvaKoulutusMetadataIndexed(
 }
 
 case class TelmaKoulutusMetadataIndexed(
-  tyyppi: Koulutustyyppi,
-  kuvaus: Kielistetty,
-  lisatiedot: Seq[LisatietoIndexed],
-  linkkiEPerusteisiin: Kielistetty,
-  opintojenLaajuusKoodiUri: Option[KoodiUri] = None
+    tyyppi: Koulutustyyppi,
+    kuvaus: Kielistetty,
+    lisatiedot: Seq[LisatietoIndexed],
+    linkkiEPerusteisiin: Kielistetty,
+    opintojenLaajuusKoodiUri: Option[KoodiUri] = None
 ) extends KoulutusMetadataIndexed {
   override def toKoulutusMetadata: TelmaKoulutusMetadata =
     TelmaKoulutusMetadata(

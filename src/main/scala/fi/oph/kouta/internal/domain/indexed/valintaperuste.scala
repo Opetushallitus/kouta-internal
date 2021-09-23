@@ -80,8 +80,8 @@ case class TuvaValintaperusteMetadataIndexed(
 }
 
 case class TelmaValintaperusteMetadataIndexed(
-  koulutustyyppi: Koulutustyyppi = Telma,
-  valintatavat: Seq[AmmatillinenValintatapaIndexed]
+    koulutustyyppi: Koulutustyyppi = Telma,
+    valintatavat: Seq[AmmatillinenValintatapaIndexed]
 ) extends ValintaperusteMetadataIndexed {
   override def toValintaperusteMetadata: ValintaperusteMetadata = TelmaValintaperusteMetadata(
     koulutustyyppi = koulutustyyppi,

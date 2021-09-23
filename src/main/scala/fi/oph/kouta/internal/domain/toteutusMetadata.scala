@@ -283,13 +283,13 @@ case class TuvaToteutusMetadata(
                 |                - telma
                 |""")
 case class TelmaToteutusMetadata(
-  tyyppi: Koulutustyyppi = Telma,
-  kuvaus: Kielistetty,
-  opetus: Option[Opetus],
-  asiasanat: List[Keyword],
-  ammattinimikkeet: List[Keyword],
-  yhteyshenkilot: Seq[Yhteyshenkilo],
-  aloituspaikat: Option[Int],
+    tyyppi: Koulutustyyppi = Telma,
+    kuvaus: Kielistetty,
+    opetus: Option[Opetus],
+    asiasanat: List[Keyword],
+    ammattinimikkeet: List[Keyword],
+    yhteyshenkilot: Seq[Yhteyshenkilo],
+    aloituspaikat: Option[Int]
 ) extends ToteutusMetadata
 
 @SwaggerModel("""    VapaaSivistystyoOpistovuosiToteutusMetadata:

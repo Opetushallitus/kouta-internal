@@ -288,11 +288,11 @@ case class TuvaKoulutusMetadata(
     |"""
 )
 case class TelmaKoulutusMetadata(
-  tyyppi: Koulutustyyppi,
-  kuvaus: Kielistetty,
-  lisatiedot: Seq[Lisatieto],
-  linkkiEPerusteisiin: Kielistetty,
-  opintojenLaajuusKoodiUri: Option[String] = None
+    tyyppi: Koulutustyyppi,
+    kuvaus: Kielistetty,
+    lisatiedot: Seq[Lisatieto],
+    linkkiEPerusteisiin: Kielistetty,
+    opintojenLaajuusKoodiUri: Option[String] = None
 ) extends KoulutusMetadata
 
 @SwaggerModel(

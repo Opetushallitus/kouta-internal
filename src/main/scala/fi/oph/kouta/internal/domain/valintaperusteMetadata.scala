@@ -108,8 +108,8 @@ case class TuvaValintaperusteMetadata(
                 |            - telma
                 |""")
 case class TelmaValintaperusteMetadata(
-  koulutustyyppi: Koulutustyyppi = Telma,
-  valintatavat: Seq[AmmatillinenValintatapa]
+    koulutustyyppi: Koulutustyyppi = Telma,
+    valintatavat: Seq[AmmatillinenValintatapa]
 ) extends ValintaperusteMetadata
 
 @SwaggerModel("""    VapaaSivistystyoValintaperusteMetadata:
