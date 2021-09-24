@@ -187,7 +187,7 @@ case class TuvaKoulutusMetadataIndexed(
     kuvaus: Kielistetty,
     lisatiedot: Seq[LisatietoIndexed],
     linkkiEPerusteisiin: Kielistetty,
-    opintojenLaajuusKoodiUri: Option[KoodiUri] = None
+    opintojenLaajuus: Option[KoodiUri] = None
 ) extends KoulutusMetadataIndexed {
   override def toKoulutusMetadata: TuvaKoulutusMetadata =
     TuvaKoulutusMetadata(
@@ -195,7 +195,7 @@ case class TuvaKoulutusMetadataIndexed(
       kuvaus = kuvaus,
       lisatiedot = lisatiedot.map(_.toLisatieto),
       linkkiEPerusteisiin = linkkiEPerusteisiin,
-      opintojenLaajuusKoodiUri = opintojenLaajuusKoodiUri.map(_.koodiUri)
+      opintojenLaajuusKoodiUri = opintojenLaajuus.map(_.koodiUri)
     )
 }
 
@@ -204,7 +204,7 @@ case class TelmaKoulutusMetadataIndexed(
     kuvaus: Kielistetty,
     lisatiedot: Seq[LisatietoIndexed],
     linkkiEPerusteisiin: Kielistetty,
-    opintojenLaajuusKoodiUri: Option[KoodiUri] = None
+    opintojenLaajuus: Option[KoodiUri] = None
 ) extends KoulutusMetadataIndexed {
   override def toKoulutusMetadata: TelmaKoulutusMetadata =
     TelmaKoulutusMetadata(
@@ -212,7 +212,7 @@ case class TelmaKoulutusMetadataIndexed(
       kuvaus = kuvaus,
       lisatiedot = lisatiedot.map(_.toLisatieto),
       linkkiEPerusteisiin = linkkiEPerusteisiin,
-      opintojenLaajuusKoodiUri = opintojenLaajuusKoodiUri.map(_.koodiUri)
+      opintojenLaajuusKoodiUri = opintojenLaajuus.map(_.koodiUri)
     )
 }
 
