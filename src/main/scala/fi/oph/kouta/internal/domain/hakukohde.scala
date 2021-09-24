@@ -152,6 +152,12 @@ case class Sora(tila: String)
     |          description: Onko hakukohde yhden paikan säännön piirissä.
     |          allOf:
     |            - $ref: '#/components/schemas/YhdenPaikanSaanto'
+    |        koulutustyyppikoodi:
+    |          type: string
+    |          description: Koodiston koodi hakukohteen koulutustyypille
+    |        onkoHarkinnanvarainenKoulutus:
+    |          type: boolean
+    |          description: Onko hakukohteen koulutus harkinnanvarainen?
     |        liitteetOnkoSamaToimitusaika:
     |          type: boolean
     |          description: Onko kaikilla hakukohteen liitteillä sama toimitusaika?
@@ -257,7 +263,7 @@ case class Hakukohde(
     kaytetaanHaunAikataulua: Option[Boolean],
     valintaperusteId: Option[UUID],
     yhdenPaikanSaanto: YhdenPaikanSaanto,
-    koulutustyypit: Option[Seq[String]],
+    koulutustyyppikoodi: Option[String],
     onkoHarkinnanvarainenKoulutus: Option[Boolean],
     liitteetOnkoSamaToimitusaika: Option[Boolean],
     liitteetOnkoSamaToimitusosoite: Option[Boolean],
