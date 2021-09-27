@@ -56,19 +56,14 @@ class SessionDAO(db: KoutaDatabase) extends SQLHelpers {
     }
 
   def get(id: UUID): Option[Session] = {
-    db.runBlockingTransactionally(
+    db.runBlocking(
       getSession(id),
-      timeout = Duration(30, TimeUnit.SECONDS),
-      s"Fetching session: ${id.toString}"
-    ) match {
-      case Right(result) => {
-        result.map { case (casTicket, personOid) =>
-          val authorities = db.runBlocking(searchAuthoritiesBySession(id), Duration(2, TimeUnit.SECONDS))
-          CasSession(ServiceTicket(casTicket.get), personOid, authorities.map(Authority(_)).toSet)
-        }
-      }
-      case Left(e) => throw e
+      timeout = Duration(30, TimeUnit.SECONDS)
+    ).map { case (casTicket, personOid) =>
+      val authorities = db.runBlocking(searchAuthoritiesBySession(id), Duration(2, TimeUnit.SECONDS))
+      CasSession(ServiceTicket(casTicket.get), personOid, authorities.map(Authority(_)).toSet)
     }
+
   }
 
   private def storeCasSession(id: UUID, ticket: String, personOid: String, authorities: Set[Authority]) = {
