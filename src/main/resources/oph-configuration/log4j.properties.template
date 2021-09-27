@@ -1,5 +1,5 @@
 # Logger
-log4j.rootLogger={{env_loglevel}}, FILE
+log4j.rootLogger=INFO, FILE
 {# raw-endraw -välillä template engine ei tee mitään! #}
 {% raw %}
 # Console output
@@ -23,10 +23,12 @@ log4j.logger.org.springframework=ERROR
 log4j.logger.org.vaadin=ERROR
 log4j.logger.javax.sql=ERROR
 log4j.logger.org.apache.activemq=INFO
-log4j.logger.org.apache.activemq.spring={{env_loglevel}}
+log4j.logger.org.apache.activemq.spring=INFO
 # cas session + singlelogout tracing
 log4j.logger.org.jasig.cas.client.session=INFO
 log4j.logger.org.flywaydb=INFO
+log4j.logger.com.zaxxer.hikari=DEBUG
+log4j.logger.slick=DEBUG
 # Audit loggin
 log4j.additivity.fi.vm.sade.auditlog.Audit=false
 log4j.logger.fi.vm.sade.auditlog.Audit=INFO, AUDIT
