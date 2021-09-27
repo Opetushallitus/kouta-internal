@@ -8,6 +8,7 @@ import fi.oph.kouta.internal.client.KayttooikeusClient
 import fi.oph.kouta.internal.database.SessionDAO
 import fi.vm.sade.utils.cas.CasClient.Username
 import fi.vm.sade.utils.slf4j.Logging
+import fi.vm.sade.utils.Timer
 import scalaz.concurrent.Task
 
 import scala.concurrent.duration.Duration
@@ -33,15 +34,17 @@ class CasSessionService(
   private val casClient = securityContext.casClient
 
   private def validateServiceTicket(ticket: ServiceTicket): Either[Throwable, Username] = {
-    val ServiceTicket(s) = ticket
-    casClient
-      .validateServiceTicketWithVirkailijaUsername(securityContext.casServiceIdentifier)(s)
-      .handleWith { case NonFatal(t) =>
-        logger.debug("Ticket validation error", t)
-        Task.fail(AuthenticationFailedException(s"Failed to validate service ticket $s", t))
-      }
-      .unsafePerformSyncAttemptFor(Duration(10, TimeUnit.SECONDS))
-      .toEither
+    Timer.timed(s"Validating service ticket $ticket", 0) {
+      val ServiceTicket(s) = ticket
+      casClient
+        .validateServiceTicketWithVirkailijaUsername(securityContext.casServiceIdentifier)(s)
+        .handleWith { case NonFatal(t) =>
+          logger.debug("Ticket validation error", t)
+          Task.fail(AuthenticationFailedException(s"Failed to validate service ticket $s", t))
+        }
+        .unsafePerformSyncAttemptFor(Duration(10, TimeUnit.SECONDS))
+        .toEither
+    }
   }
 
   private def storeSession(ticket: ServiceTicket, user: KayttooikeusUserDetails): (UUID, CasSession) = {
@@ -52,30 +55,36 @@ class CasSessionService(
   }
 
   private def createSession(ticket: ServiceTicket): Either[Throwable, (UUID, CasSession)] = {
-    validateServiceTicket(ticket)
-      .map(userDetailsService.getUserByUsername)
-      .map(storeSession(ticket, _))
+    Timer.timed(s"Creating session for ticket $ticket", 0) {
+      validateServiceTicket(ticket)
+        .map(userDetailsService.getUserByUsername)
+        .map(storeSession(ticket, _))
+    }
   }
 
   private def getSession(id: UUID): Either[Throwable, (UUID, Session)] =
-    sessionDAO
-      .get(id)
-      .map(session => (id, session))
-      .toRight(new AuthenticationFailedException(s"Session $id doesn't exist"))
+    Timer.timed(s"Getting session with id $id", 0) {
+      sessionDAO
+        .get(id)
+        .map(session => (id, session))
+        .toRight(new AuthenticationFailedException(s"Session $id doesn't exist"))
+    }
 
   def getSession(ticket: Option[ServiceTicket], id: Option[UUID]): Either[Throwable, (UUID, Session)] = {
-    logger.trace(s"Getting session with ticket $ticket and session id $id")
-    (ticket, id) match {
-      case (None, None) =>
-        logger.trace("No session found")
-        Left(new AuthenticationFailedException("No credentials given"))
-      case (None, Some(i)) => getSession(i)
-      case (Some(t), None) => createSession(t)
-      case (Some(t), Some(i)) =>
-        getSession(i).left.flatMap {
-          case _: AuthenticationFailedException => createSession(t)
-          case e                                => Left(e)
-        }
+    Timer.timed(s"Getting session with ticket $ticket and session id $id", 0) {
+      logger.trace(s"Getting session with ticket $ticket and session id $id")
+      (ticket, id) match {
+        case (None, None) =>
+          logger.trace("No session found")
+          Left(new AuthenticationFailedException("No credentials given"))
+        case (None, Some(i)) => getSession(i)
+        case (Some(t), None) => createSession(t)
+        case (Some(t), Some(i)) =>
+          getSession(i).left.flatMap {
+            case _: AuthenticationFailedException => createSession(t)
+            case e => Left(e)
+          }
+      }
     }
   }
 

@@ -58,7 +58,7 @@ class SessionDAO(db: KoutaDatabase) extends SQLHelpers {
   def get(id: UUID): Option[Session] = {
     db.runBlockingTransactionally(
       getSession(id),
-      timeout = Duration(10, TimeUnit.SECONDS),
+      timeout = Duration(30, TimeUnit.SECONDS),
       s"Fetching session: ${id.toString}"
     ) match {
       case Right(result) => {
