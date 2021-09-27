@@ -82,7 +82,7 @@ class CasSessionService(
         case (Some(t), Some(i)) =>
           getSession(i).left.flatMap {
             case _: AuthenticationFailedException => createSession(t)
-            case e => Left(e)
+            case e                                => Left(e)
           }
       }
     }
