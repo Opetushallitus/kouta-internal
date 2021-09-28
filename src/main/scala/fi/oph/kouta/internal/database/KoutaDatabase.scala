@@ -86,8 +86,8 @@ class KoutaDatabase(settings: KoutaDatabaseConfiguration) extends Logging {
       name = "koutainternal",
       minThreads = maxPoolSize,
       maxThreads = maxPoolSize,
-      queueSize = 0,
-      maxConnections = Integer.MAX_VALUE,
+      queueSize = queueSize,
+      maxConnections = maxPoolSize,
       registerMbeans = true
     )
     val className    = classOf[HikariConfig].getSimpleName
