@@ -6,6 +6,7 @@ import java.util.concurrent.TimeUnit
 import fi.oph.kouta.internal.security.{Authority, CasSession, ServiceTicket, Session}
 import slick.dbio.DBIO
 import slick.jdbc.PostgresProfile.api._
+import slick.jdbc.TransactionIsolation.ReadCommitted
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration.Duration
@@ -54,6 +55,20 @@ class SessionDAO(db: KoutaDatabase) extends SQLHelpers {
       case Left(e)       => throw e
     }
 
+  import KoutaDatabase.{runBlocking, runBlockingTransactionally}
+
+  def getKB(id: UUID): Option[Session] = {
+    db.runBlockingTransactionallyKB(
+      getSession(id),
+      timeout = Duration(5, TimeUnit.SECONDS),
+      ReadCommitted
+    ).get
+      .map { case (casTicket, personOid) =>
+        val authorities = runBlocking(searchAuthoritiesBySession(id), Duration(2, TimeUnit.SECONDS))
+        CasSession(ServiceTicket(casTicket.get), personOid, authorities.map(Authority(_)).toSet)
+      }
+  }
+
   def get(id: UUID): Option[Session] = {
     db.runBlocking(
       getSession(id),
@@ -83,12 +98,18 @@ class SessionDAO(db: KoutaDatabase) extends SQLHelpers {
   private def getSession(id: UUID) =
     getSessionQuery(id).flatMap {
       case None =>
-        deleteSession(id).andThen(DBIO.successful(None))
+        deleteSession(id).map(_ => None)
       case Some(t) =>
         DBIO.successful(Some(t))
     }
 
-  private def getSessionQuery(id: UUID) =
+  private def getSessionQueryKB(id: UUID): DBIO[Option[(Option[String], String, Boolean)]] =
+    sql"""select cas_ticket, person, last_read < now() - interval '30 minutes' from sessions
+          where id = $id and last_read > now() - interval '60 minutes'"""
+      .as[(Option[String], String, Boolean)]
+      .headOption
+
+  private def getSessionQuery(id: UUID): DBIO[Option[(Option[String], String)]] =
     sql"""select cas_ticket, person from sessions
           where id = $id and last_read > now() - interval '4 hours'"""
       .as[(Option[String], String)]

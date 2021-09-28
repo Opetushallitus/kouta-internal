@@ -1,6 +1,7 @@
 package fi.oph.kouta.internal.database
 
 import java.util.concurrent.TimeUnit
+
 import com.zaxxer.hikari.{HikariConfig, HikariDataSource}
 import fi.oph.kouta.internal.{KoutaConfigurationFactory, KoutaDatabaseConfiguration}
 import fi.vm.sade.utils.slf4j.Logging
@@ -10,8 +11,10 @@ import org.postgresql.util.PSQLException
 import slick.dbio.DBIO
 import slick.jdbc.PostgresProfile.api._
 import slick.jdbc.TransactionIsolation.Serializable
-
 import java.util.ConcurrentModificationException
+
+import slick.jdbc.TransactionIsolation
+
 import scala.concurrent.Await
 import scala.concurrent.duration.Duration
 import scala.util.Try
@@ -25,6 +28,14 @@ class KoutaDatabase(settings: KoutaDatabaseConfiguration) extends Logging {
       db.run(operations.withStatementParameters(statementInit = st => st.setQueryTimeout(timeout.toSeconds.toInt))),
       timeout + Duration(1, TimeUnit.SECONDS)
     )
+  }
+
+  def runBlockingTransactionallyKB[R](
+      operations: DBIO[R],
+      timeout: Duration = Duration(20, TimeUnit.SECONDS),
+      isolation: TransactionIsolation = Serializable
+  ): Try[R] = {
+    Try(runBlocking(operations.transactionally.withTransactionIsolation(isolation), timeout))
   }
 
   def runBlockingTransactionally[R](

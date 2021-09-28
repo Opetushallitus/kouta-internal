@@ -22,7 +22,7 @@ trait CasAuthenticatedServlet {
     val session = sessionCookie
       .orElse(sessionAttribute)
       .map(UUID.fromString)
-      .flatMap(id => sessionDAO.get(id).map((id, _)))
+      .flatMap(id => sessionDAO.getKB(id).map((id, _)))
 
     logger.trace("Session found {}", session)
 

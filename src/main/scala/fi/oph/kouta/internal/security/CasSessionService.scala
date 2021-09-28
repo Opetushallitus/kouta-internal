@@ -65,7 +65,7 @@ class CasSessionService(
   private def getSession(id: UUID): Either[Throwable, (UUID, Session)] =
     Timer.timed(s"Getting session with id $id", 0) {
       sessionDAO
-        .get(id)
+        .getKB(id)
         .map(session => (id, session))
         .toRight(new AuthenticationFailedException(s"Session $id doesn't exist"))
     }
