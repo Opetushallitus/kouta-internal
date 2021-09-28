@@ -99,8 +99,10 @@ class SessionDAO(db: KoutaDatabase) extends SQLHelpers {
   private def getSession(id: UUID) =
     getSessionQuery(id).flatMap {
       case None =>
+        logger.info(s"No fresh session found for id $id")
         DBIO.successful(None)
       case Some(t) =>
+        logger.info(s"Fresh session found for id $id: $t")
         DBIO.successful(Some(t))
     }
 
