@@ -78,8 +78,10 @@ class KoutaDatabase(settings: KoutaDatabaseConfiguration) extends Logging {
     settings.registerMbeans.foreach(hikariConfig.setRegisterMbeans)
     //settings.initializationFailTimeout.foreach(hikariConfig.setI)
     //hikariConfig.setLeakDetectionThreshold(settings.leakDetectionThresholdMillis.getOrElse(settings.getMaxLifetime))
-    val executor = AsyncExecutor("koutainternal", maxPoolSize, 1000)
-
+    val numThreads = 10
+    val queueSize = 1000
+    logger.info(s"Initdb with hikari max pool size $maxPoolSize, numthreads $numThreads and queue size $queueSize")
+    val executor = AsyncExecutor("koutainternal", numThreads, queueSize)
     val className    = classOf[HikariConfig].getSimpleName
     val executorName = ToStringBuilder.reflectionToString(executor)
     val hikariString = ToStringBuilder
