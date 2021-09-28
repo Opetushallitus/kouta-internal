@@ -99,7 +99,7 @@ class SessionDAO(db: KoutaDatabase) extends SQLHelpers {
   private def getSession(id: UUID) =
     getSessionQuery(id).flatMap {
       case None =>
-        deleteSession(id).map(_ => None)
+        DBIO.successful(None)
       case Some(t) =>
         DBIO.successful(Some(t))
     }
