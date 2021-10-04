@@ -21,7 +21,8 @@ case class KoulutusIndexed(
     muokkaaja: Muokkaaja,
     organisaatio: Option[Organisaatio],
     kielivalinta: Seq[Kieli],
-    modified: Option[LocalDateTime]
+    modified: Option[LocalDateTime],
+    externalId: Option[String]
 ) extends WithTila
     with Logging {
   def toKoulutus: Koulutus = {
@@ -42,7 +43,8 @@ case class KoulutusIndexed(
         muokkaaja = muokkaaja.oid,
         organisaatioOid = organisaatio.get.oid,
         kielivalinta = kielivalinta,
-        modified = modified
+        modified = modified,
+        externalId = externalId
       )
     } catch {
       case e: Exception =>

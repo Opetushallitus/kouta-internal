@@ -227,6 +227,9 @@ case class Sora(tila: String)
     |        jarjestaaUrheilijanAmmKoulutusta:
     |           type: boolean
     |           description: Järjestääkö hakukohde urheilijan ammatillista koulutusta
+    |        externalId:
+    |           type: string
+    |           description: Ulkoinen tunniste (esim. oppilaitoksen järjestelmän yksilöivä tunniste)
     |"""
 )
 case class Hakukohde(
@@ -270,5 +273,6 @@ case class Hakukohde(
     kielivalinta: Seq[Kieli],
     modified: Option[LocalDateTime],
     oikeusHakukohteeseen: Option[Boolean],
-    jarjestaaUrheilijanAmmKoulutusta: Option[Boolean]
+    jarjestaaUrheilijanAmmKoulutusta: Option[Boolean],
+    externalId: Option[String]
 ) extends PerustiedotWithOid

@@ -150,6 +150,9 @@ import fi.oph.kouta.internal.swagger.SwaggerModel
     |           format: date-time
     |           description: Toteutuksen viimeisin muokkausaika. Järjestelmän generoima
     |           example: 2019-08-23T09:55
+    |        externalId:
+    |           type: string
+    |           description: Ulkoinen tunniste (esim. oppilaitoksen järjestelmän yksilöivä tunniste)
     |"""
 )
 case class Toteutus(
@@ -162,5 +165,6 @@ case class Toteutus(
     muokkaaja: UserOid,
     organisaatioOid: OrganisaatioOid,
     kielivalinta: Seq[Kieli],
-    modified: Option[LocalDateTime]
+    modified: Option[LocalDateTime],
+    externalId: Option[String]
 ) extends PerustiedotWithOid
