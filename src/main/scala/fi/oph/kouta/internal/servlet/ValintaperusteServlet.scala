@@ -28,7 +28,7 @@ class ValintaperusteServlet(valintaperusteService: ValintaperusteService, val se
       |        - Valintaperuste
       |      parameters:
       |        - in: path
-      |          name: oid
+      |          name: id
       |          schema:
       |            type: string
       |          required: true

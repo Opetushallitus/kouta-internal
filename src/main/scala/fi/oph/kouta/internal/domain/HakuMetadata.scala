@@ -1,7 +1,9 @@
 package fi.oph.kouta.internal.domain
 
+import fi.oph.kouta.internal.domain.indexed.KoulutuksenAlkamiskausi
 import fi.oph.kouta.internal.swagger.SwaggerModel
 
+//TODO fix model
 @SwaggerModel("""    HakuMetadata:
     |      type: object
     |      properties:
@@ -16,4 +18,8 @@ import fi.oph.kouta.internal.swagger.SwaggerModel
     |          items:
     |            $ref: '#/components/schemas/Ajanjakso'
     |""")
-case class HakuMetadata(yhteyshenkilot: Seq[Yhteyshenkilo], tulevaisuudenAikataulu: Seq[Ajanjakso])
+case class HakuMetadata(
+    yhteyshenkilot: Seq[Yhteyshenkilo],
+    tulevaisuudenAikataulu: Seq[Ajanjakso],
+    koulutuksenAlkamiskausi: Option[KoulutuksenAlkamiskausi]
+)
