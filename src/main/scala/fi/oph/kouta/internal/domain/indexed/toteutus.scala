@@ -167,7 +167,7 @@ case class TuvaToteutusMetadataIndexed(
     ammattinimikkeet: List[Keyword],
     yhteyshenkilot: Seq[Yhteyshenkilo],
     aloituspaikat: Option[Int],
-    tuvaErityisopetuksena: Boolean
+    jarjestetaanErityisopetuksena: Boolean
 ) extends ToteutusMetadataIndexed {
   override def toToteutusMetadata: TuvaToteutusMetadata = {
     TuvaToteutusMetadata(
@@ -178,7 +178,7 @@ case class TuvaToteutusMetadataIndexed(
       ammattinimikkeet = ammattinimikkeet,
       yhteyshenkilot = yhteyshenkilot,
       aloituspaikat = aloituspaikat,
-      tuvaErityisopetuksena = tuvaErityisopetuksena
+      jarjestetaanErityisopetuksena = jarjestetaanErityisopetuksena
     )
   }
 }
