@@ -1,45 +1,38 @@
 package fi.oph.kouta.internal
 
-import java.io.File
-import java.util.concurrent.TimeUnit
-
-import com.sksamuel.elastic4s.http.{ElasticClient, ElasticProperties}
-import fi.vm.sade.utils.tcp.ChooseFreePort
-import pl.allegro.tech.embeddedelasticsearch.{EmbeddedElastic, PopularProperties}
+import com.sksamuel.elastic4s.http.JavaClient
+import com.sksamuel.elastic4s.{ElasticClient, ElasticProperties}
+import org.testcontainers.elasticsearch.ElasticsearchContainer
 
 object TempElasticClient {
   val url    = s"http://localhost:${TempElastic.start()}"
-  val client = ElasticClient(ElasticProperties(url))
+  val client = ElasticClient(JavaClient(ElasticProperties(url)))
 }
 
-object TempElastic {
-  var elasticInstance: Option[EmbeddedElastic] = None
+private object TempElastic {
+  var elastic: Option[ElasticsearchContainer] = None
 
-  private val port            = new ChooseFreePort().chosenPort
-  private val timeoutInMillis = 60 * 1000
+  def start(): Int = {
+    try {
+      get().getMappedPort(9200)
+    } finally {
+      Runtime.getRuntime.addShutdownHook(new Thread(() => stop()))
+    }
+  }
 
-  def start(): Int = get().getHttpPort
+  def create(): ElasticsearchContainer = {
+    val embeddedElastic = new ElasticsearchContainer("docker.elastic.co/elasticsearch/elasticsearch:7.10.2")
 
-  def create(): EmbeddedElastic = {
-    val embeddedElastic = EmbeddedElastic
-      .builder()
-      .withElasticVersion("6.7.2")
-      .withInstallationDirectory(new File("target/embeddedElasticsearch"))
-      .withSetting(PopularProperties.HTTP_PORT, port)
-      .withSetting("path.repo", "embeddedElasticsearch")
-      .withSetting(PopularProperties.CLUSTER_NAME, "elasticsearch")
-      .withSetting("discovery.zen.ping.unicast.hosts", s"127.0.0.1:$port")
-      .withStartTimeout(timeoutInMillis, TimeUnit.MILLISECONDS)
-      .build
-
-    elasticInstance = Some(embeddedElastic.start())
-    elasticInstance.get
+    embeddedElastic.start()
+    elastic = Some(embeddedElastic)
+    embeddedElastic
   }
 
   def stop(): Unit = {
-    elasticInstance.foreach(_.stop())
-    elasticInstance = None
+    elastic.foreach(_.stop())
+    elastic.foreach(_.close())
+    elastic = None
   }
 
-  def get(): EmbeddedElastic = elasticInstance.getOrElse(create())
+  def get(): ElasticsearchContainer = elastic.getOrElse(create())
 }
