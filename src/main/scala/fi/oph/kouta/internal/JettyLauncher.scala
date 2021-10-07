@@ -19,8 +19,8 @@ object JettyLauncher extends Logging {
 }
 
 class JettyLauncher(val port: Int) {
-  val threadPool: ThreadPool = new QueuedThreadPool(200, 5, 60000)
-  val server                 = new Server()
+  val threadPool: ThreadPool = new QueuedThreadPool(20, 5, 60000)
+  val server                 = new Server(threadPool)
   val context                = new WebAppContext()
   context.setBaseResource(Resource.newClassPathResource("webapp"))
   context.setDescriptor("WEB-INF/web.xml")
