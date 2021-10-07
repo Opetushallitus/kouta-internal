@@ -116,6 +116,9 @@ import java.util.UUID
     |           format: date-time
     |           description: Koulutuksen viimeisin muokkausaika. Järjestelmän generoima
     |           example: 2019-08-23T09:55
+    |        externalId:
+    |           type: string
+    |           description: Ulkoinen tunniste (esim. oppilaitoksen järjestelmän yksilöivä tunniste)
     |"""
 )
 case class Koulutus(
@@ -132,5 +135,6 @@ case class Koulutus(
     muokkaaja: UserOid,
     organisaatioOid: OrganisaatioOid,
     kielivalinta: Seq[Kieli],
-    modified: Option[LocalDateTime]
+    modified: Option[LocalDateTime],
+    externalId: Option[String]
 ) extends PerustiedotWithOid

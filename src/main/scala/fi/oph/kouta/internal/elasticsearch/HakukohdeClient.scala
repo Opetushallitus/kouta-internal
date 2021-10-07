@@ -1,11 +1,12 @@
 package fi.oph.kouta.internal.elasticsearch
 
 import com.sksamuel.elastic4s.ElasticDateMath
-import com.sksamuel.elastic4s.http.ElasticClient
-import com.sksamuel.elastic4s.http.ElasticDsl._
 import com.sksamuel.elastic4s.json4s.ElasticJson4s.Implicits._
-import com.sksamuel.elastic4s.searches.queries.{BoolQuery, Query}
 import fi.oph.kouta.internal.domain.enums.Julkaisutila
+import com.sksamuel.elastic4s.ElasticClient
+import com.sksamuel.elastic4s.ElasticDsl._
+import com.sksamuel.elastic4s.requests.searches.queries.Query
+import fi.oph.kouta.internal.domain.Hakukohde
 import fi.oph.kouta.internal.domain.enums.Kieli.Fi
 import fi.oph.kouta.internal.domain.{Hakukohde, Kielistetty}
 import fi.oph.kouta.internal.domain.indexed.HakukohdeIndexed

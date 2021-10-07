@@ -1,11 +1,10 @@
 package fi.oph.kouta.internal.elasticsearch
 
-import com.sksamuel.elastic4s.ElasticApi.{must, rangeQuery}
+import com.sksamuel.elastic4s.ElasticApi.{must, rangeQuery, should, termsQuery}
 import com.sksamuel.elastic4s.ElasticDateMath
-import com.sksamuel.elastic4s.http.ElasticClient
-import com.sksamuel.elastic4s.http.ElasticDsl.{BuildableTermsNoOp, should, termsQuery}
+import com.sksamuel.elastic4s.ElasticClient
 import com.sksamuel.elastic4s.json4s.ElasticJson4s.Implicits._
-import com.sksamuel.elastic4s.searches.queries.Query
+import com.sksamuel.elastic4s.requests.searches.queries.Query
 import fi.oph.kouta.internal.domain.Koulutus
 import fi.oph.kouta.internal.domain.enums.Julkaisutila
 import fi.oph.kouta.internal.domain.indexed.KoulutusIndexed

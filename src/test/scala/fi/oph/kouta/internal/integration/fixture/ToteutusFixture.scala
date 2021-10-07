@@ -2,7 +2,7 @@ package fi.oph.kouta.internal.integration.fixture
 
 import fi.oph.kouta.domain.{AmmOsaamisala, AmmTutkinnonOsa}
 import fi.oph.kouta.external.KoutaFixtureTool
-import fi.oph.kouta.internal.TempElasticDockerClient
+import fi.oph.kouta.internal.TempElasticClient
 import fi.oph.kouta.internal.domain.Toteutus
 import fi.oph.kouta.internal.domain.oid.{KoulutusOid, OrganisaatioOid, ToteutusOid}
 import fi.oph.kouta.internal.elasticsearch.ToteutusClient
@@ -16,7 +16,7 @@ trait ToteutusFixture extends KoutaIntegrationSpec {
 
   addServlet(
     new ToteutusServlet(
-      new ToteutusService(new ToteutusClient("toteutus-kouta", TempElasticDockerClient.client)),
+      new ToteutusService(new ToteutusClient("toteutus-kouta", TempElasticClient.client)),
       sessionDAO
     ),
     ToteutusPath

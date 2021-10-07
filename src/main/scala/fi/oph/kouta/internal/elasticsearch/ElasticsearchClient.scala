@@ -1,16 +1,17 @@
 package fi.oph.kouta.internal.elasticsearch
 
 import com.sksamuel.elastic4s.HitReader
-import com.sksamuel.elastic4s.http.ElasticDsl._
-import com.sksamuel.elastic4s.http.get.GetResponse
-import com.sksamuel.elastic4s.http.search.{SearchIterator, SearchResponse}
-import com.sksamuel.elastic4s.http.{ElasticClient, ElasticProperties, ElasticRequest, RequestFailure, RequestSuccess}
-import com.sksamuel.elastic4s.searches.SearchRequest
-import com.sksamuel.elastic4s.searches.queries.Query
+import com.sksamuel.elastic4s.requests.searches.queries.Query
+import com.sksamuel.elastic4s.ElasticDsl._
+import com.sksamuel.elastic4s.http.JavaClient
+import com.sksamuel.elastic4s.requests.get.GetResponse
+import com.sksamuel.elastic4s.requests.searches.SearchIterator
+import com.sksamuel.elastic4s.{ElasticClient, ElasticProperties, RequestFailure, RequestSuccess}
 import fi.oph.kouta.internal.KoutaConfigurationFactory
 import fi.oph.kouta.internal.domain.WithTila
 import fi.oph.kouta.internal.domain.enums.Julkaisutila.Tallennettu
 import fi.oph.kouta.internal.util.KoutaJsonFormats
+import fi.vm.sade.utils.Timer.timed
 import fi.vm.sade.utils.slf4j.Logging
 
 import java.util.NoSuchElementException
@@ -20,14 +21,13 @@ import scala.concurrent.Future
 import scala.concurrent.duration.{Duration, FiniteDuration}
 import scala.reflect.ClassTag
 import scala.util.{Failure, Success}
-import fi.vm.sade.utils.Timer.timed
 
 trait ElasticsearchClient { this: KoutaJsonFormats with Logging =>
   val index: String
   val client: ElasticClient
 
   def getItem[T <: WithTila: HitReader](id: String): Future[T] = timed(s"GetItem from ElasticSearch (Id: ${id}", 100) {
-    val request = get(id).from(index)
+    val request = get(index, id)
     logger.debug(s"Elasticsearch query: ${request.show}")
     client
       .execute(request)
@@ -140,6 +140,6 @@ trait ElasticsearchClient { this: KoutaJsonFormats with Logging =>
 
 object ElasticsearchClient {
   val client: ElasticClient = ElasticClient(
-    ElasticProperties(KoutaConfigurationFactory.configuration.elasticSearchConfiguration.elasticUrl)
+    JavaClient(ElasticProperties(KoutaConfigurationFactory.configuration.elasticSearchConfiguration.elasticUrl))
   )
 }

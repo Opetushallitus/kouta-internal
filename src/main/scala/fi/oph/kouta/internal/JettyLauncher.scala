@@ -3,8 +3,9 @@ package fi.oph.kouta.internal
 import ch.qos.logback.access.jetty.RequestLogImpl
 import fi.vm.sade.properties.OphProperties
 import fi.vm.sade.utils.slf4j.Logging
-import org.eclipse.jetty.server.{RequestLog, Server}
+import org.eclipse.jetty.server.{Connector, RequestLog, Server, ServerConnector}
 import org.eclipse.jetty.util.resource.Resource
+import org.eclipse.jetty.util.thread.{QueuedThreadPool, ThreadPool}
 import org.eclipse.jetty.webapp.WebAppContext
 
 object JettyLauncher extends Logging {
@@ -18,12 +19,16 @@ object JettyLauncher extends Logging {
 }
 
 class JettyLauncher(val port: Int) {
-  val server  = new Server(port)
-  val context = new WebAppContext()
+  val threadPool: ThreadPool = new QueuedThreadPool(10, 5, 60000)
+  val server                 = new Server(threadPool)
+  val context                = new WebAppContext()
   context.setBaseResource(Resource.newClassPathResource("webapp"))
   context.setDescriptor("WEB-INF/web.xml")
   context.setContextPath("/kouta-internal")
   server.setHandler(context)
+  val serverConnector = new ServerConnector(server)
+  serverConnector.setPort(port)
+  server.setConnectors(Array[Connector](serverConnector))
 
   server.setRequestLog(requestLog(KoutaConfigurationFactory.configuration.urlProperties))
 
@@ -31,7 +36,6 @@ class JettyLauncher(val port: Int) {
     server.start()
     server
   }
-
   private def requestLog(properties: OphProperties): RequestLog = {
     val requestLog    = new RequestLogImpl
     val logbackAccess = properties.getOrElse("logback.access", null)

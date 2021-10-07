@@ -125,6 +125,9 @@ import fi.oph.kouta.internal.domain.oid.{HakuOid, OrganisaatioOid, UserOid}
     |           format: date-time
     |           description: Haun viimeisin muokkausaika. Järjestelmän generoima
     |           example: 2019-08-23T09:55
+    |        externalId:
+    |           type: string
+    |           description: Ulkoinen tunniste (esim. oppilaitoksen järjestelmän yksilöivä tunniste)
     |"""
 )
 case class Haku(
@@ -149,5 +152,6 @@ case class Haku(
     valintakokeet: List[Valintakoe],
     muokkaaja: UserOid,
     kielivalinta: Seq[Kieli],
-    modified: Option[LocalDateTime]
+    modified: Option[LocalDateTime],
+    externalId: Option[String]
 ) extends PerustiedotWithOid

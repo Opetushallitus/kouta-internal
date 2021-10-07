@@ -2,7 +2,7 @@ package fi.oph.kouta.internal.integration.fixture
 
 import java.util.UUID
 import clojure.java.api.Clojure
-import fi.oph.kouta.internal.TempElasticDockerClient
+import fi.oph.kouta.internal.TempElasticClient
 import fi.oph.kouta.internal.domain.oid._
 
 trait IndeksoijaFixture {
@@ -23,7 +23,7 @@ trait IndeksoijaFixture {
   intern.invoke(
     Clojure.read("clj-elasticsearch.elastic-utils"),
     Clojure.read("elastic-host"),
-    Clojure.read(TempElasticDockerClient.url)
+    Clojure.read(TempElasticClient.url)
   )
 
   def initIndices(): Unit = {
