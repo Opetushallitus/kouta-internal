@@ -121,6 +121,23 @@ case class YliopistoValintatapa(
     vahimmaispisteet: Option[Double] = None
 ) extends KorkeakoulutusValintatapa
 
+@SwaggerModel("""    LukioValintatapa:
+    |      type: object
+    |      description: Lukiokoulutuksen valintatapakuvaus
+    |      allOf:
+    |        - $ref: '#/components/schemas/KorkeakoulutusValintatapa'
+    |""")
+case class LukioValintatapa(
+    nimi: Kielistetty = Map(),
+    valintatapaKoodiUri: Option[String] = None,
+    kuvaus: Kielistetty = Map(),
+    sisalto: Seq[ValintatapaSisalto],
+    kaytaMuuntotaulukkoa: Boolean = false,
+    kynnysehto: Kielistetty = Map(),
+    enimmaispisteet: Option[Double] = None,
+    vahimmaispisteet: Option[Double] = None
+) extends KorkeakoulutusValintatapa
+
 sealed trait ValintatapaSisalto
 
 @SwaggerModel(

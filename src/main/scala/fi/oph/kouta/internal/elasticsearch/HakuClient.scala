@@ -1,15 +1,20 @@
 package fi.oph.kouta.internal.elasticsearch
 
+import com.sksamuel.elastic4s.ElasticDateMath
 import com.sksamuel.elastic4s.ElasticClient
 import com.sksamuel.elastic4s.ElasticDsl._
 import com.sksamuel.elastic4s.json4s.ElasticJson4s.Implicits._
+import com.sksamuel.elastic4s.requests.searches.queries.Query
 import fi.oph.kouta.internal.domain.Haku
+import fi.oph.kouta.internal.domain.enums.Julkaisutila
 import fi.oph.kouta.internal.domain.enums.Julkaisutila.Tallennettu
 import fi.oph.kouta.internal.domain.indexed.HakuIndexed
 import fi.oph.kouta.internal.domain.oid.{HakuOid, OrganisaatioOid}
 import fi.oph.kouta.internal.util.KoutaJsonFormats
 import fi.vm.sade.utils.slf4j.Logging
 
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
@@ -49,6 +54,43 @@ class HakuClient(val index: String, val client: ElasticClient)
     val query = ataruIdQuery ++ tarjoajaQuery
     searchItems[HakuIndexed](if (query.isEmpty) None else Some(must(query)))
       .map(_.filter(byTarjoajaAndTila(tarjoajaOids, _)).map(_.toHaku))
+  }
+
+  def hakuOidsByJulkaisutila(
+      julkaisuTilat: Option[Seq[Julkaisutila]],
+      modifiedDateStartFrom: Option[LocalDate],
+      offset: Int,
+      limit: Option[Int]
+  ): Future[Seq[HakuOid]] = {
+    var allQueries: List[Query] = List()
+    if (julkaisuTilat.isDefined) {
+      allQueries ++= julkaisuTilat.map(tilat =>
+        should(
+          tilat.map(tila =>
+            should(
+              termsQuery("tila.keyword", tila.name)
+            )
+          )
+        )
+      )
+    }
+    if (modifiedDateStartFrom.isDefined) {
+      allQueries ++= Some(
+        rangeQuery("modified").gt(ElasticDateMath(modifiedDateStartFrom.get.format(DateTimeFormatter.ISO_LOCAL_DATE)))
+      )
+    }
+    searchItemBulks[HakuIndexed](
+      if (allQueries.isEmpty) None
+      else
+        Some(must(allQueries)),
+      offset,
+      limit
+    ).map(_.map(_.oid))
+  }
+
+  def findByOids(hakuOids: Set[HakuOid]): Future[Seq[Haku]] = {
+    val hakuQuery = should(termsQuery("oid", hakuOids.map(_.toString)))
+    searchItemBulks[HakuIndexed](Some(must(hakuQuery)), 0, None).map(_.map(_.toHaku))
   }
 }
 

@@ -9,6 +9,7 @@ import fi.oph.kouta.domain.{
   AmmOsaamisala,
   AmmTutkinnonOsa,
   Koulutustyyppi,
+  Lk,
   Maksullisuustyyppi,
   Tuva,
   VapaaSivistystyoMuu,
@@ -115,6 +116,7 @@ sealed trait DefaultKoutaJsonFormats {
         case Amk                         => s.extract[AmmattikorkeakouluKoulutusMetadata]
         case AmmTutkinnonOsa             => s.extract[AmmatillinenTutkinnonOsaKoulutusMetadata]
         case AmmOsaamisala               => s.extract[AmmatillinenOsaamisalaKoulutusMetadata]
+        case Lk                          => s.extract[LukioKoulutusMetadata]
         case Tuva                        => s.extract[TuvaKoulutusMetadata]
         case VapaaSivistystyoOpistovuosi => s.extract[VapaaSivistystyoKoulutusMetadata]
         case VapaaSivistystyoMuu         => s.extract[VapaaSivistystyoKoulutusMetadata]
@@ -138,6 +140,7 @@ sealed trait DefaultKoutaJsonFormats {
         case Amm                         => s.extract[AmmatillinenKoulutusMetadataIndexed]
         case AmmTutkinnonOsa             => s.extract[AmmatillinenTutkinnonOsaKoulutusMetadataIndexed]
         case AmmOsaamisala               => s.extract[AmmatillinenOsaamisalaKoulutusMetadataIndexed]
+        case Lk                          => s.extract[LukioKoulutusMetadataIndexed]
         case Tuva                        => s.extract[TuvaKoulutusMetadataIndexed]
         case VapaaSivistystyoOpistovuosi => s.extract[VapaaSivistystyoKoulutusMetadataIndexed]
         case VapaaSivistystyoMuu         => s.extract[VapaaSivistystyoKoulutusMetadataIndexed]
@@ -161,6 +164,7 @@ sealed trait DefaultKoutaJsonFormats {
         case Amk                         => s.extract[AmmattikorkeakouluToteutusMetadata]
         case AmmTutkinnonOsa             => s.extract[AmmatillinenTutkinnonOsaToteutusMetadata]
         case AmmOsaamisala               => s.extract[AmmatillinenOsaamisalaToteutusMetadata]
+        case Lk                          => s.extract[LukioToteutusMetadata]
         case Tuva                        => s.extract[TuvaToteutusMetadata]
         case VapaaSivistystyoOpistovuosi => s.extract[VapaaSivistystyoOpistovuosiToteutusMetadata]
         case VapaaSivistystyoMuu         => s.extract[VapaaSivistystyoMuuToteutusMetadata]
@@ -184,6 +188,7 @@ sealed trait DefaultKoutaJsonFormats {
         case Amm                         => s.extract[AmmatillinenToteutusMetadataIndexed]
         case AmmTutkinnonOsa             => s.extract[AmmatillinenTutkinnonOsaToteutusMetadataIndexed]
         case AmmOsaamisala               => s.extract[AmmatillinenOsaamisalaToteutusMetadataIndexed]
+        case Lk                          => s.extract[LukioToteutusMetadataIndexed]
         case Tuva                        => s.extract[TuvaToteutusMetadataIndexed]
         case VapaaSivistystyoOpistovuosi => s.extract[VapaaSivistystyoOpistovuosiToteutusMetadataIndexed]
         case VapaaSivistystyoMuu         => s.extract[VapaaSivistystyoMuuToteutusMetadataIndexed]
@@ -205,6 +210,7 @@ sealed trait DefaultKoutaJsonFormats {
         case Yo                          => s.extract[YliopistoValintaperusteMetadata]
         case Amm                         => s.extract[AmmatillinenValintaperusteMetadata]
         case Amk                         => s.extract[AmmattikorkeakouluValintaperusteMetadata]
+        case Lk                          => s.extract[LukioValintaperusteMetadata]
         case Tuva                        => s.extract[TuvaValintaperusteMetadata]
         case VapaaSivistystyoOpistovuosi => s.extract[VapaaSivistystyoValintaperusteMetadata]
         case VapaaSivistystyoMuu         => s.extract[VapaaSivistystyoValintaperusteMetadata]
@@ -226,6 +232,7 @@ sealed trait DefaultKoutaJsonFormats {
         case Yo                          => s.extract[YliopistoValintaperusteMetadataIndexed]
         case Amm                         => s.extract[AmmatillinenValintaperusteMetadataIndexed]
         case Amk                         => s.extract[AmmattikorkeakouluValintaperusteMetadataIndexed]
+        case Lk                          => s.extract[LukioValintaperusteMetadataIndexed]
         case Tuva                        => s.extract[TuvaValintaperusteMetadataIndexed]
         case VapaaSivistystyoOpistovuosi => s.extract[VapaaSivistystyoValintaperusteMetadataIndexed]
         case VapaaSivistystyoMuu         => s.extract[VapaaSivistystyoValintaperusteMetadataIndexed]

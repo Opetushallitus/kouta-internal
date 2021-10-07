@@ -318,3 +318,164 @@ case class VapaaSivistystyoMuuToteutusMetadata(
     hakuaika: Option[Ajanjakso],
     aloituspaikat: Option[Int]
 ) extends TutkintoonJohtamatonToteutusMetadata
+
+@SwaggerModel(
+  """    Kielivalikoima:
+    |      type: object
+    |      properties:
+    |        A1Kielet:
+    |          type: array
+    |          description: Lista koulutuksen toteutuksen A1 kielistä. Viittaa [koodistoon](https://virkailija.testiopintopolku.fi/koodisto-ui/html/koodisto/kieli/1)
+    |          items:
+    |            type: string
+    |            example:
+    |              - kieli_EN#1
+    |              - kieli_FI#1
+    |        A2Kielet:
+    |          type: array
+    |          description: Lista koulutuksen toteutuksen A2 kielistä. Viittaa [koodistoon](https://virkailija.testiopintopolku.fi/koodisto-ui/html/koodisto/kieli/1)
+    |          items:
+    |            type: string
+    |            example:
+    |              - kieli_EN#1
+    |              - kieli_FI#1
+    |        B1Kielet:
+    |          type: array
+    |          description: Lista koulutuksen toteutuksen B1 kielistä. Viittaa [koodistoon](https://virkailija.testiopintopolku.fi/koodisto-ui/html/koodisto/kieli/1)
+    |          items:
+    |            type: string
+    |            example:
+    |              - kieli_EN#1
+    |              - kieli_FI#1
+    |        B2Kielet:
+    |          type: array
+    |          description: Lista koulutuksen toteutuksen B2 kielistä. Viittaa [koodistoon](https://virkailija.testiopintopolku.fi/koodisto-ui/html/koodisto/kieli/1)
+    |          items:
+    |            type: string
+    |            example:
+    |              - kieli_EN#1
+    |              - kieli_FI#1
+    |        B3Kielet:
+    |          type: array
+    |          description: Lista koulutuksen toteutuksen B3 kielistä. Viittaa [koodistoon](https://virkailija.testiopintopolku.fi/koodisto-ui/html/koodisto/kieli/1)
+    |          items:
+    |            type: string
+    |            example:
+    |              - kieli_EN#1
+    |              - kieli_FI#1
+    |        aidinkielet:
+    |          type: array
+    |          description: Lista koulutuksen toteutuksen äidinkielistä. Viittaa [koodistoon](https://virkailija.testiopintopolku.fi/koodisto-ui/html/koodisto/kieli/1)
+    |          items:
+    |            type: string
+    |            example:
+    |              - kieli_EN#1
+    |              - kieli_FI#1
+    |        muutKielet:
+    |          type: array
+    |          description: Lista koulutuksen toteutuksen muista kielistä. Viittaa [koodistoon](https://virkailija.testiopintopolku.fi/koodisto-ui/html/koodisto/kieli/1)
+    |          items:
+    |            type: string
+    |            example:
+    |              - kieli_EN#1
+    |              - kieli_FI#1
+    |"""
+)
+case class Kielivalikoima(
+    A1Kielet: Seq[String] = Seq(),
+    A2Kielet: Seq[String] = Seq(),
+    B1Kielet: Seq[String] = Seq(),
+    B2Kielet: Seq[String] = Seq(),
+    B3Kielet: Seq[String] = Seq(),
+    aidinkielet: Seq[String] = Seq(),
+    muutKielet: Seq[String] = Seq()
+)
+
+@SwaggerModel(
+  """    LukiolinjaTieto:
+    |      type: object
+    |      description: Toteutuksen yksittäisen lukiolinjatiedon kentät
+    |      properties:
+    |        koodiUri:
+    |          type: string
+    |          description: Lukiolinjatiedon koodiUri.
+    |        kuvaus:
+    |          type: object
+    |          description: Lukiolinjatiedon kuvaus eri kielillä. Kielet on määritetty toteutuksen kielivalinnassa.
+    |          $ref: '#/components/schemas/Kuvaus'
+    |"""
+)
+case class LukiolinjaTieto(koodiUri: String, kuvaus: Kielistetty)
+
+@SwaggerModel(
+  """    LukiodiplomiTieto:
+    |      type: object
+    |      description: Toteutuksen yksittäisen lukiodiplomitiedon kentät
+    |      properties:
+    |        koodiUri:
+    |          type: string
+    |          description: Lukiodiplomin koodiUri. Viittaa [koodistoon](https://virkailija.testiopintopolku.fi/koodisto-ui/html/koodisto/moduulikoodistolops2021/1).
+    |        linkki:
+    |          type: object
+    |          description: Lukiodiplomin kielistetyt lisätietolinkit. Kielet on määritetty toteutuksen kielivalinnassa.
+    |          $ref: '#/components/schemas/Linkki'
+    |        linkinAltTeksti:
+    |          type: object
+    |          description: Lukiodiplomin kielistettyjen lisätietolinkkien alt-tekstit. Kielet on määritetty toteutuksen kielivalinnassa.
+    |          $ref: '#/components/schemas/Teksti'
+    |"""
+)
+case class LukiodiplomiTieto(koodiUri: String, linkki: Kielistetty, linkinAltTeksti: Kielistetty)
+
+@SwaggerModel(
+  """    LukioToteutusMetadata:
+    |      allOf:
+    |        - $ref: '#/components/schemas/ToteutusMetadata'
+    |        - type: object
+    |          properties:
+    |            koulutustyyppi:
+    |              type: string
+    |              description: Toteutuksen metatiedon tyyppi
+    |              example: lk
+    |              enum:
+    |                - lk
+    |            kielivalikoima:
+    |              type: object
+    |              description: Koulutuksen kielivalikoima
+    |              $ref: '#/components/schemas/Kielivalikoima'
+    |            yleislinja:
+    |              type: boolean,
+    |              description: Onko lukio-toteutuksella yleislinja?
+    |            painotukset:
+    |              type: array
+    |              description: Lukio-toteutuksen painotukset. Taulukon alkioiden koodiUri-kentät viittaavat [koodistoon](https://virkailija.testiopintopolku.fi/koodisto-ui/html/koodisto/lukiopainotukset/1).
+    |              items:
+    |                type: object
+    |                $ref: '#/components/schemas/LukiolinjaTieto'
+    |            erityisetKoulutustehtavat:
+    |              type: array
+    |              description: Lukio-toteutuksen erityiset koulutustehtävät. Taulukon alkioiden koodiUri-kentät viittaavat [koodistoon](https://virkailija.testiopintopolku.fi/koodisto-ui/html/koodisto/lukiolinjaterityinenkoulutustehtava/1).
+    |              items:
+    |                type: object
+    |                $ref: '#/components/schemas/LukiolinjaTieto'
+    |            diplomit:
+    |              type: array
+    |              description: Lukio-toteutuksen diplomit
+    |              items:
+    |                type: object
+    |                $ref: '#/components/schemas/LukiodiplomiTieto'
+    |"""
+)
+case class LukioToteutusMetadata(
+    tyyppi: Koulutustyyppi,
+    kuvaus: Kielistetty,
+    opetus: Option[Opetus],
+    asiasanat: List[Keyword],
+    ammattinimikkeet: List[Keyword],
+    yhteyshenkilot: Seq[Yhteyshenkilo],
+    kielivalikoima: Option[Kielivalikoima],
+    yleislinja: Boolean,
+    painotukset: Seq[LukiolinjaTieto],
+    erityisetKoulutustehtavat: Seq[LukiolinjaTieto],
+    diplomit: Seq[LukiodiplomiTieto]
+) extends ToteutusMetadata

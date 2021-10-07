@@ -5,7 +5,7 @@ import java.util.UUID
 
 import fi.oph.kouta.internal.swagger.SwaggerModel
 import fi.oph.kouta.internal.domain.enums.{Hakulomaketyyppi, Julkaisutila, Kieli}
-import fi.oph.kouta.internal.domain.oid.{HakuOid, HakukohdeOid, OrganisaatioOid, UserOid}
+import fi.oph.kouta.internal.domain.oid.{HakuOid, OrganisaatioOid, UserOid}
 
 @SwaggerModel(
   """    Haku:

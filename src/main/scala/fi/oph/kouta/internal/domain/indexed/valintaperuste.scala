@@ -2,8 +2,7 @@ package fi.oph.kouta.internal.domain.indexed
 
 import java.time.LocalDateTime
 import java.util.UUID
-
-import fi.oph.kouta.domain.{Koulutustyyppi, Amm, Amk, Yo, Tuva}
+import fi.oph.kouta.domain.{Amk, Amm, Koulutustyyppi, Lk, Tuva, Yo}
 import fi.oph.kouta.internal.domain.enums.{Julkaisutila, Kieli}
 import fi.oph.kouta.internal.domain._
 import fi.vm.sade.utils.slf4j.Logging
@@ -17,7 +16,6 @@ case class ValintaperusteIndexed(
     kohdejoukonTarkenne: Option[KoodiUri],
     nimi: Kielistetty,
     julkinen: Boolean,
-    @deprecated("Kenttä siirretty koulutukselle") sorakuvaus: Option[SorakuvausIndexed],
     metadata: Option[ValintaperusteMetadataIndexed],
     organisaatio: Option[Organisaatio],
     muokkaaja: Muokkaaja,
@@ -37,7 +35,6 @@ case class ValintaperusteIndexed(
         kohdejoukonTarkenneKoodiUri = kohdejoukonTarkenne.map(_.koodiUri),
         nimi = nimi,
         julkinen = julkinen,
-        sorakuvausId = sorakuvaus.map(_.id),
         metadata = metadata.map(_.toValintaperusteMetadata),
         organisaatioOid = organisaatio.get.oid,
         muokkaaja = muokkaaja.oid,
@@ -122,6 +119,19 @@ case class AmmattikorkeakouluValintaperusteMetadataIndexed(
     )
 }
 
+case class LukioValintaperusteMetadataIndexed(
+    koulutustyyppi: Koulutustyyppi = Lk,
+    valintatavat: Seq[LukioValintatapaIndexed],
+    kuvaus: Kielistetty
+) extends ValintaperusteMetadataIndexed {
+  override def toValintaperusteMetadata: LukioValintaperusteMetadata =
+    LukioValintaperusteMetadata(
+      koulutustyyppi = koulutustyyppi,
+      valintatavat = valintatavat.map(_.toLukioValintatapa),
+      kuvaus = kuvaus
+    )
+}
+
 sealed trait ValintatapaIndexed {
   def valintatapa: Option[KoodiUri]
   def kuvaus: Kielistetty
@@ -189,6 +199,28 @@ case class YliopistoValintatapaIndexed(
     vahimmaispisteet: Option[Double]
 ) extends KorkeakoulutusValintatapaIndexed {
   def toYliopistoValintatapa: YliopistoValintatapa = YliopistoValintatapa(
+    nimi = nimi,
+    valintatapaKoodiUri = valintatapa.map(_.koodiUri),
+    kuvaus = kuvaus,
+    sisalto = sisalto,
+    kaytaMuuntotaulukkoa = kaytaMuuntotaulukkoa,
+    kynnysehto = kynnysehto,
+    enimmaispisteet = enimmaispisteet,
+    vahimmaispisteet = vahimmaispisteet
+  )
+}
+
+case class LukioValintatapaIndexed(
+    nimi: Kielistetty,
+    valintatapa: Option[KoodiUri],
+    kuvaus: Kielistetty,
+    sisalto: Seq[ValintatapaSisalto],
+    kaytaMuuntotaulukkoa: Boolean,
+    kynnysehto: Kielistetty,
+    enimmaispisteet: Option[Double],
+    vahimmaispisteet: Option[Double]
+) extends KorkeakoulutusValintatapaIndexed {
+  def toLukioValintatapa: LukioValintatapa = LukioValintatapa(
     nimi = nimi,
     valintatapaKoodiUri = valintatapa.map(_.koodiUri),
     kuvaus = kuvaus,

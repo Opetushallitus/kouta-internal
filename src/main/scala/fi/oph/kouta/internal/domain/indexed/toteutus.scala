@@ -1,6 +1,6 @@
 package fi.oph.kouta.internal.domain.indexed
 
-import fi.oph.kouta.domain.{Alkamiskausityyppi, Hakutermi, Koulutustyyppi, Maksullisuustyyppi}
+import fi.oph.kouta.domain.{Alkamiskausityyppi, Hakutermi, Koulutustyyppi, Lk, Maksullisuustyyppi}
 import fi.oph.kouta.internal.domain._
 import fi.oph.kouta.internal.domain.enums.{Hakulomaketyyppi, Julkaisutila, Kieli}
 import fi.oph.kouta.internal.domain.oid.{KoulutusOid, ToteutusOid}
@@ -346,4 +346,62 @@ case class OpetusIndexed(
     alkamisvuosi = koulutuksenAlkamiskausi.flatMap(_.koulutuksenAlkamisvuosi),
     lisatiedot = lisatiedot.map(_.toLisatieto)
   )
+}
+
+case class KielivalikoimaIndexed(
+    A1Kielet: Seq[KoodiUri] = Seq(),
+    A2Kielet: Seq[KoodiUri] = Seq(),
+    B1Kielet: Seq[KoodiUri] = Seq(),
+    B2Kielet: Seq[KoodiUri] = Seq(),
+    B3Kielet: Seq[KoodiUri] = Seq(),
+    aidinkielet: Seq[KoodiUri] = Seq(),
+    muutKielet: Seq[KoodiUri] = Seq()
+) {
+  def toKielivalikoima: Kielivalikoima =
+    Kielivalikoima(
+      A1Kielet = A1Kielet.map(_.koodiUri),
+      A2Kielet = A2Kielet.map(_.koodiUri),
+      B1Kielet = B1Kielet.map(_.koodiUri),
+      B2Kielet = B2Kielet.map(_.koodiUri),
+      B3Kielet = B3Kielet.map(_.koodiUri),
+      aidinkielet = aidinkielet.map(_.koodiUri),
+      muutKielet = muutKielet.map(_.koodiUri)
+    )
+}
+
+case class LukiolinjaTietoIndexed(koodi: KoodiUri, kuvaus: Kielistetty) {
+  def toLukioLinjaTieto: LukiolinjaTieto = LukiolinjaTieto(koodi.koodiUri, kuvaus)
+}
+
+case class LukiodiplomiTietoIndexed(koodi: KoodiUri, linkki: Kielistetty, linkinAltTeksti: Kielistetty) {
+  def toLukioDiplomiTieto: LukiodiplomiTieto = LukiodiplomiTieto(koodi.koodiUri, linkki, linkinAltTeksti)
+}
+
+case class LukioToteutusMetadataIndexed(
+    tyyppi: Koulutustyyppi = Lk,
+    kuvaus: Kielistetty,
+    opetus: Option[OpetusIndexed],
+    asiasanat: List[Keyword],
+    ammattinimikkeet: List[Keyword],
+    yhteyshenkilot: Seq[Yhteyshenkilo],
+    kielivalikoima: Option[KielivalikoimaIndexed],
+    yleislinja: Boolean,
+    painotukset: Seq[LukiolinjaTietoIndexed],
+    erityisetKoulutustehtavat: Seq[LukiolinjaTietoIndexed],
+    diplomit: Seq[LukiodiplomiTietoIndexed]
+) extends ToteutusMetadataIndexed {
+  def toToteutusMetadata: LukioToteutusMetadata =
+    LukioToteutusMetadata(
+      tyyppi = tyyppi,
+      kuvaus = kuvaus,
+      opetus = opetus.map(_.toOpetus),
+      asiasanat = asiasanat,
+      ammattinimikkeet = ammattinimikkeet,
+      yhteyshenkilot = yhteyshenkilot,
+      kielivalikoima = kielivalikoima.map(_.toKielivalikoima),
+      yleislinja = yleislinja,
+      painotukset = painotukset.map(_.toLukioLinjaTieto),
+      erityisetKoulutustehtavat = erityisetKoulutustehtavat.map(_.toLukioLinjaTieto),
+      diplomit = diplomit.map(_.toLukioDiplomiTieto)
+    )
 }

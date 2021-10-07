@@ -1,11 +1,12 @@
 package fi.oph.kouta.internal.elasticsearch
 
+import com.sksamuel.elastic4s.HitReader
+import com.sksamuel.elastic4s.requests.searches.queries.Query
 import com.sksamuel.elastic4s.ElasticDsl._
 import com.sksamuel.elastic4s.http.JavaClient
 import com.sksamuel.elastic4s.requests.get.GetResponse
 import com.sksamuel.elastic4s.requests.searches.SearchIterator
-import com.sksamuel.elastic4s.requests.searches.queries.Query
-import com.sksamuel.elastic4s.{ElasticClient, ElasticProperties, HitReader, RequestFailure, RequestSuccess}
+import com.sksamuel.elastic4s.{ElasticClient, ElasticProperties, RequestFailure, RequestSuccess}
 import fi.oph.kouta.internal.KoutaConfigurationFactory
 import fi.oph.kouta.internal.domain.WithTila
 import fi.oph.kouta.internal.domain.enums.Julkaisutila.Tallennettu
@@ -104,6 +105,35 @@ trait ElasticsearchClient { this: KoutaJsonFormats with Logging =>
             )
         }
       })
+    }
+  }
+
+  def searchItemBulks[T: HitReader: ClassTag](
+      query: Option[Query],
+      offset: Int,
+      limit: Option[Int]
+  ): Future[IndexedSeq[T]] = {
+    timed(s"Search item bulks from ElasticSearch (Query: ${query}, offset: ${offset}, limit: ${limit})", 100) {
+      implicit val duration: FiniteDuration = Duration(1, TimeUnit.MINUTES)
+      val request                           = search(index).query(query.get).keepAlive("1m").size(500)
+      logger.info(s"Elasticsearch request: ${request.show}")
+      Future {
+        SearchIterator
+          .hits(client, request)
+          .toIndexedSeq
+          .map(hit => hit.safeTo[T])
+          .flatMap(entity =>
+            entity match {
+              case Success(value) => Some(value)
+              case Failure(exception) =>
+                logger.error(
+                  s"Unable to deserialize json response to entity: ",
+                  exception
+                )
+                None
+            }
+          )
+      }
     }
   }
 }
