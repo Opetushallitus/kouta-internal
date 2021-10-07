@@ -16,17 +16,24 @@ import scala.concurrent.Await
 import scala.concurrent.duration.Duration
 import scala.util.Try
 import scala.util.control.NonFatal
+import com.github.takezoe.slick.blocking.BlockingH2Driver.blockingApi._
+import slick.sql.{SqlAction, SqlStreamingAction}
 
 class KoutaDatabase(settings: KoutaDatabaseConfiguration) extends Logging {
   val db = initDb()
 
-  def runBlocking[R](operations: DBIO[R], timeout: Duration = Duration(10, TimeUnit.MINUTES)): R = {
-    Await.result(
-      db.run(operations.withStatementParameters(statementInit = st => st.setQueryTimeout(timeout.toSeconds.toInt))),
-      timeout + Duration(1, TimeUnit.SECONDS)
-    )
+  def runBlocking[R](operations: SqlStreamingAction[R, String, Effect]): R = {
+    db.withSession {
+      implicit session =>
+        operations.run
+    }
   }
-
+  def runBlocking[R](operations: SqlAction[R, NoStream, Effect]): R = {
+    db.withSession {
+      implicit session =>
+        operations.run
+    }
+  }
   def runBlockingTransactionally[R](
       operations: DBIO[R],
       timeout: Duration = Duration(20, TimeUnit.SECONDS),

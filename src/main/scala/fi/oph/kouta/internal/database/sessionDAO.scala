@@ -62,7 +62,7 @@ class SessionDAO(db: KoutaDatabase) extends SQLHelpers {
     ) match {
       case Right(result) => {
         result.map { case (casTicket, personOid) =>
-          val authorities = db.runBlocking(searchAuthoritiesBySession(id), Duration(2, TimeUnit.SECONDS))
+          val authorities = db.runBlocking(searchAuthoritiesBySession(id))
           CasSession(ServiceTicket(casTicket.get), personOid, authorities.map(Authority(_)).toSet)
         }
       }
