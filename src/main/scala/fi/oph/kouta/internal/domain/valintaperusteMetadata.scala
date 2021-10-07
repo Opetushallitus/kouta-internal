@@ -1,6 +1,16 @@
 package fi.oph.kouta.internal.domain
 
-import fi.oph.kouta.domain.{Amk, Amm, Koulutustyyppi, Lk, Tuva, Telma, VapaaSivistystyoOpistovuosi, VapaaSivistystyoMuu, Yo}
+import fi.oph.kouta.domain.{
+  Amk,
+  Amm,
+  Koulutustyyppi,
+  Lk,
+  Tuva,
+  Telma,
+  VapaaSivistystyoOpistovuosi,
+  VapaaSivistystyoMuu,
+  Yo
+}
 import fi.oph.kouta.internal.swagger.SwaggerModel
 
 @SwaggerModel("""    ValintaperusteMetadata:
