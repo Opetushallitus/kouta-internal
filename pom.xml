@@ -464,6 +464,16 @@
             <groupId>com.github.takezoe</groupId>
             <artifactId>blocking-slick-32_2.12</artifactId>
             <version>0.0.12</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>com.typesafe.slick</groupId>
+                    <artifactId>slick_2.12</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.scala-lang</groupId>
+                    <artifactId>scala-library</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
         <dependency>

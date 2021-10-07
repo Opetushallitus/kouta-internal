@@ -7,49 +7,35 @@ import fi.vm.sade.utils.slf4j.Logging
 import org.apache.commons.lang3.builder.ToStringBuilder
 import org.flywaydb.core.Flyway
 import org.postgresql.util.PSQLException
-import slick.dbio.DBIO
-import slick.jdbc.PostgresProfile.api._
-import slick.jdbc.TransactionIsolation.Serializable
-
 import java.util.ConcurrentModificationException
-import scala.concurrent.Await
 import scala.concurrent.duration.Duration
-import scala.util.Try
 import scala.util.control.NonFatal
 import com.github.takezoe.slick.blocking.BlockingH2Driver.blockingApi._
-import slick.sql.{SqlAction, SqlStreamingAction}
 
 class KoutaDatabase(settings: KoutaDatabaseConfiguration) extends Logging {
   val db = initDb()
 
-  def runBlocking[R](operations: SqlStreamingAction[R, String, Effect]): R = {
-    db.withSession {
-      implicit session =>
-        operations.run
+  def runBlocking[R](operations: DBIOAction[R, NoStream, Effect]): R = {
+    db.withTransaction { implicit transactional =>
+      operations.run
     }
   }
-  def runBlocking[R](operations: SqlAction[R, NoStream, Effect]): R = {
-    db.withSession {
-      implicit session =>
-        operations.run
-    }
-  }
+
   def runBlockingTransactionally[R](
-      operations: DBIO[R],
-      timeout: Duration = Duration(20, TimeUnit.SECONDS),
+      operations: DBIOAction[R, NoStream, Effect],
       description: String,
       wait: Duration = Duration(1, TimeUnit.SECONDS),
       retries: Int = 1
   ): Either[Throwable, R] = {
     val SERIALIZATION_VIOLATION = "40001"
     try {
-      Right(runBlocking(operations.transactionally.withTransactionIsolation(Serializable), timeout))
+      Right(runBlocking(operations))
     } catch {
       case e: PSQLException if e.getSQLState == SERIALIZATION_VIOLATION =>
         if (retries > 0) {
           logger.warn(s"$description failed because of an concurrent action, retrying after $wait")
           Thread.sleep(wait.toMillis)
-          runBlockingTransactionally(operations, timeout, description, wait + wait, retries - 1)
+          runBlockingTransactionally(operations, description, wait + wait, retries - 1)
         } else {
           Left(new ConcurrentModificationException(s"$description failed because of an concurrent action.", e))
         }
@@ -84,7 +70,7 @@ class KoutaDatabase(settings: KoutaDatabaseConfiguration) extends Logging {
 
     logger.info(s"Configured Hikari with $className $hikariString and executor $executorName")
 
-    Database.forDataSource(new HikariDataSource(hikariConfig), maxConnections = Some(maxPoolSize), executor)
+    Database.forDataSource(new HikariDataSource(hikariConfig), maxConnections = Some(maxPoolSize))
   }
 
   private def migrate(): Unit = {
