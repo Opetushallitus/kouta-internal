@@ -2,7 +2,7 @@ package fi.oph.kouta.internal.domain.indexed
 
 import java.time.LocalDateTime
 import java.util.UUID
-import fi.oph.kouta.domain.{Amk, Amm, Koulutustyyppi, Lk, Tuva, Yo}
+import fi.oph.kouta.domain.{Amk, Amm, Koulutustyyppi, Lk, Tuva, Telma, Yo}
 import fi.oph.kouta.internal.domain.enums.{Julkaisutila, Kieli}
 import fi.oph.kouta.internal.domain._
 import fi.vm.sade.utils.slf4j.Logging
@@ -74,6 +74,16 @@ case class TuvaValintaperusteMetadataIndexed(
     valintatavat: Seq[AmmatillinenValintatapaIndexed]
 ) extends ValintaperusteMetadataIndexed {
   override def toValintaperusteMetadata: ValintaperusteMetadata = TuvaValintaperusteMetadata(
+    koulutustyyppi = koulutustyyppi,
+    valintatavat = valintatavat.map(_.toAmmatillinenValintatapa)
+  )
+}
+
+case class TelmaValintaperusteMetadataIndexed(
+    koulutustyyppi: Koulutustyyppi = Telma,
+    valintatavat: Seq[AmmatillinenValintatapaIndexed]
+) extends ValintaperusteMetadataIndexed {
+  override def toValintaperusteMetadata: ValintaperusteMetadata = TelmaValintaperusteMetadata(
     koulutustyyppi = koulutustyyppi,
     valintatavat = valintatavat.map(_.toAmmatillinenValintatapa)
   )
