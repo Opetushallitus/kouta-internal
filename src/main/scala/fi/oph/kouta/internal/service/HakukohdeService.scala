@@ -41,8 +41,9 @@ class HakukohdeService(hakukohdeClient: HakukohdeClient, hakuService: HakuServic
     )
   }
 
-  def findByOids(tarjoajaOids: Option[Set[OrganisaatioOid]], hakukohdeOids: Set[HakukohdeOid])(implicit
-      authenticated: Authenticated
+  def findByOids(tarjoajaOids: Option[Set[OrganisaatioOid]], hakukohdeOids: Set[HakukohdeOid])(
+      /*implicit
+      authenticated: Authenticated*/
   ): Future[Seq[Hakukohde]] = {
     val withRootOikeus = tarjoajaOids.exists(_.contains(rootOrganisaatioOid))
     val oikeusHakukohteeseenFn =

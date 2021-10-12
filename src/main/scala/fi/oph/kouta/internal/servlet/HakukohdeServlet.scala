@@ -157,7 +157,7 @@ class HakukohdeServlet(hakukohdeService: HakukohdeService, val sessionDAO: Sessi
       |""".stripMargin
   )
   post("/findbyoids") {
-    implicit val authenticated: Authenticated = authenticate
+    //implicit val authenticated: Authenticated = authenticate
 
     val tarjoaja  = params.get("tarjoaja").map(s => s.split(",").map(OrganisaatioOid).toSet)
     val hakukohde = parsedBody.extract[Set[HakukohdeOid]]
