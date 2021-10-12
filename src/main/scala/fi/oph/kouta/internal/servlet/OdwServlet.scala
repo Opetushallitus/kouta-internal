@@ -64,7 +64,7 @@ class OdwServlet(odwService: OdwService, val sessionDAO: SessionDAO)
       |""".stripMargin
   )
   get("/listHakuOids") {
-    //implicit val authenticated: Authenticated = authenticate
+    implicit val authenticated: Authenticated = authenticate
 
     val modifiedDateStartFrom =
       Try(LocalDate.parse(params("fromDate"), DateTimeFormatter.ofPattern("yyyy-MM-dd"))).toOption
@@ -102,8 +102,8 @@ class OdwServlet(odwService: OdwService, val sessionDAO: SessionDAO)
       |""".stripMargin
   )
   post("/findHautByOids") {
-    //implicit val authenticated: Authenticated = authenticate
-    val hakuOids = parsedBody.extract[Set[HakuOid]]
+    implicit val authenticated: Authenticated = authenticate
+    val hakuOids                              = parsedBody.extract[Set[HakuOid]]
 
     hakuOids match {
       case (oids) if (oids.exists(!_.isValid())) =>
@@ -140,7 +140,7 @@ class OdwServlet(odwService: OdwService, val sessionDAO: SessionDAO)
       |""".stripMargin
   )
   get("/listHakukohdeOids") {
-    //implicit val authenticated: Authenticated = authenticate
+    implicit val authenticated: Authenticated = authenticate
 
     val modifiedDateStartFrom =
       Try(LocalDate.parse(params("fromDate"), DateTimeFormatter.ofPattern("yyyy-MM-dd"))).toOption

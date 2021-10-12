@@ -15,9 +15,8 @@ class OdwService(
     koulutusClient: KoulutusClient,
     toteutusClient: ToteutusClient
 ) {
-  def listAllHakuOids(modifiedDateStartFrom: Option[LocalDate], offset: Int, limit: Option[Int])(
-      /*implicit
-      authenticated: Authenticated*/
+  def listAllHakuOids(modifiedDateStartFrom: Option[LocalDate], offset: Int, limit: Option[Int])(implicit
+      authenticated: Authenticated
   ): Future[Seq[HakuOid]] =
     hakuClient.hakuOidsByJulkaisutila(
       Some(Seq(Julkaisutila.Julkaistu, Julkaisutila.Arkistoitu)),
@@ -26,9 +25,8 @@ class OdwService(
       limit
     )
 
-  def listAllHakukohdeOids(modifiedDateStartFrom: Option[LocalDate], offset: Int, limit: Option[Int])(
-      /*implicit
-      authenticated: Authenticated*/
+  def listAllHakukohdeOids(modifiedDateStartFrom: Option[LocalDate], offset: Int, limit: Option[Int])(implicit
+      authenticated: Authenticated
   ): Future[Seq[HakukohdeOid]] =
     hakukohdeClient.hakukohdeOidsByJulkaisutila(
       Some(Seq(Julkaisutila.Julkaistu, Julkaisutila.Arkistoitu)),
@@ -57,7 +55,7 @@ class OdwService(
       limit
     )
 
-  def findHautByOids(hakuOids: Set[HakuOid])( /*implicit authenticated: Authenticated*/ ): Future[Seq[Haku]] =
+  def findHautByOids(hakuOids: Set[HakuOid])(implicit authenticated: Authenticated): Future[Seq[Haku]] =
     hakuClient.findByOids(hakuOids)
 
   def findHakukohteetByOids(hakukohteetOids: Set[HakukohdeOid])(implicit
