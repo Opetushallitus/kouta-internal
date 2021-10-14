@@ -16,7 +16,6 @@ class SessionDAO(db: KoutaDatabase) extends SQLHelpers {
       val id = UUID.randomUUID()
       db.runBlockingTransactionally(
         storeCasSession(id, ticket, personOid, authorities),
-        timeout = Duration(10, TimeUnit.SECONDS),
         s"Storing session id: ${id.toString}"
       ) match {
         case Right(_) => id
@@ -27,7 +26,6 @@ class SessionDAO(db: KoutaDatabase) extends SQLHelpers {
   def store(session: CasSession, id: UUID): UUID =
     db.runBlockingTransactionally(
       storeCasSession(id, session.casTicket.s, session.personOid, session.authorities),
-      timeout = Duration(10, TimeUnit.SECONDS),
       s"Storing session: ${session.toString}"
     ) match {
       case Right(_) => id
@@ -37,7 +35,6 @@ class SessionDAO(db: KoutaDatabase) extends SQLHelpers {
   def delete(id: UUID): Boolean =
     db.runBlockingTransactionally(
       deleteSession(id),
-      timeout = Duration(10, TimeUnit.SECONDS),
       s"Deleting session id: ${id.toString}"
     ) match {
       case Right(result) => result
@@ -47,7 +44,6 @@ class SessionDAO(db: KoutaDatabase) extends SQLHelpers {
   def delete(ticket: ServiceTicket): Boolean =
     db.runBlockingTransactionally(
       deleteSession(ticket),
-      timeout = Duration(10, TimeUnit.SECONDS),
       s"Deleting session: ${ticket.toString}"
     ) match {
       case Right(result) => result
@@ -57,12 +53,11 @@ class SessionDAO(db: KoutaDatabase) extends SQLHelpers {
   def get(id: UUID): Option[Session] = {
     db.runBlockingTransactionally(
       getSession(id),
-      timeout = Duration(9, TimeUnit.SECONDS),
       s"Fetching session: ${id.toString}"
     ) match {
       case Right(result) => {
         result.map { case (casTicket, personOid) =>
-          val authorities = db.runBlocking(searchAuthoritiesBySession(id), Duration(2, TimeUnit.SECONDS))
+          val authorities = db.runBlocking(searchAuthoritiesBySession(id))
           CasSession(ServiceTicket(casTicket.get), personOid, authorities.map(Authority(_)).toSet)
         }
       }
