@@ -5,7 +5,7 @@ import com.sksamuel.elastic4s.requests.searches.queries.Query
 import com.sksamuel.elastic4s.ElasticDsl._
 import com.sksamuel.elastic4s.http.JavaClient
 import com.sksamuel.elastic4s.requests.get.GetResponse
-import com.sksamuel.elastic4s.requests.searches.SearchIterator
+import com.sksamuel.elastic4s.requests.searches.SearchRequest
 import com.sksamuel.elastic4s.{ElasticClient, ElasticProperties, RequestFailure, RequestSuccess}
 import fi.oph.kouta.internal.KoutaConfigurationFactory
 import fi.oph.kouta.internal.domain.WithTila
@@ -77,33 +77,13 @@ trait ElasticsearchClient { this: KoutaJsonFormats with Logging =>
 
   def searchItems[T: HitReader: ClassTag](query: Option[Query]): Future[IndexedSeq[T]] = {
     timed(s"SearchItems from ElasticSearch (Query: ${query}", 100) {
-      val notTallennettu                    = not(termsQuery("tila.keyword", "tallennettu"))
-      implicit val duration: FiniteDuration = Duration(1, TimeUnit.MINUTES)
+      val notTallennettu = not(termsQuery("tila.keyword", "tallennettu"))
 
-      query.fold[Future[IndexedSeq[T]]]({
-        Future(
-          SearchIterator.iterate[T](client, search(index).query(notTallennettu).keepAlive("1m").size(500)).toIndexedSeq
-        )
-      })(q => {
+      query.fold[Future[IndexedSeq[T]]](
+        executeScrollQuery(search(index).query(notTallennettu).keepAlive("1m").size(500))
+      )(q => {
         val request = search(index).bool(must(notTallennettu, q)).keepAlive("1m").size(500)
-        logger.info(s"Elasticsearch request: ${request.show}")
-        Future {
-          SearchIterator
-            .hits(client, request)
-            .toIndexedSeq
-            .map(hit => hit.safeTo[T])
-            .flatMap(entity =>
-              entity match {
-                case Success(value) => Some(value)
-                case Failure(exception) =>
-                  logger.error(
-                    s"Unable to deserialize json response to entity: ",
-                    exception
-                  )
-                  None
-              }
-            )
-        }
+        executeScrollQuery(request)
       })
     }
   }
@@ -114,26 +94,33 @@ trait ElasticsearchClient { this: KoutaJsonFormats with Logging =>
       limit: Option[Int]
   ): Future[IndexedSeq[T]] = {
     timed(s"Search item bulks from ElasticSearch (Query: ${query}, offset: ${offset}, limit: ${limit})", 100) {
-      implicit val duration: FiniteDuration = Duration(1, TimeUnit.MINUTES)
-      val request                           = search(index).query(query.get).keepAlive("1m").size(500)
-      logger.info(s"Elasticsearch request: ${request.show}")
-      Future {
-        SearchIterator
-          .hits(client, request)
-          .toIndexedSeq
-          .map(hit => hit.safeTo[T])
-          .flatMap(entity =>
-            entity match {
-              case Success(value) => Some(value)
-              case Failure(exception) =>
-                logger.error(
-                  s"Unable to deserialize json response to entity: ",
-                  exception
-                )
-                None
-            }
-          )
-      }
+      val request = search(index).query(query.get).keepAlive("1m").size(500)
+      executeScrollQuery[T](request)
+    }
+  }
+
+  def executeScrollQuery[T: HitReader: ClassTag](searchRequest: SearchRequest): Future[IndexedSeq[T]] = {
+    implicit val duration: FiniteDuration = Duration(1, TimeUnit.MINUTES)
+    logger.info(s"Elasticsearch request: ${searchRequest.show}")
+    Future {
+      val iterator =
+        IteratorContext.iterator(client, searchRequest)
+      val resultMap = iterator.toIndexedSeq
+        .map(hit => hit.safeTo[T])
+        .flatMap(entity =>
+          entity match {
+            case Success(value) =>
+              Some(value)
+            case Failure(exception) =>
+              logger.error(
+                s"Unable to deserialize json response to entity: ",
+                exception
+              )
+              None
+          }
+        )
+      iterator.clear()
+      resultMap
     }
   }
 }
