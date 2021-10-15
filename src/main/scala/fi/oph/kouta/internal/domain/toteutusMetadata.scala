@@ -255,7 +255,7 @@ case class AmmattikorkeakouluToteutusMetadata(
     |              example: tuva
     |              enum:
     |                - tuva
-    |            tuvaErityisopetuksena:
+    |            jarjestetaanErityisopetuksena:
     |              type: boolean
     |              description: Tieto siitä järjestetäänkö toteutus erityisopetuksena
     |""")
@@ -267,7 +267,29 @@ case class TuvaToteutusMetadata(
     ammattinimikkeet: List[Keyword],
     yhteyshenkilot: Seq[Yhteyshenkilo],
     aloituspaikat: Option[Int],
-    tuvaErityisopetuksena: Boolean
+    jarjestetaanErityisopetuksena: Boolean
+) extends ToteutusMetadata
+
+@SwaggerModel("""    TelmaToteutusMetadata:
+                |      allOf:
+                |        - $ref: '#/components/schemas/ToteutusMetadata'
+                |        - type: object
+                |          properties:
+                |            koulutustyyppi:
+                |              type: string
+                |              description: Koulutuksen metatiedon tyyppi
+                |              example: telma
+                |              enum:
+                |                - telma
+                |""")
+case class TelmaToteutusMetadata(
+    tyyppi: Koulutustyyppi = Telma,
+    kuvaus: Kielistetty,
+    opetus: Option[Opetus],
+    asiasanat: List[Keyword],
+    ammattinimikkeet: List[Keyword],
+    yhteyshenkilot: Seq[Yhteyshenkilo],
+    aloituspaikat: Option[Int]
 ) extends ToteutusMetadata
 
 @SwaggerModel("""    VapaaSivistystyoOpistovuosiToteutusMetadata:

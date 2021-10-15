@@ -12,6 +12,7 @@ import fi.oph.kouta.domain.{
   Lk,
   Maksullisuustyyppi,
   Tuva,
+  Telma,
   VapaaSivistystyoMuu,
   VapaaSivistystyoOpistovuosi,
   Yo
@@ -118,6 +119,7 @@ sealed trait DefaultKoutaJsonFormats {
         case AmmOsaamisala               => s.extract[AmmatillinenOsaamisalaKoulutusMetadata]
         case Lk                          => s.extract[LukioKoulutusMetadata]
         case Tuva                        => s.extract[TuvaKoulutusMetadata]
+        case Telma                       => s.extract[TelmaKoulutusMetadata]
         case VapaaSivistystyoOpistovuosi => s.extract[VapaaSivistystyoKoulutusMetadata]
         case VapaaSivistystyoMuu         => s.extract[VapaaSivistystyoKoulutusMetadata]
         case kt                          => throw new UnsupportedOperationException(s"Unsupported koulutustyyppi $kt")
@@ -142,6 +144,7 @@ sealed trait DefaultKoutaJsonFormats {
         case AmmOsaamisala               => s.extract[AmmatillinenOsaamisalaKoulutusMetadataIndexed]
         case Lk                          => s.extract[LukioKoulutusMetadataIndexed]
         case Tuva                        => s.extract[TuvaKoulutusMetadataIndexed]
+        case Telma                       => s.extract[TelmaKoulutusMetadataIndexed]
         case VapaaSivistystyoOpistovuosi => s.extract[VapaaSivistystyoKoulutusMetadataIndexed]
         case VapaaSivistystyoMuu         => s.extract[VapaaSivistystyoKoulutusMetadataIndexed]
         case kt                          => throw new UnsupportedOperationException(s"Unsupported koulutustyyppi $kt")
@@ -166,6 +169,7 @@ sealed trait DefaultKoutaJsonFormats {
         case AmmOsaamisala               => s.extract[AmmatillinenOsaamisalaToteutusMetadata]
         case Lk                          => s.extract[LukioToteutusMetadata]
         case Tuva                        => s.extract[TuvaToteutusMetadata]
+        case Telma                       => s.extract[TelmaToteutusMetadata]
         case VapaaSivistystyoOpistovuosi => s.extract[VapaaSivistystyoOpistovuosiToteutusMetadata]
         case VapaaSivistystyoMuu         => s.extract[VapaaSivistystyoMuuToteutusMetadata]
         case kt                          => throw new UnsupportedOperationException(s"Unsupported koulutustyyppi $kt")
@@ -190,6 +194,7 @@ sealed trait DefaultKoutaJsonFormats {
         case AmmOsaamisala               => s.extract[AmmatillinenOsaamisalaToteutusMetadataIndexed]
         case Lk                          => s.extract[LukioToteutusMetadataIndexed]
         case Tuva                        => s.extract[TuvaToteutusMetadataIndexed]
+        case Telma                       => s.extract[TelmaToteutusMetadataIndexed]
         case VapaaSivistystyoOpistovuosi => s.extract[VapaaSivistystyoOpistovuosiToteutusMetadataIndexed]
         case VapaaSivistystyoMuu         => s.extract[VapaaSivistystyoMuuToteutusMetadataIndexed]
         case kt                          => throw new UnsupportedOperationException(s"Unsupported toteutustyyppi $kt")
@@ -212,6 +217,7 @@ sealed trait DefaultKoutaJsonFormats {
         case Amk                         => s.extract[AmmattikorkeakouluValintaperusteMetadata]
         case Lk                          => s.extract[LukioValintaperusteMetadata]
         case Tuva                        => s.extract[TuvaValintaperusteMetadata]
+        case Telma                       => s.extract[TelmaValintaperusteMetadata]
         case VapaaSivistystyoOpistovuosi => s.extract[VapaaSivistystyoValintaperusteMetadata]
         case VapaaSivistystyoMuu         => s.extract[VapaaSivistystyoValintaperusteMetadata]
         case kt                          => throw new UnsupportedOperationException(s"Unsupported koulutustyyppi $kt")
@@ -234,6 +240,7 @@ sealed trait DefaultKoutaJsonFormats {
         case Amk                         => s.extract[AmmattikorkeakouluValintaperusteMetadataIndexed]
         case Lk                          => s.extract[LukioValintaperusteMetadataIndexed]
         case Tuva                        => s.extract[TuvaValintaperusteMetadataIndexed]
+        case Telma                       => s.extract[TelmaValintaperusteMetadataIndexed]
         case VapaaSivistystyoOpistovuosi => s.extract[VapaaSivistystyoValintaperusteMetadataIndexed]
         case VapaaSivistystyoMuu         => s.extract[VapaaSivistystyoValintaperusteMetadataIndexed]
         case kt                          => throw new UnsupportedOperationException(s"Unsupported koulutustyyppi $kt")
