@@ -273,5 +273,6 @@ case class Hakukohde(
     modified: Option[LocalDateTime],
     oikeusHakukohteeseen: Option[Boolean],
     jarjestaaUrheilijanAmmKoulutusta: Option[Boolean],
-    externalId: Option[String]
+    externalId: Option[String],
+    uudenOpiskelijanUrl: Option[String]
 ) extends PerustiedotWithOid

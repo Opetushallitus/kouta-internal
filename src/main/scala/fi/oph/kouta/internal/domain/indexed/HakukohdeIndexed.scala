@@ -23,7 +23,8 @@ case class AloituspaikatIndexed(lukumaara: Option[Int], ensikertalaisille: Optio
 
 case class HakukohdeMetadataIndexed(
     kaytetaanHaunAlkamiskautta: Option[Boolean],
-    aloituspaikat: Option[AloituspaikatIndexed]
+    aloituspaikat: Option[AloituspaikatIndexed],
+    uudenOpiskelijanUrl: Option[String]
 )
 
 case class HakukohdeIndexed(
@@ -111,7 +112,8 @@ case class HakukohdeIndexed(
         modified = modified,
         oikeusHakukohteeseen = tarjoaja.flatMap(t => oikeusHakukohteeseenFn(t)),
         jarjestaaUrheilijanAmmKoulutusta = jarjestaaUrheilijanAmmKoulutusta,
-        externalId = externalId
+        externalId = externalId,
+        uudenOpiskelijanUrl = metadata.flatMap(_.uudenOpiskelijanUrl)
       )
     } catch {
       case e: Exception => {
