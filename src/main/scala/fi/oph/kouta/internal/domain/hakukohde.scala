@@ -230,6 +230,9 @@ case class Sora(tila: String)
     |        externalId:
     |           type: string
     |           description: Ulkoinen tunniste (esim. oppilaitoksen järjestelmän yksilöivä tunniste)
+    |        uudenOpiskelijanUrl:
+    |           type: string
+    |           description: Uuden opiskelijan ohjeita sisältävän sivun URL
     |"""
 )
 case class Hakukohde(
