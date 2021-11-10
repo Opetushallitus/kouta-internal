@@ -28,6 +28,7 @@ class JettyLauncher(val port: Int) {
   server.setHandler(context)
   val serverConnector = new ServerConnector(server)
   serverConnector.setPort(port)
+  serverConnector.setIdleTimeout(360000);
   server.setConnectors(Array[Connector](serverConnector))
 
   server.setRequestLog(requestLog(KoutaConfigurationFactory.configuration.urlProperties))
