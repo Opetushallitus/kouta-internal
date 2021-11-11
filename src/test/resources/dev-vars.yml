@@ -9,5 +9,6 @@ kouta_internal_cas_service: http://localhost:8098/kouta-internal/auth/login
 
 kouta_internal_elasticsearch_url: http://localhost:9200
 kouta_internal_elasticsearch7_url: http://localhost:9200
+kouta_internal_cache_timeout: 0
 
 host_virkailija: virkailija.hahtuvaopintopolku.fi

@@ -25,11 +25,12 @@ import scala.util.{Failure, Success}
 trait ElasticsearchClient { this: KoutaJsonFormats with Logging =>
   val index: String
   val client: ElasticClient
+  private val cachedClient = CachedElasticClient(client)
 
   def getItem[T <: WithTila: HitReader](id: String): Future[T] = timed(s"GetItem from ElasticSearch (Id: ${id}", 100) {
     val request = get(index, id)
     logger.debug(s"Elasticsearch query: ${request.show}")
-    client
+    cachedClient
       .execute(request)
       .flatMap {
         case failure: RequestFailure =>
@@ -99,12 +100,12 @@ trait ElasticsearchClient { this: KoutaJsonFormats with Logging =>
     }
   }
 
-  def executeScrollQuery[T: HitReader: ClassTag](searchRequest: SearchRequest): Future[IndexedSeq[T]] = {
+  private def executeScrollQuery[T: HitReader: ClassTag](searchRequest: SearchRequest): Future[IndexedSeq[T]] = {
     implicit val duration: FiniteDuration = Duration(1, TimeUnit.MINUTES)
     logger.info(s"Elasticsearch request: ${searchRequest.show}")
     Future {
       val iterator =
-        IteratorContext.iterator(client, searchRequest)
+        IteratorContext.iterator(cachedClient, searchRequest)
       val resultMap = iterator.toIndexedSeq
         .map(hit => hit.safeTo[T])
         .flatMap(entity =>
