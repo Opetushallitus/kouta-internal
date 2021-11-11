@@ -2,7 +2,7 @@ sudo: required
 dist: xenial
 language: scala
 scala:
-  - 2.12.2
+  - 2.12.13
 jdk:
   - openjdk11
 services:
@@ -48,7 +48,7 @@ script: >-
   mvn spotless:check install --batch-mode -DargLine="-Dkouta-internal.test-postgres-port=${PGPORT}" &&
   mv target/kouta-internal-*-jar-with-dependencies.jar $DOCKER_BUILD_DIR/artifact/${ARTIFACT_NAME}.jar &&
   cp -vr src/main/resources/* $DOCKER_BUILD_DIR/config/ &&
-  export BASE_IMAGE="baseimage-fatjar-openjdk8:master" &&
+  export BASE_IMAGE="baseimage-fatjar-openjdk11:master" &&
   ./ci-tools/common/pull-image.sh &&
   ./ci-tools/build/build-fatjar.sh $ARTIFACT_NAME
 
