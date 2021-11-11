@@ -30,7 +30,7 @@ case class SecurityConfiguration(
     rootOrganisaatio: OrganisaatioOid
 )
 
-case class ElasticSearchConfiguration(elasticUrl: String)
+case class ElasticSearchConfiguration(elasticUrl: String, cacheTimeoutSeconds: Long)
 
 case class KoutaConfiguration(config: TypesafeConfig, urlProperties: OphProperties)
     extends ApplicationSettings(config) {
@@ -56,7 +56,8 @@ case class KoutaConfiguration(config: TypesafeConfig, urlProperties: OphProperti
   )
 
   val elasticSearchConfiguration = ElasticSearchConfiguration(
-    config.getString("kouta-internal.elasticsearch.url")
+    config.getString("kouta-internal.elasticsearch.url"),
+    config.getLong("kouta-internal.elasticsearch.cacheTimeoutSeconds")
   )
 }
 

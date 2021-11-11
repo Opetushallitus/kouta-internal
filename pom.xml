@@ -11,7 +11,7 @@
 
 
     <properties>
-        <scala.version>2.12.10</scala.version>
+        <scala.version>2.12.13</scala.version>
 
         <kouta-indeksoija.version>9.0.1-SNAPSHOT</kouta-indeksoija.version>
         <kouta-backend.version>6.17.0-SNAPSHOT</kouta-backend.version>
@@ -81,6 +81,12 @@
                 <groupId>fi.vm.sade</groupId>
                 <artifactId>scala-utils_2.12</artifactId>
                 <version>${scala-utils.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>com.google.errorprone</groupId>
+                        <artifactId>error_prone_annotations</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
             <dependency>
                 <groupId>fi.vm.sade</groupId>
@@ -794,6 +800,10 @@
             <scope>test</scope>
             <exclusions>
                 <exclusion>
+                    <groupId>org.scala-lang.modules</groupId>
+                    <artifactId>scala-java8-compat_2.12</artifactId>
+                </exclusion>
+                <exclusion>
                     <groupId>com.typesafe</groupId>
                     <artifactId>config</artifactId>
                 </exclusion>
@@ -1076,6 +1086,10 @@
                     <groupId>com.google.errorprone</groupId>
                     <artifactId>error_prone_annotations</artifactId>
                 </exclusion>
+                <exclusion>
+                    <groupId>com.github.ben-manes.caffeine</groupId>
+                    <artifactId>caffeine</artifactId>
+                </exclusion>
             </exclusions>
         </dependency>
 
@@ -1124,9 +1138,38 @@
                     <groupId>org.apache.httpcomponents</groupId>
                     <artifactId>httpclient-cache</artifactId>
                 </exclusion>
+                <exclusion>
+                    <groupId>com.github.ben-manes.caffeine</groupId>
+                    <artifactId>caffeine</artifactId>
+                </exclusion>
             </exclusions>
         </dependency>
-
+        <dependency>
+            <groupId>org.scala-lang.modules</groupId>
+            <artifactId>scala-java8-compat_2.12</artifactId>
+            <version>1.0.2</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.scala-lang</groupId>
+                    <artifactId>scala-library</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>com.github.blemale</groupId>
+            <artifactId>scaffeine_2.12</artifactId>
+            <version>5.1.1</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.scala-lang.modules</groupId>
+                    <artifactId>scala-java8-compat_2.12</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.scala-lang</groupId>
+                    <artifactId>scala-library</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
     </dependencies>
 
     <repositories>
