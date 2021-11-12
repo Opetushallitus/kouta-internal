@@ -1,5 +1,7 @@
 package fi.oph.kouta.internal.domain.oid
 
+import fi.oph.kouta.internal.security.OidTooShortException
+
 import java.util.regex.Pattern
 
 sealed trait Oid {
@@ -9,6 +11,9 @@ sealed trait Oid {
   override def toString: String = s
 
   def isValid(): Boolean = OidPattern.matcher(s).matches()
+  def validateLength():Any = {
+   if (s.length < 35) throw OidTooShortException(s"Oid $s is too short!")
+  }
 }
 
 case class GenericOid(s: String) extends Oid
