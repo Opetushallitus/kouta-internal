@@ -12,7 +12,7 @@ class HakuSpec extends HakuFixture with AccessControlSpec {
 
   override val roleEntities  = Seq(Role.Haku)
   val existingId: HakuOid    = HakuOid("1.2.246.562.29.00000000000000000009")
-  val nonExistingId: HakuOid = HakuOid("1.2.246.562.29.0")
+  val nonExistingId: HakuOid = HakuOid("1.2.246.562.29.00000000000000000000")
 
   val ataruId1: UUID = UUID.randomUUID()
   val ataruId2: UUID = UUID.randomUUID()
@@ -22,12 +22,12 @@ class HakuSpec extends HakuFixture with AccessControlSpec {
     super.beforeAll()
     addMockHaku(existingId, ChildOid)
 
-    addMockHaku(HakuOid("1.2.246.562.29.301"), ChildOid, Some(ataruId1))
-    addMockHaku(HakuOid("1.2.246.562.29.302"), ChildOid, Some(ataruId1))
-    addMockHaku(HakuOid("1.2.246.562.29.303"), ChildOid, Some(ataruId2))
-    addMockHaku(HakuOid("1.2.246.562.29.304"), ChildOid, Some(ataruId2))
-    addMockHaku(HakuOid("1.2.246.562.29.305"), ParentOid, Some(ataruId1))
-    addMockHaku(HakuOid("1.2.246.562.29.306"), EvilChildOid, Some(ataruId1))
+    addMockHaku(HakuOid("1.2.246.562.29.00000000000000000301"), ChildOid, Some(ataruId1))
+    addMockHaku(HakuOid("1.2.246.562.29.00000000000000000302"), ChildOid, Some(ataruId1))
+    addMockHaku(HakuOid("1.2.246.562.29.00000000000000000303"), ChildOid, Some(ataruId2))
+    addMockHaku(HakuOid("1.2.246.562.29.00000000000000000304"), ChildOid, Some(ataruId2))
+    addMockHaku(HakuOid("1.2.246.562.29.00000000000000000305"), ParentOid, Some(ataruId1))
+    addMockHaku(HakuOid("1.2.246.562.29.00000000000000000306"), EvilChildOid, Some(ataruId1))
   }
 
   "GET /:id" should s"get haku from elastic search" in {
@@ -62,10 +62,10 @@ class HakuSpec extends HakuFixture with AccessControlSpec {
     ataruIds.map(_.get).foreach(_ shouldEqual ataruId1)
 
     haut.map(_.oid) should contain theSameElementsAs Seq(
-      HakuOid("1.2.246.562.29.301"),
-      HakuOid("1.2.246.562.29.302"),
-      HakuOid("1.2.246.562.29.305"),
-      HakuOid("1.2.246.562.29.306")
+      HakuOid("1.2.246.562.29.00000000000000000301"),
+      HakuOid("1.2.246.562.29.00000000000000000302"),
+      HakuOid("1.2.246.562.29.00000000000000000305"),
+      HakuOid("1.2.246.562.29.00000000000000000306")
     )
   }
 
@@ -81,14 +81,14 @@ class HakuSpec extends HakuFixture with AccessControlSpec {
   }
 
   it should "skip entities that can't be deserialized" in {
-    updateExistingHakuToUnknownTila("1.2.246.562.29.301")
+    updateExistingHakuToUnknownTila("1.2.246.562.29.00000000000000000301")
 
     val haut = get[Seq[Haku]](s"$HakuPath/search?ataruId=$ataruId1", defaultSessionId)
 
     haut.map(_.oid) should contain theSameElementsAs Seq(
-      HakuOid("1.2.246.562.29.302"),
-      HakuOid("1.2.246.562.29.305"),
-      HakuOid("1.2.246.562.29.306")
+      HakuOid("1.2.246.562.29.00000000000000000302"),
+      HakuOid("1.2.246.562.29.00000000000000000305"),
+      HakuOid("1.2.246.562.29.00000000000000000306")
     )
   }
 
