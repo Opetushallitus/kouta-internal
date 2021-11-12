@@ -10,7 +10,7 @@ class KoulutusSpec extends KoulutusFixture with AccessControlSpec {
 
   override val roleEntities      = Seq(Role.Koulutus)
   val existingId: KoulutusOid    = KoulutusOid("1.2.246.562.13.00000000000000000009")
-  val nonExistingId: KoulutusOid = KoulutusOid("1.2.246.562.13.0")
+  val nonExistingId: KoulutusOid = KoulutusOid("1.2.246.562.13.00000000000000000000")
   val sorakuvausId: UUID         = UUID.fromString("9267884f-fba1-4b85-8bb3-3eb77440c197")
 
   override def beforeAll(): Unit = {
