@@ -22,3 +22,5 @@ case class AuthenticationFailedException(msg: String, cause: Throwable) extends 
 
   def this() = this(null, null)
 }
+
+case class OidTooShortException(msg: String) extends RuntimeException(msg)

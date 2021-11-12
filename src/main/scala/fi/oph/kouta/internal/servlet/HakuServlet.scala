@@ -43,9 +43,12 @@ class HakuServlet(hakuService: HakuService, val sessionDAO: SessionDAO)
       |""".stripMargin
   )
   get("/:oid") {
+    val hakuOid = HakuOid(params("oid"))
+    hakuOid.validateLength()
+
     implicit val authenticated: Authenticated = authenticate
 
-    hakuService.get(HakuOid(params("oid")))
+    hakuService.get(hakuOid)
   }
 
   registerPath(
