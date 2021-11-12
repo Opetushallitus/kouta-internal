@@ -24,4 +24,3 @@ case class AuthenticationFailedException(msg: String, cause: Throwable) extends 
 }
 
 case class OidTooShortException(msg: String) extends RuntimeException(msg)
-

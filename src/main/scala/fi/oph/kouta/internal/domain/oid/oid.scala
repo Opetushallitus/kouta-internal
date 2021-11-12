@@ -11,8 +11,8 @@ sealed trait Oid {
   override def toString: String = s
 
   def isValid(): Boolean = OidPattern.matcher(s).matches()
-  def validateLength():Any = {
-   if (s.length < 35) throw OidTooShortException(s"Oid $s is too short!")
+  def validateLength(): Any = {
+    if (s.length < 35) throw OidTooShortException(s"Oid $s is too short!")
   }
 }
 
