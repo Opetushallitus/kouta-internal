@@ -111,7 +111,6 @@ class HakukohdeSpec
     }
   }
 
-
   it should "find hakukohteet based on array of OIDs" in {
     val oidSeq = Seq(existingId.toString, nonExistingId.toString)
     post(s"$HakukohdePath/findbyoids", bytes(oidSeq), Seq(defaultSessionHeader)) {

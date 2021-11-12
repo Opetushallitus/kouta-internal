@@ -11,7 +11,7 @@ class ToteutusSpec extends ToteutusFixture with KoulutusFixture with AccessContr
   override val roleEntities      = Seq(Role.Toteutus)
   val existingId: ToteutusOid    = ToteutusOid("1.2.246.562.17.00000000000000000789")
   val nonExistingId: ToteutusOid = ToteutusOid("1.2.246.562.17.00000000000000000000")
-  val tooShortOid: ToteutusOid = ToteutusOid("1.2.246.562.17.1234567")
+  val tooShortOid: ToteutusOid   = ToteutusOid("1.2.246.562.17.1234567")
 
   val koulutusOid: KoulutusOid = KoulutusOid("1.2.246.562.13.00000000000000000789")
   val sorakuvausId: UUID       = UUID.fromString("9267884f-fba1-4b85-8bb3-3eb77440c197")
