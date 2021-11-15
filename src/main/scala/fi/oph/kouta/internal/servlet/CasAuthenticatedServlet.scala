@@ -1,6 +1,7 @@
 package fi.oph.kouta.internal.servlet
 
 import java.util.UUID
+import fi.vm.sade.utils.Timer.timed
 
 import fi.oph.kouta.internal.database.SessionDAO
 import fi.oph.kouta.internal.security.{Authenticated, AuthenticationFailedException}
@@ -12,7 +13,7 @@ trait CasAuthenticatedServlet {
 
   val sessionDAO: SessionDAO
 
-  protected def authenticate: Authenticated = {
+  protected def authenticate: Authenticated = timed("Auth check") {
     val sessionCookie    = cookies.get("session")
     val sessionAttribute = Option(request.getAttribute("session")).map(_.toString)
 
