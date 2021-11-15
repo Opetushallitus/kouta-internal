@@ -21,7 +21,9 @@ class HakukohdeSpec
   override val getPath: String             = HakukohdePath
   override val entityName: String          = "hakukohde"
   override val existingId: HakukohdeOid    = HakukohdeOid("1.2.246.562.20.00000000000000000009")
-  override val nonExistingId: HakukohdeOid = HakukohdeOid("1.2.246.562.20.0")
+  override val nonExistingId: HakukohdeOid = HakukohdeOid("1.2.246.562.20.00000000000000000000")
+
+  val tooShortOid = HakukohdeOid("1.2.246.562.20.333333")
 
   val hakuOid: HakuOid         = HakuOid("1.2.246.562.29.00000000000000000010")
   val toteutusId: ToteutusOid  = ToteutusOid("1.2.246.562.17.00000000000000000010")
@@ -99,6 +101,13 @@ class HakukohdeSpec
     get(s"$HakukohdePath/search?haku=1.2.246.562.29.00000000000000000001", headers = Seq(defaultSessionHeader)) {
       status should equal(404)
       body should include(s"Didn't find id 1.2.246.562.29.00000000000000000001")
+    }
+  }
+
+  it should s"return 404 if oid is too short" in {
+    get(s"$HakukohdePath/$tooShortOid", headers = Seq(defaultSessionHeader)) {
+      status should equal(404)
+      body should include(s"Oid $tooShortOid is too short")
     }
   }
 

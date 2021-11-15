@@ -43,9 +43,12 @@ class ToteutusServlet(toteutusService: ToteutusService, val sessionDAO: SessionD
       |""".stripMargin
   )
   get("/:oid") {
+    val toteutusOid = ToteutusOid(params("oid"))
+    toteutusOid.validateLength()
+
     implicit val authenticated: Authenticated = authenticate
 
-    toteutusService.get(ToteutusOid(params("oid")))
+    toteutusService.get(toteutusOid)
   }
 
 }

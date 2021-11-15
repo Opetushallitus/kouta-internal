@@ -43,9 +43,12 @@ class KoulutusServlet(koulutusService: KoulutusService, val sessionDAO: SessionD
       |""".stripMargin
   )
   get("/:oid") {
+    val koulutusOid = KoulutusOid(params("oid"))
+    koulutusOid.validateLength()
+
     implicit val authenticated: Authenticated = authenticate
 
-    koulutusService.get(KoulutusOid(params("oid")))
+    koulutusService.get(koulutusOid)
   }
 
 }

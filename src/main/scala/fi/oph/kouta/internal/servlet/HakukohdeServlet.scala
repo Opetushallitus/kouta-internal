@@ -2,7 +2,7 @@ package fi.oph.kouta.internal.servlet
 
 import fi.oph.kouta.internal.database.SessionDAO
 import fi.oph.kouta.internal.domain.oid.{HakuOid, HakukohdeOid, OrganisaatioOid}
-import fi.oph.kouta.internal.security.Authenticated
+import fi.oph.kouta.internal.security.{Authenticated, OidTooShortException}
 import fi.oph.kouta.internal.service.HakukohdeService
 import fi.oph.kouta.internal.swagger.SwaggerPaths.registerPath
 import org.scalatra.{BadRequest, FutureSupport}
@@ -43,9 +43,10 @@ class HakukohdeServlet(hakukohdeService: HakukohdeService, val sessionDAO: Sessi
       |""".stripMargin
   )
   get("/:oid") {
+    val hakukohdeOid = HakukohdeOid(params("oid"))
+    hakukohdeOid.validateLength()
     implicit val authenticated: Authenticated = authenticate
-
-    hakukohdeService.get(HakukohdeOid(params("oid")))
+    hakukohdeService.get(hakukohdeOid)
   }
 
   registerPath(

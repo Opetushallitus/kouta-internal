@@ -3,7 +3,6 @@ package fi.oph.kouta.internal.servlet
 import java.time.format.DateTimeFormatter
 import java.time.{Instant, ZoneId, ZonedDateTime}
 import java.util.{ConcurrentModificationException, NoSuchElementException}
-
 import fi.oph.kouta.internal.elasticsearch.{ElasticSearchException, TeapotException}
 import fi.oph.kouta.internal.security._
 import fi.oph.kouta.internal.util.KoutaJsonFormats
@@ -73,6 +72,9 @@ trait KoutaServlet extends ScalatraServlet with KoutaJsonFormats with JacksonJso
   }
 
   error {
+    case e: OidTooShortException =>
+      logger.warn(s"Oid is too short: ${e.getMessage}")
+      NotFound(e.getMessage)
     case e: AuthenticationFailedException =>
       logger.warn(s"authentication failed: ${e.getMessage}")
       Unauthorized("error" -> "Unauthorized")
