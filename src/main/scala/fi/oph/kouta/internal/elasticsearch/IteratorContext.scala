@@ -11,7 +11,7 @@ trait ClearableIterator[T] extends Iterator[T] {
 }
 
 object IteratorContext {
-  def iterator(client: ElasticClient, searchreq: SearchRequest)(implicit
+  def iterator(client: CachedElasticClient, searchreq: SearchRequest)(implicit
       timeout: Duration
   ): ClearableIterator[SearchHit] =
     new ClearableIterator[SearchHit] {
