@@ -73,7 +73,7 @@ trait KoutaServlet extends ScalatraServlet with KoutaJsonFormats with JacksonJso
 
   error {
     case e: OidTooShortException =>
-      logger.warn(s"Problem with oid: ${e.getMessage}")
+      logger.warn(s"Oid is too short: ${e.getMessage}")
       NotFound(e.getMessage)
     case e: AuthenticationFailedException =>
       logger.warn(s"authentication failed: ${e.getMessage}")
