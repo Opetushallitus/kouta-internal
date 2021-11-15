@@ -13,7 +13,7 @@ trait CasAuthenticatedServlet {
 
   val sessionDAO: SessionDAO
 
-  protected def authenticate: Authenticated = timed("Auth check") {
+  protected def authenticate: Authenticated = timed("Auth check", 20) {
     val sessionCookie    = cookies.get("session")
     val sessionAttribute = Option(request.getAttribute("session")).map(_.toString)
 
