@@ -27,9 +27,15 @@ object OrganisaatioClient extends HttpClient with KoutaJsonFormats with Logging 
       .sequence(
         oids
           .map(asyncGetAllChildOidsFlat)
-          .map(r => r.map(_.getOrElse(Set.empty)))
       )
-      .map(r => Some(r.flatten))
+      .map(results =>
+        if (results.exists(_.isDefined)) {
+          val v: Set[OrganisaatioOid] = results.flatMap(r => r.getOrElse(Set.empty))
+          Some(v)
+        } else {
+          None
+        }
+      )
   }
 
   def asyncGetAllChildOidsFlat(oids: Option[Set[OrganisaatioOid]]): Future[Option[Set[OrganisaatioOid]]] = {
