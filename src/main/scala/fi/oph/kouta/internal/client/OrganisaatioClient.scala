@@ -1,5 +1,6 @@
 package fi.oph.kouta.internal.client
 
+import com.github.blemale.scaffeine.Scaffeine
 import fi.oph.kouta.internal.KoutaConfigurationFactory
 import fi.oph.kouta.internal.domain.oid.OrganisaatioOid
 import fi.oph.kouta.internal.util.KoutaJsonFormats
@@ -7,8 +8,9 @@ import fi.vm.sade.properties.OphProperties
 import fi.vm.sade.utils.slf4j.Logging
 import org.json4s._
 import org.json4s.jackson.JsonMethods._
-
+import scala.concurrent.duration._
 import scala.annotation.tailrec
+import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 object OrganisaatioClient extends HttpClient with KoutaJsonFormats with Logging {
@@ -18,36 +20,45 @@ object OrganisaatioClient extends HttpClient with KoutaJsonFormats with Logging 
   case class OrganisaatioResponse(numHits: Int, organisaatiot: List[OidAndChildren])
   case class OidAndChildren(oid: OrganisaatioOid, children: List[OidAndChildren], parentOidPath: String)
 
-  def getAllChildOidsFlat(oid: OrganisaatioOid): Option[Set[OrganisaatioOid]] = getHierarkia(oid, children(oid, _))
-  def getAllChildOidsFlat(oids: Set[OrganisaatioOid]): Option[Set[OrganisaatioOid]] =
-    oids.foldLeft[Option[Set[OrganisaatioOid]]](Some(Set.empty))((result, oid) =>
-      result.flatMap(r => getAllChildOidsFlat(oid).map(r ++ _))
-    )
+  def asyncGetAllChildOidsFlat(oid: OrganisaatioOid): Future[Option[Set[OrganisaatioOid]]] =
+    asyncGetHierarkia(oid, children(oid, _))
+  def asyncGetAllChildOidsFlat(oids: Set[OrganisaatioOid]): Future[Option[Set[OrganisaatioOid]]] = {
+    Future
+      .sequence(
+        oids
+          .map(asyncGetAllChildOidsFlat)
+          .map(r => r.map(_.getOrElse(Set.empty)))
+      )
+      .map(r => Some(r.flatten))
+  }
 
   def asyncGetAllChildOidsFlat(oids: Option[Set[OrganisaatioOid]]): Future[Option[Set[OrganisaatioOid]]] = {
     oids match {
       case None =>
         Future.successful(None)
       case Some(someOids) =>
-        try {
-          val response = getAllChildOidsFlat(someOids)
-          Future.successful(response)
-        } catch {
-          case e: Throwable =>
-            logger.error(s"Failed to fetch organisaatio Oids", e)
-            Future.failed(e)
-        }
+        asyncGetAllChildOidsFlat(someOids)
     }
   }
+  private lazy val cache = Scaffeine()
+    .expireAfterWrite(60.minutes)
+    .buildAsync[String, Any]()
 
-  private def getHierarkia[R](oid: OrganisaatioOid, result: List[OidAndChildren] => R): Option[R] = {
+  private def asyncGetHierarkia[R](oid: OrganisaatioOid, result: List[OidAndChildren] => R): Future[Option[R]] = {
     if (rootOrganisaatioOid == oid) {
-      None
+      Future.successful(None)
     } else {
       val url = urlProperties.url("organisaatio-service.organisaatio.hierarkia", queryParams(oid.toString))
-      get(url) { response =>
-        Some(result(parse(response).extract[OrganisaatioResponse].organisaatiot))
-      }
+
+      cache
+        .getFuture(
+          url,
+          key =>
+            asyncGet(key) { response =>
+              Some(result(parse(response).extract[OrganisaatioResponse].organisaatiot))
+            }
+        )
+        .mapTo[Option[R]]
     }
   }
 
