@@ -17,7 +17,7 @@ class HakuService(hakuClient: HakuClient) {
       authenticated: Authenticated
   ): Future[Seq[Haku]] =
     OrganisaatioClient.asyncGetAllChildOidsFlat(tarjoajaOids).flatMap(oids => hakuClient.search(ataruId, oids))
-    
+
 }
 
 object HakuService extends HakuService(HakuClient)
