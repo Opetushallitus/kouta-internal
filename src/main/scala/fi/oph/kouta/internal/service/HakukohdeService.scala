@@ -33,11 +33,9 @@ class HakukohdeService(hakukohdeClient: HakukohdeClient, hakuService: HakuServic
       implicit authenticated: Authenticated
   ): Future[Seq[Hakukohde]] = {
     val checkHakuExists        = hakuOid.fold(Future.successful(()))(hakuService.get(_).map(_ => ()))
-    val tarjoajaOidsWithChilds = tarjoajaOids.flatMap(OrganisaatioClient.getAllChildOidsFlat)
     val withRootOikeus         = tarjoajaOids.exists(_.contains(rootOrganisaatioOid))
-    val oikeusHakukohteeseenFn = createOikeusFn(withRootOikeus, tarjoajaOidsWithChilds)
-    checkHakuExists.flatMap(_ =>
-      hakukohdeClient.search(hakuOid, if (all) None else tarjoajaOidsWithChilds, q, oikeusHakukohteeseenFn)
+    checkHakuExists.flatMap(_ => OrganisaatioClient.asyncGetAllChildOidsFlat(tarjoajaOids)).flatMap(oidsWithChilds =>
+      hakukohdeClient.search(hakuOid, if (all) None else oidsWithChilds, q, createOikeusFn(withRootOikeus, oidsWithChilds))
     )
   }
 
@@ -45,9 +43,8 @@ class HakukohdeService(hakukohdeClient: HakukohdeClient, hakuService: HakuServic
       authenticated: Authenticated
   ): Future[Seq[Hakukohde]] = {
     val withRootOikeus = tarjoajaOids.exists(_.contains(rootOrganisaatioOid))
-    val oikeusHakukohteeseenFn =
-      createOikeusFn(withRootOikeus, tarjoajaOids.flatMap(OrganisaatioClient.getAllChildOidsFlat))
-    hakukohdeClient.findByOids(hakukohdeOids, oikeusHakukohteeseenFn)
+    OrganisaatioClient.asyncGetAllChildOidsFlat(tarjoajaOids)
+      .flatMap(oids => hakukohdeClient.findByOids(hakukohdeOids, createOikeusFn(withRootOikeus, oids)))
   }
 }
 

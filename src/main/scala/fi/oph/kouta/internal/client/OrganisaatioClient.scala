@@ -4,12 +4,14 @@ import fi.oph.kouta.internal.KoutaConfigurationFactory
 import fi.oph.kouta.internal.domain.oid.OrganisaatioOid
 import fi.oph.kouta.internal.util.KoutaJsonFormats
 import fi.vm.sade.properties.OphProperties
+import fi.vm.sade.utils.slf4j.Logging
 import org.json4s._
 import org.json4s.jackson.JsonMethods._
 
 import scala.annotation.tailrec
+import scala.concurrent.Future
 
-object OrganisaatioClient extends HttpClient with KoutaJsonFormats {
+object OrganisaatioClient extends HttpClient with KoutaJsonFormats with Logging {
   val urlProperties: OphProperties = KoutaConfigurationFactory.configuration.urlProperties
   private val rootOrganisaatioOid  = KoutaConfigurationFactory.configuration.securityConfiguration.rootOrganisaatio
 
@@ -21,6 +23,22 @@ object OrganisaatioClient extends HttpClient with KoutaJsonFormats {
     oids.foldLeft[Option[Set[OrganisaatioOid]]](Some(Set.empty))((result, oid) =>
       result.flatMap(r => getAllChildOidsFlat(oid).map(r ++ _))
     )
+
+  def asyncGetAllChildOidsFlat(oids: Option[Set[OrganisaatioOid]]): Future[Option[Set[OrganisaatioOid]]] = {
+    oids match {
+      case None =>
+        Future.successful(None)
+      case Some(someOids) =>
+        try {
+          val response = getAllChildOidsFlat(someOids)
+          Future.successful(response)
+        } catch {
+          case e: Throwable =>
+            logger.error(s"Failed to fetch organisaatio Oids", e)
+            Future.failed(e)
+        }
+    }
+  }
 
   private def getHierarkia[R](oid: OrganisaatioOid, result: List[OidAndChildren] => R): Option[R] = {
     if (rootOrganisaatioOid == oid) {
