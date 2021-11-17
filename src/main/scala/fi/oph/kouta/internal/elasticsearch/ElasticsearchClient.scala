@@ -95,7 +95,7 @@ trait ElasticsearchClient { this: KoutaJsonFormats with Logging =>
       limit: Option[Int]
   ): Future[IndexedSeq[T]] = {
     timed(s"Search item bulks from ElasticSearch (Query: ${query}, offset: ${offset}, limit: ${limit})", 100) {
-      val request = search(index).query(query.get).keepAlive("1m").size(2000)
+      val request = search(index).query(query.get).keepAlive("1m").size(500)
       executeScrollQuery[T](request)
     }
   }
