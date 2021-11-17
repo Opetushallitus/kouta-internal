@@ -15,11 +15,17 @@ class IterativeElasticFetch(client: ElasticClient)(implicit val executor: Execut
 
   private def fetchUntilDone(searchreq: SearchRequest, scrollId: Seq[String]): Future[IndexedSeq[SearchHit]] = {
     def handleResult(resp: Response[SearchResponse]): Future[IndexedSeq[SearchHit]] = {
+      def allWhileHasNext(i: Iterator[SearchHit]): IndexedSeq[SearchHit] = if (i.hasNext) {
+        IndexedSeq(i.next()) ++ allWhileHasNext(i)
+      } else {
+        IndexedSeq.empty
+      }
+
       resp match {
         case RequestSuccess(_, _, _, result) =>
-          val r: SearchHit = result.hits.hits.iterator.next
-          if (result.hits.hits.iterator.hasNext) {
-            fetchUntilDone(searchreq, scrollId ++ result.scrollId).map(_ :+ r)
+          val hits: IndexedSeq[SearchHit] = allWhileHasNext(result.hits.hits.iterator)
+          if (hits.nonEmpty) {
+            fetchUntilDone(searchreq, scrollId ++ result.scrollId).map(hits ++ _)
           } else {
             client.execute(clearScroll(scrollId)).onComplete {
               case Success(_) =>
@@ -27,7 +33,7 @@ class IterativeElasticFetch(client: ElasticClient)(implicit val executor: Execut
               case Failure(exception) =>
                 logger.error(s"Failed to clear Elastic scroll indices", exception)
             }
-            Future.successful(IndexedSeq(r))
+            Future.successful(hits)
           }
 
         case failure: RequestFailure =>
