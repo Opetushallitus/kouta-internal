@@ -1,5 +1,6 @@
 package fi.oph.kouta.internal.elasticsearch
 
+import com.github.blemale.scaffeine.Scaffeine
 import com.sksamuel.elastic4s.HitReader
 import com.sksamuel.elastic4s.requests.searches.queries.Query
 import com.sksamuel.elastic4s.ElasticDsl._
@@ -18,7 +19,7 @@ import java.util.NoSuchElementException
 import java.util.concurrent.TimeUnit
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
-import scala.concurrent.duration.{Duration, FiniteDuration}
+import scala.concurrent.duration.{Duration, DurationLong, FiniteDuration}
 import scala.reflect.ClassTag
 import scala.util.{Failure, Success}
 
@@ -101,12 +102,22 @@ trait ElasticsearchClient { this: KoutaJsonFormats with Logging =>
     }
   }
 
+  private lazy val cache = Scaffeine()
+    .expireAfterWrite(KoutaConfigurationFactory.configuration.elasticSearchConfiguration.cacheTimeoutSeconds.seconds)
+    .buildAsync[SearchRequest, Any]()
+
   private def executeScrollQuery[T: HitReader: ClassTag](searchRequest: SearchRequest): Future[IndexedSeq[T]] = {
     implicit val duration: FiniteDuration = Duration(1, TimeUnit.MINUTES)
     logger.info(s"Elasticsearch request: ${searchRequest.show}")
-    iterativeElasticFetch
-      .fetch(searchRequest)
-      .map(hit => hit.flatMap(_.safeTo[T].toOption))
+    cache
+      .getFuture(
+        searchRequest,
+        req =>
+          iterativeElasticFetch
+            .fetch(req)
+            .map(hit => hit.flatMap(_.safeTo[T].toOption))
+      )
+      .mapTo[IndexedSeq[T]]
   }
 }
 
