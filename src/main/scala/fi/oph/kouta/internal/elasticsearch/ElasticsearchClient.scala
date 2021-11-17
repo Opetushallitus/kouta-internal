@@ -101,7 +101,7 @@ trait ElasticsearchClient { this: KoutaJsonFormats with Logging =>
   }
 
   private def executeScrollQuery[T: HitReader: ClassTag](searchRequest: SearchRequest): Future[IndexedSeq[T]] = {
-    implicit val duration: FiniteDuration = Duration(20, TimeUnit.SECONDS)
+    implicit val duration: FiniteDuration = Duration(1, TimeUnit.MINUTES)
     logger.info(s"Elasticsearch request: ${searchRequest.show}")
     Future {
       val iterator =
