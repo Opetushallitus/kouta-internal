@@ -106,7 +106,7 @@ trait ElasticsearchClient { this: KoutaJsonFormats with Logging =>
     logger.info(s"Elasticsearch request: ${searchRequest.show}")
     iterativeElasticFetch
       .fetch(searchRequest)
-      .map(hit => hit.map(_.to[T]))
+      .map(hit => hit.flatMap(_.safeTo[T].toOption))
   }
 }
 
