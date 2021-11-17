@@ -1,11 +1,14 @@
 import fi.oph.kouta.internal.database.KoutaDatabase
 import fi.oph.kouta.internal.servlet._
 import fi.oph.kouta.internal.swagger.SwaggerServlet
+
 import javax.servlet.ServletContext
 import org.scalatra._
+import org.scalatra.servlet.AsyncSupport
 
 class ScalatraBootstrap extends LifeCycle {
   override def init(context: ServletContext) {
+    context.setAttribute(AsyncSupport.ExecutionContextKey, "executionContext")
     super.init(context)
 
     context.mount(AuthServlet, "/auth", "auth")

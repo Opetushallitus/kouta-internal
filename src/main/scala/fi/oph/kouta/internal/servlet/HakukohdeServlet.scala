@@ -5,10 +5,11 @@ import fi.oph.kouta.internal.domain.oid.{HakuOid, HakukohdeOid, OrganisaatioOid}
 import fi.oph.kouta.internal.security.{Authenticated, OidTooShortException}
 import fi.oph.kouta.internal.service.HakukohdeService
 import fi.oph.kouta.internal.swagger.SwaggerPaths.registerPath
-import org.scalatra.{BadRequest, FutureSupport}
+import org.scalatra.{ActionResult, AsyncResult, BadRequest, FutureSupport, Ok}
 
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ExecutionContext, Future}
 import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.duration.{Duration, DurationInt}
 
 class HakukohdeServlet(hakukohdeService: HakukohdeService, val sessionDAO: SessionDAO)
     extends KoutaServlet
@@ -110,12 +111,16 @@ class HakukohdeServlet(hakukohdeService: HakukohdeService, val sessionDAO: Sessi
       case "false" => false
     }
 
-    (hakuOid, tarjoaja) match {
-      case (None, None)                     => BadRequest("Query parameter is required")
-      case (Some(oid), _) if !oid.isValid() => BadRequest(s"Invalid haku ${oid.toString}")
-      case (_, Some(oids)) if oids.exists(!_.isValid()) =>
-        BadRequest(s"Invalid tarjoaja ${oids.find(!_.isValid()).get.toString}")
-      case (hakuOid, tarjoajaOids) => hakukohdeService.search(hakuOid, tarjoajaOids, q, all)
+    new AsyncResult() {
+      override implicit def timeout: Duration = 5.minutes
+
+      override val is: Future[ActionResult] = (hakuOid, tarjoaja) match {
+        case (None, None)                     => Future.successful(BadRequest("Query parameter is required"))
+        case (Some(oid), _) if !oid.isValid() => Future.successful(BadRequest(s"Invalid haku ${oid.toString}"))
+        case (_, Some(oids)) if oids.exists(!_.isValid()) =>
+          Future.successful(BadRequest(s"Invalid tarjoaja ${oids.find(!_.isValid()).get.toString}"))
+        case (hakuOid, tarjoajaOids) => hakukohdeService.search(hakuOid, tarjoajaOids, q, all).map(Ok(_))
+      }
     }
   }
 
@@ -163,13 +168,21 @@ class HakukohdeServlet(hakukohdeService: HakukohdeService, val sessionDAO: Sessi
     val tarjoaja  = params.get("tarjoaja").map(s => s.split(",").map(OrganisaatioOid).toSet)
     val hakukohde = parsedBody.extract[Set[HakukohdeOid]]
 
-    (tarjoaja, hakukohde) match {
-      case (Some(oids), _) if oids.exists(!_.isValid()) =>
-        BadRequest(s"Invalid tarjoaja ${oids.find(!_.isValid()).get.toString}")
-      case (_, oids) if oids.exists(!_.isValid()) =>
-        BadRequest(s"Invalid hakukohdeOids ${oids.find(!_.isValid()).get.toString}")
-      case (tarjoajaOids, hakukohdeOids) => hakukohdeService.findByOids(tarjoajaOids, hakukohdeOids)
+    new AsyncResult() {
+      override implicit def timeout: Duration = 5.minutes
+
+      override val is: Future[ActionResult] = (tarjoaja, hakukohde) match {
+        case (Some(oids), _) if oids.exists(!_.isValid()) =>
+          Future.successful(BadRequest(s"Invalid tarjoaja ${oids.find(!_.isValid()).get.toString}"))
+        case (_, oids) if oids.exists(!_.isValid()) =>
+          Future.successful(BadRequest(s"Invalid hakukohdeOids ${oids.find(!_.isValid()).get.toString}"))
+        case (tarjoajaOids, hakukohdeOids) =>
+          hakukohdeService
+            .findByOids(tarjoajaOids, hakukohdeOids)
+            .map(Ok(_))
+      }
     }
+
   }
 }
 
