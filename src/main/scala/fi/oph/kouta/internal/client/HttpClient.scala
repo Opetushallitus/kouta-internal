@@ -1,9 +1,17 @@
 package fi.oph.kouta.internal.client
 
 import java.util.{Map => JavaMap}
-
 import fi.vm.sade.utils.http.DefaultHttpClient
+import io.netty.handler.codec.http.cookie.DefaultCookie
 import scalaj.http.HttpOptions._
+import org.asynchttpclient.Dsl._
+import org.asynchttpclient.{ListenableFuture, Response}
+
+import java.util
+import java.util.concurrent.CompletableFuture
+import scala.compat.java8.FutureConverters._
+import scala.concurrent.Future
+import scala.util.Try
 
 trait HttpClient extends CallerId {
   private val DefaultConnTimeout = 30000
@@ -16,7 +24,38 @@ trait HttpClient extends CallerId {
   )
 
   private val HeaderClientSubSystemCode = ("clientSubSystemCode", callerId)
+  private val asyncClient = asyncHttpClient(
+    config()
+      .setReadTimeout(DefaultReadTimeout)
+      .setConnectTimeout(DefaultConnTimeout)
+  )
 
+  def asyncGet[T](
+      url: String,
+      errorHandler: (String, Int, String) => Nothing = defaultErrorHandler,
+      followRedirects: Boolean = true
+  )(parse: String => T): Future[T] = {
+
+    val v: CompletableFuture[T] = asyncClient
+      .prepareGet(url)
+      .setHeader("Caller-Id", callerId)
+      .setFollowRedirect(followRedirects)
+      .setHeader(HeaderClientSubSystemCode._1, HeaderClientSubSystemCode._2)
+      .setHeader("CSRF", callerId)
+      .setCookies(util.Arrays.asList(new DefaultCookie("CSRF", callerId)))
+      .execute()
+      .toCompletableFuture
+      .thenApply(response => {
+        response.getStatusCode match {
+          case 200 =>
+            parse(response.getResponseBody)
+          case errorCode =>
+            errorHandler(url, errorCode, response.getResponseBody)
+        }
+      })
+
+    toScala(v)
+  }
   def get[T](
       url: String,
       errorHandler: (String, Int, String) => Nothing = defaultErrorHandler,

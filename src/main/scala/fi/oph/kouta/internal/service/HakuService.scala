@@ -6,6 +6,7 @@ import fi.oph.kouta.internal.domain.oid.{HakuOid, OrganisaatioOid}
 import fi.oph.kouta.internal.elasticsearch.HakuClient
 import fi.oph.kouta.internal.security.Authenticated
 
+import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 class HakuService(hakuClient: HakuClient) {
@@ -15,7 +16,8 @@ class HakuService(hakuClient: HakuClient) {
   def search(ataruId: Option[String], tarjoajaOids: Option[Set[OrganisaatioOid]])(implicit
       authenticated: Authenticated
   ): Future[Seq[Haku]] =
-    hakuClient.search(ataruId, tarjoajaOids.flatMap(OrganisaatioClient.getAllChildOidsFlat))
+    OrganisaatioClient.asyncGetAllChildOidsFlat(tarjoajaOids).flatMap(oids => hakuClient.search(ataruId, oids))
+
 }
 
 object HakuService extends HakuService(HakuClient)

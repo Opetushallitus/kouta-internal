@@ -1,5 +1,6 @@
 package fi.oph.kouta.internal.elasticsearch
 
+import com.github.blemale.scaffeine.Scaffeine
 import com.sksamuel.elastic4s.HitReader
 import com.sksamuel.elastic4s.requests.searches.queries.Query
 import com.sksamuel.elastic4s.ElasticDsl._
@@ -18,14 +19,15 @@ import java.util.NoSuchElementException
 import java.util.concurrent.TimeUnit
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
-import scala.concurrent.duration.{Duration, FiniteDuration}
+import scala.concurrent.duration.{Duration, DurationLong, FiniteDuration}
 import scala.reflect.ClassTag
 import scala.util.{Failure, Success}
 
 trait ElasticsearchClient { this: KoutaJsonFormats with Logging =>
   val index: String
   val client: ElasticClient
-  private val cachedClient = CachedElasticClient(client)
+  private val cachedClient          = CachedElasticClient(client)
+  private val iterativeElasticFetch = new IterativeElasticFetch(client)
 
   def getItem[T <: WithTila: HitReader](id: String): Future[T] = timed(s"GetItem from ElasticSearch (Id: ${id}", 100) {
     val request = get(index, id)
@@ -100,29 +102,22 @@ trait ElasticsearchClient { this: KoutaJsonFormats with Logging =>
     }
   }
 
+  private lazy val cache = Scaffeine()
+    .expireAfterWrite(KoutaConfigurationFactory.configuration.elasticSearchConfiguration.cacheTimeoutSeconds.seconds)
+    .buildAsync[SearchRequest, Any]()
+
   private def executeScrollQuery[T: HitReader: ClassTag](searchRequest: SearchRequest): Future[IndexedSeq[T]] = {
     implicit val duration: FiniteDuration = Duration(1, TimeUnit.MINUTES)
     logger.info(s"Elasticsearch request: ${searchRequest.show}")
-    Future {
-      val iterator =
-        IteratorContext.iterator(cachedClient, searchRequest)
-      val resultMap = iterator.toIndexedSeq
-        .map(hit => hit.safeTo[T])
-        .flatMap(entity =>
-          entity match {
-            case Success(value) =>
-              Some(value)
-            case Failure(exception) =>
-              logger.error(
-                s"Unable to deserialize json response to entity: ",
-                exception
-              )
-              None
-          }
-        )
-      iterator.clear()
-      resultMap
-    }
+    cache
+      .getFuture(
+        searchRequest,
+        req =>
+          iterativeElasticFetch
+            .fetch(req)
+            .map(hit => hit.flatMap(_.safeTo[T].toOption))
+      )
+      .mapTo[IndexedSeq[T]]
   }
 }
 

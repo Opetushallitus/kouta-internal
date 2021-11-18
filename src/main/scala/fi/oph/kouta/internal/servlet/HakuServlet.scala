@@ -5,10 +5,11 @@ import fi.oph.kouta.internal.domain.oid.{HakuOid, OrganisaatioOid}
 import fi.oph.kouta.internal.security.Authenticated
 import fi.oph.kouta.internal.service.HakuService
 import fi.oph.kouta.internal.swagger.SwaggerPaths.registerPath
-import org.scalatra.{BadRequest, FutureSupport}
+import org.scalatra.{ActionResult, AsyncResult, BadRequest, FutureSupport, Ok}
 
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ExecutionContext, Future}
 import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.duration.{Duration, DurationInt}
 
 class HakuServlet(hakuService: HakuService, val sessionDAO: SessionDAO)
     extends KoutaServlet
@@ -95,11 +96,16 @@ class HakuServlet(hakuService: HakuService, val sessionDAO: SessionDAO)
 
     logger.debug(s"Request: /haku/search | ataruId: ${ataruId} | tarjoaja: ${tarjoaja}")
 
-    tarjoaja match {
-      case Some(oids) if oids.exists(!_.isValid) =>
-        BadRequest(s"Invalid tarjoaja ${oids.find(!_.isValid()).get.toString}")
-      case tarjoaja => hakuService.search(ataruId, tarjoaja)
+    new AsyncResult() {
+      override implicit def timeout: Duration = 5.minutes
+
+      override val is: Future[ActionResult] = tarjoaja match {
+        case Some(oids) if oids.exists(!_.isValid) =>
+          Future.successful(BadRequest(s"Invalid tarjoaja ${oids.find(!_.isValid()).get.toString}"))
+        case tarjoaja => hakuService.search(ataruId, tarjoaja).map(Ok(_))
+      }
     }
+
   }
 }
 
