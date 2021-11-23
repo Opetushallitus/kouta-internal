@@ -15,12 +15,13 @@ import fi.oph.kouta.internal.swagger.SwaggerModel
     |          description: Liitteen yksilöivä tunniste. Järjestelmän generoima.
     |          example: "ea596a9c-5940-497e-b5b7-aded3a2352a7"
     |        tyyppi:
-    |          type: string
-    |          description: Liitteen tyyppi. Viittaa [koodistoon](https://virkailija.testiopintopolku.fi/koodisto-ui/html/koodisto/liitetyypitamm/1)
-    |          example: liitetyypitamm_3#1
+    |          type: object
+    |          description: Liitteen tyyppi.
+    |          allOf:
+    |             - $ref: '#/components/schemas/LiitteenTyyppi'
     |        nimi:
     |          type: object
-    |          description: Liitteen Opintopolussa näytettävä nimi eri kielillä. Kielet on määritetty koulutuksen kielivalinnassa.
+    |          description: Liitteen Opinion's näytettävä nimi eri kielillä. Kielet on määritetty koulutuksen kielivalinnassa.
     |          allOf:
     |            - $ref: '#/components/schemas/Nimi'
     |        kuvaus:
@@ -50,13 +51,30 @@ import fi.oph.kouta.internal.swagger.SwaggerModel
 )
 case class Liite(
     id: Option[UUID],
-    koodiUri: Option[String],
+    tyyppi: Option[LiitteenTyyppi],
     nimi: Kielistetty,
     kuvaus: Option[Kielistetty],
     toimitusaika: Option[LocalDateTime],
     toimitustapa: Option[LiitteenToimitustapa],
     toimitusosoite: Option[LiitteenToimitusosoite]
 )
+
+@SwaggerModel(
+  """    LiitteenTyyppi:
+                |      type: object
+                |      properties:
+                |        koodiUri:
+                |          type: string
+                |          description: Liitteen tyyppi. Viittaa [koodistoon](https://virkailija.testiopintopolku.fi/koodisto-ui/html/koodisto/liitetyypitamm/1)
+                |          example: liitetyypitamm_3#1
+                |        nimi:
+                |          type: object
+                |          description: Liitetyypin koodin arvo
+                |          allOf:
+                |            - $ref: '#/components/schemas/Nimi'
+                |"""
+)
+case class LiitteenTyyppi(koodiUri: Option[String], nimi: Option[Kielistetty])
 
 @SwaggerModel("""    LiitteenToimitusosoite:
     |      type: object
@@ -65,11 +83,42 @@ case class Liite(
     |          type: object
     |          description: Liitteen toimitusosoite
     |          allOf:
-    |            - $ref: '#/components/schemas/Osoite'
+    |            - $ref: '#/components/schemas/LiitteenOsoite'
     |        sahkoposti:
-    |          type: object
+    |          type: string
     |          description: Sähköpostiosoite, johon liite voidaan toimittaa
     |          allOf:
     |            - $ref: '#/components/schemas/Teksti'
     |""")
-case class LiitteenToimitusosoite(osoite: Option[Osoite], sahkoposti: Option[String])
+case class LiitteenToimitusosoite(osoite: Option[LiitteenOsoite], sahkoposti: Option[String])
+
+@SwaggerModel("""    LiitteenOsoite:
+                |      type: object
+                |      properties:
+                |        osoite:
+                |          type: object
+                |          description: Liitteen katuosoite
+                |          allOf:
+                |            - $ref: '#/components/schemas/Teksti'
+                |        postinumero:
+                |          type: object
+                |          description: Postinumero ja postitoimipaikka kielistettynä
+                |          allOf:
+                |            - $ref: '#/components/schemas/LiitteenPostinumero'
+                |""")
+case class LiitteenOsoite(osoite: Option[Kielistetty], postinumero: Option[LiitteenPostinumero])
+
+@SwaggerModel("""    LiitteenPostinumero:
+                |      type: object
+                |      properties:
+                |        koodiUri:
+                |          type: string
+                |          description: Postinumeron koodiston koodi
+                |          example: posti_00530#2
+                |        nimi:
+                |          type: object
+                |          description: Postitoimipaikka kielistettynä
+                |          allOf:
+                |            - $ref: '#/components/schemas/Teksti'
+                |""")
+case class LiitteenPostinumero(koodiUri: Option[String], nimi: Option[Kielistetty])
