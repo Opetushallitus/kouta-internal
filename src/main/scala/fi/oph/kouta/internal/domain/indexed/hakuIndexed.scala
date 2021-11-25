@@ -52,8 +52,10 @@ case class HakuIndexed(
         hakukohteenLiittamisenTakaraja = hakukohteenLiittamisenTakaraja,
         hakukohteenMuokkaamisenTakaraja = hakukohteenMuokkaamisenTakaraja,
         ajastettuJulkaisu = ajastettuJulkaisu,
-        alkamiskausiKoodiUri = metadata.flatMap(m => m.koulutuksenAlkamiskausi
-          .flatMap(_.koulutuksenAlkamiskausi.map(_.koodiUri))),
+        alkamiskausiKoodiUri = metadata.flatMap(m =>
+          m.koulutuksenAlkamiskausi
+            .flatMap(_.koulutuksenAlkamiskausi.map(_.koodiUri))
+        ),
         alkamisvuosi = metadata.flatMap(m => m.koulutuksenAlkamiskausi.flatMap(_.koulutuksenAlkamisvuosi)),
         kohdejoukkoKoodiUri = kohdejoukko.koodiUri,
         kohdejoukonTarkenneKoodiUri = kohdejoukonTarkenne.map(_.koodiUri),

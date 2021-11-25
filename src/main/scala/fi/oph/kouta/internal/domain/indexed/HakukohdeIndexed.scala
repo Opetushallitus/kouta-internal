@@ -76,8 +76,10 @@ case class HakukohdeIndexed(
         hakuOid = hakuOid,
         tila = tila,
         nimi = nimi,
-        alkamiskausiKoodiUri = metadata.flatMap(m => m.koulutuksenAlkamiskausi
-          .flatMap(_.koulutuksenAlkamiskausi.map(_.koodiUri))),
+        alkamiskausiKoodiUri = metadata.flatMap(m =>
+          m.koulutuksenAlkamiskausi
+            .flatMap(_.koulutuksenAlkamiskausi.map(_.koodiUri))
+        ),
         alkamisvuosi = metadata.flatMap(m => m.koulutuksenAlkamiskausi.flatMap(_.koulutuksenAlkamisvuosi)),
         kaytetaanHaunAlkamiskautta = metadata.flatMap(_.kaytetaanHaunAlkamiskautta),
         hakulomaketyyppi = hakulomaketyyppi,
