@@ -24,7 +24,8 @@ case class AloituspaikatIndexed(lukumaara: Option[Int], ensikertalaisille: Optio
 case class HakukohdeMetadataIndexed(
     kaytetaanHaunAlkamiskautta: Option[Boolean],
     aloituspaikat: Option[AloituspaikatIndexed],
-    uudenOpiskelijanUrl: Option[String]
+    uudenOpiskelijanUrl: Option[String],
+    koulutuksenAlkamiskausi: Option[KoulutuksenAlkamiskausi]
 )
 
 case class HakukohdeIndexed(
@@ -33,8 +34,6 @@ case class HakukohdeIndexed(
     hakuOid: HakuOid,
     tila: Julkaisutila,
     nimi: Kielistetty,
-    alkamiskausi: Option[KoodiUri],
-    alkamisvuosi: Option[String],
     hakulomaketyyppi: Option[Hakulomaketyyppi],
     hakulomakeAtaruId: Option[UUID],
     hakulomakeKuvaus: Kielistetty,
@@ -77,8 +76,9 @@ case class HakukohdeIndexed(
         hakuOid = hakuOid,
         tila = tila,
         nimi = nimi,
-        alkamiskausiKoodiUri = alkamiskausi.map(_.koodiUri),
-        alkamisvuosi = alkamisvuosi,
+        alkamiskausiKoodiUri = metadata.flatMap(m => m.koulutuksenAlkamiskausi
+          .flatMap(_.koulutuksenAlkamiskausi.map(_.koodiUri))),
+        alkamisvuosi = metadata.flatMap(m => m.koulutuksenAlkamiskausi.flatMap(_.koulutuksenAlkamisvuosi)),
         kaytetaanHaunAlkamiskautta = metadata.flatMap(_.kaytetaanHaunAlkamiskautta),
         hakulomaketyyppi = hakulomaketyyppi,
         hakulomakeAtaruId = hakulomakeAtaruId,
