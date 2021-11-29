@@ -26,8 +26,6 @@ case class HakuIndexed(
     hakukohteenLiittamisenTakaraja: Option[LocalDateTime],
     hakukohteenMuokkaamisenTakaraja: Option[LocalDateTime],
     ajastettuJulkaisu: Option[LocalDateTime],
-    alkamiskausi: Option[KoodiUri],
-    alkamisvuosi: Option[String],
     kohdejoukko: KoodiUri,
     kohdejoukonTarkenne: Option[KoodiUri],
     hakulomaketyyppi: Option[Hakulomaketyyppi],
@@ -54,8 +52,11 @@ case class HakuIndexed(
         hakukohteenLiittamisenTakaraja = hakukohteenLiittamisenTakaraja,
         hakukohteenMuokkaamisenTakaraja = hakukohteenMuokkaamisenTakaraja,
         ajastettuJulkaisu = ajastettuJulkaisu,
-        alkamiskausiKoodiUri = alkamiskausi.map(_.koodiUri),
-        alkamisvuosi = alkamisvuosi,
+        alkamiskausiKoodiUri = metadata.flatMap(m =>
+          m.koulutuksenAlkamiskausi
+            .flatMap(_.koulutuksenAlkamiskausi.map(_.koodiUri))
+        ),
+        alkamisvuosi = metadata.flatMap(m => m.koulutuksenAlkamiskausi.flatMap(_.koulutuksenAlkamisvuosi)),
         kohdejoukkoKoodiUri = kohdejoukko.koodiUri,
         kohdejoukonTarkenneKoodiUri = kohdejoukonTarkenne.map(_.koodiUri),
         hakulomaketyyppi = hakulomaketyyppi,
