@@ -89,8 +89,17 @@ case class LiitteenTyyppi(koodiUri: Option[String], nimi: Option[Kielistetty])
     |          description: Sähköpostiosoite, johon liite voidaan toimittaa
     |          allOf:
     |            - $ref: '#/components/schemas/Teksti'
+    |        verkkosivu:
+    |          type: string
+    |          description: Verkkosivu, josta liite voidaan mahdollisesti toimittaa
+    |          allOf:
+    |            - $ref: '#/components/schemas/Teksti'
     |""")
-case class LiitteenToimitusosoite(osoite: Option[LiitteenOsoite], sahkoposti: Option[String])
+case class LiitteenToimitusosoite(
+    osoite: Option[LiitteenOsoite],
+    sahkoposti: Option[String],
+    verkkosivu: Option[String]
+)
 
 @SwaggerModel("""    LiitteenOsoite:
                 |      type: object
