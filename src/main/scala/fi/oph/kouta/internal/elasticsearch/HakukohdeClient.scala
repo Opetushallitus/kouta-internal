@@ -46,15 +46,15 @@ class HakukohdeClient(val index: String, val client: ElasticClient)
     val qQuery = q.map(q => {
       val wildcardQ = "*" + q + "*"
       should(
-        wildcardQuery("nimi.fi", wildcardQ),
-        wildcardQuery("nimi.sv", wildcardQ),
-        wildcardQuery("nimi.en", wildcardQ),
-        wildcardQuery("jarjestyspaikka.nimi.fi", wildcardQ),
-        wildcardQuery("jarjestyspaikka.nimi.sv", wildcardQ),
-        wildcardQuery("jarjestyspaikka.nimi.en", wildcardQ),
-        wildcardQuery("toteutus.tarjoajat.nimi.fi", wildcardQ),
-        wildcardQuery("toteutus.tarjoajat.nimi.sv", wildcardQ),
-        wildcardQuery("toteutus.tarjoajat.nimi.en", wildcardQ)
+        wildcardQuery("nimi.fi.keyword", wildcardQ),
+        wildcardQuery("nimi.sv.keyword", wildcardQ),
+        wildcardQuery("nimi.en.keyword", wildcardQ),
+        wildcardQuery("jarjestyspaikka.nimi.fi.keyword", wildcardQ),
+        wildcardQuery("jarjestyspaikka.nimi.sv.keyword", wildcardQ),
+        wildcardQuery("jarjestyspaikka.nimi.en.keyword", wildcardQ),
+        wildcardQuery("toteutus.tarjoajat.nimi.fi.keyword", wildcardQ),
+        wildcardQuery("toteutus.tarjoajat.nimi.sv.keyword", wildcardQ),
+        wildcardQuery("toteutus.tarjoajat.nimi.en.keyword", wildcardQ)
       ).minimumShouldMatch(1)
     })
     //
