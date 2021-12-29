@@ -68,8 +68,7 @@ case class HakukohdeIndexed(
     with Logging {
   def toHakukohde(oikeusHakukohteeseenFn: OrganisaatioOid => Option[Boolean]): Hakukohde = {
     try {
-      val tarjoajat = jarjestyspaikka.map(o => Set(o.oid)).getOrElse(Set())
-      val tarjoaja  = jarjestyspaikka.map(o => o.oid)
+      val tarjoaja = jarjestyspaikka.map(o => o.oid)
       Hakukohde(
         oid = oid,
         toteutusOid = toteutus.oid,
