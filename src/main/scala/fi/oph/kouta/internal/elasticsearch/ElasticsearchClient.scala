@@ -4,11 +4,11 @@ import com.github.blemale.scaffeine.Scaffeine
 import com.sksamuel.elastic4s.HitReader
 import com.sksamuel.elastic4s.requests.searches.queries.Query
 import com.sksamuel.elastic4s.ElasticDsl._
-import com.sksamuel.elastic4s.http.JavaClient
+import com.sksamuel.elastic4s.http.{JavaClient, NoOpHttpClientConfigCallback}
 import com.sksamuel.elastic4s.requests.get.GetResponse
 import com.sksamuel.elastic4s.requests.searches.SearchRequest
 import com.sksamuel.elastic4s.{ElasticClient, ElasticProperties, RequestFailure, RequestSuccess}
-import fi.oph.kouta.internal.KoutaConfigurationFactory
+import fi.oph.kouta.internal.{ElasticSearchConfiguration, KoutaConfigurationFactory}
 import fi.oph.kouta.internal.domain.WithTila
 import fi.oph.kouta.internal.domain.enums.Julkaisutila.Tallennettu
 import fi.oph.kouta.internal.util.KoutaJsonFormats
@@ -137,30 +137,27 @@ object ElasticsearchClient {
  */
 
 object ElasticsearchClient {
-  val config = KoutaConfigurationFactory.configuration.elasticSearchConfiguration;
-  val client = if (config.authEnabled) {
+  val config: ElasticSearchConfiguration = KoutaConfigurationFactory.configuration.elasticSearchConfiguration;
+  val httpClientConfigCallback: HttpClientConfigCallback = if (config.authEnabled) {
     lazy val provider = {
       val provider    = new BasicCredentialsProvider
       val credentials = new UsernamePasswordCredentials(config.username, config.password)
       provider.setCredentials(AuthScope.ANY, credentials)
       provider
     }
-    ElasticClient(
-      JavaClient(
-        ElasticProperties(config.elasticUrl),
-        (requestConfigBuilder: Builder) => {
-          requestConfigBuilder
-        },
-        new HttpClientConfigCallback {
-          override def customizeHttpClient(httpClientBuilder: HttpAsyncClientBuilder): HttpAsyncClientBuilder = {
-            httpClientBuilder.setDefaultCredentialsProvider(provider)
-          }
-        }
-      )
-    )
+    (httpClientBuilder: HttpAsyncClientBuilder) => {
+      httpClientBuilder.setDefaultCredentialsProvider(provider)
+    }
   } else {
-    ElasticClient(
-      JavaClient(ElasticProperties(config.elasticUrl))
-    )
+    NoOpHttpClientConfigCallback
   }
+  val client: ElasticClient = ElasticClient(
+    JavaClient(
+      ElasticProperties(config.elasticUrl),
+      (requestConfigBuilder: Builder) => {
+        requestConfigBuilder
+      },
+      httpClientConfigCallback
+    )
+  )
 }
