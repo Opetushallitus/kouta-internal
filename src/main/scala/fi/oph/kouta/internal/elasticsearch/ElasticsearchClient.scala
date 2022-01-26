@@ -128,14 +128,6 @@ trait ElasticsearchClient { this: KoutaJsonFormats with Logging =>
   }
 }
 
-/*
-object ElasticsearchClient {
-  val client: ElasticClient = ElasticClient(
-    JavaClient(ElasticProperties(KoutaConfigurationFactory.configuration.elasticSearchConfiguration.elasticUrl))
-  )
-}
- */
-
 object ElasticsearchClient {
   val config: ElasticSearchConfiguration = KoutaConfigurationFactory.configuration.elasticSearchConfiguration;
   val httpClientConfigCallback: HttpClientConfigCallback = if (config.authEnabled) {
