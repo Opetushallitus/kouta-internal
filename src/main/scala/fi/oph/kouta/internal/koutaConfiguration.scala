@@ -30,7 +30,13 @@ case class SecurityConfiguration(
     rootOrganisaatio: OrganisaatioOid
 )
 
-case class ElasticSearchConfiguration(elasticUrl: String, cacheTimeoutSeconds: Long)
+case class ElasticSearchConfiguration(
+    elasticUrl: String,
+    cacheTimeoutSeconds: Long,
+    authEnabled: Boolean,
+    username: String,
+    password: String
+)
 
 case class KoutaConfiguration(config: TypesafeConfig, urlProperties: OphProperties)
     extends ApplicationSettings(config) {
@@ -57,7 +63,10 @@ case class KoutaConfiguration(config: TypesafeConfig, urlProperties: OphProperti
 
   val elasticSearchConfiguration = ElasticSearchConfiguration(
     config.getString("kouta-internal.elasticsearch.url"),
-    config.getLong("kouta-internal.elasticsearch.cacheTimeoutSeconds")
+    config.getLong("kouta-internal.elasticsearch.cacheTimeoutSeconds"),
+    config.getBoolean("kouta-internal.elasticsearch.auth-enabled"),
+    config.getString("kouta-internal.elasticsearch.username"),
+    config.getString("kouta-internal.elasticsearch.password")
   )
 }
 

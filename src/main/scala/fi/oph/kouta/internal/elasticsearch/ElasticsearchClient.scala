@@ -14,6 +14,13 @@ import fi.oph.kouta.internal.domain.enums.Julkaisutila.Tallennettu
 import fi.oph.kouta.internal.util.KoutaJsonFormats
 import fi.vm.sade.utils.Timer.timed
 import fi.vm.sade.utils.slf4j.Logging
+import org.apache.http.HttpHost
+import org.apache.http.auth.{AuthScope, UsernamePasswordCredentials}
+import org.apache.http.client.config.RequestConfig.Builder
+import org.apache.http.impl.client.BasicCredentialsProvider
+import org.apache.http.impl.nio.client.HttpAsyncClientBuilder
+import org.elasticsearch.client.RestClientBuilder.{HttpClientConfigCallback, RequestConfigCallback}
+import org.elasticsearch.client.{RestClient, RestClientBuilder}
 
 import java.util.NoSuchElementException
 import java.util.concurrent.TimeUnit
@@ -121,8 +128,39 @@ trait ElasticsearchClient { this: KoutaJsonFormats with Logging =>
   }
 }
 
+/*
 object ElasticsearchClient {
   val client: ElasticClient = ElasticClient(
     JavaClient(ElasticProperties(KoutaConfigurationFactory.configuration.elasticSearchConfiguration.elasticUrl))
   )
+}
+ */
+
+object ElasticsearchClient {
+  val config = KoutaConfigurationFactory.configuration.elasticSearchConfiguration;
+  val client = if (config.authEnabled) {
+    lazy val provider = {
+      val provider    = new BasicCredentialsProvider
+      val credentials = new UsernamePasswordCredentials(config.username, config.password)
+      provider.setCredentials(AuthScope.ANY, credentials)
+      provider
+    }
+    ElasticClient(
+      JavaClient(
+        ElasticProperties(config.elasticUrl),
+        (requestConfigBuilder: Builder) => {
+          requestConfigBuilder
+        },
+        new HttpClientConfigCallback {
+          override def customizeHttpClient(httpClientBuilder: HttpAsyncClientBuilder): HttpAsyncClientBuilder = {
+            httpClientBuilder.setDefaultCredentialsProvider(provider)
+          }
+        }
+      )
+    )
+  } else {
+    ElasticClient(
+      JavaClient(ElasticProperties(config.elasticUrl))
+    )
+  }
 }
