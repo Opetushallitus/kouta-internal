@@ -24,7 +24,7 @@ case class AloituspaikatIndexed(lukumaara: Option[Int], ensikertalaisille: Optio
 case class HakukohdeMetadataIndexed(
     kaytetaanHaunAlkamiskautta: Option[Boolean],
     aloituspaikat: Option[AloituspaikatIndexed],
-    uudenOpiskelijanUrl: Option[String],
+    uudenOpiskelijanUrl: Option[Kielistetty],
     koulutuksenAlkamiskausi: Option[KoulutuksenAlkamiskausi]
 )
 
