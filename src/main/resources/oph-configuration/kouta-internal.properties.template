@@ -15,6 +15,9 @@ kouta-internal.db.timeoutSeconds=20
 kouta-internal.db.leakDetectionThresholdMillis=1800000
 
 kouta-internal.elasticsearch.url={{kouta_internal_elasticsearch7_url}}
+kouta-internal.elasticsearch.auth-enabled={{kouta_internal_elasticsearch_auth_enabled | default('false')}}
+kouta-internal.elasticsearch.username={{kouta_internal_elasticsearch_username}}
+kouta-internal.elasticsearch.password={{kouta_internal_elasticsearch_password}}
 kouta-internal.elasticsearch.cacheTimeoutSeconds={{kouta_internal_cache_timeout | default('60')}}
 
 host.virkailija={{host_virkailija}}

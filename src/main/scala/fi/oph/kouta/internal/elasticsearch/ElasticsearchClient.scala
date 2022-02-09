@@ -4,16 +4,23 @@ import com.github.blemale.scaffeine.Scaffeine
 import com.sksamuel.elastic4s.HitReader
 import com.sksamuel.elastic4s.requests.searches.queries.Query
 import com.sksamuel.elastic4s.ElasticDsl._
-import com.sksamuel.elastic4s.http.JavaClient
+import com.sksamuel.elastic4s.http.{JavaClient, NoOpHttpClientConfigCallback}
 import com.sksamuel.elastic4s.requests.get.GetResponse
 import com.sksamuel.elastic4s.requests.searches.SearchRequest
 import com.sksamuel.elastic4s.{ElasticClient, ElasticProperties, RequestFailure, RequestSuccess}
-import fi.oph.kouta.internal.KoutaConfigurationFactory
+import fi.oph.kouta.internal.{ElasticSearchConfiguration, KoutaConfigurationFactory}
 import fi.oph.kouta.internal.domain.WithTila
 import fi.oph.kouta.internal.domain.enums.Julkaisutila.Tallennettu
 import fi.oph.kouta.internal.util.KoutaJsonFormats
 import fi.vm.sade.utils.Timer.timed
 import fi.vm.sade.utils.slf4j.Logging
+import org.apache.http.HttpHost
+import org.apache.http.auth.{AuthScope, UsernamePasswordCredentials}
+import org.apache.http.client.config.RequestConfig.Builder
+import org.apache.http.impl.client.BasicCredentialsProvider
+import org.apache.http.impl.nio.client.HttpAsyncClientBuilder
+import org.elasticsearch.client.RestClientBuilder.{HttpClientConfigCallback, RequestConfigCallback}
+import org.elasticsearch.client.{RestClient, RestClientBuilder}
 
 import java.util.NoSuchElementException
 import java.util.concurrent.TimeUnit
@@ -122,7 +129,27 @@ trait ElasticsearchClient { this: KoutaJsonFormats with Logging =>
 }
 
 object ElasticsearchClient {
+  val config: ElasticSearchConfiguration = KoutaConfigurationFactory.configuration.elasticSearchConfiguration;
+  val httpClientConfigCallback: HttpClientConfigCallback = if (config.authEnabled) {
+    lazy val provider = {
+      val provider    = new BasicCredentialsProvider
+      val credentials = new UsernamePasswordCredentials(config.username, config.password)
+      provider.setCredentials(AuthScope.ANY, credentials)
+      provider
+    }
+    (httpClientBuilder: HttpAsyncClientBuilder) => {
+      httpClientBuilder.setDefaultCredentialsProvider(provider)
+    }
+  } else {
+    NoOpHttpClientConfigCallback
+  }
   val client: ElasticClient = ElasticClient(
-    JavaClient(ElasticProperties(KoutaConfigurationFactory.configuration.elasticSearchConfiguration.elasticUrl))
+    JavaClient(
+      ElasticProperties(config.elasticUrl),
+      (requestConfigBuilder: Builder) => {
+        requestConfigBuilder
+      },
+      httpClientConfigCallback
+    )
   )
 }
