@@ -8,44 +8,35 @@ import java.util.UUID
 
 class KoulutusSpec extends KoulutusFixture with AccessControlSpec {
 
-  override val roleEntities      = Seq(Role.Koulutus)
-  val existingId: KoulutusOid    = KoulutusOid("1.2.246.562.13.00000000000000000009")
-  val nonExistingId: KoulutusOid = KoulutusOid("1.2.246.562.13.00000000000000000000")
-  val sorakuvausId: UUID         = UUID.fromString("9267884f-fba1-4b85-8bb3-3eb77440c197")
-
-  override def beforeAll(): Unit = {
-    super.beforeAll()
-    addMockSorakuvaus(sorakuvausId, ChildOid)
-    addMockKoulutus(existingId, ChildOid, sorakuvausId)
-  }
+  override val roleEntities = Seq(Role.Koulutus)
+  val ammKoulutusOid        = KoulutusOid("1.2.246.562.13.00000000000000000001")
+  val ammTukinnonosaOid     = KoulutusOid("1.2.246.562.13.00000000000000000002")
+  val ammOsaamisalaOid      = KoulutusOid("1.2.246.562.13.00000000000000000003")
+  val nonExistingOid        = KoulutusOid("1.2.246.562.13.00000000000000000000")
 
   "GET /:id" should s"get koulutus from elastic search" in {
-    get(existingId, defaultSessionId)
+    get(ammKoulutusOid, defaultSessionId)
   }
 
   it should s"return 404 if koulutus not found" in {
-    get(s"$KoulutusPath/$nonExistingId", headers = Seq(defaultSessionHeader)) {
+    get(s"$KoulutusPath/$nonExistingOid", headers = Seq(defaultSessionHeader)) {
       status should equal(404)
-      body should include(s"Didn't find id $nonExistingId")
+      body should include(s"Didn't find id $nonExistingOid")
     }
   }
 
   it should "return 401 without a valid session" in {
-    get(s"$KoulutusPath/$nonExistingId") {
+    get(s"$KoulutusPath/$nonExistingOid") {
       status should equal(401)
       body should include("Unauthorized")
     }
   }
 
   it should "get ammatillinen tutkinnon osa koulutus" in {
-    val tutkinnonOsaOid = KoulutusOid("1.2.246.562.13.00000000000000000019")
-    addMockTutkinnonOsaKoulutus(tutkinnonOsaOid, ChildOid, sorakuvausId)
-    get(tutkinnonOsaOid, defaultSessionId)
+    get(ammTukinnonosaOid, defaultSessionId)
   }
 
   it should "get ammatillinen osaamisala koulutus" in {
-    val osaamisalaOid = KoulutusOid("1.2.246.562.13.00000000000000000020")
-    addMockOsaamisalaKoulutus(osaamisalaOid, ChildOid, sorakuvausId)
-    get(osaamisalaOid, defaultSessionId)
+    get(ammOsaamisalaOid, defaultSessionId)
   }
 }

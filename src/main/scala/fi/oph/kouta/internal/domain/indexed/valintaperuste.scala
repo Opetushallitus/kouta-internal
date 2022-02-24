@@ -2,7 +2,7 @@ package fi.oph.kouta.internal.domain.indexed
 
 import java.time.LocalDateTime
 import java.util.UUID
-import fi.oph.kouta.domain.{Amk, Amm, Koulutustyyppi, Lk, Tuva, Telma, Yo}
+import fi.oph.kouta.domain.{AikuistenPerusopetus, Amk, Amm, AmmMuu, Koulutustyyppi, Lk, Telma, Tuva, Yo}
 import fi.oph.kouta.internal.domain.enums.{Julkaisutila, Kieli}
 import fi.oph.kouta.internal.domain._
 import fi.vm.sade.utils.slf4j.Logging
@@ -84,6 +84,16 @@ case class TelmaValintaperusteMetadataIndexed(
     valintatavat: Seq[AmmatillinenValintatapaIndexed]
 ) extends ValintaperusteMetadataIndexed {
   override def toValintaperusteMetadata: ValintaperusteMetadata = TelmaValintaperusteMetadata(
+    koulutustyyppi = koulutustyyppi,
+    valintatavat = valintatavat.map(_.toAmmatillinenValintatapa)
+  )
+}
+
+case class AmmatillinenMuuValintaperusteMetadataIndexed(
+    koulutustyyppi: Koulutustyyppi = AmmMuu,
+    valintatavat: Seq[AmmatillinenValintatapaIndexed]
+) extends ValintaperusteMetadataIndexed {
+  override def toValintaperusteMetadata: AmmatillinenMuuValintaperusteMetadata = AmmatillinenMuuValintaperusteMetadata(
     koulutustyyppi = koulutustyyppi,
     valintatavat = valintatavat.map(_.toAmmatillinenValintatapa)
   )
@@ -240,4 +250,15 @@ case class LukioValintatapaIndexed(
     enimmaispisteet = enimmaispisteet,
     vahimmaispisteet = vahimmaispisteet
   )
+}
+
+case class AikuistenPerusopetusValintaperusteMetadataIndexed(
+    koulutustyyppi: Koulutustyyppi = AikuistenPerusopetus,
+    valintatavat: Seq[AmmatillinenValintatapaIndexed]
+) extends ValintaperusteMetadataIndexed {
+  override def toValintaperusteMetadata: AikuistenPerusopetusValintaperusteMetadata =
+    AikuistenPerusopetusValintaperusteMetadata(
+      koulutustyyppi = koulutustyyppi,
+      valintatavat = valintatavat.map(_.toAmmatillinenValintatapa)
+    )
 }

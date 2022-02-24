@@ -216,6 +216,23 @@ case class TelmaKoulutusMetadataIndexed(
     )
 }
 
+case class AmmatillinenMuuKoulutusMetadataIndexed(
+    tyyppi: Koulutustyyppi,
+    kuvaus: Kielistetty,
+    lisatiedot: Seq[LisatietoIndexed],
+    koulutusala: Seq[KoodiUri],
+    opintojenLaajuus: Option[KoodiUri] = None
+) extends KoulutusMetadataIndexed {
+  override def toKoulutusMetadata: AmmatillinenMuuKoulutusMetadata =
+    AmmatillinenMuuKoulutusMetadata(
+      tyyppi = tyyppi,
+      kuvaus = kuvaus,
+      lisatiedot = lisatiedot.map(_.toLisatieto),
+      koulutusalaKoodiUrit = koulutusala.map(_.koodiUri),
+      opintojenLaajuusKoodiUri = opintojenLaajuus.map(_.koodiUri)
+    )
+}
+
 case class VapaaSivistystyoKoulutusMetadataIndexed(
     tyyppi: Koulutustyyppi,
     kuvaus: Kielistetty,
@@ -230,5 +247,22 @@ case class VapaaSivistystyoKoulutusMetadataIndexed(
       lisatiedot = lisatiedot.map(_.toLisatieto),
       linkkiEPerusteisiin = linkkiEPerusteisiin,
       opintojenLaajuusKoodiUri = opintojenLaajuusKoodiUri.map(_.koodiUri)
+    )
+}
+
+case class AikuistenPerusopetusKoulutusMetadataIndexed(
+    tyyppi: Koulutustyyppi,
+    kuvaus: Kielistetty,
+    lisatiedot: Seq[LisatietoIndexed],
+    linkkiEPerusteisiin: Kielistetty,
+    opintojenLaajuus: Option[KoodiUri] = None
+) extends KoulutusMetadataIndexed {
+  override def toKoulutusMetadata: AikuistenPerusopetusKoulutusMetadata =
+    AikuistenPerusopetusKoulutusMetadata(
+      tyyppi = tyyppi,
+      kuvaus = kuvaus,
+      lisatiedot = lisatiedot.map(_.toLisatieto),
+      linkkiEPerusteisiin = linkkiEPerusteisiin,
+      opintojenLaajuusKoodiUri = opintojenLaajuus.map(_.koodiUri)
     )
 }

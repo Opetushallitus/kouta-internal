@@ -11,27 +11,21 @@ import java.util.UUID
 class HakuSpec extends HakuFixture with AccessControlSpec {
 
   override val roleEntities  = Seq(Role.Haku)
-  val existingId: HakuOid    = HakuOid("1.2.246.562.29.00000000000000000009")
   val nonExistingId: HakuOid = HakuOid("1.2.246.562.29.00000000000000000000")
 
-  val ataruId1: UUID = UUID.randomUUID()
-  val ataruId2: UUID = UUID.randomUUID()
-  val ataruId3: UUID = UUID.randomUUID()
+  val hakuOid1 = HakuOid("1.2.246.562.29.00000000000000000001")
+  val hakuOid2 = HakuOid("1.2.246.562.29.00000000000000000002")
+  val hakuOid3 = HakuOid("1.2.246.562.29.00000000000000000003")
+  val hakuOid4 = HakuOid("1.2.246.562.29.00000000000000000004")
+  val hakuOid5 = HakuOid("1.2.246.562.29.00000000000000000005")
+  val hakuOid6 = HakuOid("1.2.246.562.29.00000000000000000006")
 
-  override def beforeAll(): Unit = {
-    super.beforeAll()
-    addMockHaku(existingId, ChildOid)
-
-    addMockHaku(HakuOid("1.2.246.562.29.00000000000000000301"), ChildOid, Some(ataruId1))
-    addMockHaku(HakuOid("1.2.246.562.29.00000000000000000302"), ChildOid, Some(ataruId1))
-    addMockHaku(HakuOid("1.2.246.562.29.00000000000000000303"), ChildOid, Some(ataruId2))
-    addMockHaku(HakuOid("1.2.246.562.29.00000000000000000304"), ChildOid, Some(ataruId2))
-    addMockHaku(HakuOid("1.2.246.562.29.00000000000000000305"), ParentOid, Some(ataruId1))
-    addMockHaku(HakuOid("1.2.246.562.29.00000000000000000306"), EvilChildOid, Some(ataruId1))
-  }
+  val ataruId1: UUID = UUID.fromString("dcd38a87-912e-4e91-8840-99c7e242dd53")
+  val ataruId2: UUID = UUID.fromString("dcd38a87-912e-4e91-8840-99c7e242dd54")
+  val ataruId3: UUID = UUID.fromString("dcd38a87-912e-4e91-8840-99c7e242dd55")
 
   "GET /:id" should s"get haku from elastic search" in {
-    get(existingId, defaultSessionId)
+    get(hakuOid1, defaultSessionId)
   }
 
   it should s"return 404 if haku not found" in {
@@ -49,9 +43,10 @@ class HakuSpec extends HakuFixture with AccessControlSpec {
   }
 
   it should "return status code 418 if entity cannot be parsed" in {
-    get(existingId, crudSessions(ChildOid))
-    updateExistingHakuToUnknownTila(existingId.s)
-    get(existingId, crudSessions(ChildOid), 418)
+    get(hakuOid1, crudSessions(ChildOid))
+    updateExistingHakuToCertainTila(hakuOid1.s, "outotila")
+    get(hakuOid1, crudSessions(ChildOid), 418)
+    updateExistingHakuToCertainTila(hakuOid1.s, "julkaistu")
   }
 
   "Search by Ataru ID" should "find haku based on Ataru ID" in {
@@ -62,10 +57,10 @@ class HakuSpec extends HakuFixture with AccessControlSpec {
     ataruIds.map(_.get).foreach(_ shouldEqual ataruId1)
 
     haut.map(_.oid) should contain theSameElementsAs Seq(
-      HakuOid("1.2.246.562.29.00000000000000000301"),
-      HakuOid("1.2.246.562.29.00000000000000000302"),
-      HakuOid("1.2.246.562.29.00000000000000000305"),
-      HakuOid("1.2.246.562.29.00000000000000000306")
+      hakuOid1,
+      hakuOid2,
+      hakuOid5,
+      hakuOid6
     )
   }
 
@@ -81,25 +76,26 @@ class HakuSpec extends HakuFixture with AccessControlSpec {
   }
 
   it should "skip entities that can't be deserialized" in {
-    updateExistingHakuToUnknownTila("1.2.246.562.29.00000000000000000301")
+    updateExistingHakuToCertainTila(hakuOid1.s, "outotila")
 
     val haut = get[Seq[Haku]](s"$HakuPath/search?ataruId=$ataruId1", defaultSessionId)
 
     haut.map(_.oid) should contain theSameElementsAs Seq(
-      HakuOid("1.2.246.562.29.00000000000000000302"),
-      HakuOid("1.2.246.562.29.00000000000000000305"),
-      HakuOid("1.2.246.562.29.00000000000000000306")
+      hakuOid2,
+      hakuOid5,
+      hakuOid6
     )
+    updateExistingHakuToCertainTila(hakuOid1.s, "julkaistu")
   }
 
-  private def updateExistingHakuToUnknownTila(hakuOid: String): Unit = {
+  private def updateExistingHakuToCertainTila(hakuOid: String, tila: String): Unit = {
     import com.sksamuel.elastic4s.ElasticDsl._
     import scala.concurrent.ExecutionContext.Implicits.global
     import scala.concurrent.Await
     import scala.concurrent.duration.Duration
 
     val updateOperation = TempElasticClient.client.execute {
-      updateById("haku-kouta-virkailija", hakuOid).doc("tila" -> "outotila")
+      updateById("haku-kouta-virkailija", hakuOid).doc("tila" -> tila)
     }
 
     Await.result(updateOperation, Duration.Inf)

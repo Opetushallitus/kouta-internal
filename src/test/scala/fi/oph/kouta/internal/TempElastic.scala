@@ -14,6 +14,7 @@ private object TempElastic {
   var elastic: Option[ElasticsearchContainer] = None
 
   def start(): Int = {
+
     try {
       get().getMappedPort(9200)
     } finally {
