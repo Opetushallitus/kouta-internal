@@ -237,8 +237,10 @@ case class Sora(tila: String)
     |           type: string
     |           description: Ulkoinen tunniste (esim. oppilaitoksen järjestelmän yksilöivä tunniste)
     |        uudenOpiskelijanUrl:
-    |           type: string
+    |           type: object
     |           description: Uuden opiskelijan ohjeita sisältävän sivun URL
+    |           allOf:
+    |            - $ref: '#/components/schemas/Linkki'
     |"""
 )
 case class Hakukohde(
@@ -283,5 +285,5 @@ case class Hakukohde(
     oikeusHakukohteeseen: Option[Boolean],
     jarjestaaUrheilijanAmmKoulutusta: Option[Boolean],
     externalId: Option[String],
-    uudenOpiskelijanUrl: Option[String]
+    uudenOpiskelijanUrl: Option[Kielistetty]
 ) extends PerustiedotWithOid
