@@ -1,14 +1,12 @@
 package fi.oph.kouta.internal.elasticsearch
 
-import com.sksamuel.elastic4s.ElasticDateMath
-import com.sksamuel.elastic4s.json4s.ElasticJson4s.Implicits._
-import fi.oph.kouta.internal.domain.enums.Julkaisutila
-import com.sksamuel.elastic4s.ElasticClient
+import com.sksamuel.elastic4s.{ElasticClient, ElasticDateMath}
 import com.sksamuel.elastic4s.ElasticDsl._
+import com.sksamuel.elastic4s.json4s.ElasticJson4s.Implicits._
 import com.sksamuel.elastic4s.requests.searches.queries.Query
-import fi.oph.kouta.internal.domain.Hakukohde
-import fi.oph.kouta.internal.domain.enums.Kieli.Fi
 import fi.oph.kouta.internal.domain.{Hakukohde, Kielistetty}
+import fi.oph.kouta.internal.domain.enums.Julkaisutila
+import fi.oph.kouta.internal.domain.enums.Kieli._
 import fi.oph.kouta.internal.domain.indexed.HakukohdeIndexed
 import fi.oph.kouta.internal.domain.oid.{HakuOid, HakukohdeOid, OrganisaatioOid}
 import fi.oph.kouta.internal.util.KoutaJsonFormats
@@ -58,7 +56,7 @@ class HakukohdeClient(val index: String, val client: ElasticClient)
       ).minimumShouldMatch(1)
     })
     //
-    implicit val userOrdering: Ordering[Kielistetty] = Ordering.by(_.get(Fi))
+    implicit val userOrdering: Ordering[Kielistetty] = Ordering.by(hk => (hk.get(Fi), hk.get(Sv), hk.get(En)))
 
     searchItems[HakukohdeIndexed](Some(must(hakuQuery ++ tarjoajaQuery ++ qQuery)))
       .map(_.map(_.toHakukohde(oikeusHakukohteeseenFn)))
