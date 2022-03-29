@@ -155,9 +155,6 @@ case class Sora(tila: String)
     |        koulutustyyppikoodi:
     |          type: string
     |          description: Koodiston koodi hakukohteen koulutustyypille
-    |        onkoHarkinnanvarainenKoulutus:
-    |          type: boolean
-    |          description: POISTUVA TIETO
     |        salliikoHakukohdeHarkinnanvaraisuudenKysymisen:
     |          type: boolean
     |          description: Hakukohderyhmäpalvelun harkinnanvaraisuus ryhmää varten
@@ -272,7 +269,6 @@ case class Hakukohde(
     valintaperusteId: Option[UUID],
     yhdenPaikanSaanto: YhdenPaikanSaanto,
     koulutustyyppikoodi: Option[String],
-    onkoHarkinnanvarainenKoulutus: Option[Boolean],
     salliikoHakukohdeHarkinnanvaraisuudenKysymisen: Option[Boolean],
     voikoHakukohteessaOllaHarkinnanvaraisestiHakeneita: Option[Boolean],
     liitteetOnkoSamaToimitusaika: Option[Boolean],
