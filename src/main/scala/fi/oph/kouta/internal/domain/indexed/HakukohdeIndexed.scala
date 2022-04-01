@@ -2,30 +2,46 @@ package fi.oph.kouta.internal.domain.indexed
 
 import java.time.LocalDateTime
 import java.util.UUID
-
 import fi.oph.kouta.internal.domain.enums.{Hakulomaketyyppi, Julkaisutila, Kieli, LiitteenToimitustapa}
 import fi.oph.kouta.internal.domain.oid.{HakuOid, HakukohdeOid, OrganisaatioOid, ToteutusOid}
-import fi.oph.kouta.internal.domain.{
-  Ajanjakso,
-  Hakukohde,
-  Kielistetty,
-  Liite,
-  LiitteenToimitusosoite,
-  Sora,
-  WithTila,
-  YhdenPaikanSaanto
-}
+import fi.oph.kouta.internal.domain.{Ajanjakso, Hakukohde, Kielistetty, Liite, LiitteenToimitusosoite, PainotettuArvosana, Sora, WithTila, YhdenPaikanSaanto}
 import fi.vm.sade.utils.slf4j.Logging
 
 case class HakukohdeToteutusIndexed(oid: ToteutusOid, tarjoajat: List[Organisaatio])
 
 case class AloituspaikatIndexed(lukumaara: Option[Int], ensikertalaisille: Option[Int])
 
+case class OppiaineIndexed(
+  koodiUri: Option[String]
+)
+
+case class PainottevaOppiaineKoodiIndexed(
+  oppiaine: Option[OppiaineIndexed]
+)
+
+case class PainotettuArvosanaIndexed(
+    painokerroin: Option[Double],
+    koodit: Option[PainottevaOppiaineKoodiIndexed]
+) {
+  def toPainotettuArvosana: PainotettuArvosana = {
+    PainotettuArvosana(
+       koodiUri = koodit.flatMap(_.oppiaine).flatMap(_.koodiUri),
+       painokerroin = painokerroin
+    )
+  }
+}
+
+case class HakukohteenLinjaIndexed(
+    alinHyvaksyttyKeskiarvo: Option[Double],
+    painotetutArvosanat: List[PainotettuArvosanaIndexed]
+)
+
 case class HakukohdeMetadataIndexed(
     kaytetaanHaunAlkamiskautta: Option[Boolean],
     aloituspaikat: Option[AloituspaikatIndexed],
     uudenOpiskelijanUrl: Option[Kielistetty],
-    koulutuksenAlkamiskausi: Option[KoulutuksenAlkamiskausi]
+    koulutuksenAlkamiskausi: Option[KoulutuksenAlkamiskausi],
+    hakukohteenLinja: Option[HakukohteenLinjaIndexed]
 )
 
 case class HakukohdeIndexed(
@@ -90,6 +106,8 @@ case class HakukohdeIndexed(
         kaytetaanHaunHakulomaketta = kaytetaanHaunHakulomaketta,
         aloituspaikat = metadata.flatMap(_.aloituspaikat.flatMap(_.lukumaara)),
         ensikertalaisenAloituspaikat = metadata.flatMap(_.aloituspaikat.flatMap(_.ensikertalaisille)),
+        alinHyvaksyttyKeskiarvo = metadata.flatMap(_.hakukohteenLinja.flatMap(_.alinHyvaksyttyKeskiarvo)),
+        painotetutArvosanat = metadata.flatMap(_.hakukohteenLinja).flatMap(_.painotetutArvosanat).map(_.toPainotettuArvosana).toList,
         pohjakoulutusvaatimusKoodiUrit = pohjakoulutusvaatimus.map(_.koodiUri),
         muuPohjakoulutusvaatimus = muuPohjakoulutusvaatimus,
         toinenAsteOnkoKaksoistutkinto = toinenAsteOnkoKaksoistutkinto,

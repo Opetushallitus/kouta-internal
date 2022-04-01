@@ -28,6 +28,19 @@ case class YhdenPaikanSaanto(voimassa: Boolean, syy: String)
     |""")
 case class Sora(tila: String)
 
+@SwaggerModel("""    PainotettuArvosana:
+                |      type: object
+                |      properties:
+                |        koodiUri:
+                |          type: string
+                |          description: oppiaineen koodiUri
+                |        painokerroin:
+                |          type: number
+                |          format: double
+                |          description: oppiaineen painokerroin
+                |""")
+case class PainotettuArvosana(koodiUri: Option[String], painokerroin: Option[Double])
+
 @SwaggerModel(
   """    Hakukohde:
     |      type: object
@@ -99,26 +112,14 @@ case class Sora(tila: String)
     |          type: integer
     |          description: Hakukohteen aloituspaikkojen lukumäärä
     |          example: 100
-    |        minAloituspaikat:
-    |          type: integer
-    |          description: Hakukohteen aloituspaikkojen minimimäärä
-    |          example: 75
-    |        maxAloituspaikat:
-    |          type: integer
-    |          description: Hakukohteen aloituspaikkojen maksimimäärä
-    |          example: 110
     |        ensikertalaisenAloituspaikat:
     |          type: integer
     |          description: Hakukohteen ensikertalaisen aloituspaikkojen lukumäärä
     |          example: 50
-    |        minEnsikertalaisenAloituspaikat:
-    |          type: integer
-    |          description: Hakukohteen ensikertalaisen aloituspaikkojen minimimäärä
-    |          example: 45
-    |        maxEnsikertalaisenAloituspaikat:
-    |          type: integer
-    |          description: Hakukohteen ensikertalaisen aloituspaikkojen maksimimäärä
-    |          example: 60
+    |        alinHyvaksyttyKeskiarvo:
+    |          type: double
+    |          description: Hakukohteen keskiarvoraja
+    |          example: 7.2
     |        pohjakoulutusvaatimusKoodiUrit:
     |          type: array
     |          description: Lista toisen asteen hakukohteen pohjakoulutusvaatimuksista. Viittaa [koodistoon](https://virkailija.testiopintopolku.fi/koodisto-ui/html/koodisto/pohjakoulutusvaatimustoinenaste/1)
@@ -265,6 +266,8 @@ case class Hakukohde(
     kaytetaanHaunHakulomaketta: Option[Boolean],
     aloituspaikat: Option[Int],
     ensikertalaisenAloituspaikat: Option[Int],
+    alinHyvaksyttyKeskiarvo: Option[Double],
+    painotetutArvosanat: List[PainotettuArvosana],
     pohjakoulutusvaatimusKoodiUrit: Seq[String],
     muuPohjakoulutusvaatimus: Kielistetty,
     toinenAsteOnkoKaksoistutkinto: Option[Boolean],
