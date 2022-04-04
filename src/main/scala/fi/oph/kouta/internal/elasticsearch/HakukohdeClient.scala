@@ -7,7 +7,7 @@ import com.sksamuel.elastic4s.requests.searches.queries.Query
 import fi.oph.kouta.internal.domain.{Hakukohde, Kielistetty}
 import fi.oph.kouta.internal.domain.enums.Julkaisutila
 import fi.oph.kouta.internal.domain.enums.Kieli._
-import fi.oph.kouta.internal.domain.indexed.HakukohdeIndexed
+import fi.oph.kouta.internal.domain.indexed.{HakukohdeIndexed, KoodiUri}
 import fi.oph.kouta.internal.domain.oid.{HakuOid, HakukohdeOid, OrganisaatioOid}
 import fi.oph.kouta.internal.util.KoutaJsonFormats
 import fi.vm.sade.utils.slf4j.Logging
@@ -27,10 +27,12 @@ class HakukohdeClient(val index: String, val client: ElasticClient)
   def search(
       hakuOid: Option[HakuOid],
       tarjoajaOids: Option[Set[OrganisaatioOid]],
+      hakukohdeKoodi: Option[KoodiUri],
       q: Option[String],
       oikeusHakukohteeseenFn: OrganisaatioOid => Option[Boolean]
   ): Future[Seq[Hakukohde]] = {
-    val hakuQuery = hakuOid.map(oid => termsQuery("hakuOid", oid.toString))
+    val hakuQuery           = hakuOid.map(oid => termsQuery("hakuOid", oid.toString))
+    val hakukohdeKoodiQuery = hakukohdeKoodi.map(k => termsQuery("hakukohde.koodiUri", k.koodiUri))
     val tarjoajaQuery = tarjoajaOids.map(oids =>
       should(
         oids.map(oid =>
@@ -58,7 +60,7 @@ class HakukohdeClient(val index: String, val client: ElasticClient)
     //
     implicit val userOrdering: Ordering[Kielistetty] = Ordering.by(hk => (hk.get(Fi), hk.get(Sv), hk.get(En)))
 
-    searchItems[HakukohdeIndexed](Some(must(hakuQuery ++ tarjoajaQuery ++ qQuery)))
+    searchItems[HakukohdeIndexed](Some(must(hakuQuery ++ tarjoajaQuery ++ hakukohdeKoodiQuery ++ qQuery)))
       .map(_.map(_.toHakukohde(oikeusHakukohteeseenFn)))
       .map(res => res.sortBy(hk => hk.organisaatioNimi))
   }
