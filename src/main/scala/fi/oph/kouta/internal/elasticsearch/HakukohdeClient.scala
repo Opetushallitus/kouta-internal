@@ -32,7 +32,7 @@ class HakukohdeClient(val index: String, val client: ElasticClient)
       oikeusHakukohteeseenFn: OrganisaatioOid => Option[Boolean]
   ): Future[Seq[Hakukohde]] = {
     val hakuQuery           = hakuOid.map(oid => termsQuery("hakuOid", oid.toString))
-    val hakukohdeKoodiQuery = hakukohdeKoodi.map(k => termsQuery("hakukohde.koodiUri", k.koodiUri))
+    val hakukohdeKoodiQuery = hakukohdeKoodi.map(k => termsQuery("hakukohde.koodiUri.keyword", k.koodiUri))
     val tarjoajaQuery = tarjoajaOids.map(oids =>
       should(
         oids.map(oid =>
