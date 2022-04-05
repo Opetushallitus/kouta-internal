@@ -148,6 +148,11 @@ case class PainotettuArvosana(koodiUri: Option[String], painokerroin: Option[Dou
     |          type: string
     |          description: Hakukohteeseen liittyvän valintaperustekuvauksen yksilöivä tunniste
     |          example: "ea596a9c-5940-497e-b5b7-aded3a2352a7"
+    |        valintaperusteValintakokeet:
+    |          type: array
+    |          description: Hakukohteeseen liittyvät valintakokeet
+    |          items:
+    |            $ref: '#/components/schemas/Valintakoe'
     |        yhdenPaikanSaanto:
     |          type: object
     |          description: Onko hakukohde yhden paikan säännön piirissä.
@@ -273,6 +278,7 @@ case class Hakukohde(
     toinenAsteOnkoKaksoistutkinto: Option[Boolean],
     kaytetaanHaunAikataulua: Option[Boolean],
     valintaperusteId: Option[UUID],
+    valintaperusteValintakokeet: List[Valintakoe],
     yhdenPaikanSaanto: YhdenPaikanSaanto,
     koulutustyyppikoodi: Option[String],
     onkoHarkinnanvarainenKoulutus: Option[Boolean],

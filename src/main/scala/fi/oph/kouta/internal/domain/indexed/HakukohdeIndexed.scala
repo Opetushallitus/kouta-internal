@@ -6,6 +6,7 @@ import fi.oph.kouta.internal.domain.enums.{Hakulomaketyyppi, Julkaisutila, Kieli
 import fi.oph.kouta.internal.domain.oid.{HakuOid, HakukohdeOid, OrganisaatioOid, ToteutusOid}
 import fi.oph.kouta.internal.domain.{Ajanjakso, Hakukohde, Kielistetty, Liite, LiitteenToimitusosoite, PainotettuArvosana, Sora, WithTila, YhdenPaikanSaanto}
 import fi.vm.sade.utils.slf4j.Logging
+import fi.oph.kouta.internal.domain.indexed.{ValintakoeMetadataIndexed}
 
 case class HakukohdeToteutusIndexed(oid: ToteutusOid, tarjoajat: List[Organisaatio])
 
@@ -44,6 +45,11 @@ case class HakukohdeMetadataIndexed(
     hakukohteenLinja: Option[HakukohteenLinjaIndexed]
 )
 
+case class ValintaPerusteIndexed(
+    valintakokeet: List[ValintakoeIndexed],
+    id: Option[UUID]
+)
+
 case class HakukohdeIndexed(
     oid: HakukohdeOid,
     toteutus: HakukohdeToteutusIndexed,
@@ -59,7 +65,7 @@ case class HakukohdeIndexed(
     muuPohjakoulutusvaatimus: Kielistetty,
     toinenAsteOnkoKaksoistutkinto: Option[Boolean],
     kaytetaanHaunAikataulua: Option[Boolean],
-    valintaperuste: Option[UuidObject],
+    valintaperuste: Option[ValintaPerusteIndexed],
     yhdenPaikanSaanto: YhdenPaikanSaanto,
     koulutustyyppikoodi: Option[String],
     onkoHarkinnanvarainenKoulutus: Option[Boolean],
@@ -112,7 +118,8 @@ case class HakukohdeIndexed(
         muuPohjakoulutusvaatimus = muuPohjakoulutusvaatimus,
         toinenAsteOnkoKaksoistutkinto = toinenAsteOnkoKaksoistutkinto,
         kaytetaanHaunAikataulua = kaytetaanHaunAikataulua,
-        valintaperusteId = valintaperuste.map(_.id),
+        valintaperusteId = valintaperuste.flatMap(_.id),
+        valintaperusteValintakokeet = valintaperuste.flatMap(_.valintakokeet).map(_.toValintakoe),
         yhdenPaikanSaanto = yhdenPaikanSaanto,
         koulutustyyppikoodi = koulutustyyppikoodi,
         onkoHarkinnanvarainenKoulutus = onkoHarkinnanvarainenKoulutus,

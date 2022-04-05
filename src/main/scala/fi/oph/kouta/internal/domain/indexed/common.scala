@@ -17,14 +17,19 @@ case class LisatietoIndexed(otsikko: KoodiUri, teksti: Kielistetty) {
   def toLisatieto = Lisatieto(otsikkoKoodiUri = otsikko.koodiUri, teksti)
 }
 
+case class ValintakoeMetadataIndexed(vahimmaispisteet: Option[Double])
+
 case class ValintakoeIndexed(
     id: Option[UUID],
     tyyppi: Option[KoodiUri],
-    tilaisuudet: Option[List[Valintakoetilaisuus]]
+    tilaisuudet: Option[List[Valintakoetilaisuus]],
+    vahimmaispisteet: Option[Double],
+    metadata: Option[ValintakoeMetadataIndexed]
 ) {
   def toValintakoe: Valintakoe = Valintakoe(
     id = id,
     tyyppi = tyyppi.map(_.koodiUri),
-    tilaisuudet = tilaisuudet
+    tilaisuudet = tilaisuudet,
+    vahimmaispisteet = metadata.flatMap(_.vahimmaispisteet)
   )
 }
