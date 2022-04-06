@@ -2,8 +2,8 @@ package fi.oph.kouta.internal.domain
 
 import java.time.LocalDateTime
 import java.util.UUID
-
 import fi.oph.kouta.internal.domain.enums.{Hakulomaketyyppi, Julkaisutila, Kieli, LiitteenToimitustapa}
+import fi.oph.kouta.internal.domain.indexed.KoodiUri
 import fi.oph.kouta.internal.domain.oid._
 import fi.oph.kouta.internal.swagger.SwaggerModel
 
@@ -161,9 +161,6 @@ case class PainotettuArvosana(koodiUri: Option[String], painokerroin: Option[Dou
     |        koulutustyyppikoodi:
     |          type: string
     |          description: Koodiston koodi hakukohteen koulutustyypille
-    |        onkoHarkinnanvarainenKoulutus:
-    |          type: boolean
-    |          description: POISTUVA TIETO
     |        salliikoHakukohdeHarkinnanvaraisuudenKysymisen:
     |          type: boolean
     |          description: Hakukohderyhmäpalvelun harkinnanvaraisuus ryhmää varten
@@ -281,7 +278,6 @@ case class Hakukohde(
     valintaperusteValintakokeet: List[Valintakoe],
     yhdenPaikanSaanto: YhdenPaikanSaanto,
     koulutustyyppikoodi: Option[String],
-    onkoHarkinnanvarainenKoulutus: Option[Boolean],
     salliikoHakukohdeHarkinnanvaraisuudenKysymisen: Option[Boolean],
     voikoHakukohteessaOllaHarkinnanvaraisestiHakeneita: Option[Boolean],
     liitteetOnkoSamaToimitusaika: Option[Boolean],
@@ -302,5 +298,6 @@ case class Hakukohde(
     oikeusHakukohteeseen: Option[Boolean],
     jarjestaaUrheilijanAmmKoulutusta: Option[Boolean],
     externalId: Option[String],
-    uudenOpiskelijanUrl: Option[Kielistetty]
+    uudenOpiskelijanUrl: Option[Kielistetty],
+    hakukohde: Option[KoodiUri]
 ) extends PerustiedotWithOid

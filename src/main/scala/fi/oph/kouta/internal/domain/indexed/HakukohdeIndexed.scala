@@ -78,7 +78,6 @@ case class HakukohdeIndexed(
     valintaperuste: Option[ValintaPerusteIndexed],
     yhdenPaikanSaanto: YhdenPaikanSaanto,
     koulutustyyppikoodi: Option[String],
-    onkoHarkinnanvarainenKoulutus: Option[Boolean],
     salliikoHakukohdeHarkinnanvaraisuudenKysymisen: Option[Boolean],
     voikoHakukohteessaOllaHarkinnanvaraisestiHakeneita: Option[Boolean],
     liitteetOnkoSamaToimitusaika: Option[Boolean],
@@ -97,7 +96,8 @@ case class HakukohdeIndexed(
     modified: Option[LocalDateTime],
     metadata: Option[HakukohdeMetadataIndexed],
     jarjestaaUrheilijanAmmKoulutusta: Option[Boolean],
-    externalId: Option[String]
+    externalId: Option[String],
+    hakukohde: Option[KoodiUri]
 ) extends WithTila
     with Logging {
   def toHakukohde(oikeusHakukohteeseenFn: OrganisaatioOid => Option[Boolean]): Hakukohde = {
@@ -136,7 +136,6 @@ case class HakukohdeIndexed(
           valintaperuste.flatMap(vp => Option.apply(vp.valintakokeet)).getOrElse(List.empty).map(_.toValintakoe),
         yhdenPaikanSaanto = yhdenPaikanSaanto,
         koulutustyyppikoodi = koulutustyyppikoodi,
-        onkoHarkinnanvarainenKoulutus = onkoHarkinnanvarainenKoulutus,
         salliikoHakukohdeHarkinnanvaraisuudenKysymisen = salliikoHakukohdeHarkinnanvaraisuudenKysymisen,
         voikoHakukohteessaOllaHarkinnanvaraisestiHakeneita = voikoHakukohteessaOllaHarkinnanvaraisestiHakeneita,
         liitteetOnkoSamaToimitusaika = liitteetOnkoSamaToimitusaika,
@@ -157,7 +156,8 @@ case class HakukohdeIndexed(
         oikeusHakukohteeseen = tarjoaja.flatMap(t => oikeusHakukohteeseenFn(t)),
         jarjestaaUrheilijanAmmKoulutusta = jarjestaaUrheilijanAmmKoulutusta,
         externalId = externalId,
-        uudenOpiskelijanUrl = metadata.flatMap(_.uudenOpiskelijanUrl)
+        uudenOpiskelijanUrl = metadata.flatMap(_.uudenOpiskelijanUrl),
+        hakukohde = hakukohde
       )
     } catch {
       case e: Exception => {
