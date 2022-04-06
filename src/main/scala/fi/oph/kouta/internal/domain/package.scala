@@ -170,7 +170,12 @@ package object domain {
       |           description: Vähimmäispisteet mitkä vaaditaan valintakokeen läpäisyyn
       |"""
   )
-  case class Valintakoe(id: Option[UUID], tyyppi: Option[String], tilaisuudet: Option[List[Valintakoetilaisuus]], vahimmaispisteet: Option[Double])
+  case class Valintakoe(
+      id: Option[UUID],
+      tyyppi: Option[String],
+      tilaisuudet: Option[List[Valintakoetilaisuus]],
+      vahimmaispisteet: Option[Double]
+  )
 
   @SwaggerModel(
     """    Valintakoetilaisuus:

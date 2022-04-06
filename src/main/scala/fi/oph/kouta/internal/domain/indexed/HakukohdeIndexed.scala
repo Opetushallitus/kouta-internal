@@ -4,7 +4,17 @@ import java.time.LocalDateTime
 import java.util.UUID
 import fi.oph.kouta.internal.domain.enums.{Hakulomaketyyppi, Julkaisutila, Kieli, LiitteenToimitustapa}
 import fi.oph.kouta.internal.domain.oid.{HakuOid, HakukohdeOid, OrganisaatioOid, ToteutusOid}
-import fi.oph.kouta.internal.domain.{Ajanjakso, Hakukohde, Kielistetty, Liite, LiitteenToimitusosoite, PainotettuArvosana, Sora, WithTila, YhdenPaikanSaanto}
+import fi.oph.kouta.internal.domain.{
+  Ajanjakso,
+  Hakukohde,
+  Kielistetty,
+  Liite,
+  LiitteenToimitusosoite,
+  PainotettuArvosana,
+  Sora,
+  WithTila,
+  YhdenPaikanSaanto
+}
 import fi.vm.sade.utils.slf4j.Logging
 import fi.oph.kouta.internal.domain.indexed.{ValintakoeMetadataIndexed}
 
@@ -13,11 +23,11 @@ case class HakukohdeToteutusIndexed(oid: ToteutusOid, tarjoajat: List[Organisaat
 case class AloituspaikatIndexed(lukumaara: Option[Int], ensikertalaisille: Option[Int])
 
 case class OppiaineIndexed(
-  koodiUri: Option[String]
+    koodiUri: Option[String]
 )
 
 case class PainottevaOppiaineKoodiIndexed(
-  oppiaine: Option[OppiaineIndexed]
+    oppiaine: Option[OppiaineIndexed]
 )
 
 case class PainotettuArvosanaIndexed(
@@ -26,8 +36,8 @@ case class PainotettuArvosanaIndexed(
 ) {
   def toPainotettuArvosana: PainotettuArvosana = {
     PainotettuArvosana(
-       koodiUri = koodit.flatMap(_.oppiaine).flatMap(_.koodiUri),
-       painokerroin = painokerroin
+      koodiUri = koodit.flatMap(_.oppiaine).flatMap(_.koodiUri),
+      painokerroin = painokerroin
     )
   }
 }
@@ -113,13 +123,17 @@ case class HakukohdeIndexed(
         aloituspaikat = metadata.flatMap(_.aloituspaikat.flatMap(_.lukumaara)),
         ensikertalaisenAloituspaikat = metadata.flatMap(_.aloituspaikat.flatMap(_.ensikertalaisille)),
         alinHyvaksyttyKeskiarvo = metadata.flatMap(_.hakukohteenLinja.flatMap(_.alinHyvaksyttyKeskiarvo)),
-        painotetutArvosanat = metadata.flatMap(_.hakukohteenLinja).flatMap(_.painotetutArvosanat).map(_.toPainotettuArvosana).toList,
+        painotetutArvosanat = metadata
+          .flatMap(_.hakukohteenLinja.flatMap(linja => Option.apply(linja.painotetutArvosanat)))
+          .getOrElse(List.empty)
+          .map(_.toPainotettuArvosana),
         pohjakoulutusvaatimusKoodiUrit = pohjakoulutusvaatimus.map(_.koodiUri),
         muuPohjakoulutusvaatimus = muuPohjakoulutusvaatimus,
         toinenAsteOnkoKaksoistutkinto = toinenAsteOnkoKaksoistutkinto,
         kaytetaanHaunAikataulua = kaytetaanHaunAikataulua,
         valintaperusteId = valintaperuste.flatMap(_.id),
-        valintaperusteValintakokeet = valintaperuste.flatMap(_.valintakokeet).map(_.toValintakoe),
+        valintaperusteValintakokeet =
+          valintaperuste.flatMap(vp => Option.apply(vp.valintakokeet)).getOrElse(List.empty).map(_.toValintakoe),
         yhdenPaikanSaanto = yhdenPaikanSaanto,
         koulutustyyppikoodi = koulutustyyppikoodi,
         onkoHarkinnanvarainenKoulutus = onkoHarkinnanvarainenKoulutus,
