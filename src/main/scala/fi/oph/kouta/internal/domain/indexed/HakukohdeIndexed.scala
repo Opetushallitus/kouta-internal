@@ -64,7 +64,8 @@ case class HakukohdeIndexed(
     modified: Option[LocalDateTime],
     metadata: Option[HakukohdeMetadataIndexed],
     jarjestaaUrheilijanAmmKoulutusta: Option[Boolean],
-    externalId: Option[String]
+    externalId: Option[String],
+    hakukohde: Option[KoodiUri]
 ) extends WithTila
     with Logging {
   def toHakukohde(oikeusHakukohteeseenFn: OrganisaatioOid => Option[Boolean]): Hakukohde = {
@@ -116,7 +117,8 @@ case class HakukohdeIndexed(
         oikeusHakukohteeseen = tarjoaja.flatMap(t => oikeusHakukohteeseenFn(t)),
         jarjestaaUrheilijanAmmKoulutusta = jarjestaaUrheilijanAmmKoulutusta,
         externalId = externalId,
-        uudenOpiskelijanUrl = metadata.flatMap(_.uudenOpiskelijanUrl)
+        uudenOpiskelijanUrl = metadata.flatMap(_.uudenOpiskelijanUrl),
+        hakukohde = hakukohde
       )
     } catch {
       case e: Exception => {

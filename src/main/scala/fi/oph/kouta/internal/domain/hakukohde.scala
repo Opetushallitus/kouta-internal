@@ -2,8 +2,8 @@ package fi.oph.kouta.internal.domain
 
 import java.time.LocalDateTime
 import java.util.UUID
-
 import fi.oph.kouta.internal.domain.enums.{Hakulomaketyyppi, Julkaisutila, Kieli, LiitteenToimitustapa}
+import fi.oph.kouta.internal.domain.indexed.KoodiUri
 import fi.oph.kouta.internal.domain.oid._
 import fi.oph.kouta.internal.swagger.SwaggerModel
 
@@ -244,6 +244,11 @@ case class Sora(tila: String)
     |           description: Uuden opiskelijan ohjeita sisältävän sivun URL
     |           allOf:
     |            - $ref: '#/components/schemas/Linkki'
+    |        hakukohde:
+    |           type: object
+    |           description: Hakukohteen tiedot
+    |           example:
+    |             koodiUri: hakukohteetperusopetuksenjalkeinenyhteishaku_124#1
     |"""
 )
 case class Hakukohde(
@@ -289,5 +294,6 @@ case class Hakukohde(
     oikeusHakukohteeseen: Option[Boolean],
     jarjestaaUrheilijanAmmKoulutusta: Option[Boolean],
     externalId: Option[String],
-    uudenOpiskelijanUrl: Option[Kielistetty]
+    uudenOpiskelijanUrl: Option[Kielistetty],
+    hakukohde: Option[KoodiUri]
 ) extends PerustiedotWithOid

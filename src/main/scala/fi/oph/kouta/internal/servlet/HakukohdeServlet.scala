@@ -1,6 +1,7 @@
 package fi.oph.kouta.internal.servlet
 
 import fi.oph.kouta.internal.database.SessionDAO
+import fi.oph.kouta.internal.domain.indexed.KoodiUri
 import fi.oph.kouta.internal.domain.oid.{HakuOid, HakukohdeOid, OrganisaatioOid}
 import fi.oph.kouta.internal.security.{Authenticated, OidTooShortException}
 import fi.oph.kouta.internal.service.HakukohdeService
@@ -103,9 +104,10 @@ class HakukohdeServlet(hakukohdeService: HakukohdeService, val sessionDAO: Sessi
   get("/search") {
     implicit val authenticated: Authenticated = authenticate
 
-    val hakuOid  = params.get("haku").map(HakuOid)
-    val tarjoaja = params.get("tarjoaja").map(s => s.split(",").map(OrganisaatioOid).toSet)
-    val q        = params.get("q")
+    val hakuOid        = params.get("haku").map(HakuOid)
+    val tarjoaja       = params.get("tarjoaja").map(s => s.split(",").map(OrganisaatioOid).toSet)
+    val hakukohdeKoodi = params.get("hakukohdeKoodiUri").map(KoodiUri)
+    val q              = params.get("q")
     val all = params.get("all").exists {
       case "true"  => true
       case "false" => false
@@ -114,12 +116,13 @@ class HakukohdeServlet(hakukohdeService: HakukohdeService, val sessionDAO: Sessi
     new AsyncResult() {
       override implicit def timeout: Duration = 5.minutes
 
-      override val is: Future[ActionResult] = (hakuOid, tarjoaja) match {
-        case (None, None)                     => Future.successful(BadRequest("Query parameter is required"))
-        case (Some(oid), _) if !oid.isValid() => Future.successful(BadRequest(s"Invalid haku ${oid.toString}"))
-        case (_, Some(oids)) if oids.exists(!_.isValid()) =>
+      override val is: Future[ActionResult] = (hakuOid, tarjoaja, hakukohdeKoodi) match {
+        case (None, None, None)                  => Future.successful(BadRequest("Query parameter is required"))
+        case (Some(oid), _, _) if !oid.isValid() => Future.successful(BadRequest(s"Invalid haku ${oid.toString}"))
+        case (_, Some(oids), _) if oids.exists(!_.isValid()) =>
           Future.successful(BadRequest(s"Invalid tarjoaja ${oids.find(!_.isValid()).get.toString}"))
-        case (hakuOid, tarjoajaOids) => hakukohdeService.search(hakuOid, tarjoajaOids, q, all).map(Ok(_))
+        case (hakuOid, tarjoajaOids, hakukohdeKoodiUri) =>
+          hakukohdeService.search(hakuOid, tarjoajaOids, hakukohdeKoodiUri, q, all).map(Ok(_))
       }
     }
   }
