@@ -244,6 +244,11 @@ case class Sora(tila: String)
     |           description: Uuden opiskelijan ohjeita sisältävän sivun URL
     |           allOf:
     |            - $ref: '#/components/schemas/Linkki'
+    |        hakukohde:
+    |           type: object
+    |           description: Hakukohteen tiedot
+    |           example:
+    |             koodiUri: hakukohteetperusopetuksenjalkeinenyhteishaku_124#1
     |"""
 )
 case class Hakukohde(
