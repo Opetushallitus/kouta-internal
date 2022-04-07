@@ -121,7 +121,6 @@ class HakukohdeServlet(hakukohdeService: HakukohdeService, val sessionDAO: Sessi
         case (Some(oid), _, _) if !oid.isValid() => Future.successful(BadRequest(s"Invalid haku ${oid.toString}"))
         case (_, Some(oids), _) if oids.exists(!_.isValid()) =>
           Future.successful(BadRequest(s"Invalid tarjoaja ${oids.find(!_.isValid()).get.toString}"))
-        //case (_, _, Some(hakukohdeKoodiUri)) todo, maybe validate koodiUri somehow
         case (hakuOid, tarjoajaOids, hakukohdeKoodiUri) =>
           hakukohdeService.search(hakuOid, tarjoajaOids, hakukohdeKoodiUri, q, all).map(Ok(_))
       }
