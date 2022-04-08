@@ -164,9 +164,18 @@ package object domain {
       |          description: Valintakokeen järjestämistilaisuudet
       |          items:
       |            $ref: '#/components/schemas/Valintakoetilaisuus'
+      |        vahimmaispisteet:
+      |           type: number
+      |           format: double
+      |           description: Vähimmäispisteet mitkä vaaditaan valintakokeen läpäisyyn
       |"""
   )
-  case class Valintakoe(id: Option[UUID], tyyppi: Option[String], tilaisuudet: Option[List[Valintakoetilaisuus]])
+  case class Valintakoe(
+      id: Option[UUID],
+      tyyppi: Option[String],
+      tilaisuudet: Option[List[Valintakoetilaisuus]],
+      vahimmaispisteet: Option[Double]
+  )
 
   @SwaggerModel(
     """    Valintakoetilaisuus:

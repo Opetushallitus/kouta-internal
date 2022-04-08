@@ -2,7 +2,6 @@ package fi.oph.kouta.internal.domain.indexed
 
 import java.time.LocalDateTime
 import java.util.UUID
-
 import fi.oph.kouta.internal.domain.enums.{Hakulomaketyyppi, Julkaisutila, Kieli, LiitteenToimitustapa}
 import fi.oph.kouta.internal.domain.oid.{HakuOid, HakukohdeOid, OrganisaatioOid, ToteutusOid}
 import fi.oph.kouta.internal.domain.{
@@ -11,21 +10,54 @@ import fi.oph.kouta.internal.domain.{
   Kielistetty,
   Liite,
   LiitteenToimitusosoite,
+  PainotettuArvosana,
   Sora,
   WithTila,
   YhdenPaikanSaanto
 }
 import fi.vm.sade.utils.slf4j.Logging
+import fi.oph.kouta.internal.domain.indexed.{ValintakoeMetadataIndexed}
 
 case class HakukohdeToteutusIndexed(oid: ToteutusOid, tarjoajat: List[Organisaatio])
 
 case class AloituspaikatIndexed(lukumaara: Option[Int], ensikertalaisille: Option[Int])
 
+case class OppiaineIndexed(
+    koodiUri: Option[String]
+)
+
+case class PainottevaOppiaineKoodiIndexed(
+    oppiaine: Option[OppiaineIndexed]
+)
+
+case class PainotettuArvosanaIndexed(
+    painokerroin: Option[Double],
+    koodit: Option[PainottevaOppiaineKoodiIndexed]
+) {
+  def toPainotettuArvosana: PainotettuArvosana = {
+    PainotettuArvosana(
+      koodiUri = koodit.flatMap(_.oppiaine).flatMap(_.koodiUri),
+      painokerroin = painokerroin
+    )
+  }
+}
+
+case class HakukohteenLinjaIndexed(
+    alinHyvaksyttyKeskiarvo: Option[Double],
+    painotetutArvosanat: List[PainotettuArvosanaIndexed]
+)
+
 case class HakukohdeMetadataIndexed(
     kaytetaanHaunAlkamiskautta: Option[Boolean],
     aloituspaikat: Option[AloituspaikatIndexed],
     uudenOpiskelijanUrl: Option[Kielistetty],
-    koulutuksenAlkamiskausi: Option[KoulutuksenAlkamiskausi]
+    koulutuksenAlkamiskausi: Option[KoulutuksenAlkamiskausi],
+    hakukohteenLinja: Option[HakukohteenLinjaIndexed]
+)
+
+case class ValintaPerusteIndexed(
+    valintakokeet: List[ValintakoeIndexed],
+    id: Option[UUID]
 )
 
 case class HakukohdeIndexed(
@@ -43,7 +75,7 @@ case class HakukohdeIndexed(
     muuPohjakoulutusvaatimus: Kielistetty,
     toinenAsteOnkoKaksoistutkinto: Option[Boolean],
     kaytetaanHaunAikataulua: Option[Boolean],
-    valintaperuste: Option[UuidObject],
+    valintaperuste: Option[ValintaPerusteIndexed],
     yhdenPaikanSaanto: YhdenPaikanSaanto,
     koulutustyyppikoodi: Option[String],
     salliikoHakukohdeHarkinnanvaraisuudenKysymisen: Option[Boolean],
@@ -90,11 +122,18 @@ case class HakukohdeIndexed(
         kaytetaanHaunHakulomaketta = kaytetaanHaunHakulomaketta,
         aloituspaikat = metadata.flatMap(_.aloituspaikat.flatMap(_.lukumaara)),
         ensikertalaisenAloituspaikat = metadata.flatMap(_.aloituspaikat.flatMap(_.ensikertalaisille)),
+        alinHyvaksyttyKeskiarvo = metadata.flatMap(_.hakukohteenLinja.flatMap(_.alinHyvaksyttyKeskiarvo)),
+        painotetutArvosanat = metadata
+          .flatMap(_.hakukohteenLinja.flatMap(linja => Option.apply(linja.painotetutArvosanat)))
+          .getOrElse(List.empty)
+          .map(_.toPainotettuArvosana),
         pohjakoulutusvaatimusKoodiUrit = pohjakoulutusvaatimus.map(_.koodiUri),
         muuPohjakoulutusvaatimus = muuPohjakoulutusvaatimus,
         toinenAsteOnkoKaksoistutkinto = toinenAsteOnkoKaksoistutkinto,
         kaytetaanHaunAikataulua = kaytetaanHaunAikataulua,
-        valintaperusteId = valintaperuste.map(_.id),
+        valintaperusteId = valintaperuste.flatMap(_.id),
+        valintaperusteValintakokeet =
+          valintaperuste.flatMap(vp => Option.apply(vp.valintakokeet)).getOrElse(List.empty).map(_.toValintakoe),
         yhdenPaikanSaanto = yhdenPaikanSaanto,
         koulutustyyppikoodi = koulutustyyppikoodi,
         salliikoHakukohdeHarkinnanvaraisuudenKysymisen = salliikoHakukohdeHarkinnanvaraisuudenKysymisen,
