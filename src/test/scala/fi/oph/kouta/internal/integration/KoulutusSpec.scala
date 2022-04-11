@@ -8,13 +8,13 @@ import java.util.UUID
 
 class KoulutusSpec extends KoulutusFixture with AccessControlSpec {
 
-  override val roleEntities = Seq(Role.Koulutus)
-  val ammKoulutusOid            = KoulutusOid("1.2.246.562.13.00000000000000000001")
-  val ammTukinnonosaOid         = KoulutusOid("1.2.246.562.13.00000000000000000002")
-  val ammOsaamisalaOid          = KoulutusOid("1.2.246.562.13.00000000000000000003")
-  val ammMuuOid                 = KoulutusOid("1.2.246.562.13.00000000000000000003")
-  val aikuistenPerusopetusOid   = KoulutusOid("1.2.246.562.13.00000000000000000003")
-  val nonExistingOid            = KoulutusOid("1.2.246.562.13.00000000000000000000")
+  override val roleEntities   = Seq(Role.Koulutus)
+  val ammKoulutusOid          = KoulutusOid("1.2.246.562.13.00000000000000000001")
+  val ammTukinnonosaOid       = KoulutusOid("1.2.246.562.13.00000000000000000002")
+  val ammOsaamisalaOid        = KoulutusOid("1.2.246.562.13.00000000000000000003")
+  val ammMuuOid               = KoulutusOid("1.2.246.562.13.00000000000000000003")
+  val aikuistenPerusopetusOid = KoulutusOid("1.2.246.562.13.00000000000000000003")
+  val nonExistingOid          = KoulutusOid("1.2.246.562.13.00000000000000000000")
 
   "GET /:id" should s"get koulutus from elastic search" in {
     get(ammKoulutusOid, defaultSessionId)
