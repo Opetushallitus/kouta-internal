@@ -324,7 +324,7 @@ case class AmmatillinenMuuKoulutusMetadata(
     lisatiedot: Seq[Lisatieto],
     koulutusalaKoodiUrit: Seq[String] = Seq(),
     opintojenLaajuusyksikkoKoodiUri: Option[String] = None,
-    opintojenLaajuusNumero: Option[Double] = None,
+    opintojenLaajuusNumero: Option[Double] = None
 ) extends KoulutusMetadata
 
 @SwaggerModel(
