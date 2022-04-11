@@ -316,7 +316,7 @@ case class TelmaKoulutusMetadata(
     |              type: integer
     |              description: Opintojen laajuus tai kesto numeroarvona
     |              example: 10
-    |    |"""
+    |"""
 )
 case class AmmatillinenMuuKoulutusMetadata(
     tyyppi: Koulutustyyppi,
@@ -367,7 +367,7 @@ case class VapaaSivistystyoKoulutusMetadata(
     |              type: integer
     |              description: Opintojen laajuus tai kesto numeroarvona
     |              example: 10
-    |    |"""
+    |"""
 )
 case class AikuistenPerusopetusKoulutusMetadata(
     tyyppi: Koulutustyyppi,
