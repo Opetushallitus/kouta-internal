@@ -21,7 +21,8 @@ case class ValintaperusteIndexed(
     muokkaaja: Muokkaaja,
     kielivalinta: Seq[Kieli],
     modified: Option[LocalDateTime],
-    externalId: Option[String]
+    externalId: Option[String],
+    valintakokeet: List[ValintakoeIndexed] // Kaytetaan ainoastaan hakukohteissa
 ) extends WithTila
     with Logging {
   def toValintaperuste: Valintaperuste = {
