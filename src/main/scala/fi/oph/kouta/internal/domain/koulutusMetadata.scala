@@ -313,7 +313,7 @@ case class TelmaKoulutusMetadata(
     |              description: "Opintojen laajuusyksikko. Viittaa koodistoon [koodistoon](https://virkailija.testiopintopolku.fi/koodisto-ui/html/koodisto/opintojenlaajuusyksikko/1)"
     |              example: opintojenlaajuusyksikko_6#1
     |            opintojenLaajuusnumero:
-    |              type: integer
+    |              type: double
     |              description: Opintojen laajuus tai kesto numeroarvona
     |              example: 10
     |"""
@@ -364,7 +364,7 @@ case class VapaaSivistystyoKoulutusMetadata(
     |              description: "Opintojen laajuusyksikko. Viittaa koodistoon [koodistoon](https://virkailija.testiopintopolku.fi/koodisto-ui/html/koodisto/opintojenlaajuusyksikko/1)"
     |              example: opintojenlaajuusyksikko_6#1
     |            opintojenLaajuusnumero:
-    |              type: integer
+    |              type: double
     |              description: Opintojen laajuus tai kesto numeroarvona
     |              example: 10
     |"""
