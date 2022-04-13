@@ -1,6 +1,7 @@
 package fi.oph.kouta.internal.servlet
 
 import fi.oph.kouta.internal.database.SessionDAO
+import fi.oph.kouta.internal.domain.Haku
 import fi.oph.kouta.internal.domain.oid.{HakuOid, HakukohdeOid, KoulutusOid, ToteutusOid}
 import fi.oph.kouta.internal.security.Authenticated
 import fi.oph.kouta.internal.service.OdwService
@@ -108,7 +109,24 @@ class OdwServlet(odwService: OdwService, val sessionDAO: SessionDAO)
     hakuOids match {
       case (oids) if (oids.exists(!_.isValid())) =>
         BadRequest(s"Invalid hakuOids ${oids.find(!_.isValid()).get.toString}")
-      case (oids) => odwService.findHautByOids(oids)
+      case (oids) =>
+        odwService
+          .findHautByOids(oids)
+          .map(_.map(h => {
+            h.copy(
+              alkamiskausiKoodiUri = h.alkamiskausiKoodiUri.map(_ + "#1"),
+              metadata = h.metadata.map(m =>
+                m.copy(
+                  koulutuksenAlkamiskausi = m.koulutuksenAlkamiskausi.map(k =>
+                    k.copy(
+                      koulutuksenAlkamiskausi =
+                        k.koulutuksenAlkamiskausi.map(k2 => k2.copy(koodiUri = k2.koodiUri + "#1"))
+                    )
+                  )
+                )
+              )
+            )
+          }))
     }
   }
 
