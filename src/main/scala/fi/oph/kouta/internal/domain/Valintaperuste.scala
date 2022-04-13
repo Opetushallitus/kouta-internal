@@ -71,6 +71,7 @@ import fi.oph.kouta.internal.swagger.SwaggerModel
     |            - $ref: '#/components/schemas/YliopistoValintaperusteMetadata'
     |            - $ref: '#/components/schemas/AmmatillinenValintaperusteMetadata'
     |            - $ref: '#/components/schemas/AmmattikorkeakouluValintaperusteMetadata'
+    |            - $ref: '#/components/schemas/AmmOpeErityisopeJaOpoValintaperusteMetadata'
     |            - $ref: '#/components/schemas/LukioValintaperusteMetadata'
     |            - $ref: '#/components/schemas/TuvaValintaperusteMetadata'
     |          example:

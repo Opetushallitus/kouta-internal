@@ -104,6 +104,25 @@ case class AmmattikorkeakouluValintatapa(
     vahimmaispisteet: Option[Double] = None
 ) extends KorkeakoulutusValintatapa
 
+@SwaggerModel(
+  """    AmmOpeErityisopeJaOpoValintatapa:
+                |      type: object
+                |      description: Ammatillisen opettaja-, erityisopettaja ja opinto-ohjaajakoulutuksen valintatapakuvaus
+                |      allOf:
+                |        - $ref: '#/components/schemas/KorkeakoulutusValintatapa'
+                |"""
+)
+case class AmmOpeErityisopeJaOpoValintatapa(
+    nimi: Kielistetty = Map(),
+    valintatapaKoodiUri: Option[String] = None,
+    kuvaus: Kielistetty = Map(),
+    sisalto: Seq[ValintatapaSisalto],
+    kaytaMuuntotaulukkoa: Boolean = false,
+    kynnysehto: Kielistetty = Map(),
+    enimmaispisteet: Option[Double] = None,
+    vahimmaispisteet: Option[Double] = None
+) extends KorkeakoulutusValintatapa
+
 @SwaggerModel("""    YliopistoValintatapa:
     |      type: object
     |      description: Yliopistokoulutuksen valintatapakuvaus
