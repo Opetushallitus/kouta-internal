@@ -15,7 +15,7 @@ import slick.jdbc.PostgresProfile.api._
 
 import scala.reflect.Manifest
 
-trait KoutaIntegrationSpec extends ScalatraFlatSpec with HttpSpec with IndeksoijaFixture {
+trait KoutaIntegrationSpec extends ScalatraFlatSpec with HttpSpec with ElasticDumpFixture {
 
   val serviceIdentifier  = KoutaIntegrationSpec.serviceIdentifier
   val rootOrganisaatio   = KoutaIntegrationSpec.rootOrganisaatio
@@ -44,7 +44,6 @@ trait KoutaIntegrationSpec extends ScalatraFlatSpec with HttpSpec with Indeksoij
     super.afterAll()
     db.runBlocking(sqlu"""delete from authorities""")
     db.runBlocking(sqlu"""delete from sessions""")
-    resetIndices()
   }
 }
 
