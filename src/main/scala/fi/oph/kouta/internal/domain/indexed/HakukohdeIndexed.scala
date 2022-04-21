@@ -16,7 +16,6 @@ import fi.oph.kouta.internal.domain.{
   YhdenPaikanSaanto
 }
 import fi.vm.sade.utils.slf4j.Logging
-import fi.oph.kouta.internal.domain.indexed.{ValintakoeMetadataIndexed}
 
 case class HakukohdeToteutusIndexed(oid: ToteutusOid, tarjoajat: List[Organisaatio])
 
@@ -55,11 +54,6 @@ case class HakukohdeMetadataIndexed(
     hakukohteenLinja: Option[HakukohteenLinjaIndexed]
 )
 
-case class ValintaPerusteIndexed(
-    valintakokeet: List[ValintakoeIndexed],
-    id: Option[UUID]
-)
-
 case class HakukohdeIndexed(
     oid: HakukohdeOid,
     toteutus: HakukohdeToteutusIndexed,
@@ -75,7 +69,7 @@ case class HakukohdeIndexed(
     muuPohjakoulutusvaatimus: Kielistetty,
     toinenAsteOnkoKaksoistutkinto: Option[Boolean],
     kaytetaanHaunAikataulua: Option[Boolean],
-    valintaperuste: Option[ValintaPerusteIndexed],
+    valintaperuste: Option[ValintaperusteIndexed],
     yhdenPaikanSaanto: YhdenPaikanSaanto,
     koulutustyyppikoodi: Option[String],
     salliikoHakukohdeHarkinnanvaraisuudenKysymisen: Option[Boolean],

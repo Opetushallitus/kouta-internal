@@ -32,9 +32,14 @@ import fi.oph.kouta.internal.swagger.SwaggerModel
     |            - yo
     |            - amk
     |            - lk
+    |            - amm-tutkinnon-osa
+    |            - amm-osaamisala
+    |            - amm-muu
     |            - tuva
+    |            - telma
     |            - vapaa-sivistystyo-opistovuosi
     |            - vapaa-sivistystyo-muu
+    |            - aikuisten-perusopetus
     |            - muu
     |          example: amm
     |        hakutapaKoodiUri:
