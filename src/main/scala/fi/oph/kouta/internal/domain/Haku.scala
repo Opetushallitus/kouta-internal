@@ -8,7 +8,7 @@ import fi.oph.kouta.internal.domain.enums.{Hakulomaketyyppi, Julkaisutila, Kieli
 import fi.oph.kouta.internal.domain.oid.{HakuOid, OrganisaatioOid, UserOid}
 
 @SwaggerModel(
-  """    Haku:
+  """    BaseHaku:
     |      type: object
     |      properties:
     |        oid:
@@ -130,6 +130,32 @@ import fi.oph.kouta.internal.domain.oid.{HakuOid, OrganisaatioOid, UserOid}
     |           description: Ulkoinen tunniste (esim. oppilaitoksen järjestelmän yksilöivä tunniste)
     |"""
 )
+trait BaseHaku extends PerustiedotWithOid {
+  def hakutapaKoodiUri: Option[String]
+  def hakukohteenLiittamisenTakaraja: Option[LocalDateTime]
+  def hakukohteenMuokkaamisenTakaraja: Option[LocalDateTime]
+  def ajastettuJulkaisu: Option[LocalDateTime]
+  def alkamiskausiKoodiUri: Option[String]
+  def alkamisvuosi: Option[String]
+  def kohdejoukkoKoodiUri: String
+  def kohdejoukonTarkenneKoodiUri: Option[String]
+  def hakulomaketyyppi: Option[Hakulomaketyyppi]
+  def hakulomakeAtaruId: Option[UUID]
+  def hakulomakeKuvaus: Kielistetty
+  def hakulomakeLinkki: Kielistetty
+  def metadata: Option[HakuMetadata]
+  def hakuajat: List[Ajanjakso]
+  def valintakokeet: List[Valintakoe]
+  def externalId: Option[String]
+}
+
+@SwaggerModel(
+  """    Haku:
+    |      type: object
+    |      allOf:
+    |        - $ref: '#/components/schemas/BaseHaku'
+    |"""
+)
 case class Haku(
     oid: HakuOid,
     tila: Julkaisutila,
@@ -154,4 +180,48 @@ case class Haku(
     kielivalinta: Seq[Kieli],
     modified: Option[LocalDateTime],
     externalId: Option[String]
-) extends PerustiedotWithOid
+) extends BaseHaku
+
+@SwaggerModel(
+  """    OdwHaku:
+    |      type: object
+    |      allOf:
+    |        - $ref: '#/components/schemas/BaseHaku'
+    |      properties:
+    |        hakuvuosi:
+    |          type: string
+    |          description: Haun hakuajoista päätelty hakuvuosi
+    |          example: 2022
+    |        hakukausi:
+    |          type: string
+    |          description: Haun hakuajoista päätelty hakukausi
+    |          example: kausi_s#1
+    |"""
+)
+case class OdwHaku(
+    oid: HakuOid,
+    tila: Julkaisutila,
+    nimi: Kielistetty,
+    hakutapaKoodiUri: Option[String],
+    hakukohteenLiittamisenTakaraja: Option[LocalDateTime],
+    hakukohteenMuokkaamisenTakaraja: Option[LocalDateTime],
+    ajastettuJulkaisu: Option[LocalDateTime],
+    alkamiskausiKoodiUri: Option[String],
+    alkamisvuosi: Option[String],
+    kohdejoukkoKoodiUri: String,
+    kohdejoukonTarkenneKoodiUri: Option[String],
+    hakulomaketyyppi: Option[Hakulomaketyyppi],
+    hakulomakeAtaruId: Option[UUID],
+    hakulomakeKuvaus: Kielistetty,
+    hakulomakeLinkki: Kielistetty,
+    metadata: Option[HakuMetadata],
+    organisaatioOid: OrganisaatioOid,
+    hakuajat: List[Ajanjakso],
+    valintakokeet: List[Valintakoe],
+    muokkaaja: UserOid,
+    kielivalinta: Seq[Kieli],
+    modified: Option[LocalDateTime],
+    externalId: Option[String],
+    hakuvuosi: Option[String],
+    hakukausi: Option[String]
+) extends BaseHaku

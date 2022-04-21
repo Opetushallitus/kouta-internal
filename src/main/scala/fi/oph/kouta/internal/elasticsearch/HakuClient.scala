@@ -5,7 +5,7 @@ import com.sksamuel.elastic4s.ElasticClient
 import com.sksamuel.elastic4s.ElasticDsl._
 import com.sksamuel.elastic4s.json4s.ElasticJson4s.Implicits._
 import com.sksamuel.elastic4s.requests.searches.queries.Query
-import fi.oph.kouta.internal.domain.Haku
+import fi.oph.kouta.internal.domain.{Haku, OdwHaku}
 import fi.oph.kouta.internal.domain.enums.Julkaisutila
 import fi.oph.kouta.internal.domain.enums.Julkaisutila.Tallennettu
 import fi.oph.kouta.internal.domain.indexed.HakuIndexed
@@ -90,7 +90,16 @@ class HakuClient(val index: String, val client: ElasticClient)
 
   def findByOids(hakuOids: Set[HakuOid]): Future[Seq[Haku]] = {
     val hakuQuery = should(termsQuery("oid", hakuOids.map(_.toString)))
-    searchItemBulks[HakuIndexed](Some(must(hakuQuery)), 0, None).map(_.map(_.toHaku))
+    findHakuIndexedByOids(hakuOids).map(_.map(_.toHaku))
+  }
+
+  def findOdwHautByOids(hakuOids: Set[HakuOid]): Future[Seq[OdwHaku]] = {
+    findHakuIndexedByOids(hakuOids).map(_.map(_.toOdwHaku))
+  }
+
+  def findHakuIndexedByOids(hakuOids: Set[HakuOid]): Future[Seq[HakuIndexed]] = {
+    val hakuQuery = should(termsQuery("oid", hakuOids.map(_.toString)))
+    searchItemBulks[HakuIndexed](Some(must(hakuQuery)), 0, None)
   }
 }
 

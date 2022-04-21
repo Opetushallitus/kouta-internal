@@ -99,7 +99,7 @@ class OdwServlet(odwService: OdwService, val sessionDAO: SessionDAO)
       |              schema:
       |                type: array
       |                items:
-      |                  $ref: '#/components/schemas/Haku'
+      |                  $ref: '#/components/schemas/OdwHaku'
       |""".stripMargin
   )
   post("/findHautByOids") {
@@ -111,7 +111,7 @@ class OdwServlet(odwService: OdwService, val sessionDAO: SessionDAO)
         BadRequest(s"Invalid hakuOids ${oids.find(!_.isValid()).get.toString}")
       case (oids) =>
         odwService
-          .findHautByOids(oids)
+          .findOdwHautByOids(oids)
           .map(_.map(h => {
             h.copy(
               alkamiskausiKoodiUri = h.alkamiskausiKoodiUri.map(_ + "#1"),
