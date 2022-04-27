@@ -50,11 +50,14 @@ import fi.oph.kouta.internal.swagger.SwaggerModel
     |            - $ref: '#/components/schemas/AmmatillinenToteutusMetadata'
     |            - $ref: '#/components/schemas/AmmatillinenTutkinnonOsaToteutusMetadata'
     |            - $ref: '#/components/schemas/AmmatillinenOsaamisalaToteutusMetadata'
+    |            - $ref: '#/components/schemas/AmmatillinenMuuToteutusMetadata'
     |            - $ref: '#/components/schemas/AmmattikorkeaToteutusMetadata'
     |            - $ref: '#/components/schemas/TuvaToteutusMetadata'
+    |            - $ref: '#/components/schemas/TelmaToteutusMetadata'
     |            - $ref: '#/components/schemas/VapaaSivistystyoOpistovuosiToteutusMetadata'
     |            - $ref: '#/components/schemas/VapaasivistystyoMuuToteutusMetadata'
     |            - $ref: '#/components/schemas/LukioToteutusMetadata'
+    |            - $ref: '#/components/schemas/AikuistenPerusopetusToteutusMetadata'
     |          example:
     |            tyyppi: amm
     |            kuvaus:

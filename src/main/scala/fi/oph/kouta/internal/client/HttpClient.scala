@@ -5,13 +5,11 @@ import fi.vm.sade.utils.http.DefaultHttpClient
 import io.netty.handler.codec.http.cookie.DefaultCookie
 import scalaj.http.HttpOptions._
 import org.asynchttpclient.Dsl._
-import org.asynchttpclient.{ListenableFuture, Response}
 
 import java.util
 import java.util.concurrent.CompletableFuture
 import scala.compat.java8.FutureConverters._
 import scala.concurrent.Future
-import scala.util.Try
 
 trait HttpClient extends CallerId {
   private val DefaultConnTimeout = 30000
