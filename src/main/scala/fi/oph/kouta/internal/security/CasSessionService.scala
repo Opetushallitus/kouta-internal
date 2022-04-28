@@ -1,17 +1,13 @@
 package fi.oph.kouta.internal.security
 
-import java.util.UUID
-import java.util.concurrent.TimeUnit
-
 import fi.oph.kouta.internal.KoutaConfigurationFactory
 import fi.oph.kouta.internal.client.KayttooikeusClient
 import fi.oph.kouta.internal.database.SessionDAO
 import fi.vm.sade.utils.cas.CasClient.Username
 import fi.vm.sade.utils.slf4j.Logging
-import scalaz.concurrent.Task
 
-import scala.concurrent.duration.Duration
-import scala.util.control.NonFatal
+import java.util.UUID
+import java.util.concurrent.TimeUnit
 
 object CasSessionService
     extends CasSessionService(
@@ -34,14 +30,16 @@ class CasSessionService(
 
   private def validateServiceTicket(ticket: ServiceTicket): Either[Throwable, Username] = {
     val ServiceTicket(s) = ticket
-    casClient
-      .validateServiceTicketWithVirkailijaUsername(securityContext.casServiceIdentifier)(s)
-      .handleWith { case NonFatal(t) =>
-        logger.debug("Ticket validation error", t)
-        Task.fail(AuthenticationFailedException(s"Failed to validate service ticket $s", t))
-      }
-      .unsafePerformSyncAttemptFor(Duration(10, TimeUnit.SECONDS))
-      .toEither
+    try {
+      Right(
+        casClient
+          .validateServiceTicketWithVirkailijaUsername(securityContext.casServiceIdentifier, s)
+          .get(30, TimeUnit.SECONDS)
+      )
+    } catch {
+      case t: Throwable =>
+        Left(AuthenticationFailedException(s"Failed to validate service ticket $s", t))
+    }
   }
 
   private def storeSession(ticket: ServiceTicket, user: KayttooikeusUserDetails): (UUID, CasSession) = {
