@@ -31,6 +31,7 @@ import fi.oph.kouta.internal.swagger.SwaggerModel
     |            - amm
     |            - yo
     |            - amk
+    |            - amm-ope-erityisope-ja-opo
     |            - lk
     |            - tuva
     |            - vapaa-sivistystyo-opistovuosi
