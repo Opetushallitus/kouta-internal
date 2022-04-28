@@ -6,31 +6,23 @@ import fi.oph.kouta.internal.security.Role
 
 import java.util.UUID
 
-class ToteutusSpec extends ToteutusFixture with KoulutusFixture with AccessControlSpec {
+class ToteutusSpec extends ToteutusFixture with AccessControlSpec {
 
-  override val roleEntities      = Seq(Role.Toteutus)
-  val existingId: ToteutusOid    = ToteutusOid("1.2.246.562.17.00000000000000000789")
-  val nonExistingId: ToteutusOid = ToteutusOid("1.2.246.562.17.00000000000000000000")
-  val tooShortOid: ToteutusOid   = ToteutusOid("1.2.246.562.17.1234567")
-
-  val koulutusOid: KoulutusOid = KoulutusOid("1.2.246.562.13.00000000000000000789")
-  val sorakuvausId: UUID       = UUID.fromString("9267884f-fba1-4b85-8bb3-3eb77440c197")
-
-  override def beforeAll(): Unit = {
-    super.beforeAll()
-    addMockSorakuvaus(sorakuvausId, ChildOid)
-    addMockKoulutus(koulutusOid, ChildOid, sorakuvausId)
-    addMockToteutus(existingId, ChildOid, koulutusOid)
-  }
+  override val roleEntities = Seq(Role.Toteutus)
+  val ammToteutusOid        = ToteutusOid("1.2.246.562.17.00000000000000000001")
+  val ammTutkinnonosaOid    = ToteutusOid("1.2.246.562.17.00000000000000000002")
+  val ammOsaamisalaOid      = ToteutusOid("1.2.246.562.17.00000000000000000003")
+  val nonExistingOid        = ToteutusOid("1.2.246.562.17.00000000000000000000")
+  val tooShortOid           = ToteutusOid("1.2.246.562.17.1234567")
 
   "GET /:id" should s"get toteutus from elastic search" in {
-    get(existingId, defaultSessionId)
+    get(ammToteutusOid, defaultSessionId)
   }
 
   it should s"return 404 if toteutus not found" in {
-    get(s"$ToteutusPath/$nonExistingId", headers = Seq(defaultSessionHeader)) {
+    get(s"$ToteutusPath/$nonExistingOid", headers = Seq(defaultSessionHeader)) {
       status should equal(404)
-      body should include(s"Didn't find id $nonExistingId")
+      body should include(s"Didn't find id $nonExistingOid")
     }
   }
 
@@ -42,24 +34,16 @@ class ToteutusSpec extends ToteutusFixture with KoulutusFixture with AccessContr
   }
 
   it should "return 401 without a valid session" in {
-    get(s"$ToteutusPath/$nonExistingId") {
+    get(s"$ToteutusPath/$nonExistingOid") {
       status should equal(401)
       body should include("Unauthorized")
     }
   }
 
   it should "get tutkinnon osa toteutus" in {
-    val tutkinnonOsaOid = ToteutusOid("1.2.246.562.17.00000000000000000791")
-    val koulutusOid     = KoulutusOid("1.2.246.562.13.00000000000000000792")
-    addMockTutkinnonOsaKoulutus(koulutusOid, ChildOid, sorakuvausId)
-    addMockTutkinnonOsaToteutus(tutkinnonOsaOid, ChildOid, koulutusOid)
-    get(tutkinnonOsaOid, defaultSessionId)
+    get(ammTutkinnonosaOid, defaultSessionId)
   }
   it should "get osaamisala toteutus" in {
-    val tutkinnonOsaOid = ToteutusOid("1.2.246.562.17.00000000000000000793")
-    val koulutusOid     = KoulutusOid("1.2.246.562.13.00000000000000000793")
-    addMockOsaamisalaKoulutus(koulutusOid, ChildOid, sorakuvausId)
-    addMockOsaamisalaToteutus(tutkinnonOsaOid, ChildOid, koulutusOid)
-    get(tutkinnonOsaOid, defaultSessionId)
+    get(ammTutkinnonosaOid, defaultSessionId)
   }
 }

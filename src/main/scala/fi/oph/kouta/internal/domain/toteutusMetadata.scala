@@ -206,6 +206,34 @@ case class AmmatillinenOsaamisalaToteutusMetadata(
     aloituspaikat: Option[Int]
 ) extends TutkintoonJohtamatonToteutusMetadata
 
+@SwaggerModel("""    AmmatillinenMuuToteutusMetadata:
+    |            allOf:
+    |              - $ref: '#/components/schemas/TutkintoonJohtamatonToteutusMetadata'
+    |              - type: object
+    |                properties:
+    |                  tyyppi:
+    |                    type: string
+    |                    description: Koulutuksen metatiedon tyyppi
+    |                    example: amm-muu
+    |                    enum:
+    |                      - amm-muu
+    |""")
+case class AmmatillinenMuuToteutusMetadata(
+    tyyppi: Koulutustyyppi,
+    kuvaus: Kielistetty,
+    opetus: Option[Opetus],
+    asiasanat: List[Keyword],
+    ammattinimikkeet: List[Keyword],
+    yhteyshenkilot: Seq[Yhteyshenkilo],
+    hakutermi: Option[Hakutermi],
+    hakulomaketyyppi: Option[Hakulomaketyyppi],
+    hakulomakeLinkki: Kielistetty,
+    lisatietoaHakeutumisesta: Kielistetty,
+    lisatietoaValintaperusteista: Kielistetty,
+    hakuaika: Option[Ajanjakso],
+    aloituspaikat: Option[Int]
+) extends TutkintoonJohtamatonToteutusMetadata
+
 @SwaggerModel("""    YliopistoToteutusMetadata:
     |      allOf:
     |        - $ref: '#/components/schemas/KorkeakouluToteutusMetadata'
@@ -532,3 +560,31 @@ case class LukioToteutusMetadata(
     erityisetKoulutustehtavat: Seq[LukiolinjaTieto],
     diplomit: Seq[LukiodiplomiTieto]
 ) extends ToteutusMetadata
+
+@SwaggerModel("""    AikuistenPerusopetusToteutusMetadata:
+    |      allOf:
+    |        - $ref: '#/components/schemas/TutkintoonJohtamatonToteutusMetadata'
+    |        - type: object
+    |          properties:
+    |            koulutustyyppi:
+    |              type: string
+    |              description: Koulutuksen metatiedon tyyppi
+    |              example: aikuisten-perusopetus
+    |              enum:
+    |                - aikuisten-perusopetus
+    |""")
+case class AikuistenPerusopetusToteutusMetadata(
+    tyyppi: Koulutustyyppi,
+    kuvaus: Kielistetty,
+    opetus: Option[Opetus],
+    asiasanat: List[Keyword],
+    ammattinimikkeet: List[Keyword],
+    yhteyshenkilot: Seq[Yhteyshenkilo],
+    hakutermi: Option[Hakutermi],
+    hakulomaketyyppi: Option[Hakulomaketyyppi],
+    hakulomakeLinkki: Kielistetty,
+    lisatietoaHakeutumisesta: Kielistetty,
+    lisatietoaValintaperusteista: Kielistetty,
+    hakuaika: Option[Ajanjakso],
+    aloituspaikat: Option[Int]
+) extends TutkintoonJohtamatonToteutusMetadata

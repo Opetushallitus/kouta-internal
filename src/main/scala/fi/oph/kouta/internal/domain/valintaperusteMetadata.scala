@@ -1,15 +1,17 @@
 package fi.oph.kouta.internal.domain
 
 import fi.oph.kouta.domain.{
+  AikuistenPerusopetus,
   Amk,
   Amm,
   AmmOpeErityisopeJaOpo,
+  AmmMuu,
   Koulutustyyppi,
   Lk,
-  Tuva,
   Telma,
-  VapaaSivistystyoOpistovuosi,
+  Tuva,
   VapaaSivistystyoMuu,
+  VapaaSivistystyoOpistovuosi,
   Yo
 }
 import fi.oph.kouta.internal.swagger.SwaggerModel
@@ -123,6 +125,28 @@ case class TelmaValintaperusteMetadata(
     valintatavat: Seq[AmmatillinenValintatapa]
 ) extends ValintaperusteMetadata
 
+@SwaggerModel("""    AmmatillinenMuuValintaperusteMetadata:
+                |      type: object
+                |      allOf:
+                |        - $ref: '#/components/schemas/ValintaperusteMetadata'
+                |      properties:
+                |        valintatavat:
+                |          type: array
+                |          description: Lista valintaperustekuvauksen valintatavoista
+                |          items:
+                |            $ref: '#/components/schemas/AmmatillinenValintatapa'
+                |        koulutustyyppi:
+                |          type: string
+                |          description: Valintaperustekuvauksen metatiedon tyyppi
+                |          example: amm-muu
+                |          enum:
+                |            - amm-muu
+                |""")
+case class AmmatillinenMuuValintaperusteMetadata(
+    koulutustyyppi: Koulutustyyppi = AmmMuu,
+    valintatavat: Seq[AmmatillinenValintatapa]
+) extends ValintaperusteMetadata
+
 @SwaggerModel("""    VapaaSivistystyoValintaperusteMetadata:
                 |      type: object
                 |      allOf:
@@ -231,4 +255,26 @@ case class LukioValintaperusteMetadata(
     koulutustyyppi: Koulutustyyppi = Lk,
     valintatavat: Seq[LukioValintatapa],
     kuvaus: Kielistetty = Map()
+) extends ValintaperusteMetadata
+
+@SwaggerModel("""    AikuistenPerusopetusValintaperusteMetadata:
+                |      type: object
+                |      allOf:
+                |        - $ref: '#/components/schemas/ValintaperusteMetadata'
+                |      properties:
+                |        valintatavat:
+                |          type: array
+                |          description: Lista valintaperustekuvauksen valintatavoista
+                |          items:
+                |            $ref: '#/components/schemas/AmmatillinenValintatapa'
+                |        koulutustyyppi:
+                |          type: string
+                |          description: Valintaperustekuvauksen metatiedon tyyppi
+                |          example: aikuisten-perusopetus
+                |          enum:
+                |            - aikuisten-perusopetus
+                |""")
+case class AikuistenPerusopetusValintaperusteMetadata(
+    koulutustyyppi: Koulutustyyppi = AikuistenPerusopetus,
+    valintatavat: Seq[AmmatillinenValintatapa]
 ) extends ValintaperusteMetadata

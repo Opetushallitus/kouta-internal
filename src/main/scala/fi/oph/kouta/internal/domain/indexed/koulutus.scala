@@ -237,12 +237,31 @@ case class TelmaKoulutusMetadataIndexed(
     )
 }
 
+case class AmmatillinenMuuKoulutusMetadataIndexed(
+    tyyppi: Koulutustyyppi,
+    kuvaus: Kielistetty,
+    lisatiedot: Seq[LisatietoIndexed],
+    koulutusala: Seq[KoodiUri],
+    opintojenLaajuusyksikko: Option[KoodiUri] = None,
+    opintojenLaajuusNumero: Option[Double] = None
+) extends KoulutusMetadataIndexed {
+  override def toKoulutusMetadata: AmmatillinenMuuKoulutusMetadata =
+    AmmatillinenMuuKoulutusMetadata(
+      tyyppi = tyyppi,
+      kuvaus = kuvaus,
+      lisatiedot = lisatiedot.map(_.toLisatieto),
+      koulutusalaKoodiUrit = koulutusala.map(_.koodiUri),
+      opintojenLaajuusyksikkoKoodiUri = opintojenLaajuusyksikko.map(_.koodiUri),
+      opintojenLaajuusNumero = opintojenLaajuusNumero
+    )
+}
+
 case class VapaaSivistystyoKoulutusMetadataIndexed(
     tyyppi: Koulutustyyppi,
     kuvaus: Kielistetty,
     lisatiedot: Seq[LisatietoIndexed],
     linkkiEPerusteisiin: Kielistetty,
-    opintojenLaajuusKoodiUri: Option[KoodiUri] = None
+    opintojenLaajuus: Option[KoodiUri] = None
 ) extends KoulutusMetadataIndexed {
   override def toKoulutusMetadata: VapaaSivistystyoKoulutusMetadata =
     VapaaSivistystyoKoulutusMetadata(
@@ -250,6 +269,25 @@ case class VapaaSivistystyoKoulutusMetadataIndexed(
       kuvaus = kuvaus,
       lisatiedot = lisatiedot.map(_.toLisatieto),
       linkkiEPerusteisiin = linkkiEPerusteisiin,
-      opintojenLaajuusKoodiUri = opintojenLaajuusKoodiUri.map(_.koodiUri)
+      opintojenLaajuusKoodiUri = opintojenLaajuus.map(_.koodiUri)
+    )
+}
+
+case class AikuistenPerusopetusKoulutusMetadataIndexed(
+    tyyppi: Koulutustyyppi,
+    kuvaus: Kielistetty,
+    lisatiedot: Seq[LisatietoIndexed],
+    linkkiEPerusteisiin: Kielistetty,
+    opintojenLaajuusyksikko: Option[KoodiUri] = None,
+    opintojenLaajuusNumero: Option[Double] = None
+) extends KoulutusMetadataIndexed {
+  override def toKoulutusMetadata: AikuistenPerusopetusKoulutusMetadata =
+    AikuistenPerusopetusKoulutusMetadata(
+      tyyppi = tyyppi,
+      kuvaus = kuvaus,
+      lisatiedot = lisatiedot.map(_.toLisatieto),
+      linkkiEPerusteisiin = linkkiEPerusteisiin,
+      opintojenLaajuusyksikkoKoodiUri = opintojenLaajuusyksikko.map(_.koodiUri),
+      opintojenLaajuusNumero = opintojenLaajuusNumero
     )
 }
