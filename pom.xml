@@ -373,7 +373,6 @@
 
             </exclusions>
         </dependency>
-
         <dependency>
             <groupId>org.scalaz</groupId>
             <artifactId>scalaz-core_2.12</artifactId>

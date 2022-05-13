@@ -52,5 +52,4 @@ class HakukohderyhmaClient extends KoutaClient with Logging {
         )
     }
   }
-
 }

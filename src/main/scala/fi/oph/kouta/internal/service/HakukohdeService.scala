@@ -77,7 +77,6 @@ class HakukohdeService(
           hk  <- hakukohteet
           hkr <- hakukohderyhmanHakukohteet
         } yield {
-          logger.info("hakukohderyhmän hakukohteet count: " + hkr.length)
           hk ++ hkr
         }
       })
