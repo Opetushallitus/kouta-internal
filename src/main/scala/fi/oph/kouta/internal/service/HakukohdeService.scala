@@ -2,7 +2,8 @@ package fi.oph.kouta.internal.service
 
 import fi.oph.kouta.internal.KoutaConfigurationFactory
 import fi.oph.kouta.internal.client.{HakukohderyhmaClient, OrganisaatioClient}
-import fi.oph.kouta.internal.domain.Hakukohde
+import fi.oph.kouta.internal.domain.{Hakukohde, Kielistetty}
+import fi.oph.kouta.internal.domain.enums.Kieli.{En, Fi, Sv}
 import fi.oph.kouta.internal.domain.indexed.KoodiUri
 import fi.oph.kouta.internal.domain.oid.{HakuOid, HakukohdeOid, HakukohderyhmaOid, OrganisaatioOid}
 import fi.oph.kouta.internal.elasticsearch.HakukohdeClient
@@ -77,7 +78,9 @@ class HakukohdeService(
           hk  <- hakukohteet
           hkr <- hakukohderyhmanHakukohteet
         } yield {
-          hk ++ hkr
+          implicit val userOrdering: Ordering[Kielistetty] = Ordering.by(hk => (hk.get(Fi), hk.get(Sv), hk.get(En)))
+          val hakukohteet: Seq[Hakukohde] = hk ++ hkr
+          hakukohteet.sortBy(hk => hk.organisaatioNimi)
         }
       })
   }
