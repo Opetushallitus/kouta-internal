@@ -16,7 +16,8 @@ trait HakukohdeFixture extends KoutaIntegrationSpec {
     new HakukohdeServlet(
       new HakukohdeService(
         new HakukohdeClient("hakukohde-kouta", TempElasticClient.client),
-        new HakuService(new HakuClient("haku-kouta", TempElasticClient.client))
+        new HakuService(new HakuClient("haku-kouta", TempElasticClient.client)),
+        new HakukohderyhmaClientMock
       ),
       sessionDAO
     ),

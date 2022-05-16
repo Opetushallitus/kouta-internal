@@ -24,6 +24,8 @@ case class KoutaDatabaseConfiguration(
 )
 
 case class SecurityConfiguration(
+    username: String,
+    password: String,
     casUrl: String,
     casServiceIdentifier: String,
     kayttooikeusUrl: String,
@@ -37,6 +39,8 @@ case class ElasticSearchConfiguration(
     username: String,
     password: String
 )
+
+case class CasClientConfiguration(username: String, password: String)
 
 case class KoutaConfiguration(config: TypesafeConfig, urlProperties: OphProperties)
     extends ApplicationSettings(config) {
@@ -55,6 +59,8 @@ case class KoutaConfiguration(config: TypesafeConfig, urlProperties: OphProperti
     )
 
   val securityConfiguration = SecurityConfiguration(
+    username = config.getString("kouta-internal.cas.username"),
+    password = config.getString("kouta-internal.cas.password"),
     casUrl = config.getString("cas.url"),
     casServiceIdentifier = config.getString("kouta-internal.cas.service"),
     kayttooikeusUrl = config.getString("kayttooikeus-service.userDetails.byUsername"),
@@ -67,6 +73,11 @@ case class KoutaConfiguration(config: TypesafeConfig, urlProperties: OphProperti
     config.getBoolean("kouta-internal.elasticsearch.auth-enabled"),
     config.getString("kouta-internal.elasticsearch.username"),
     config.getString("kouta-internal.elasticsearch.password")
+  )
+
+  val clientConfiguration = CasClientConfiguration(
+    username = config.getString("kouta-internal.cas.username"),
+    password = config.getString("kouta-internal.cas.password")
   )
 }
 

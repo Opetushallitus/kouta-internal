@@ -181,6 +181,10 @@
                     <groupId>org.scala-lang.modules</groupId>
                     <artifactId>scala-parser-combinators_2.12</artifactId>
                 </exclusion>
+                <exclusion>
+                    <groupId>org.apache.commons</groupId>
+                    <artifactId>commons-lang3</artifactId>
+                </exclusion>
             </exclusions>
         </dependency>
         <dependency>
@@ -319,6 +323,13 @@
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-access</artifactId>
             <version>${logback-access.version}</version>
+        </dependency>
+
+        <!-- Java-Cas related depencies -->
+        <dependency>
+            <groupId>fi.vm.sade.java-utils</groupId>
+            <artifactId>java-cas</artifactId>
+            <version>1.0.7-SNAPSHOT</version>
         </dependency>
 
         <!-- Cas related dependencies -->
@@ -542,6 +553,10 @@
             <scope>test</scope>
             <exclusions>
                 <exclusion>
+                    <groupId>org.apache.commons</groupId>
+                    <artifactId>commons-lang3</artifactId>
+                </exclusion>
+                <exclusion>
                     <groupId>org.scala-lang.modules</groupId>
                     <artifactId>scala-parser-combinators_2.12</artifactId>
                 </exclusion>
@@ -717,6 +732,10 @@
                 <exclusion>
                     <groupId>com.github.ben-manes.caffeine</groupId>
                     <artifactId>caffeine</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>fi.vm.sade.java-utils</groupId>
+                    <artifactId>java-cas</artifactId>
                 </exclusion>
             </exclusions>
         </dependency>
