@@ -40,7 +40,7 @@ case class ElasticSearchConfiguration(
     password: String
 )
 
-case class CasClientConfiguration(username: String, password: String)
+case class CasClientConfiguration(username: String, password: String, casUrl: String)
 
 case class KoutaConfiguration(config: TypesafeConfig, urlProperties: OphProperties)
     extends ApplicationSettings(config) {
@@ -77,7 +77,8 @@ case class KoutaConfiguration(config: TypesafeConfig, urlProperties: OphProperti
 
   val clientConfiguration = CasClientConfiguration(
     username = config.getString("kouta-internal.cas.username"),
-    password = config.getString("kouta-internal.cas.password")
+    password = config.getString("kouta-internal.cas.password"),
+    casUrl = config.getString("cas.url")
   )
 }
 

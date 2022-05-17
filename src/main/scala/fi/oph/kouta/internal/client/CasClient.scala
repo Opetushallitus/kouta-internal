@@ -31,7 +31,7 @@ abstract class KoutaClient extends KoutaJsonFormats with Logging with CallerId {
       ScalaCasConfig(
         config.username,
         config.password,
-        urlProperties.url("cas.url"),
+        config.casUrl,
         serviceName,
         callerId,
         callerId,
