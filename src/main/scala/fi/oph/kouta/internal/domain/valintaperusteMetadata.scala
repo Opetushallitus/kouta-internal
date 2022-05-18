@@ -4,6 +4,7 @@ import fi.oph.kouta.domain.{
   AikuistenPerusopetus,
   Amk,
   Amm,
+  AmmOpeErityisopeJaOpo,
   AmmMuu,
   Koulutustyyppi,
   Lk,
@@ -212,6 +213,29 @@ case class YliopistoValintaperusteMetadata(
 case class AmmattikorkeakouluValintaperusteMetadata(
     koulutustyyppi: Koulutustyyppi = Amk,
     valintatavat: Seq[AmmattikorkeakouluValintatapa],
+    kuvaus: Kielistetty = Map()
+) extends KorkeakoulutusValintaperusteMetadata
+
+@SwaggerModel("""    AmmOpeErityisopeJaOpoValintaperusteMetadata:
+                |      type: object
+                |      allOf:
+                |        - $ref: '#/components/schemas/KorkeakoulutusValintaperusteMetadata'
+                |      properties:
+                |        valintatavat:
+                |          type: array
+                |          description: Lista valintaperustekuvauksen valintatavoista
+                |          items:
+                |            $ref: '#/components/schemas/AmmOpeErityisopeJaOpoValintatapa'
+                |        koulutustyyppi:
+                |          type: string
+                |          description: Valintaperustekuvauksen metatiedon tyyppi
+                |          example: amm-ope-erityisope-ja-opo
+                |          enum:
+                |            - amm-ope-erityisope-ja-opo
+                |""")
+case class AmmOpeErityisopeJaOpoValintaperusteMetadata(
+    koulutustyyppi: Koulutustyyppi = AmmOpeErityisopeJaOpo,
+    valintatavat: Seq[AmmOpeErityisopeJaOpoValintatapa],
     kuvaus: Kielistetty = Map()
 ) extends KorkeakoulutusValintaperusteMetadata
 

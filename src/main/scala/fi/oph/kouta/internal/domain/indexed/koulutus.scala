@@ -1,6 +1,6 @@
 package fi.oph.kouta.internal.domain.indexed
 
-import fi.oph.kouta.domain.{Koulutustyyppi, Lk}
+import fi.oph.kouta.domain.{AmmOpeErityisopeJaOpo, Koulutustyyppi, Lk}
 import fi.oph.kouta.internal.domain._
 import fi.oph.kouta.internal.domain.enums.{Julkaisutila, Kieli}
 import fi.oph.kouta.internal.domain.oid._
@@ -166,6 +166,27 @@ case class AmmattikorkeakouluKoulutusMetadataIndexed(
     kuvauksenNimi = kuvauksenNimi
   )
 }
+
+case class AmmOpeErityisopeJaOpoKoulutusMetadataIndexed(
+    tyyppi: Koulutustyyppi = AmmOpeErityisopeJaOpo,
+    kuvaus: Kielistetty,
+    lisatiedot: Seq[LisatietoIndexed],
+    koulutusala: Seq[KoodiUri],
+    tutkintonimike: Seq[KoodiUri],
+    opintojenLaajuus: Option[KoodiUri],
+    kuvauksenNimi: Kielistetty
+) extends KorkeakoulutusKoulutusMetadataIndexed {
+  override def toKoulutusMetadata: AmmOpeErityisopeJaOpoKoulutusMetadata = AmmOpeErityisopeJaOpoKoulutusMetadata(
+    tyyppi = tyyppi,
+    kuvaus = kuvaus,
+    lisatiedot = lisatiedot.map(_.toLisatieto),
+    koulutusalaKoodiUrit = koulutusala.map(_.koodiUri),
+    tutkintonimikeKoodiUrit = tutkintonimike.map(_.koodiUri),
+    opintojenLaajuusKoodiUri = opintojenLaajuus.map(_.koodiUri),
+    kuvauksenNimi = kuvauksenNimi
+  )
+}
+
 case class LukioKoulutusMetadataIndexed(
     tyyppi: Koulutustyyppi = Lk,
     kuvaus: Kielistetty = Map.empty,

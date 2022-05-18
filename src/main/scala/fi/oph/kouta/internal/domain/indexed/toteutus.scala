@@ -1,6 +1,13 @@
 package fi.oph.kouta.internal.domain.indexed
 
-import fi.oph.kouta.domain.{Alkamiskausityyppi, Hakutermi, Koulutustyyppi, Lk, Maksullisuustyyppi}
+import fi.oph.kouta.domain.{
+  Alkamiskausityyppi,
+  AmmOpeErityisopeJaOpo,
+  Hakutermi,
+  Koulutustyyppi,
+  Lk,
+  Maksullisuustyyppi
+}
 import fi.oph.kouta.internal.domain._
 import fi.oph.kouta.internal.domain.enums.{Hakulomaketyyppi, Julkaisutila, Kieli}
 import fi.oph.kouta.internal.domain.oid.{KoulutusOid, ToteutusOid}
@@ -334,6 +341,30 @@ case class AmmattikorkeakouluToteutusMetadataIndexed(
 ) extends KorkeakouluToteutusMetadataIndexed {
   override def toToteutusMetadata: AmmattikorkeakouluToteutusMetadata = {
     AmmattikorkeakouluToteutusMetadata(
+      tyyppi = tyyppi,
+      kuvaus = kuvaus,
+      opetus = opetus.map(_.toOpetus),
+      asiasanat = asiasanat,
+      ammattinimikkeet = ammattinimikkeet,
+      yhteyshenkilot = yhteyshenkilot,
+      alemmanKorkeakoulututkinnonOsaamisalat = alemmanKorkeakoulututkinnonOsaamisalat.map(_.toOsaamisala),
+      ylemmanKorkeakoulututkinnonOsaamisalat = ylemmanKorkeakoulututkinnonOsaamisalat.map(_.toOsaamisala)
+    )
+  }
+}
+
+case class AmmOpeErityisopeJaOpoToteutusMetadataIndexed(
+    tyyppi: Koulutustyyppi = AmmOpeErityisopeJaOpo,
+    kuvaus: Kielistetty,
+    opetus: Option[OpetusIndexed],
+    asiasanat: List[Keyword],
+    ammattinimikkeet: List[Keyword],
+    yhteyshenkilot: Seq[Yhteyshenkilo],
+    alemmanKorkeakoulututkinnonOsaamisalat: Seq[KorkeakouluOsaamisalaIndexed],
+    ylemmanKorkeakoulututkinnonOsaamisalat: Seq[KorkeakouluOsaamisalaIndexed]
+) extends KorkeakouluToteutusMetadataIndexed {
+  override def toToteutusMetadata: AmmOpeErityisopeJaOpoToteutusMetadata = {
+    AmmOpeErityisopeJaOpoToteutusMetadata(
       tyyppi = tyyppi,
       kuvaus = kuvaus,
       opetus = opetus.map(_.toOpetus),
