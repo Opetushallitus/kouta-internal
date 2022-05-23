@@ -50,7 +50,7 @@ class HakukohdeClient(val index: String, val client: ElasticClient)
     val tarjoajaQuery = tarjoajaOids.flatMap(oids =>
       if (oids.isEmpty) None
       else
-        Option(
+        Some(
           must(
             should(
               oids.map(oid =>
