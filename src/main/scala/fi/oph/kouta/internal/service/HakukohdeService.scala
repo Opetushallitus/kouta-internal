@@ -10,8 +10,10 @@ import fi.oph.kouta.internal.elasticsearch.HakukohdeClient
 import fi.oph.kouta.internal.security.Authenticated
 import fi.vm.sade.utils.slf4j.Logging
 
+import java.util.concurrent.TimeUnit
 import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.Future
+import scala.concurrent.duration.Duration
+import scala.concurrent.{Await, Future}
 
 class HakukohdeService(
     hakukohdeClient: HakukohdeClient,
@@ -51,36 +53,40 @@ class HakukohdeService(
     checkHakuExists
       .flatMap(_ => OrganisaatioClient.asyncGetAllChildOidsFlat(tarjoajaOids))
       .flatMap(oidsWithChilds => {
+
+        val hakukohderyhmanHakukohdeOids: Option[Set[HakukohdeOid]] = hakukohderyhmaOids match {
+          case None => None
+          case Some(oids) =>
+            Some(
+              Await
+                .result(
+                  Future.sequence(
+                    oids.map(oid =>
+                      hakukohderyhmaClient
+                        .getHakukohteet(oid)
+                    )
+                  ),
+                  Duration(5, TimeUnit.SECONDS)
+                )
+                .flatMap(_.toSet)
+            )
+        }
+
         val hakukohteet = hakukohdeClient
           .search(
             hakuOid,
             if (all) None else oidsWithChilds,
             hakukohdeKoodiUri,
             q,
-            createOikeusFn(withRootOikeus, oidsWithChilds)
+            createOikeusFn(withRootOikeus, oidsWithChilds),
+            hakukohderyhmanHakukohdeOids
           )
 
-        val hakukohderyhmanHakukohteet: Future[Seq[Hakukohde]] = hakukohderyhmaOids match {
-          case None => Future(Seq.empty)
-          case Some(oids) =>
-            Future
-              .sequence(
-                oids.map(oid =>
-                  hakukohderyhmaClient
-                    .getHakukohteet(oid)
-                    .flatMap(hakukohdeOids => findByOids(None, hakukohdeOids.toSet))
-                )
-              )
-              .map(_.flatten.toSeq)
-        }
-
         for {
-          hk  <- hakukohteet
-          hkr <- hakukohderyhmanHakukohteet
+          hk <- hakukohteet
         } yield {
           implicit val userOrdering: Ordering[Kielistetty] = Ordering.by(hk => (hk.get(Fi), hk.get(Sv), hk.get(En)))
-          val hakukohteet: Seq[Hakukohde] = hk ++ hkr
-          hakukohteet.sortBy(hk => hk.organisaatioNimi)
+          hk.sortBy(h => h.organisaatioNimi)
         }
       })
   }
