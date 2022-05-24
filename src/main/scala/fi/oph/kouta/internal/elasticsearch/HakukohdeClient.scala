@@ -33,11 +33,8 @@ class HakukohdeClient(val index: String, val client: ElasticClient)
   ): Future[Seq[Hakukohde]] = {
 
     tarjoajaOids.map(oids =>
-      if (oids.isEmpty) {
-        (hakuOid, hakukohdeKoodi, hakukohderyhmanHakukohdeOids) match {
-          case (None, None, None) => throw new IllegalArgumentException(s"Missing valid query parameters.")
-        }
-      }
+      if (oids.isEmpty)
+        throw new IllegalArgumentException(s"Missing valid query parameters.")
     )
 
     val hakuQuery = hakuOid.map(oid => must(termsQuery("hakuOid", oid.toString)))
