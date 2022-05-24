@@ -39,7 +39,7 @@ sealed trait ServiceMocks extends Logging {
     Source.fromInputStream(getClass().getClassLoader().getResourceAsStream(s"data/$filename.json")).mkString
 
   protected def organisaationServiceParams(oid: OrganisaatioOid) =
-    Map("oid" -> oid.s, "aktiiviset" -> "true", "suunnitellut" -> "true", "lakkautetut" -> "false")
+    Map("oid" -> oid.s, "aktiiviset" -> "true", "suunnitellut" -> "true", "lakkautetut" -> "true")
 
   protected def mockGet(key: String, params: Map[String, String], responseString: String) = {
     import scala.collection.JavaConverters._

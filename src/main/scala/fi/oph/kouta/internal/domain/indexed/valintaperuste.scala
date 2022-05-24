@@ -2,7 +2,18 @@ package fi.oph.kouta.internal.domain.indexed
 
 import java.time.LocalDateTime
 import java.util.UUID
-import fi.oph.kouta.domain.{AikuistenPerusopetus, Amk, AmmOpeErityisopeJaOpo, Amm, AmmMuu, Koulutustyyppi, Lk, Telma, Tuva, Yo}
+import fi.oph.kouta.domain.{
+  AikuistenPerusopetus,
+  Amk,
+  AmmOpeErityisopeJaOpo,
+  Amm,
+  AmmMuu,
+  Koulutustyyppi,
+  Lk,
+  Telma,
+  Tuva,
+  Yo
+}
 import fi.oph.kouta.internal.domain.enums.{Julkaisutila, Kieli}
 import fi.oph.kouta.internal.domain._
 import fi.vm.sade.utils.slf4j.Logging

@@ -69,7 +69,7 @@ object OrganisaatioClient extends HttpClient with KoutaJsonFormats with Logging 
   }
 
   private def queryParams(oid: String) =
-    toQueryParams("oid" -> oid, "aktiiviset" -> "true", "suunnitellut" -> "true", "lakkautetut" -> "false")
+    toQueryParams("oid" -> oid, "aktiiviset" -> "true", "suunnitellut" -> "true", "lakkautetut" -> "true")
 
   private def children(oid: OrganisaatioOid, organisaatiot: List[OidAndChildren]): Set[OrganisaatioOid] =
     find(oid, organisaatiot).fold(Set.empty[OrganisaatioOid])(x => childOidsFlat(x) + x.oid)
