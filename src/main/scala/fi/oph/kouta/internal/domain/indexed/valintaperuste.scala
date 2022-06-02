@@ -8,6 +8,7 @@ import fi.oph.kouta.domain.{
   AmmOpeErityisopeJaOpo,
   Amm,
   AmmMuu,
+  KkOpintojakso,
   Koulutustyyppi,
   Lk,
   Telma,
@@ -164,6 +165,19 @@ case class AmmOpeErityisopeJaOpoValintaperusteMetadataIndexed(
     )
 }
 
+case class KkOpintojaksoValintaperusteMetadataIndexed(
+    koulutustyyppi: Koulutustyyppi = KkOpintojakso,
+    valintatavat: Seq[KkOpintojaksoValintatapaIndexed],
+    kuvaus: Kielistetty
+) extends KorkeakoulutusValintaperusteMetadataIndexed {
+  override def toValintaperusteMetadata: KkOpintojaksoValintaperusteMetadata =
+    KkOpintojaksoValintaperusteMetadata(
+      koulutustyyppi = koulutustyyppi,
+      valintatavat = valintatavat.map(_.toKkOpintojaksoValintatapa),
+      kuvaus = kuvaus
+    )
+}
+
 case class LukioValintaperusteMetadataIndexed(
     koulutustyyppi: Koulutustyyppi = Lk,
     valintatavat: Seq[LukioValintatapaIndexed],
@@ -244,6 +258,28 @@ case class AmmOpeErityisopeJaOpoValintatapaIndexed(
     vahimmaispisteet: Option[Double]
 ) extends KorkeakoulutusValintatapaIndexed {
   def toAmmattikorkeakouluValintatapa: AmmOpeErityisopeJaOpoValintatapa = AmmOpeErityisopeJaOpoValintatapa(
+    nimi = nimi,
+    valintatapaKoodiUri = valintatapa.map(_.koodiUri),
+    kuvaus = kuvaus,
+    sisalto = sisalto,
+    kaytaMuuntotaulukkoa = kaytaMuuntotaulukkoa,
+    kynnysehto = kynnysehto,
+    enimmaispisteet = enimmaispisteet,
+    vahimmaispisteet = vahimmaispisteet
+  )
+}
+
+case class KkOpintojaksoValintatapaIndexed(
+    nimi: Kielistetty,
+    valintatapa: Option[KoodiUri],
+    kuvaus: Kielistetty,
+    sisalto: Seq[ValintatapaSisalto],
+    kaytaMuuntotaulukkoa: Boolean,
+    kynnysehto: Kielistetty,
+    enimmaispisteet: Option[Double],
+    vahimmaispisteet: Option[Double]
+) extends KorkeakoulutusValintatapaIndexed {
+  def toKkOpintojaksoValintatapa: KkOpintojaksoValintatapa = KkOpintojaksoValintatapa(
     nimi = nimi,
     valintatapaKoodiUri = valintatapa.map(_.koodiUri),
     kuvaus = kuvaus,

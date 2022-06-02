@@ -3,6 +3,7 @@ package fi.oph.kouta.internal.domain
 import fi.oph.kouta.domain.{
   AmmOpeErityisopeJaOpo,
   Hakutermi,
+  KkOpintojakso,
   Koulutustyyppi,
   Telma,
   Tuva,
@@ -294,6 +295,29 @@ case class AmmattikorkeakouluToteutusMetadata(
     |""")
 case class AmmOpeErityisopeJaOpoToteutusMetadata(
     tyyppi: Koulutustyyppi = AmmOpeErityisopeJaOpo,
+    kuvaus: Kielistetty,
+    opetus: Option[Opetus],
+    asiasanat: List[Keyword],
+    ammattinimikkeet: List[Keyword],
+    yhteyshenkilot: Seq[Yhteyshenkilo],
+    alemmanKorkeakoulututkinnonOsaamisalat: Seq[KorkeakouluOsaamisala],
+    ylemmanKorkeakoulututkinnonOsaamisalat: Seq[KorkeakouluOsaamisala]
+) extends KorkeakoulutusToteutusMetadata
+
+@SwaggerModel("""    KkOpintojaksoToteutusMetadata:
+                |      allOf:
+                |        - $ref: '#/components/schemas/KkOpintojaksoToteutusMetadata'
+                |        - type: object
+                |          properties:
+                |            tyyppi:
+                |              type: string
+                |              description: Koulutuksen metatiedon tyyppi
+                |              example: kk-opintojakso
+                |              enum:
+                |                - kk-opintojakso
+                |""")
+case class KkOpintojaksoToteutusMetadata(
+    tyyppi: Koulutustyyppi = KkOpintojakso,
     kuvaus: Kielistetty,
     opetus: Option[Opetus],
     asiasanat: List[Keyword],

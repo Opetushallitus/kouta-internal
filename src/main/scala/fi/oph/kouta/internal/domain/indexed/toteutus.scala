@@ -4,6 +4,7 @@ import fi.oph.kouta.domain.{
   Alkamiskausityyppi,
   AmmOpeErityisopeJaOpo,
   Hakutermi,
+  KkOpintojakso,
   Koulutustyyppi,
   Lk,
   Maksullisuustyyppi
@@ -365,6 +366,30 @@ case class AmmOpeErityisopeJaOpoToteutusMetadataIndexed(
 ) extends KorkeakouluToteutusMetadataIndexed {
   override def toToteutusMetadata: AmmOpeErityisopeJaOpoToteutusMetadata = {
     AmmOpeErityisopeJaOpoToteutusMetadata(
+      tyyppi = tyyppi,
+      kuvaus = kuvaus,
+      opetus = opetus.map(_.toOpetus),
+      asiasanat = asiasanat,
+      ammattinimikkeet = ammattinimikkeet,
+      yhteyshenkilot = yhteyshenkilot,
+      alemmanKorkeakoulututkinnonOsaamisalat = alemmanKorkeakoulututkinnonOsaamisalat.map(_.toOsaamisala),
+      ylemmanKorkeakoulututkinnonOsaamisalat = ylemmanKorkeakoulututkinnonOsaamisalat.map(_.toOsaamisala)
+    )
+  }
+}
+
+case class KkOpintojaksoToteutusMetadataIndexed(
+    tyyppi: Koulutustyyppi = KkOpintojakso,
+    kuvaus: Kielistetty,
+    opetus: Option[OpetusIndexed],
+    asiasanat: List[Keyword],
+    ammattinimikkeet: List[Keyword],
+    yhteyshenkilot: Seq[Yhteyshenkilo],
+    alemmanKorkeakoulututkinnonOsaamisalat: Seq[KorkeakouluOsaamisalaIndexed],
+    ylemmanKorkeakoulututkinnonOsaamisalat: Seq[KorkeakouluOsaamisalaIndexed]
+) extends KorkeakouluToteutusMetadataIndexed {
+  override def toToteutusMetadata: KkOpintojaksoToteutusMetadata = {
+    KkOpintojaksoToteutusMetadata(
       tyyppi = tyyppi,
       kuvaus = kuvaus,
       opetus = opetus.map(_.toOpetus),
