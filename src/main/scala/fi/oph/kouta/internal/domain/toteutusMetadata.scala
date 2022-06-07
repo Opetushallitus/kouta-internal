@@ -240,7 +240,7 @@ case class AmmatillinenMuuToteutusMetadata(
     |        - $ref: '#/components/schemas/KorkeakouluToteutusMetadata'
     |        - type: object
     |          properties:
-    |            koulutustyyppi:
+    |            tyyppi:
     |              type: string
     |              description: Koulutuksen metatiedon tyyppi
     |              example: yo
@@ -263,7 +263,7 @@ case class YliopistoToteutusMetadata(
     |        - $ref: '#/components/schemas/KorkeakouluToteutusMetadata'
     |        - type: object
     |          properties:
-    |            koulutustyyppi:
+    |            tyyppi:
     |              type: string
     |              description: Koulutuksen metatiedon tyyppi
     |              example: amk
@@ -332,7 +332,7 @@ case class KkOpintojaksoToteutusMetadata(
     |        - $ref: '#/components/schemas/ToteutusMetadata'
     |        - type: object
     |          properties:
-    |            koulutustyyppi:
+    |            tyyppi:
     |              type: string
     |              description: Koulutuksen metatiedon tyyppi
     |              example: tuva
@@ -358,7 +358,7 @@ case class TuvaToteutusMetadata(
                 |        - $ref: '#/components/schemas/ToteutusMetadata'
                 |        - type: object
                 |          properties:
-                |            koulutustyyppi:
+                |            tyyppi:
                 |              type: string
                 |              description: Koulutuksen metatiedon tyyppi
                 |              example: telma
@@ -380,7 +380,7 @@ case class TelmaToteutusMetadata(
     |        - $ref: '#/components/schemas/ToteutusMetadata'
     |        - type: object
     |          properties:
-    |            koulutustyyppi:
+    |            tyyppi:
     |              type: string
     |              description: Koulutuksen metatiedon tyyppi
     |              example: vapaa-sivistystyo-opistovuosi
