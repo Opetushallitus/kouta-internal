@@ -8,6 +8,28 @@ import fi.oph.kouta.internal.swagger.SwaggerModel
 
 package object domain {
 
+  @SwaggerModel("""
+      |    Koulutustyyppi:
+      |      type: string
+      |      enum:
+      |        - aikuisten-perusopetus
+      |        - amk
+      |        - amm
+      |        - amm-muu
+      |        - amm-ope-erityisope-ja-opo,
+      |        - amm-osaamisala
+      |        - amm-tutkinnon-osa
+      |        - kk-opintojakso
+      |        - lk
+      |        - muu
+      |        - telma
+      |        - tuva
+      |        - vapaa-sivistystyo-muu
+      |        - vapaa-sivistystyo-opistovuosi
+      |        - yo
+""")
+  abstract class KoulutustyyppiSwagger
+
   // Kielistetyn swaggerit ovat tässä, koska pelkälle typelle ei voi asettaa annotaatiota
   @SwaggerModel("""    Teksti:
       |      type: object
