@@ -208,16 +208,16 @@ case class AmmatillinenOsaamisalaToteutusMetadata(
 ) extends TutkintoonJohtamatonToteutusMetadata
 
 @SwaggerModel("""    AmmatillinenMuuToteutusMetadata:
-    |            allOf:
-    |              - $ref: '#/components/schemas/TutkintoonJohtamatonToteutusMetadata'
-    |              - type: object
-    |                properties:
-    |                  tyyppi:
-    |                    type: string
-    |                    description: Koulutuksen metatiedon tyyppi
-    |                    example: amm-muu
-    |                    enum:
-    |                      - amm-muu
+    |      allOf:
+    |        - $ref: '#/components/schemas/TutkintoonJohtamatonToteutusMetadata'
+    |        - type: object
+    |          properties:
+    |            tyyppi:
+    |              type: string
+    |              description: Koulutuksen metatiedon tyyppi
+    |              example: amm-muu
+    |              enum:
+    |                - amm-muu
     |""")
 case class AmmatillinenMuuToteutusMetadata(
     tyyppi: Koulutustyyppi,
@@ -305,17 +305,17 @@ case class AmmOpeErityisopeJaOpoToteutusMetadata(
 ) extends KorkeakoulutusToteutusMetadata
 
 @SwaggerModel("""    KkOpintojaksoToteutusMetadata:
-                |      allOf:
-                |        - $ref: '#/components/schemas/KkOpintojaksoToteutusMetadata'
-                |        - type: object
-                |          properties:
-                |            tyyppi:
-                |              type: string
-                |              description: Koulutuksen metatiedon tyyppi
-                |              example: kk-opintojakso
-                |              enum:
-                |                - kk-opintojakso
-                |""")
+    |      allOf:
+    |        - $ref: '#/components/schemas/TutkintoonJohtamatonToteutusMetadata'
+    |        - type: object
+    |          properties:
+    |            tyyppi:
+    |              type: string
+    |              description: Koulutuksen metatiedon tyyppi
+    |              example: kk-opintojakso
+    |              enum:
+    |                - kk-opintojakso
+    |""")
 case class KkOpintojaksoToteutusMetadata(
     tyyppi: Koulutustyyppi = KkOpintojakso,
     kuvaus: Kielistetty,
@@ -323,9 +323,14 @@ case class KkOpintojaksoToteutusMetadata(
     asiasanat: List[Keyword],
     ammattinimikkeet: List[Keyword],
     yhteyshenkilot: Seq[Yhteyshenkilo],
-    alemmanKorkeakoulututkinnonOsaamisalat: Seq[KorkeakouluOsaamisala],
-    ylemmanKorkeakoulututkinnonOsaamisalat: Seq[KorkeakouluOsaamisala]
-) extends KorkeakoulutusToteutusMetadata
+    lisatietoaHakeutumisesta: Kielistetty,
+    lisatietoaValintaperusteista: Kielistetty,
+    hakutermi: Option[Hakutermi],
+    hakulomaketyyppi: Option[Hakulomaketyyppi],
+    hakulomakeLinkki: Kielistetty,
+    hakuaika: Option[Ajanjakso],
+    aloituspaikat: Option[Int]
+) extends TutkintoonJohtamatonToteutusMetadata
 
 @SwaggerModel("""    TuvaToteutusMetadata:
     |      allOf:
@@ -354,17 +359,17 @@ case class TuvaToteutusMetadata(
 ) extends ToteutusMetadata
 
 @SwaggerModel("""    TelmaToteutusMetadata:
-                |      allOf:
-                |        - $ref: '#/components/schemas/ToteutusMetadata'
-                |        - type: object
-                |          properties:
-                |            tyyppi:
-                |              type: string
-                |              description: Koulutuksen metatiedon tyyppi
-                |              example: telma
-                |              enum:
-                |                - telma
-                |""")
+    |      allOf:
+    |        - $ref: '#/components/schemas/ToteutusMetadata'
+    |        - type: object
+    |          properties:
+    |            tyyppi:
+    |              type: string
+    |              description: Koulutuksen metatiedon tyyppi
+    |              example: telma
+    |              enum:
+    |                - telma
+    |""")
 case class TelmaToteutusMetadata(
     tyyppi: Koulutustyyppi = Telma,
     kuvaus: Kielistetty,
