@@ -193,17 +193,18 @@ case class KkOpintojaksoKoulutusMetadataIndexed(
     lisatiedot: Seq[LisatietoIndexed],
     koulutusala: Seq[KoodiUri],
     tutkintonimike: Seq[KoodiUri],
-    opintojenLaajuus: Option[KoodiUri],
+    opintojenLaajuusyksikko: Option[KoodiUri] = None,
+    opintojenLaajuusNumero: Option[Double] = None,
     kuvauksenNimi: Kielistetty
-) extends KorkeakoulutusKoulutusMetadataIndexed {
+) extends KoulutusMetadataIndexed {
   override def toKoulutusMetadata: KkOpintojaksoKoulutusMetadata = KkOpintojaksoKoulutusMetadata(
     tyyppi = tyyppi,
     kuvaus = kuvaus,
     lisatiedot = lisatiedot.map(_.toLisatieto),
     koulutusalaKoodiUrit = koulutusala.map(_.koodiUri),
-    tutkintonimikeKoodiUrit = tutkintonimike.map(_.koodiUri),
-    opintojenLaajuusKoodiUri = opintojenLaajuus.map(_.koodiUri),
-    kuvauksenNimi = kuvauksenNimi
+    kuvauksenNimi = kuvauksenNimi,
+    opintojenLaajuusyksikkoKoodiUri = opintojenLaajuusyksikko.map(_.koodiUri),
+    opintojenLaajuusNumero = opintojenLaajuusNumero
   )
 }
 
