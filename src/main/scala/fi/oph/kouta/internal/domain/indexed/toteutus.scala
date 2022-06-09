@@ -379,15 +379,20 @@ case class AmmOpeErityisopeJaOpoToteutusMetadataIndexed(
 }
 
 case class KkOpintojaksoToteutusMetadataIndexed(
-    tyyppi: Koulutustyyppi = KkOpintojakso,
+    tyyppi: Koulutustyyppi,
     kuvaus: Kielistetty,
     opetus: Option[OpetusIndexed],
     asiasanat: List[Keyword],
     ammattinimikkeet: List[Keyword],
     yhteyshenkilot: Seq[Yhteyshenkilo],
-    alemmanKorkeakoulututkinnonOsaamisalat: Seq[KorkeakouluOsaamisalaIndexed],
-    ylemmanKorkeakoulututkinnonOsaamisalat: Seq[KorkeakouluOsaamisalaIndexed]
-) extends KorkeakouluToteutusMetadataIndexed {
+    hakutermi: Option[Hakutermi],
+    hakulomaketyyppi: Option[Hakulomaketyyppi],
+    hakulomakeLinkki: Kielistetty,
+    lisatietoaHakeutumisesta: Kielistetty,
+    lisatietoaValintaperusteista: Kielistetty,
+    hakuaika: Option[Ajanjakso],
+    aloituspaikat: Option[Int]
+) extends ToteutusMetadataIndexed {
   override def toToteutusMetadata: KkOpintojaksoToteutusMetadata = {
     KkOpintojaksoToteutusMetadata(
       tyyppi = tyyppi,
@@ -396,8 +401,13 @@ case class KkOpintojaksoToteutusMetadataIndexed(
       asiasanat = asiasanat,
       ammattinimikkeet = ammattinimikkeet,
       yhteyshenkilot = yhteyshenkilot,
-      alemmanKorkeakoulututkinnonOsaamisalat = alemmanKorkeakoulututkinnonOsaamisalat.map(_.toOsaamisala),
-      ylemmanKorkeakoulututkinnonOsaamisalat = ylemmanKorkeakoulututkinnonOsaamisalat.map(_.toOsaamisala)
+      hakutermi = hakutermi,
+      hakulomaketyyppi = hakulomaketyyppi,
+      hakulomakeLinkki = hakulomakeLinkki,
+      lisatietoaHakeutumisesta = lisatietoaHakeutumisesta,
+      lisatietoaValintaperusteista = lisatietoaValintaperusteista,
+      hakuaika = hakuaika,
+      aloituspaikat = aloituspaikat
     )
   }
 }
