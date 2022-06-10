@@ -109,12 +109,6 @@ case class TutkinnonOsa(
       |              example: amm-osaamisala
       |              enum:
       |                - amm-osaamisala
-      |            tyyppi:
-      |              type: string
-      |              description: Koulutuksen metatiedon tyyppi
-      |              example: amm-osaamisala
-      |              enum:
-      |                - amm-osaamisala
       |            osaamisalaKoodiUri:
       |              type: string
       |              description: Osaamisala. Viittaa [koodistoon](https://virkailija.testiopintopolku.fi/koodisto-ui/html/koodisto/osaamisala/1)
