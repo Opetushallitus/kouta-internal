@@ -7,13 +7,12 @@ import com.sksamuel.elastic4s.requests.get.GetRequest
 import com.sksamuel.elastic4s.requests.searches.{SearchRequest, SearchScrollRequest}
 import com.sksamuel.elastic4s.{CommonRequestOptions, ElasticClient, Executor, Functor, Handler, Response}
 import fi.oph.kouta.internal.KoutaConfigurationFactory
-import org.slf4j.LoggerFactory
+import fi.vm.sade.utils.slf4j.Logging
 
 import scala.concurrent.ExecutionContext.global
 import scala.concurrent.Future
 
-case class CachedElasticClient(client: ElasticClient) {
-  private lazy val logger = LoggerFactory.getLogger(getClass)
+case class CachedElasticClient(client: ElasticClient) extends Logging {
   private lazy val cache = Scaffeine()
     .expireAfterWrite(KoutaConfigurationFactory.configuration.elasticSearchConfiguration.cacheTimeoutSeconds.seconds)
     .buildAsync[Any, Any]()
