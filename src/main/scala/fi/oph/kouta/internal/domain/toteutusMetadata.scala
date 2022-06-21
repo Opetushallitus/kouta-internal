@@ -3,6 +3,7 @@ package fi.oph.kouta.internal.domain
 import fi.oph.kouta.domain.{
   AmmOpeErityisopeJaOpo,
   Hakutermi,
+  KkOpintojakso,
   Koulutustyyppi,
   Telma,
   Tuva,
@@ -207,16 +208,16 @@ case class AmmatillinenOsaamisalaToteutusMetadata(
 ) extends TutkintoonJohtamatonToteutusMetadata
 
 @SwaggerModel("""    AmmatillinenMuuToteutusMetadata:
-    |            allOf:
-    |              - $ref: '#/components/schemas/TutkintoonJohtamatonToteutusMetadata'
-    |              - type: object
-    |                properties:
-    |                  tyyppi:
-    |                    type: string
-    |                    description: Koulutuksen metatiedon tyyppi
-    |                    example: amm-muu
-    |                    enum:
-    |                      - amm-muu
+    |      allOf:
+    |        - $ref: '#/components/schemas/TutkintoonJohtamatonToteutusMetadata'
+    |        - type: object
+    |          properties:
+    |            tyyppi:
+    |              type: string
+    |              description: Koulutuksen metatiedon tyyppi
+    |              example: amm-muu
+    |              enum:
+    |                - amm-muu
     |""")
 case class AmmatillinenMuuToteutusMetadata(
     tyyppi: Koulutustyyppi,
@@ -239,7 +240,7 @@ case class AmmatillinenMuuToteutusMetadata(
     |        - $ref: '#/components/schemas/KorkeakouluToteutusMetadata'
     |        - type: object
     |          properties:
-    |            koulutustyyppi:
+    |            tyyppi:
     |              type: string
     |              description: Koulutuksen metatiedon tyyppi
     |              example: yo
@@ -262,7 +263,7 @@ case class YliopistoToteutusMetadata(
     |        - $ref: '#/components/schemas/KorkeakouluToteutusMetadata'
     |        - type: object
     |          properties:
-    |            koulutustyyppi:
+    |            tyyppi:
     |              type: string
     |              description: Koulutuksen metatiedon tyyppi
     |              example: amk
@@ -303,12 +304,40 @@ case class AmmOpeErityisopeJaOpoToteutusMetadata(
     ylemmanKorkeakoulututkinnonOsaamisalat: Seq[KorkeakouluOsaamisala]
 ) extends KorkeakoulutusToteutusMetadata
 
+@SwaggerModel("""    KkOpintojaksoToteutusMetadata:
+    |      allOf:
+    |        - $ref: '#/components/schemas/TutkintoonJohtamatonToteutusMetadata'
+    |        - type: object
+    |          properties:
+    |            tyyppi:
+    |              type: string
+    |              description: Koulutuksen metatiedon tyyppi
+    |              example: kk-opintojakso
+    |              enum:
+    |                - kk-opintojakso
+    |""")
+case class KkOpintojaksoToteutusMetadata(
+    tyyppi: Koulutustyyppi = KkOpintojakso,
+    kuvaus: Kielistetty,
+    opetus: Option[Opetus],
+    asiasanat: List[Keyword],
+    ammattinimikkeet: List[Keyword],
+    yhteyshenkilot: Seq[Yhteyshenkilo],
+    lisatietoaHakeutumisesta: Kielistetty,
+    lisatietoaValintaperusteista: Kielistetty,
+    hakutermi: Option[Hakutermi],
+    hakulomaketyyppi: Option[Hakulomaketyyppi],
+    hakulomakeLinkki: Kielistetty,
+    hakuaika: Option[Ajanjakso],
+    aloituspaikat: Option[Int]
+) extends TutkintoonJohtamatonToteutusMetadata
+
 @SwaggerModel("""    TuvaToteutusMetadata:
     |      allOf:
     |        - $ref: '#/components/schemas/ToteutusMetadata'
     |        - type: object
     |          properties:
-    |            koulutustyyppi:
+    |            tyyppi:
     |              type: string
     |              description: Koulutuksen metatiedon tyyppi
     |              example: tuva
@@ -330,17 +359,17 @@ case class TuvaToteutusMetadata(
 ) extends ToteutusMetadata
 
 @SwaggerModel("""    TelmaToteutusMetadata:
-                |      allOf:
-                |        - $ref: '#/components/schemas/ToteutusMetadata'
-                |        - type: object
-                |          properties:
-                |            koulutustyyppi:
-                |              type: string
-                |              description: Koulutuksen metatiedon tyyppi
-                |              example: telma
-                |              enum:
-                |                - telma
-                |""")
+    |      allOf:
+    |        - $ref: '#/components/schemas/ToteutusMetadata'
+    |        - type: object
+    |          properties:
+    |            tyyppi:
+    |              type: string
+    |              description: Koulutuksen metatiedon tyyppi
+    |              example: telma
+    |              enum:
+    |                - telma
+    |""")
 case class TelmaToteutusMetadata(
     tyyppi: Koulutustyyppi = Telma,
     kuvaus: Kielistetty,
@@ -356,7 +385,7 @@ case class TelmaToteutusMetadata(
     |        - $ref: '#/components/schemas/ToteutusMetadata'
     |        - type: object
     |          properties:
-    |            koulutustyyppi:
+    |            tyyppi:
     |              type: string
     |              description: Koulutuksen metatiedon tyyppi
     |              example: vapaa-sivistystyo-opistovuosi

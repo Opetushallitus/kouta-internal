@@ -8,6 +8,7 @@ import fi.oph.kouta.domain.{
   AmmOpeErityisopeJaOpo,
   Amm,
   AmmMuu,
+  KkOpintojakso,
   Koulutustyyppi,
   Lk,
   Telma,
@@ -66,57 +67,57 @@ case class ValintaperusteIndexed(
 case class SorakuvausIndexed(id: UUID)
 
 sealed trait ValintaperusteMetadataIndexed {
-  def koulutustyyppi: Koulutustyyppi
+  def tyyppi: Koulutustyyppi
   def valintatavat: Seq[ValintatapaIndexed]
   def toValintaperusteMetadata: ValintaperusteMetadata
 }
 
 case class AmmatillinenValintaperusteMetadataIndexed(
-    koulutustyyppi: Koulutustyyppi = Amm,
+    tyyppi: Koulutustyyppi = Amm,
     valintatavat: Seq[AmmatillinenValintatapaIndexed]
 ) extends ValintaperusteMetadataIndexed {
   override def toValintaperusteMetadata: ValintaperusteMetadata = AmmatillinenValintaperusteMetadata(
-    koulutustyyppi = koulutustyyppi,
+    tyyppi = tyyppi,
     valintatavat = valintatavat.map(_.toAmmatillinenValintatapa)
   )
 }
 
 case class TuvaValintaperusteMetadataIndexed(
-    koulutustyyppi: Koulutustyyppi = Tuva,
+    tyyppi: Koulutustyyppi = Tuva,
     valintatavat: Seq[AmmatillinenValintatapaIndexed]
 ) extends ValintaperusteMetadataIndexed {
   override def toValintaperusteMetadata: ValintaperusteMetadata = TuvaValintaperusteMetadata(
-    koulutustyyppi = koulutustyyppi,
+    tyyppi = tyyppi,
     valintatavat = valintatavat.map(_.toAmmatillinenValintatapa)
   )
 }
 
 case class TelmaValintaperusteMetadataIndexed(
-    koulutustyyppi: Koulutustyyppi = Telma,
+    tyyppi: Koulutustyyppi = Telma,
     valintatavat: Seq[AmmatillinenValintatapaIndexed]
 ) extends ValintaperusteMetadataIndexed {
   override def toValintaperusteMetadata: ValintaperusteMetadata = TelmaValintaperusteMetadata(
-    koulutustyyppi = koulutustyyppi,
+    tyyppi = tyyppi,
     valintatavat = valintatavat.map(_.toAmmatillinenValintatapa)
   )
 }
 
 case class AmmatillinenMuuValintaperusteMetadataIndexed(
-    koulutustyyppi: Koulutustyyppi = AmmMuu,
+    tyyppi: Koulutustyyppi = AmmMuu,
     valintatavat: Seq[AmmatillinenValintatapaIndexed]
 ) extends ValintaperusteMetadataIndexed {
   override def toValintaperusteMetadata: AmmatillinenMuuValintaperusteMetadata = AmmatillinenMuuValintaperusteMetadata(
-    koulutustyyppi = koulutustyyppi,
+    tyyppi = tyyppi,
     valintatavat = valintatavat.map(_.toAmmatillinenValintatapa)
   )
 }
 
 case class VapaaSivistystyoValintaperusteMetadataIndexed(
-    koulutustyyppi: Koulutustyyppi,
+    tyyppi: Koulutustyyppi,
     valintatavat: Seq[AmmatillinenValintatapaIndexed]
 ) extends ValintaperusteMetadataIndexed {
   override def toValintaperusteMetadata: ValintaperusteMetadata = VapaaSivistystyoValintaperusteMetadata(
-    koulutustyyppi = koulutustyyppi,
+    tyyppi = tyyppi,
     valintatavat = valintatavat.map(_.toAmmatillinenValintatapa)
   )
 }
@@ -127,51 +128,64 @@ sealed trait KorkeakoulutusValintaperusteMetadataIndexed extends ValintaperusteM
 }
 
 case class YliopistoValintaperusteMetadataIndexed(
-    koulutustyyppi: Koulutustyyppi = Yo,
+    tyyppi: Koulutustyyppi = Yo,
     valintatavat: Seq[YliopistoValintatapaIndexed],
     kuvaus: Kielistetty
 ) extends KorkeakoulutusValintaperusteMetadataIndexed {
   override def toValintaperusteMetadata: YliopistoValintaperusteMetadata = YliopistoValintaperusteMetadata(
-    koulutustyyppi = koulutustyyppi,
+    tyyppi = tyyppi,
     valintatavat = valintatavat.map(_.toYliopistoValintatapa),
     kuvaus = kuvaus
   )
 }
 
 case class AmmattikorkeakouluValintaperusteMetadataIndexed(
-    koulutustyyppi: Koulutustyyppi = Amk,
+    tyyppi: Koulutustyyppi = Amk,
     valintatavat: Seq[AmmattikorkeakouluValintatapaIndexed],
     kuvaus: Kielistetty
 ) extends KorkeakoulutusValintaperusteMetadataIndexed {
   override def toValintaperusteMetadata: AmmattikorkeakouluValintaperusteMetadata =
     AmmattikorkeakouluValintaperusteMetadata(
-      koulutustyyppi = koulutustyyppi,
+      tyyppi = tyyppi,
       valintatavat = valintatavat.map(_.toAmmattikorkeakouluValintatapa),
       kuvaus = kuvaus
     )
 }
 
 case class AmmOpeErityisopeJaOpoValintaperusteMetadataIndexed(
-    koulutustyyppi: Koulutustyyppi = AmmOpeErityisopeJaOpo,
+    tyyppi: Koulutustyyppi = AmmOpeErityisopeJaOpo,
     valintatavat: Seq[AmmOpeErityisopeJaOpoValintatapaIndexed],
     kuvaus: Kielistetty
 ) extends KorkeakoulutusValintaperusteMetadataIndexed {
   override def toValintaperusteMetadata: AmmOpeErityisopeJaOpoValintaperusteMetadata =
     AmmOpeErityisopeJaOpoValintaperusteMetadata(
-      koulutustyyppi = koulutustyyppi,
+      tyyppi = tyyppi,
       valintatavat = valintatavat.map(_.toAmmattikorkeakouluValintatapa),
       kuvaus = kuvaus
     )
 }
 
+case class KkOpintojaksoValintaperusteMetadataIndexed(
+    tyyppi: Koulutustyyppi = KkOpintojakso,
+    valintatavat: Seq[KkOpintojaksoValintatapaIndexed],
+    kuvaus: Kielistetty
+) extends KorkeakoulutusValintaperusteMetadataIndexed {
+  override def toValintaperusteMetadata: KkOpintojaksoValintaperusteMetadata =
+    KkOpintojaksoValintaperusteMetadata(
+      tyyppi = tyyppi,
+      valintatavat = valintatavat.map(_.toKkOpintojaksoValintatapa),
+      kuvaus = kuvaus
+    )
+}
+
 case class LukioValintaperusteMetadataIndexed(
-    koulutustyyppi: Koulutustyyppi = Lk,
+    tyyppi: Koulutustyyppi = Lk,
     valintatavat: Seq[LukioValintatapaIndexed],
     kuvaus: Kielistetty
 ) extends ValintaperusteMetadataIndexed {
   override def toValintaperusteMetadata: LukioValintaperusteMetadata =
     LukioValintaperusteMetadata(
-      koulutustyyppi = koulutustyyppi,
+      tyyppi = tyyppi,
       valintatavat = valintatavat.map(_.toLukioValintatapa),
       kuvaus = kuvaus
     )
@@ -255,6 +269,28 @@ case class AmmOpeErityisopeJaOpoValintatapaIndexed(
   )
 }
 
+case class KkOpintojaksoValintatapaIndexed(
+    nimi: Kielistetty,
+    valintatapa: Option[KoodiUri],
+    kuvaus: Kielistetty,
+    sisalto: Seq[ValintatapaSisalto],
+    kaytaMuuntotaulukkoa: Boolean,
+    kynnysehto: Kielistetty,
+    enimmaispisteet: Option[Double],
+    vahimmaispisteet: Option[Double]
+) extends KorkeakoulutusValintatapaIndexed {
+  def toKkOpintojaksoValintatapa: KkOpintojaksoValintatapa = KkOpintojaksoValintatapa(
+    nimi = nimi,
+    valintatapaKoodiUri = valintatapa.map(_.koodiUri),
+    kuvaus = kuvaus,
+    sisalto = sisalto,
+    kaytaMuuntotaulukkoa = kaytaMuuntotaulukkoa,
+    kynnysehto = kynnysehto,
+    enimmaispisteet = enimmaispisteet,
+    vahimmaispisteet = vahimmaispisteet
+  )
+}
+
 case class YliopistoValintatapaIndexed(
     nimi: Kielistetty,
     valintatapa: Option[KoodiUri],
@@ -300,12 +336,12 @@ case class LukioValintatapaIndexed(
 }
 
 case class AikuistenPerusopetusValintaperusteMetadataIndexed(
-    koulutustyyppi: Koulutustyyppi = AikuistenPerusopetus,
+    tyyppi: Koulutustyyppi = AikuistenPerusopetus,
     valintatavat: Seq[AmmatillinenValintatapaIndexed]
 ) extends ValintaperusteMetadataIndexed {
   override def toValintaperusteMetadata: AikuistenPerusopetusValintaperusteMetadata =
     AikuistenPerusopetusValintaperusteMetadata(
-      koulutustyyppi = koulutustyyppi,
+      tyyppi = tyyppi,
       valintatavat = valintatavat.map(_.toAmmatillinenValintatapa)
     )
 }

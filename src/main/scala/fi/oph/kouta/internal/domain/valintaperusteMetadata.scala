@@ -4,8 +4,9 @@ import fi.oph.kouta.domain.{
   AikuistenPerusopetus,
   Amk,
   Amm,
-  AmmOpeErityisopeJaOpo,
   AmmMuu,
+  AmmOpeErityisopeJaOpo,
+  KkOpintojakso,
   Koulutustyyppi,
   Lk,
   Telma,
@@ -19,7 +20,7 @@ import fi.oph.kouta.internal.swagger.SwaggerModel
 @SwaggerModel("""    ValintaperusteMetadata:
     |      type: object
     |      properties:
-    |        koulutustyyppi:
+    |        tyyppi:
     |          type: string
     |          description: Valintaperustekuvauksen metatiedon tyyppi
     |          example: yo
@@ -32,8 +33,7 @@ import fi.oph.kouta.internal.swagger.SwaggerModel
     |            $ref: '#/components/schemas/Valintatapa'
     |""")
 sealed trait ValintaperusteMetadata {
-  def koulutustyyppi: Koulutustyyppi
-
+  def tyyppi: Koulutustyyppi
   def valintatavat: Seq[Valintatapa]
 }
 
@@ -69,7 +69,7 @@ sealed trait KorkeakoulutusValintaperusteMetadata extends ValintaperusteMetadata
     |          description: Lista valintaperustekuvauksen valintatavoista
     |          items:
     |            $ref: '#/components/schemas/AmmatillinenValintatapa'
-    |        koulutustyyppi:
+    |        tyyppi:
     |          type: string
     |          description: Valintaperustekuvauksen metatiedon tyyppi
     |          example: amm
@@ -77,7 +77,7 @@ sealed trait KorkeakoulutusValintaperusteMetadata extends ValintaperusteMetadata
     |            - amm
     |""")
 case class AmmatillinenValintaperusteMetadata(
-    koulutustyyppi: Koulutustyyppi = Amm,
+    tyyppi: Koulutustyyppi = Amm,
     valintatavat: Seq[AmmatillinenValintatapa]
 ) extends ValintaperusteMetadata
 
@@ -91,7 +91,7 @@ case class AmmatillinenValintaperusteMetadata(
                 |          description: Lista valintaperustekuvauksen valintatavoista
                 |          items:
                 |            $ref: '#/components/schemas/AmmatillinenValintatapa'
-                |        koulutustyyppi:
+                |        tyyppi:
                 |          type: string
                 |          description: Valintaperustekuvauksen metatiedon tyyppi
                 |          example: tuva
@@ -99,7 +99,7 @@ case class AmmatillinenValintaperusteMetadata(
                 |            - tuva
                 |""")
 case class TuvaValintaperusteMetadata(
-    koulutustyyppi: Koulutustyyppi = Tuva,
+    tyyppi: Koulutustyyppi = Tuva,
     valintatavat: Seq[AmmatillinenValintatapa]
 ) extends ValintaperusteMetadata
 
@@ -113,7 +113,7 @@ case class TuvaValintaperusteMetadata(
                 |          description: Lista valintaperustekuvauksen valintatavoista
                 |          items:
                 |            $ref: '#/components/schemas/AmmatillinenValintatapa'
-                |        koulutustyyppi:
+                |        tyyppi:
                 |          type: string
                 |          description: Valintaperustekuvauksen metatiedon tyyppi
                 |          example: telma
@@ -121,7 +121,7 @@ case class TuvaValintaperusteMetadata(
                 |            - telma
                 |""")
 case class TelmaValintaperusteMetadata(
-    koulutustyyppi: Koulutustyyppi = Telma,
+    tyyppi: Koulutustyyppi = Telma,
     valintatavat: Seq[AmmatillinenValintatapa]
 ) extends ValintaperusteMetadata
 
@@ -135,7 +135,7 @@ case class TelmaValintaperusteMetadata(
                 |          description: Lista valintaperustekuvauksen valintatavoista
                 |          items:
                 |            $ref: '#/components/schemas/AmmatillinenValintatapa'
-                |        koulutustyyppi:
+                |        tyyppi:
                 |          type: string
                 |          description: Valintaperustekuvauksen metatiedon tyyppi
                 |          example: amm-muu
@@ -143,7 +143,7 @@ case class TelmaValintaperusteMetadata(
                 |            - amm-muu
                 |""")
 case class AmmatillinenMuuValintaperusteMetadata(
-    koulutustyyppi: Koulutustyyppi = AmmMuu,
+    tyyppi: Koulutustyyppi = AmmMuu,
     valintatavat: Seq[AmmatillinenValintatapa]
 ) extends ValintaperusteMetadata
 
@@ -157,7 +157,7 @@ case class AmmatillinenMuuValintaperusteMetadata(
                 |          description: Lista valintaperustekuvauksen valintatavoista
                 |          items:
                 |            $ref: '#/components/schemas/AmmatillinenValintatapa'
-                |        koulutustyyppi:
+                |        tyyppi:
                 |          type: string
                 |          description: Valintaperustekuvauksen metatiedon tyyppi
                 |          example: vapaa-sivistystyo-opistovuosi
@@ -166,7 +166,7 @@ case class AmmatillinenMuuValintaperusteMetadata(
                 |            - vapaa-sivistystyo-muu
                 |""")
 case class VapaaSivistystyoValintaperusteMetadata(
-    koulutustyyppi: Koulutustyyppi,
+    tyyppi: Koulutustyyppi,
     valintatavat: Seq[AmmatillinenValintatapa]
 ) extends ValintaperusteMetadata
 
@@ -180,7 +180,7 @@ case class VapaaSivistystyoValintaperusteMetadata(
     |          description: Lista valintaperustekuvauksen valintatavoista
     |          items:
     |            $ref: '#/components/schemas/YliopistoValintatapa'
-    |        koulutustyyppi:
+    |        tyyppi:
     |          type: string
     |          description: Valintaperustekuvauksen metatiedon tyyppi
     |          example: yo
@@ -188,7 +188,7 @@ case class VapaaSivistystyoValintaperusteMetadata(
     |            - yo
     |""")
 case class YliopistoValintaperusteMetadata(
-    koulutustyyppi: Koulutustyyppi = Yo,
+    tyyppi: Koulutustyyppi = Yo,
     valintatavat: Seq[YliopistoValintatapa],
     kuvaus: Kielistetty = Map()
 ) extends KorkeakoulutusValintaperusteMetadata
@@ -203,7 +203,7 @@ case class YliopistoValintaperusteMetadata(
     |          description: Lista valintaperustekuvauksen valintatavoista
     |          items:
     |            $ref: '#/components/schemas/AmmattikorkeakouluValintatapa'
-    |        koulutustyyppi:
+    |        tyyppi:
     |          type: string
     |          description: Valintaperustekuvauksen metatiedon tyyppi
     |          example: amk
@@ -211,7 +211,7 @@ case class YliopistoValintaperusteMetadata(
     |            - amk
     |""")
 case class AmmattikorkeakouluValintaperusteMetadata(
-    koulutustyyppi: Koulutustyyppi = Amk,
+    tyyppi: Koulutustyyppi = Amk,
     valintatavat: Seq[AmmattikorkeakouluValintatapa],
     kuvaus: Kielistetty = Map()
 ) extends KorkeakoulutusValintaperusteMetadata
@@ -226,7 +226,7 @@ case class AmmattikorkeakouluValintaperusteMetadata(
                 |          description: Lista valintaperustekuvauksen valintatavoista
                 |          items:
                 |            $ref: '#/components/schemas/AmmOpeErityisopeJaOpoValintatapa'
-                |        koulutustyyppi:
+                |        tyyppi:
                 |          type: string
                 |          description: Valintaperustekuvauksen metatiedon tyyppi
                 |          example: amm-ope-erityisope-ja-opo
@@ -234,8 +234,31 @@ case class AmmattikorkeakouluValintaperusteMetadata(
                 |            - amm-ope-erityisope-ja-opo
                 |""")
 case class AmmOpeErityisopeJaOpoValintaperusteMetadata(
-    koulutustyyppi: Koulutustyyppi = AmmOpeErityisopeJaOpo,
+    tyyppi: Koulutustyyppi = AmmOpeErityisopeJaOpo,
     valintatavat: Seq[AmmOpeErityisopeJaOpoValintatapa],
+    kuvaus: Kielistetty = Map()
+) extends KorkeakoulutusValintaperusteMetadata
+
+@SwaggerModel("""    KkOpintojaksoValintaperusteMetadata:
+                |      type: object
+                |      allOf:
+                |        - $ref: '#/components/schemas/KkOpintojaksoValintaperusteMetadata'
+                |      properties:
+                |        valintatavat:
+                |          type: array
+                |          description: Lista valintaperustekuvauksen valintatavoista
+                |          items:
+                |            $ref: '#/components/schemas/KorkeakoulutusValintatapa'
+                |        tyyppi:
+                |          type: string
+                |          description: Valintaperustekuvauksen metatiedon tyyppi
+                |          example: kk-opintojakso
+                |          enum:
+                |            - kk-opintojakso
+                |""")
+case class KkOpintojaksoValintaperusteMetadata(
+    tyyppi: Koulutustyyppi = KkOpintojakso,
+    valintatavat: Seq[KkOpintojaksoValintatapa],
     kuvaus: Kielistetty = Map()
 ) extends KorkeakoulutusValintaperusteMetadata
 
@@ -252,7 +275,7 @@ case class AmmOpeErityisopeJaOpoValintaperusteMetadata(
     |            - lk
     |""")
 case class LukioValintaperusteMetadata(
-    koulutustyyppi: Koulutustyyppi = Lk,
+    tyyppi: Koulutustyyppi = Lk,
     valintatavat: Seq[LukioValintatapa],
     kuvaus: Kielistetty = Map()
 ) extends ValintaperusteMetadata
@@ -267,7 +290,7 @@ case class LukioValintaperusteMetadata(
                 |          description: Lista valintaperustekuvauksen valintatavoista
                 |          items:
                 |            $ref: '#/components/schemas/AmmatillinenValintatapa'
-                |        koulutustyyppi:
+                |        tyyppi:
                 |          type: string
                 |          description: Valintaperustekuvauksen metatiedon tyyppi
                 |          example: aikuisten-perusopetus
@@ -275,6 +298,6 @@ case class LukioValintaperusteMetadata(
                 |            - aikuisten-perusopetus
                 |""")
 case class AikuistenPerusopetusValintaperusteMetadata(
-    koulutustyyppi: Koulutustyyppi = AikuistenPerusopetus,
+    tyyppi: Koulutustyyppi = AikuistenPerusopetus,
     valintatavat: Seq[AmmatillinenValintatapa]
 ) extends ValintaperusteMetadata
