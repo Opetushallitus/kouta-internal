@@ -55,9 +55,6 @@ class OdwService(
       limit
     )
 
-  def findHautByOids(hakuOids: Set[HakuOid])(implicit authenticated: Authenticated): Future[Seq[Haku]] =
-    hakuClient.findByOids(hakuOids)
-
   def findOdwHautByOids(hakuOids: Set[HakuOid])(implicit authenticated: Authenticated): Future[Seq[OdwHaku]] =
     hakuClient.findOdwHautByOids(hakuOids)
 
