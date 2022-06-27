@@ -27,21 +27,7 @@ import fi.oph.kouta.internal.swagger.SwaggerModel
     |        koulutustyyppi:
     |          type: string
     |          description: Minkä tyyppisille koulutuksille valintaperustekuvaus on tarkoitettu käytettäväksi?
-    |          enum:
-    |            - amm
-    |            - yo
-    |            - amk
-    |            - amm-ope-erityisope-ja-opo
-    |            - lk
-    |            - amm-tutkinnon-osa
-    |            - amm-osaamisala
-    |            - amm-muu
-    |            - tuva
-    |            - telma
-    |            - vapaa-sivistystyo-opistovuosi
-    |            - vapaa-sivistystyo-muu
-    |            - aikuisten-perusopetus
-    |            - muu
+    |          $ref: '#/components/schemas/Koulutustyyppi'
     |          example: amm
     |        hakutapaKoodiUri:
     |          type: string
@@ -74,12 +60,7 @@ import fi.oph.kouta.internal.swagger.SwaggerModel
     |        metadata:
     |          type: object
     |          oneOf:
-    |            - $ref: '#/components/schemas/YliopistoValintaperusteMetadata'
-    |            - $ref: '#/components/schemas/AmmatillinenValintaperusteMetadata'
-    |            - $ref: '#/components/schemas/AmmattikorkeakouluValintaperusteMetadata'
-    |            - $ref: '#/components/schemas/AmmOpeErityisopeJaOpoValintaperusteMetadata'
-    |            - $ref: '#/components/schemas/LukioValintaperusteMetadata'
-    |            - $ref: '#/components/schemas/TuvaValintaperusteMetadata'
+    |            - $ref: '#/components/schemas/ValintaperusteMetadata'
     |          example:
     |            koulutustyyppi: amm
     |            valintatavat:
