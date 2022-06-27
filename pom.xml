@@ -12,7 +12,7 @@
     <properties>
         <scala.version>2.12.13</scala.version>
 
-        <kouta-common.version>2.9.0-SNAPSHOT</kouta-common.version>
+        <kouta-common.version>2.11.0-SNAPSHOT</kouta-common.version>
 
         <!-- Korjaa käännösvirheen:
              [ERROR] Source option 5 is no longer supported. Use 6 or later.
