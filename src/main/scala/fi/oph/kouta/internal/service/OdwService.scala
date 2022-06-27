@@ -1,6 +1,6 @@
 package fi.oph.kouta.internal.service
 
-import fi.oph.kouta.internal.domain.{Haku, Hakukohde, Koulutus, OdwHaku, Toteutus}
+import fi.oph.kouta.internal.domain.{Haku, Hakukohde, Koulutus, OdwHaku, OdwKoulutus, Toteutus}
 import fi.oph.kouta.internal.domain.enums.Julkaisutila
 import fi.oph.kouta.internal.domain.oid.{HakuOid, HakukohdeOid, KoulutusOid, ToteutusOid}
 import fi.oph.kouta.internal.elasticsearch.{HakuClient, HakukohdeClient, KoulutusClient, ToteutusClient}
@@ -65,8 +65,8 @@ class OdwService(
 
   def findKoulutuksetByOids(koulutusOids: Set[KoulutusOid])(implicit
       authenticated: Authenticated
-  ): Future[Seq[Koulutus]] =
-    koulutusClient.findByOids(koulutusOids)
+  ): Future[Seq[OdwKoulutus]] =
+    koulutusClient.findOdwByOids(koulutusOids)
 
   def findToteutuksetByOids(toteutusOids: Set[ToteutusOid])(implicit
       authenticated: Authenticated
