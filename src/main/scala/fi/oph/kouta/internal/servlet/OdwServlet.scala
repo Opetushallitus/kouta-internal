@@ -268,7 +268,7 @@ class OdwServlet(odwService: OdwService, val sessionDAO: SessionDAO)
       |              schema:
       |                type: array
       |                items:
-      |                  $ref: '#/components/schemas/Koulutus'
+      |                  $ref: '#/components/schemas/OdwKoulutus'
       |""".stripMargin
   )
   post("/findKoulutuksetByOids") {

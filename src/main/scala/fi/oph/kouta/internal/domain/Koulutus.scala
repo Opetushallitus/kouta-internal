@@ -157,21 +157,25 @@ case class Koulutus(
 ) extends BaseKoulutus
 
 @SwaggerModel(
-  """   KoulutusKoodienAlatJaAsteet:
-    |     type: object
-    |     properties:
-    |       koulutusKoodiUri:
-    |         type: string
-    |       koulutusalaKoodiUrit:
-    |         type: array
-    |         description: Koulutus alan koodi URIt. Viittaavat esim. [koodistoon](https://virkailija.testiopintopolku.fi/koodisto-ui/html/koodisto/kansallinenkoulutusluokitus2016koulutusalataso1/1)
-    |         items:
-    |           type: string
-    |       koulutusasteKoodiUrit:
-    |         type: array
-    |         description: Koulutus asteen koodi URIt. Viittaavat esim. [koodistoon](https://virkailija.testiopintopolku.fi/koodisto-ui/html/koodisto/kansallinenkoulutusluokitus2016koulutusastetaso1/1)
-    |         items:
-    |           type: string
+  """    KoulutusKoodienAlatJaAsteet:
+    |      type: object
+    |      properties:
+    |        koulutusKoodiUri:
+    |          type: string
+    |          example: koulutus_371101#1
+    |        koulutusalaKoodiUrit:
+    |          type: array
+    |          description: Koulutus alan koodi URIt. Viittaavat esim. [koodistoon](https://virkailija.testiopintopolku.fi/koodisto-ui/html/koodisto/kansallinenkoulutusluokitus2016koulutusalataso1/1)
+    |          items:
+    |            type: string
+    |          example:
+    |            - kansallinenkoulutusluokitus2016koulutusalataso2_054#1
+    |            - kansallinenkoulutusluokitus2016koulutusalataso2_055#1
+    |        koulutusasteKoodiUrit:
+    |          type: array
+    |          description: Koulutus asteen koodi URIt. Viittaavat esim. [koodistoon](https://virkailija.testiopintopolku.fi/koodisto-ui/html/koodisto/kansallinenkoulutusluokitus2016koulutusastetaso1/1)
+    |          items:
+    |            type: string
     |
     |"""
 )
