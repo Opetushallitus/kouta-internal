@@ -318,7 +318,8 @@ case class ErikoislaakariKoulutusMetadataIndexed(
     kuvaus: Kielistetty,
     kuvauksenNimi: Kielistetty,
     lisatiedot: Seq[LisatietoIndexed],
-    tutkintonimike: Seq[KoodiUri]
+    koulutusala: Seq[KoodiUri] = Seq.empty,
+    tutkintonimike: Seq[KoodiUri] = Seq.empty
 ) extends KoulutusMetadataIndexed {
   override def toKoulutusMetadata: ErikoislaakariKoulutusMetadata =
     ErikoislaakariKoulutusMetadata(
@@ -326,6 +327,7 @@ case class ErikoislaakariKoulutusMetadataIndexed(
       kuvaus = kuvaus,
       kuvauksenNimi = kuvauksenNimi,
       lisatiedot = lisatiedot.map(_.toLisatieto),
+      koulutusalaKoodiUrit = koulutusala.map(_.koodiUri),
       tutkintonimikeKoodiUrit = tutkintonimike.map(_.koodiUri)
     )
 }
