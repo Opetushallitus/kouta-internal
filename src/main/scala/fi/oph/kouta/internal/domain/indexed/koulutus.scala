@@ -25,7 +25,7 @@ case class KoulutusIndexed(
     kielivalinta: Seq[Kieli],
     modified: Option[LocalDateTime],
     externalId: Option[String],
-    koulutuskoodienAlatJaAsteet: Option[KoulutusKoodienAlatJaAsteet]
+    koulutuskoodienAlatJaAsteet: Seq[KoulutusKoodienAlatJaAsteet]
 ) extends WithTila
     with Logging {
   def toKoulutus: Koulutus = {

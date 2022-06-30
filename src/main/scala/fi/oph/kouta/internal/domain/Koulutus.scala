@@ -192,9 +192,11 @@ case class KoulutusKoodienAlatJaAsteet(
     |        - $ref: '#/components/schemas/BaseKoulutus'
     |      properties:
     |        koulutuskoodienAlatJaAsteet:
-    |          type: object
-    |          allOf:
-    |            - $ref: '#/components/schemas/KoulutusKoodienAlatJaAsteet
+    |          type: array
+    |          items:
+    |            type: object
+    |            allOf:
+    |              - $ref: '#/components/schemas/KoulutusKoodienAlatJaAsteet'
     |
     |"""
 )
@@ -214,5 +216,5 @@ case class OdwKoulutus(
   kielivalinta: Seq[Kieli],
   modified: Option[LocalDateTime],
   externalId: Option[String],
-  koulutuskoodienAlatJaAsteet: Option[KoulutusKoodienAlatJaAsteet]
+  koulutuskoodienAlatJaAsteet: Seq[KoulutusKoodienAlatJaAsteet]
 ) extends BaseKoulutus
