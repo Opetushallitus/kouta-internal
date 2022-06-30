@@ -59,9 +59,10 @@ Kirjoitushetkellä projektissa on ainoastaan yksi migraatio, jossa luodaan sessi
 
 ### 3.4. Ajaminen lokaalisti
 
-Ennen lokaalia ajoa täytyy olla elasticsearch pyörimässä. Kontin saa pystyyn ajamalla
+Ennen lokaalia ajoa täytyy olla elasticsearch pyörimässä. Kontin saa pystyyn kirjautumalla ecr:n ja sitten ajamalla
 ```shell
-docker run --rm --name koutainternal-elastic --env "discovery.type=single-node" -p 127.0.0.1:9200:9200 -p 127.0.0.1:9300:9300 docker.elastic.co/elasticsearch/elasticsearch:6.8.13
+aws ecr get-login-password --region eu-west-1 --profile oph-utility | docker login --username AWS --password-stdin 190073735177.dkr.ecr.eu-west-1.amazonaws.com
+docker run --rm --name kouta-elastic --env "discovery.type=single-node" -p 127.0.0.1:9200:9200 -p 127.0.0.1:9300:9300 190073735177.dkr.ecr.eu-west-1.amazonaws.com/utility/elasticsearch-kouta:7.17.3
 ```
 
 Jonkin testiympäristön Elasticsearchia voi hyödyntää helposti seuraavanlaisen ssh-tunnelin avulla:
