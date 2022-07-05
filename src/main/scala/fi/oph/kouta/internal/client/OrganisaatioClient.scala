@@ -43,7 +43,11 @@ object OrganisaatioClient extends HttpClient with KoutaJsonFormats with Logging 
       case None =>
         Future.successful(None)
       case Some(someOids) =>
-        asyncGetAllChildOidsFlat(someOids)
+        if (someOids.contains(rootOrganisaatioOid)) {
+          Future.successful(None)
+        } else {
+          asyncGetAllChildOidsFlat(someOids)
+        }
     }
   }
   private lazy val cache = Scaffeine()
