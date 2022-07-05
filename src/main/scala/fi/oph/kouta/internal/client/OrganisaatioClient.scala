@@ -23,19 +23,23 @@ object OrganisaatioClient extends HttpClient with KoutaJsonFormats with Logging 
   def asyncGetAllChildOidsFlat(oid: OrganisaatioOid): Future[Option[Set[OrganisaatioOid]]] =
     asyncGetHierarkia(oid, children(oid, _))
   def asyncGetAllChildOidsFlat(oids: Set[OrganisaatioOid]): Future[Option[Set[OrganisaatioOid]]] = {
-    Future
-      .sequence(
-        oids
-          .map(asyncGetAllChildOidsFlat)
-      )
-      .map(results =>
-        if (results.exists(_.isDefined)) {
-          val v: Set[OrganisaatioOid] = results.flatMap(r => r.getOrElse(Set.empty))
-          Some(v)
-        } else {
-          None
-        }
-      )
+    if (oids.contains(rootOrganisaatioOid)) {
+      Future.successful(None)
+    } else {
+      Future
+        .sequence(
+          oids
+            .map(asyncGetAllChildOidsFlat)
+        )
+        .map(results =>
+          if (results.exists(_.isDefined)) {
+            val v: Set[OrganisaatioOid] = results.flatMap(r => r.getOrElse(Set.empty))
+            Some(v)
+          } else {
+            None
+          }
+        )
+    }
   }
 
   def asyncGetAllChildOidsFlat(oids: Option[Set[OrganisaatioOid]]): Future[Option[Set[OrganisaatioOid]]] = {
