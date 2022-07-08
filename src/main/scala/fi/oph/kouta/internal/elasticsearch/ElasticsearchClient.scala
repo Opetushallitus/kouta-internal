@@ -41,7 +41,7 @@ trait ElasticsearchClient { this: KoutaJsonFormats with Logging =>
     logger.debug(s"Elasticsearch query: ${request.show}")
     cachedClient
       .execute(request) recoverWith { case t: Throwable =>
-      logger.warn(s"Elastic query for cachedClient failed: ${t.getMessage}. Will retry. ", t)
+      logger.warn(s"Elastic query for cachedClient failed: ${t.getMessage}. Will retry.")
       cachedClient.execute(request)
     } flatMap {
       case failure: RequestFailure =>
