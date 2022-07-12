@@ -59,6 +59,7 @@ import fi.oph.kouta.internal.swagger.SwaggerModel
     |            - $ref: '#/components/schemas/VapaasivistystyoMuuToteutusMetadata'
     |            - $ref: '#/components/schemas/LukioToteutusMetadata'
     |            - $ref: '#/components/schemas/AikuistenPerusopetusToteutusMetadata'
+    |            - $ref: '#/components/schemas/ErikoislaakariToteutusMetadata'
     |          example:
     |            tyyppi: amm
     |            kuvaus:
