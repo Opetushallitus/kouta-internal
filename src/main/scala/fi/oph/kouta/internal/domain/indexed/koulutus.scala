@@ -24,7 +24,8 @@ case class KoulutusIndexed(
     organisaatio: Option[Organisaatio],
     kielivalinta: Seq[Kieli],
     modified: Option[LocalDateTime],
-    externalId: Option[String]
+    externalId: Option[String],
+    koulutuskoodienAlatJaAsteet: Seq[KoulutusKoodienAlatJaAsteet]
 ) extends WithTila
     with Logging {
   def toKoulutus: Koulutus = {
@@ -51,6 +52,34 @@ case class KoulutusIndexed(
         val msg: String = s"Failed to create Koulutus ($oid)"
         logger.error(msg, e)
         throw new RuntimeException(msg, e)
+    }
+  }
+
+  def toOdwKoulutus: OdwKoulutus = {
+    try {
+      OdwKoulutus(
+        oid = oid,
+        johtaaTutkintoon = johtaaTutkintoon,
+        koulutustyyppi = koulutustyyppi,
+        koulutusKoodiUrit = koulutukset.map(_.koodiUri),
+        tila = tila,
+        tarjoajat = tarjoajat.toList.flatten.map(_.oid),
+        nimi = nimi,
+        metadata = metadata.map(_.toKoulutusMetadata),
+        julkinen = julkinen,
+        sorakuvausId = sorakuvausId,
+        muokkaaja = muokkaaja.oid,
+        organisaatioOid = organisaatio.get.oid,
+        kielivalinta = kielivalinta,
+        modified = modified,
+        externalId = externalId,
+        koulutuskoodienAlatJaAsteet = koulutuskoodienAlatJaAsteet
+      )
+    } catch {
+    case e: Exception =>
+      val msg: String = s"Failed to create OdwKoulutus ($oid)"
+      logger.error(msg, e)
+      throw new RuntimeException(msg, e)
     }
   }
 }

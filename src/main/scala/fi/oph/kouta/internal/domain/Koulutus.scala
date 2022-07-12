@@ -9,7 +9,7 @@ import fi.oph.kouta.internal.swagger.SwaggerModel
 import java.util.UUID
 
 @SwaggerModel(
-  """    Koulutus:
+  """    BaseKoulutus:
     |      type: object
     |      properties:
     |        oid:
@@ -121,20 +121,101 @@ import java.util.UUID
     |           description: Ulkoinen tunniste (esim. oppilaitoksen järjestelmän yksilöivä tunniste)
     |"""
 )
+trait BaseKoulutus extends PerustiedotWithOid {
+    def johtaaTutkintoon: Boolean
+    def koulutustyyppi: Option[Koulutustyyppi]
+    def koulutusKoodiUrit: Seq[String]
+    def tarjoajat: List[OrganisaatioOid]
+    def metadata: Option[KoulutusMetadata]
+    def julkinen: Boolean
+    def sorakuvausId: Option[UUID]
+    def externalId: Option[String]
+}
+
+@SwaggerModel(
+  """    Koulutus:
+    |      type: object
+    |      allOf:
+    |        - $ref: '#/components/schemas/BaseKoulutus'
+    |"""
+)
 case class Koulutus(
-    oid: KoulutusOid,
-    johtaaTutkintoon: Boolean,
-    koulutustyyppi: Option[Koulutustyyppi],
-    koulutusKoodiUrit: Seq[String],
-    tila: Julkaisutila,
-    tarjoajat: List[OrganisaatioOid],
-    nimi: Kielistetty,
-    metadata: Option[KoulutusMetadata],
-    julkinen: Boolean,
-    sorakuvausId: Option[UUID],
-    muokkaaja: UserOid,
-    organisaatioOid: OrganisaatioOid,
-    kielivalinta: Seq[Kieli],
-    modified: Option[LocalDateTime],
-    externalId: Option[String]
-) extends PerustiedotWithOid
+  oid: KoulutusOid,
+  johtaaTutkintoon: Boolean,
+  koulutustyyppi: Option[Koulutustyyppi],
+  koulutusKoodiUrit: Seq[String],
+  tila: Julkaisutila,
+  tarjoajat: List[OrganisaatioOid],
+  nimi: Kielistetty,
+  metadata: Option[KoulutusMetadata],
+  julkinen: Boolean,
+  sorakuvausId: Option[UUID],
+  muokkaaja: UserOid,
+  organisaatioOid: OrganisaatioOid,
+  kielivalinta: Seq[Kieli],
+  modified: Option[LocalDateTime],
+  externalId: Option[String]
+) extends BaseKoulutus
+
+@SwaggerModel(
+  """    KoulutusKoodienAlatJaAsteet:
+    |      type: object
+    |      properties:
+    |        koulutusKoodiUri:
+    |          type: string
+    |          example: koulutus_371101#1
+    |        koulutusalaKoodiUrit:
+    |          type: array
+    |          description: Koulutus alan koodi URIt. Viittaavat esim. [koodistoon](https://virkailija.testiopintopolku.fi/koodisto-ui/html/koodisto/kansallinenkoulutusluokitus2016koulutusalataso1/1)
+    |          items:
+    |            type: string
+    |          example:
+    |            - kansallinenkoulutusluokitus2016koulutusalataso2_054#1
+    |            - kansallinenkoulutusluokitus2016koulutusalataso2_055#1
+    |        koulutusasteKoodiUrit:
+    |          type: array
+    |          description: Koulutus asteen koodi URIt. Viittaavat esim. [koodistoon](https://virkailija.testiopintopolku.fi/koodisto-ui/html/koodisto/kansallinenkoulutusluokitus2016koulutusastetaso1/1)
+    |          items:
+    |            type: string
+    |
+    |"""
+)
+case class KoulutusKoodienAlatJaAsteet(
+  koulutusKoodiUri: Option[String],
+  koulutusalaKoodiUrit: Seq[String],
+  koulutusasteKoodiUrit: Seq[String]
+)
+
+@SwaggerModel(
+  """    OdwKoulutus:
+    |      type: object
+    |      allOf:
+    |        - $ref: '#/components/schemas/BaseKoulutus'
+    |      properties:
+    |        koulutuskoodienAlatJaAsteet:
+    |          type: array
+    |          items:
+    |            type: object
+    |            allOf:
+    |              - $ref: '#/components/schemas/KoulutusKoodienAlatJaAsteet'
+    |
+    |"""
+)
+case class OdwKoulutus(
+  oid: KoulutusOid,
+  johtaaTutkintoon: Boolean,
+  koulutustyyppi: Option[Koulutustyyppi],
+  koulutusKoodiUrit: Seq[String],
+  tila: Julkaisutila,
+  tarjoajat: List[OrganisaatioOid],
+  nimi: Kielistetty,
+  metadata: Option[KoulutusMetadata],
+  julkinen: Boolean,
+  sorakuvausId: Option[UUID],
+  muokkaaja: UserOid,
+  organisaatioOid: OrganisaatioOid,
+  kielivalinta: Seq[Kieli],
+  modified: Option[LocalDateTime],
+  externalId: Option[String],
+  koulutuskoodienAlatJaAsteet: Seq[KoulutusKoodienAlatJaAsteet]
+) extends BaseKoulutus

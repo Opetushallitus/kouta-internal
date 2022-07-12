@@ -5,7 +5,7 @@ import com.sksamuel.elastic4s.ElasticDateMath
 import com.sksamuel.elastic4s.ElasticClient
 import com.sksamuel.elastic4s.json4s.ElasticJson4s.Implicits._
 import com.sksamuel.elastic4s.requests.searches.queries.Query
-import fi.oph.kouta.internal.domain.Koulutus
+import fi.oph.kouta.internal.domain.{Koulutus, OdwKoulutus}
 import fi.oph.kouta.internal.domain.enums.Julkaisutila
 import fi.oph.kouta.internal.domain.indexed.KoulutusIndexed
 import fi.oph.kouta.internal.domain.oid.KoulutusOid
@@ -60,6 +60,11 @@ class KoulutusClient(val index: String, val client: ElasticClient)
   def findByOids(oids: Set[KoulutusOid]): Future[Seq[Koulutus]] = {
     val koulutusQuery = should(termsQuery("oid", oids.map(_.toString)))
     searchItemBulks[KoulutusIndexed](Some(must(koulutusQuery)), 0, None).map(_.map(_.toKoulutus))
+  }
+
+  def findOdwByOids(oids: Set[KoulutusOid]): Future[Seq[OdwKoulutus]] = {
+    val koulutusQuery = should(termsQuery("oid", oids.map(_.toString)))
+    searchItemBulks[KoulutusIndexed](Some(must(koulutusQuery)), 0, None).map(_.map(_.toOdwKoulutus))
   }
 }
 
