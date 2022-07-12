@@ -1,11 +1,20 @@
 package fi.oph.kouta.internal.domain
 
+import fi.oph.kouta.domain.Alkamiskausityyppi
+
 import java.time.LocalDateTime
 import java.util.UUID
 import fi.oph.kouta.internal.domain.enums.{Hakulomaketyyppi, Julkaisutila, Kieli, LiitteenToimitustapa}
-import fi.oph.kouta.internal.domain.indexed.KoodiUri
+import fi.oph.kouta.internal.domain.indexed.{KoodiUri}
 import fi.oph.kouta.internal.domain.oid._
 import fi.oph.kouta.internal.swagger.SwaggerModel
+
+case class PaateltyAlkamiskausi(
+    alkamiskausityyppi: Alkamiskausityyppi,
+    source: String, //lähde-entiteetin oid (hakukohde, haku tai toteutus)
+    kausiUri: String,
+    vuosi: String
+)
 
 @SwaggerModel("""    YhdenPaikanSaanto:
     |      type: object
@@ -255,6 +264,12 @@ case class PainotettuArvosana(koodiUri: Option[String], painokerroin: Option[Dou
     |           description: Hakukohteen tiedot
     |           example:
     |             koodiUri: hakukohteetperusopetuksenjalkeinenyhteishaku_124#1
+    |        paateltyAlkamiskausi:
+    |           type: object
+    |           description: Hakukohteen päätelty alkamiskausi (tieto peräisin hakukohteelta, haulta tai toteutukselta)
+    |           example:
+    |             koodiUri: hakukohteetperusopetuksenjalkeinenyhteishaku_124#1
+    |
     |"""
 )
 case class Hakukohde(
@@ -263,9 +278,9 @@ case class Hakukohde(
     hakuOid: HakuOid,
     tila: Julkaisutila,
     nimi: Kielistetty,
-    alkamiskausiKoodiUri: Option[String],
-    alkamisvuosi: Option[String],
-    kaytetaanHaunAlkamiskautta: Option[Boolean],
+    alkamiskausiKoodiUri: Option[String],        //fixme (OY-3733) alkamiskauden ja -vuoden voi ehkä myöhemmin poistaa
+    alkamisvuosi: Option[String],                //fixme kun paateltyAlkamiskausi on otettu käyttöön tarvittavissa palveluissa.
+    kaytetaanHaunAlkamiskautta: Option[Boolean], //fixme tämänkin voinee poistaa
     hakulomaketyyppi: Option[Hakulomaketyyppi],
     hakulomakeAtaruId: Option[UUID],
     hakulomakeKuvaus: Kielistetty,
@@ -304,5 +319,6 @@ case class Hakukohde(
     jarjestaaUrheilijanAmmKoulutusta: Option[Boolean],
     externalId: Option[String],
     uudenOpiskelijanUrl: Option[Kielistetty],
-    hakukohde: Option[KoodiUri]
+    hakukohde: Option[KoodiUri],
+    paateltyAlkamiskausi: Option[PaateltyAlkamiskausi]
 ) extends PerustiedotWithOid
