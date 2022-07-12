@@ -10,6 +10,7 @@ import fi.oph.kouta.internal.domain.{
   Kielistetty,
   Liite,
   LiitteenToimitusosoite,
+  PaateltyAlkamiskausi,
   PainotettuArvosana,
   Sora,
   WithTila,
@@ -91,7 +92,8 @@ case class HakukohdeIndexed(
     metadata: Option[HakukohdeMetadataIndexed],
     jarjestaaUrheilijanAmmKoulutusta: Option[Boolean],
     externalId: Option[String],
-    hakukohde: Option[KoodiUri]
+    hakukohde: Option[KoodiUri],
+    paateltyAlkamiskausi: Option[PaateltyAlkamiskausi]
 ) extends WithTila
     with Logging {
   def toHakukohde(oikeusHakukohteeseenFn: OrganisaatioOid => Option[Boolean]): Hakukohde = {
@@ -151,7 +153,8 @@ case class HakukohdeIndexed(
         jarjestaaUrheilijanAmmKoulutusta = jarjestaaUrheilijanAmmKoulutusta,
         externalId = externalId,
         uudenOpiskelijanUrl = metadata.flatMap(_.uudenOpiskelijanUrl),
-        hakukohde = hakukohde
+        hakukohde = hakukohde,
+        paateltyAlkamiskausi = paateltyAlkamiskausi
       )
     } catch {
       case e: Exception => {
