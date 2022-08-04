@@ -13,6 +13,7 @@ import fi.oph.kouta.domain.{
   AmmTutkinnonOsa,
   Erikoislaakari,
   KkOpintojakso,
+  KkOpintokokonaisuus,
   Koulutustyyppi,
   Lk,
   Telma,
@@ -131,6 +132,7 @@ sealed trait DefaultKoutaJsonFormats {
         case VapaaSivistystyoMuu         => s.extract[VapaaSivistystyoKoulutusMetadata]
         case AikuistenPerusopetus        => s.extract[AikuistenPerusopetusKoulutusMetadata]
         case Erikoislaakari              => s.extract[ErikoislaakariKoulutusMetadata]
+        case KkOpintokokonaisuus         => s.extract[KkOpintokokonaisuusKoulutusMetadata]
         case kt                          => throw new UnsupportedOperationException(s"Unsupported koulutustyyppi $kt")
       }
   } { case j: KoulutusMetadata =>
@@ -161,6 +163,8 @@ sealed trait DefaultKoutaJsonFormats {
         case VapaaSivistystyoMuu         => s.extract[VapaaSivistystyoKoulutusMetadataIndexed]
         case AikuistenPerusopetus        => s.extract[AikuistenPerusopetusKoulutusMetadataIndexed]
         case Erikoislaakari              => s.extract[ErikoislaakariKoulutusMetadataIndexed]
+        case KkOpintokokonaisuus         => s.extract[KkOpintojaksoKoulutusMetadataIndexed]
+        case KkOpintokokonaisuus         => s.extract[KkOpintokokonaisuusKoulutusMetadataIndexed]
         case kt                          => throw new UnsupportedOperationException(s"Unsupported koulutustyyppi $kt")
       }
     } { case j: KoulutusMetadataIndexed =>
@@ -191,6 +195,7 @@ sealed trait DefaultKoutaJsonFormats {
         case VapaaSivistystyoMuu         => s.extract[VapaaSivistystyoMuuToteutusMetadata]
         case AikuistenPerusopetus        => s.extract[AikuistenPerusopetusToteutusMetadata]
         case Erikoislaakari              => s.extract[ErikoislaakariToteutusMetadata]
+        case KkOpintokokonaisuus         => s.extract[KkOpintokokonaisuusToteutusMetadata]
         case kt                          => throw new UnsupportedOperationException(s"Unsupported koulutustyyppi $kt")
       }
   } { case j: ToteutusMetadata =>
@@ -221,6 +226,7 @@ sealed trait DefaultKoutaJsonFormats {
         case VapaaSivistystyoMuu         => s.extract[VapaaSivistystyoMuuToteutusMetadataIndexed]
         case AikuistenPerusopetus        => s.extract[AikuistenPerusopetusToteutusMetadataIndexed]
         case Erikoislaakari              => s.extract[ErikoislaakariToteutusMetadataIndexed]
+        case KkOpintokokonaisuus         => s.extract[KkOpintokokonaisuusToteutusMetadataIndexed]
         case kt                          => throw new UnsupportedOperationException(s"Unsupported toteutustyyppi $kt")
       }
     } { case j: ToteutusMetadataIndexed =>
