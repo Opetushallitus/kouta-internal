@@ -112,7 +112,6 @@ case class ValintatapaIndexed(
   def toValintatapa: Valintatapa = Valintatapa(
     nimi = nimi,
     valintatapaKoodiUri = valintatapa.map(_.koodiUri),
-    kuvaus = kuvaus,
     sisalto = sisalto,
     kaytaMuuntotaulukkoa = kaytaMuuntotaulukkoa,
     kynnysehto = kynnysehto,
