@@ -40,24 +40,30 @@ trait ElasticsearchClient { this: KoutaJsonFormats with Logging =>
     val request = get(index, id)
     logger.debug(s"Elasticsearch query: ${request.show}")
     cachedClient
-      .execute(request)
-      .flatMap {
-        case failure: RequestFailure =>
-          logger.debug(s"Elasticsearch status: {}", failure.status)
-          Future.failed(ElasticSearchException(failure.error))
-        case response: RequestSuccess[GetResponse] =>
-          logger.debug(s"Elasticsearch status: {}", response.status)
-          logger.debug(s"Elasticsearch response: {}", response.result.sourceAsString)
-          handleSuccesfulReponse(id, response)
-      }
-      .flatMap {
-        case None =>
-          Future.failed(new NoSuchElementException(s"Didn't find id $id from index $index"))
-        case Some(t) if t.tila == Tallennettu =>
-          Future.failed(new NoSuchElementException(s"Entity with id $id from index $index was in tila luonnos"))
-        case Some(t) =>
-          Future.successful(t)
-      }
+      .execute(request) recoverWith { case t: Throwable =>
+      logger.warn(s"Elastic query for cachedClient failed: ${t.getMessage}. Will retry.")
+      cachedClient.execute(request)
+    } flatMap {
+      case failure: RequestFailure =>
+        logger.debug(s"Elasticsearch status: {}", failure.status)
+        Future.failed(ElasticSearchException(failure.error))
+      case response: RequestSuccess[GetResponse] =>
+        if (response.status != 200) {
+          logger.warn(
+            s"Successful response had status other than 200: ${response.status}. Body: ${response.body}, result: ${response.result}"
+          )
+        }
+        logger.debug(s"Elasticsearch status: {}", response.status)
+        logger.debug(s"Elasticsearch response: {}", response.result.sourceAsString)
+        handleSuccesfulReponse(id, response)
+    } flatMap {
+      case None =>
+        Future.failed(new NoSuchElementException(s"Didn't find id $id from index $index"))
+      case Some(t) if t.tila == Tallennettu =>
+        Future.failed(new NoSuchElementException(s"Entity with id $id from index $index was in tila luonnos"))
+      case Some(t) =>
+        Future.successful(t)
+    }
   }
 
   private def handleSuccesfulReponse[T <: WithTila: HitReader](id: String, response: RequestSuccess[GetResponse]) = {
