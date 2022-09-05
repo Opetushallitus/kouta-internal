@@ -14,6 +14,7 @@ import scala.concurrent.Future
 
 case class CachedElasticClient(client: ElasticClient) extends Logging {
   private lazy val cache = Scaffeine()
+    .softValues()
     .expireAfterWrite(KoutaConfigurationFactory.configuration.elasticSearchConfiguration.cacheTimeoutSeconds.seconds)
     .buildAsync[Any, Any]()
 
