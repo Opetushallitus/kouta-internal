@@ -19,7 +19,9 @@ package object domain {
       |        - amm-ope-erityisope-ja-opo,
       |        - amm-osaamisala
       |        - amm-tutkinnon-osa
+      |        - erikoislaakari
       |        - kk-opintojakso
+      |        - kk-opintokokonaisuus
       |        - lk
       |        - muu
       |        - telma
