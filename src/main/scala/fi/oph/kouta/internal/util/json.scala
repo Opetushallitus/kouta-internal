@@ -163,7 +163,6 @@ sealed trait DefaultKoutaJsonFormats {
         case VapaaSivistystyoMuu         => s.extract[VapaaSivistystyoKoulutusMetadataIndexed]
         case AikuistenPerusopetus        => s.extract[AikuistenPerusopetusKoulutusMetadataIndexed]
         case Erikoislaakari              => s.extract[ErikoislaakariKoulutusMetadataIndexed]
-        case KkOpintokokonaisuus         => s.extract[KkOpintojaksoKoulutusMetadataIndexed]
         case KkOpintokokonaisuus         => s.extract[KkOpintokokonaisuusKoulutusMetadataIndexed]
         case kt                          => throw new UnsupportedOperationException(s"Unsupported koulutustyyppi $kt")
       }
