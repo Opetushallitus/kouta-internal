@@ -150,6 +150,17 @@
 
     <dependencies>
         <dependency>
+            <groupId>com.github.japgolly.fork.boopickle</groupId>
+            <artifactId>boopickle_2.12</artifactId>
+            <version>1.3.3</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.scala-lang</groupId>
+                    <artifactId>scala-library</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
             <groupId>org.asynchttpclient</groupId>
             <artifactId>async-http-client</artifactId>
         </dependency>
