@@ -172,6 +172,8 @@ case class Haku(
     hakulomakeAtaruId: Option[UUID],
     hakulomakeKuvaus: Kielistetty,
     hakulomakeLinkki: Kielistetty,
+    hakuvuosi: Option[Int],
+    hakukausi: Option[String],
     metadata: Option[HakuMetadata],
     organisaatioOid: OrganisaatioOid,
     hakuajat: List[Ajanjakso],
