@@ -2,10 +2,9 @@ package fi.oph.kouta.internal.domain
 
 import java.time.LocalDateTime
 import java.util.UUID
-
 import fi.oph.kouta.internal.swagger.SwaggerModel
 import fi.oph.kouta.internal.domain.enums.{Hakulomaketyyppi, Julkaisutila, Kieli}
-import fi.oph.kouta.internal.domain.oid.{HakuOid, OrganisaatioOid, UserOid}
+import fi.oph.kouta.internal.domain.oid.{HakuOid, HakukohdeOid, OrganisaatioOid, UserOid}
 
 @SwaggerModel(
   """    BaseHaku:
@@ -158,6 +157,7 @@ trait BaseHaku extends PerustiedotWithOid {
 )
 case class Haku(
     oid: HakuOid,
+    hakukohdeOids: Option[List[HakukohdeOid]],
     tila: Julkaisutila,
     nimi: Kielistetty,
     hakutapaKoodiUri: Option[String],
