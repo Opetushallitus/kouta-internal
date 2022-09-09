@@ -77,6 +77,21 @@ class HakuServlet(hakuService: HakuService, val sessionDAO: SessionDAO)
       |          required: false
       |          description: Organisaatio joka on haun hakukohteen tarjoaja
       |          example: 1.2.246.562.10.00000000001,1.2.246.562.10.00000000002
+      |        - in: query
+      |          name: includeHakukohdeOids
+      |          schema:
+      |            type: boolean
+      |          required: false
+      |          default: false
+      |          description: hakukohteen oidit paluuarvoon
+      |          example: true
+      |        - in: query
+      |          name: vuosi
+      |          schema:
+      |            type: integer
+      |          required: false
+      |          description: viimeiseksi alkaneen hakuajan vuosi tai koulutuksen alkamisvuosi
+      |          example: 2022
       |      responses:
       |        '200':
       |          description: Ok
@@ -93,6 +108,8 @@ class HakuServlet(hakuService: HakuService, val sessionDAO: SessionDAO)
 
     val ataruId  = params.get("ataruId")
     val tarjoaja = params.get("tarjoaja").map(_.split(",").map(OrganisaatioOid).toSet)
+    val vuosi = params.getAs[Int]("vuosi")
+    val includeHakukohdeOids = params.getAs[Boolean]("includeHakukohdeOids")
 
     logger.debug(s"Request: /haku/search | ataruId: ${ataruId} | tarjoaja: ${tarjoaja}")
 
@@ -102,7 +119,7 @@ class HakuServlet(hakuService: HakuService, val sessionDAO: SessionDAO)
       override val is: Future[ActionResult] = tarjoaja match {
         case Some(oids) if oids.exists(!_.isValid) =>
           Future.successful(BadRequest(s"Invalid tarjoaja ${oids.find(!_.isValid()).get.toString}"))
-        case tarjoaja => hakuService.search(ataruId, tarjoaja).map(Ok(_))
+        case tarjoaja => hakuService.search(ataruId, tarjoaja, vuosi, includeHakukohdeOids.getOrElse(false)).map(Ok(_))
       }
     }
 

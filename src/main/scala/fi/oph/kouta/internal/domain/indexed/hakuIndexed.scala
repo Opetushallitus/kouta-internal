@@ -44,10 +44,21 @@ case class HakuIndexed(
     externalId: Option[String]
 ) extends WithTila
     with Logging {
-  def toHaku: Haku = {
+  def toHaku(includeHakukohdeOids: Boolean = false): Haku = {
+    def getHakukausiUri(ajanjakso: Ajanjakso): String = {
+      ajanjakso.paattyy.map(_.getMonthValue).getOrElse {
+        ajanjakso.alkaa.getMonthValue
+      }
+    } match {
+      case m if m >= 1 && m <= 7  => "kausi_k#1"
+      case m if m >= 8 && m <= 12 => "kausi_s#1"
+      case _                      => ""
+    }
+
     try {
       Haku(
         oid = oid,
+        hakukohdeOids = if(includeHakukohdeOids) Some(hakukohteet.map(_.oid)) else None,
         tila = tila,
         nimi = nimi,
         hakutapaKoodiUri = hakutapa.map(_.koodiUri),
@@ -58,6 +69,12 @@ case class HakuIndexed(
           m.koulutuksenAlkamiskausi
             .flatMap(_.koulutuksenAlkamiskausi.map(_.koodiUri))
         ),
+        hakuvuosi = hakuajat
+          .sortBy(ha => ha.alkaa)
+          .headOption.map(ha => ha.paattyy.map(_.getYear).getOrElse(ha.alkaa.getYear)),
+        hakukausi = hakuajat
+          .sortBy(ha => ha.alkaa)
+          .headOption.map(getHakukausiUri),
         alkamisvuosi = metadata.flatMap(m => m.koulutuksenAlkamiskausi.flatMap(_.koulutuksenAlkamisvuosi)),
         kohdejoukkoKoodiUri = kohdejoukko.koodiUri,
         kohdejoukonTarkenneKoodiUri = kohdejoukonTarkenne.map(_.koodiUri),
