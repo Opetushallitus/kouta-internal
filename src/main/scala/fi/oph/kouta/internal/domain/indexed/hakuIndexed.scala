@@ -54,6 +54,7 @@ case class HakuIndexed(
       case m if m >= 8 && m <= 12 => "kausi_s#1"
       case _                      => ""
     }
+    logger.error(s"DEBUG: Include hakukohde oids: ${includeHakukohdeOids}? How many oids available: ${hakukohteet.map(_.oid).size}")
 
     try {
       Haku(
