@@ -109,7 +109,10 @@ class HakuServlet(hakuService: HakuService, val sessionDAO: SessionDAO)
     val ataruId  = params.get("ataruId")
     val tarjoaja = params.get("tarjoaja").map(_.split(",").map(OrganisaatioOid).toSet)
     val vuosi = params.getAs[Int]("vuosi")
-    val includeHakukohdeOids = params.getAs[Boolean]("includeHakukohdeOids")
+    val includeHakukohdeOids = params.get("includeHakukohdeOids").exists {
+      case "true"  => true
+      case "false" => false
+    }
 
     logger.debug(s"Request: /haku/search | ataruId: ${ataruId} | tarjoaja: ${tarjoaja}")
 
@@ -119,7 +122,7 @@ class HakuServlet(hakuService: HakuService, val sessionDAO: SessionDAO)
       override val is: Future[ActionResult] = tarjoaja match {
         case Some(oids) if oids.exists(!_.isValid) =>
           Future.successful(BadRequest(s"Invalid tarjoaja ${oids.find(!_.isValid()).get.toString}"))
-        case tarjoaja => hakuService.search(ataruId, tarjoaja, vuosi, includeHakukohdeOids.getOrElse(false)).map(Ok(_))
+        case tarjoaja => hakuService.search(ataruId, tarjoaja, vuosi, includeHakukohdeOids).map(Ok(_))
       }
     }
 
