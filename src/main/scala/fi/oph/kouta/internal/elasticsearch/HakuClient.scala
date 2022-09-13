@@ -19,7 +19,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 class HakuClient(val index: String, val client: ElasticClient)
-    extends KoutaJsonFormats
+  extends KoutaJsonFormats
     with Logging
     with ElasticsearchClient {
   def getHaku(oid: HakuOid): Future[Haku] =
@@ -41,8 +41,12 @@ class HakuClient(val index: String, val client: ElasticClient)
 
   def search(ataruId: Option[String], tarjoajaOids: Option[Set[OrganisaatioOid]], vuosi: Option[Int], includeHakukohdeOids: Boolean): Future[Seq[Haku]] = {
     val ataruIdQuery = ataruId.map(termsQuery("hakulomakeAtaruId.keyword", _))
-    val alkamisvuosiQuery = vuosi.map(termsQuery("metadata.koulutuksenAlkamiskausi.koulutuksenAlkamisvuosi", _))
-    val hakuvuosiQuery = vuosi.map(termsQuery("hakuvuosi", _))
+    val vuosiQuery = vuosi.map(v =>
+      should(
+        termsQuery("metadata.koulutuksenAlkamiskausi.koulutuksenAlkamisvuosi", v),
+        termsQuery("hakuvuosi", v))
+    )
+    
     val tarjoajaQuery = tarjoajaOids.map(oids =>
       should(
         oids.map(oid =>
@@ -53,17 +57,17 @@ class HakuClient(val index: String, val client: ElasticClient)
         )
       )
     )
-    val query = ataruIdQuery ++ tarjoajaQuery ++ alkamisvuosiQuery ++ hakuvuosiQuery
+    val query = ataruIdQuery ++ tarjoajaQuery ++ vuosiQuery
     searchItems[HakuIndexed](if (query.isEmpty) None else Some(must(query)))
       .map(_.filter(byTarjoajaAndTila(tarjoajaOids, _)).map(_.toHaku(includeHakukohdeOids)))
   }
 
   def hakuOidsByJulkaisutila(
-      julkaisuTilat: Option[Seq[Julkaisutila]],
-      modifiedDateStartFrom: Option[LocalDate],
-      offset: Int,
-      limit: Option[Int]
-  ): Future[Seq[HakuOid]] = {
+                              julkaisuTilat: Option[Seq[Julkaisutila]],
+                              modifiedDateStartFrom: Option[LocalDate],
+                              offset: Int,
+                              limit: Option[Int]
+                            ): Future[Seq[HakuOid]] = {
     var allQueries: List[Query] = List()
     if (julkaisuTilat.isDefined) {
       allQueries ++= julkaisuTilat.map(tilat =>
