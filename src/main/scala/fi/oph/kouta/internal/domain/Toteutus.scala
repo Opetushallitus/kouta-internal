@@ -53,6 +53,7 @@ import fi.oph.kouta.internal.swagger.SwaggerModel
     |            - $ref: '#/components/schemas/AmmatillinenMuuToteutusMetadata'
     |            - $ref: '#/components/schemas/AmmattikorkeaToteutusMetadata'
     |            - $ref: '#/components/schemas/AmmOpeErityisopeJaOpoToteutusMetadata'
+    |            - $ref: '#/components/schemas/OpePedagOpinnotToteutusMetadata'
     |            - $ref: '#/components/schemas/TuvaToteutusMetadata'
     |            - $ref: '#/components/schemas/TelmaToteutusMetadata'
     |            - $ref: '#/components/schemas/VapaaSivistystyoOpistovuosiToteutusMetadata'
