@@ -26,8 +26,8 @@ class KoulutusClient(val index: String, val client: ElasticClient)
     getItem[KoulutusIndexed](oid.s).map(_.toKoulutus)
 
   def getKoulutusByHakuOid(oid: HakuOid): Future[Seq[Koulutus]] = {
-    val hakuOidQuery = termsQuery("haut.keyword", oid)
-    searchItems[KoulutusIndexed](Some(hakuOidQuery)).map(_.map(_.toKoulutus))
+    val query = termsQuery("haut.keyword", oid)
+    searchItems[KoulutusIndexed](Some(must(query))).map(_.map(_.toKoulutus))
   }
 
   def koulutusOidsByJulkaisutila(
