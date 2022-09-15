@@ -3,12 +3,11 @@ package fi.oph.kouta.internal.elasticsearch
 import com.sksamuel.elastic4s.ElasticApi.{must, rangeQuery, should, termsQuery}
 import com.sksamuel.elastic4s.ElasticDateMath
 import com.sksamuel.elastic4s.ElasticClient
-import com.sksamuel.elastic4s.ElasticDsl.{must, should, termsQuery}
 import com.sksamuel.elastic4s.json4s.ElasticJson4s.Implicits._
 import com.sksamuel.elastic4s.requests.searches.queries.Query
 import fi.oph.kouta.internal.domain.{Koulutus, OdwKoulutus}
 import fi.oph.kouta.internal.domain.enums.Julkaisutila
-import fi.oph.kouta.internal.domain.indexed.{HakuIndexed, KoulutusIndexed}
+import fi.oph.kouta.internal.domain.indexed.KoulutusIndexed
 import fi.oph.kouta.internal.domain.oid.{HakuOid, KoulutusOid}
 import fi.oph.kouta.internal.util.KoutaJsonFormats
 import fi.vm.sade.utils.slf4j.Logging
