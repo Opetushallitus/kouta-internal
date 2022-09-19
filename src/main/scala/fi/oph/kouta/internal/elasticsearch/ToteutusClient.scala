@@ -8,7 +8,7 @@ import com.sksamuel.elastic4s.requests.searches.queries.Query
 import fi.oph.kouta.internal.domain.Toteutus
 import fi.oph.kouta.internal.domain.enums.Julkaisutila
 import fi.oph.kouta.internal.domain.indexed.ToteutusIndexed
-import fi.oph.kouta.internal.domain.oid.ToteutusOid
+import fi.oph.kouta.internal.domain.oid.{HakuOid, ToteutusOid}
 import fi.oph.kouta.internal.util.KoutaJsonFormats
 import fi.vm.sade.utils.slf4j.Logging
 
@@ -27,6 +27,11 @@ class ToteutusClient(val index: String, val client: ElasticClient)
   def findByOids(oids: Set[ToteutusOid]): Future[Seq[Toteutus]] = {
     val toteutusQuery = should(termsQuery("oid", oids.map(_.toString)))
     searchItemBulks[ToteutusIndexed](Some(must(toteutusQuery)), 0, None).map(_.map(_.toToteutus))
+  }
+
+  def getToteutusByHakuOid(oid: HakuOid): Future[Seq[Toteutus]] = {
+    val query = termsQuery("haut.keyword", oid.toString)
+    searchItems[ToteutusIndexed](Some(must(query))).map(_.map(_.toToteutus))
   }
 
   def toteutusOidsByJulkaisutila(

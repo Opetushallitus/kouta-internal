@@ -1,7 +1,7 @@
 package fi.oph.kouta.internal.servlet
 
 import fi.oph.kouta.internal.database.SessionDAO
-import fi.oph.kouta.internal.domain.oid.ToteutusOid
+import fi.oph.kouta.internal.domain.oid.{HakuOid, ToteutusOid}
 import fi.oph.kouta.internal.security.Authenticated
 import fi.oph.kouta.internal.service.ToteutusService
 import fi.oph.kouta.internal.swagger.SwaggerPaths.registerPath
@@ -51,6 +51,42 @@ class ToteutusServlet(toteutusService: ToteutusService, val sessionDAO: SessionD
     toteutusService.get(toteutusOid)
   }
 
+
+  registerPath(
+    "/toteutus/search",
+    """    get:
+      |      summary: Etsi toteutuksia
+      |      description: Etsi toteutuksia haku-oidilla
+      |      operationId: Etsi toteutuksia
+      |      tags:
+      |        - Toteutus
+      |      parameters:
+      |        - in: query
+      |          name: hakuOid
+      |          schema:
+      |            type: string
+      |          required: true
+      |          description: Haku-oid
+      |          example: 1.2.246.562.29.00000000000000002776
+      |      responses:
+      |        '200':
+      |          description: Ok
+      |          content:
+      |            application/json:
+      |              schema:
+      |                type: array
+      |                items:
+      |                  $ref: '#/components/schemas/Toteutus'
+      |""".stripMargin
+  )
+  get("/search") {
+    implicit val authenticated: Authenticated = authenticate
+
+    val hakuOid: HakuOid = params.get("hakuOid").map(HakuOid)
+      .getOrElse(throw new RuntimeException("HakuOid is mandatory parameter"))
+
+    toteutusService.getByHakuOid(hakuOid)
+  }
 }
 
 object ToteutusServlet extends ToteutusServlet(ToteutusService, SessionDAO)
