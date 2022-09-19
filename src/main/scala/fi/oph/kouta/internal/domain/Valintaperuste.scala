@@ -65,9 +65,6 @@ import fi.oph.kouta.internal.swagger.SwaggerModel
     |            koulutustyyppi: amm
     |            valintatavat:
     |              - valintatapaKoodiUri: valintatapajono_tv#1
-    |                kuvaus:
-    |                  fi: Valintatavan suomenkielinen kuvaus
-    |                  sv: Valintatavan ruotsinkielinen kuvaus
     |                sisalto:
     |                  - tyyppi: teksti
     |                    data:
