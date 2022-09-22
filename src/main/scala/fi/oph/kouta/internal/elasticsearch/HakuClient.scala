@@ -1,16 +1,15 @@
 package fi.oph.kouta.internal.elasticsearch
 
-import com.sksamuel.elastic4s.ElasticDateMath
-import com.sksamuel.elastic4s.ElasticClient
+import com.sksamuel.elastic4s.{ElasticClient, ElasticDateMath}
 import com.sksamuel.elastic4s.ElasticDsl._
 import com.sksamuel.elastic4s.json4s.ElasticJson4s.Implicits._
 import com.sksamuel.elastic4s.requests.searches.queries.Query
-import fi.oph.kouta.internal.domain.{Haku, OdwHaku}
 import fi.oph.kouta.internal.domain.enums.Julkaisutila
 import fi.oph.kouta.internal.domain.enums.Julkaisutila.Tallennettu
 import fi.oph.kouta.internal.domain.indexed.HakuIndexed
 import fi.oph.kouta.internal.domain.oid.{HakuOid, OrganisaatioOid}
-import fi.oph.kouta.internal.util.KoutaJsonFormats
+import fi.oph.kouta.internal.domain.{Haku, OdwHaku}
+import fi.oph.kouta.internal.util.{ElasticCache, KoutaJsonFormats}
 import fi.vm.sade.utils.slf4j.Logging
 
 import java.time.LocalDate
@@ -19,12 +18,28 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 class HakuClient(val index: String, val client: ElasticClient)
-    extends KoutaJsonFormats
+  extends KoutaJsonFormats
     with Logging
     with ElasticsearchClient {
+
+  private val hakuCache = ElasticCache[HakuOid, HakuIndexed]()
+
+  private def findHakuIndexedByOidsForReal(hakuOids: Set[HakuOid]): Future[Map[HakuOid, HakuIndexed]] = {
+    val hakuQuery = should(termsQuery("oid", hakuOids.map(_.toString)))
+    searchItemBulks[HakuIndexed](Some(must(hakuQuery)), 0, None)
+      .map(h => h.map(hh => hh.oid -> hh).toMap)
+  }
+
+  def findHakuIndexedByOids(hakuOids: Set[HakuOid]): Future[Seq[HakuIndexed]] =
+    hakuCache.getMany(hakuOids, missing => findHakuIndexedByOidsForReal(missing.toSet))
+
   def getHaku(oid: HakuOid): Future[Haku] =
-    getItem[HakuIndexed](oid.s)
-      .map(_.toHaku)
+    findHakuIndexedByOids(Set(oid)).flatMap {
+      case r if r.nonEmpty =>
+        Future.successful(r.head.toHaku)
+      case _ =>
+        Future.failed(new RuntimeException(s"Haku not found from Elastic with oid $oid"))
+    }
 
   private def byTarjoajaAndTila(tarjoajaOids: Option[Set[OrganisaatioOid]], haku: HakuIndexed): Boolean =
     tarjoajaOids.fold(true)(oids =>
@@ -57,11 +72,11 @@ class HakuClient(val index: String, val client: ElasticClient)
   }
 
   def hakuOidsByJulkaisutila(
-      julkaisuTilat: Option[Seq[Julkaisutila]],
-      modifiedDateStartFrom: Option[LocalDate],
-      offset: Int,
-      limit: Option[Int]
-  ): Future[Seq[HakuOid]] = {
+                              julkaisuTilat: Option[Seq[Julkaisutila]],
+                              modifiedDateStartFrom: Option[LocalDate],
+                              offset: Int,
+                              limit: Option[Int]
+                            ): Future[Seq[HakuOid]] = {
     var allQueries: List[Query] = List()
     if (julkaisuTilat.isDefined) {
       allQueries ++= julkaisuTilat.map(tilat =>
@@ -88,19 +103,14 @@ class HakuClient(val index: String, val client: ElasticClient)
     ).map(_.map(_.oid))
   }
 
-  def findByOids(hakuOids: Set[HakuOid]): Future[Seq[Haku]] = {
-    val hakuQuery = should(termsQuery("oid", hakuOids.map(_.toString)))
+  def findByOids(hakuOids: Set[HakuOid]): Future[Seq[Haku]] =
     findHakuIndexedByOids(hakuOids).map(_.map(_.toHaku))
-  }
 
   def findOdwHautByOids(hakuOids: Set[HakuOid]): Future[Seq[OdwHaku]] = {
     findHakuIndexedByOids(hakuOids).map(_.map(_.toOdwHaku))
   }
 
-  def findHakuIndexedByOids(hakuOids: Set[HakuOid]): Future[Seq[HakuIndexed]] = {
-    val hakuQuery = should(termsQuery("oid", hakuOids.map(_.toString)))
-    searchItemBulks[HakuIndexed](Some(must(hakuQuery)), 0, None)
-  }
+
 }
 
 object HakuClient extends HakuClient("haku-kouta", ElasticsearchClient.client)

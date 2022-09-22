@@ -8,7 +8,7 @@ import fi.oph.kouta.internal.domain.Hakukohde
 import fi.oph.kouta.internal.domain.enums.Julkaisutila
 import fi.oph.kouta.internal.domain.indexed.{HakukohdeIndexed, KoodiUri}
 import fi.oph.kouta.internal.domain.oid.{HakuOid, HakukohdeOid, OrganisaatioOid}
-import fi.oph.kouta.internal.util.KoutaJsonFormats
+import fi.oph.kouta.internal.util.{ElasticCache, KoutaJsonFormats}
 import fi.vm.sade.utils.slf4j.Logging
 
 import java.time.LocalDate
@@ -17,22 +17,28 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 class HakukohdeClient(val index: String, val client: ElasticClient)
-    extends KoutaJsonFormats
+  extends KoutaJsonFormats
     with Logging
     with ElasticsearchClient {
+
+  private val hakukohdeCache = ElasticCache[HakukohdeOid, HakukohdeIndexed]()
+
   def getHakukohde(oid: HakukohdeOid): Future[Hakukohde] =
-    getItem[HakukohdeIndexed](oid.s).map(_.toHakukohde)
+    findByOidsIndexed(Set(oid)).flatMap {
+      case r if r.nonEmpty =>
+        Future.successful(r.head.toHakukohde)
+      case _ =>
+        Future.failed(new RuntimeException(s"Hakukohde not found from Elastic with oid $oid"))
+    }
 
-  def search(
-      hakuOid: Option[HakuOid],
-      tarjoajaOids: Option[Set[OrganisaatioOid]],
-      hakukohdeKoodi: Option[KoodiUri],
-      q: Option[String],
-      oikeusHakukohteeseenFn: OrganisaatioOid => Option[Boolean],
-      hakukohderyhmanHakukohdeOids: Option[Set[HakukohdeOid]]
-  ): Future[Seq[Hakukohde]] = {
-
-    tarjoajaOids.map(oids =>
+  def search(hakuOid: Option[HakuOid],
+             tarjoajaOids: Option[Set[OrganisaatioOid]],
+             hakukohdeKoodi: Option[KoodiUri],
+             q: Option[String],
+             oikeusHakukohteeseenFn: OrganisaatioOid => Option[Boolean],
+             hakukohderyhmanHakukohdeOids: Option[Set[HakukohdeOid]]
+            ): Future[Seq[Hakukohde]] = {
+    tarjoajaOids.foreach(oids =>
       if (oids.isEmpty)
         throw new IllegalArgumentException(s"Missing valid query parameters.")
     )
@@ -97,11 +103,11 @@ class HakukohdeClient(val index: String, val client: ElasticClient)
   }
 
   def hakukohdeOidsByJulkaisutila(
-      julkaisuTilat: Option[Seq[Julkaisutila]],
-      modifiedDateStartFrom: Option[LocalDate],
-      offset: Int,
-      limit: Option[Int]
-  ): Future[Seq[HakukohdeOid]] = {
+                                   julkaisuTilat: Option[Seq[Julkaisutila]],
+                                   modifiedDateStartFrom: Option[LocalDate],
+                                   offset: Int,
+                                   limit: Option[Int]
+                                 ): Future[Seq[HakukohdeOid]] = {
     var allQueries: List[Query] = List()
     if (julkaisuTilat.isDefined) {
       allQueries ++= julkaisuTilat.map(tilat =>
@@ -130,17 +136,23 @@ class HakukohdeClient(val index: String, val client: ElasticClient)
   }
 
   def findByOids(
-      hakukohteetOids: Set[HakukohdeOid],
-      oikeusHakukohteeseenFn: OrganisaatioOid => Option[Boolean]
-  ): Future[Seq[Hakukohde]] = {
-    val hakukohteetQuery = should(termsQuery("oid", hakukohteetOids.map(_.toString)))
-    searchItems[HakukohdeIndexed](Some(must(hakukohteetQuery))).map(_.map(_.toHakukohde(oikeusHakukohteeseenFn)))
-  }
+                  hakukohteetOids: Set[HakukohdeOid],
+                  oikeusHakukohteeseenFn: OrganisaatioOid => Option[Boolean]
+                ): Future[Seq[Hakukohde]] =
+    findByOidsIndexed(hakukohteetOids).map(_.map(_.toHakukohde(oikeusHakukohteeseenFn)))
 
-  def findByOids(hakukohteetOids: Set[HakukohdeOid]): Future[Seq[Hakukohde]] = {
+
+  private def findByOidsForReal(hakukohteetOids: Set[HakukohdeOid]): Future[Map[HakukohdeOid, HakukohdeIndexed]] = {
     val hakukohteetQuery = should(termsQuery("oid", hakukohteetOids.map(_.toString)))
-    searchItemBulks[HakukohdeIndexed](Some(must(hakukohteetQuery)), 0, None).map(_.map(_.toHakukohde))
+    searchItemBulks[HakukohdeIndexed](Some(must(hakukohteetQuery)), 0, None)
+      .map(h => h.map(hh => hh.oid -> hh).toMap)
   }
+  private def findByOidsIndexed(hakukohteetOids: Set[HakukohdeOid]): Future[Seq[HakukohdeIndexed]] =
+    hakukohdeCache.getMany(hakukohteetOids, missing => findByOidsForReal(missing.toSet))
+
+
+  def findByOids(hakukohteetOids: Set[HakukohdeOid]): Future[Seq[Hakukohde]] =
+    findByOidsIndexed(hakukohteetOids).map(h => h.map(_.toHakukohde))
 }
 
 object HakukohdeClient extends HakukohdeClient("hakukohde-kouta", ElasticsearchClient.client)
