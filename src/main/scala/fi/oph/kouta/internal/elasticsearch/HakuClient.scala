@@ -39,7 +39,7 @@ class HakuClient(val index: String, val client: ElasticClient)
       case r if r.nonEmpty =>
         Future.successful(r.head.toHaku)
       case _ =>
-        Future.failed(new NoSuchElementException(s"Haku not found from Elastic with oid $oid"))
+        Future.failed(new NoSuchElementException(s"Haku not found from Elastic! Didn't find id $oid"))
     }
 
   private def byTarjoajaAndTila(tarjoajaOids: Option[Set[OrganisaatioOid]], haku: HakuIndexed): Boolean =
