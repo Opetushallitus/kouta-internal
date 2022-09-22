@@ -13,6 +13,7 @@ import fi.vm.sade.utils.slf4j.Logging
 
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
+import java.util.NoSuchElementException
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
@@ -28,7 +29,7 @@ class HakukohdeClient(val index: String, val client: ElasticClient)
       case r if r.nonEmpty =>
         Future.successful(r.head.toHakukohde)
       case _ =>
-        Future.failed(new RuntimeException(s"Hakukohde not found from Elastic with oid $oid"))
+        Future.failed(new NoSuchElementException(s"Hakukohde not found from Elastic with oid $oid"))
     }
 
   def search(hakuOid: Option[HakuOid],

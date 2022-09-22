@@ -14,6 +14,7 @@ import fi.vm.sade.utils.slf4j.Logging
 
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
+import java.util.NoSuchElementException
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
@@ -38,7 +39,7 @@ class HakuClient(val index: String, val client: ElasticClient)
       case r if r.nonEmpty =>
         Future.successful(r.head.toHaku)
       case _ =>
-        Future.failed(new RuntimeException(s"Haku not found from Elastic with oid $oid"))
+        Future.failed(new NoSuchElementException(s"Haku not found from Elastic with oid $oid"))
     }
 
   private def byTarjoajaAndTila(tarjoajaOids: Option[Set[OrganisaatioOid]], haku: HakuIndexed): Boolean =
