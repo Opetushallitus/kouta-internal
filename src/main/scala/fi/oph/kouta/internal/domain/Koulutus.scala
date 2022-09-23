@@ -21,7 +21,7 @@ import java.util.UUID
     |          description: Onko koulutus tutkintoon johtavaa
     |        koulutustyyppi:
     |          type: string
-    |          description: "Koulutuksen tyyppi. Sallitut arvot: 'amm' (ammatillinen), 'yo' (yliopisto), 'lk' (lukio), 'amk' (ammattikorkea), 'amm-ope-erityisope-ja-opo' (Ammatillinen opettaja-, erityisopettaja ja opinto-ohjaajakoulutus), 'amm-tutkinnon-osa', 'amm-osaamisala', 'amm-muu', 'tuva' (tutkintokoulutukseen valmentava koulutus), 'telma' (työhön ja itsenäiseen elämään valmentava koulutus), 'vapaa-sivistystyö-opistovuosi', 'vapaa-sivistystyo-muu', 'aikuisten-perusopetus', 'muu'"
+    |          description: "Koulutuksen tyyppi. Sallitut arvot: 'amm' (ammatillinen), 'yo' (yliopisto), 'lk' (lukio), 'amk' (ammattikorkea), 'amm-ope-erityisope-ja-opo' (Ammatillinen opettaja-, erityisopettaja ja opinto-ohjaajakoulutus), 'ope-pedag-opinnot' (Opettajien pedagogiset opinnot), 'amm-tutkinnon-osa', 'amm-osaamisala', 'amm-muu', 'tuva' (tutkintokoulutukseen valmentava koulutus), 'telma' (työhön ja itsenäiseen elämään valmentava koulutus), 'vapaa-sivistystyö-opistovuosi', 'vapaa-sivistystyo-muu', 'aikuisten-perusopetus', 'muu'"
     |          $ref: '#/components/schemas/Koulutustyyppi'
     |          example: amm
     |        koulutusKoodiUri:
@@ -79,6 +79,7 @@ import java.util.UUID
     |            - $ref: '#/components/schemas/AmmatillinenOsaamisalaKoulutusMetadata'
     |            - $ref: '#/components/schemas/AmmattikorkeaKoulutusMetadata'
     |            - $ref: '#/components/schemas/AmmOpeErityisopeJaOpoKoulutusMetadata'
+    |            - $ref: '#/components/schemas/OpePedagOpinnotKoulutusMetadata'
     |            - $ref: '#/components/schemas/LukioKoulutusMetadata'
     |            - $ref: '#/components/schemas/TuvaKoulutusMetadata'
     |            - $ref: '#/components/schemas/TelmaKoulutusMetadata'
@@ -125,14 +126,14 @@ import java.util.UUID
     |"""
 )
 trait BaseKoulutus extends PerustiedotWithOid {
-    def johtaaTutkintoon: Boolean
-    def koulutustyyppi: Option[Koulutustyyppi]
-    def koulutusKoodiUrit: Seq[String]
-    def tarjoajat: List[OrganisaatioOid]
-    def metadata: Option[KoulutusMetadata]
-    def julkinen: Boolean
-    def sorakuvausId: Option[UUID]
-    def externalId: Option[String]
+  def johtaaTutkintoon: Boolean
+  def koulutustyyppi: Option[Koulutustyyppi]
+  def koulutusKoodiUrit: Seq[String]
+  def tarjoajat: List[OrganisaatioOid]
+  def metadata: Option[KoulutusMetadata]
+  def julkinen: Boolean
+  def sorakuvausId: Option[UUID]
+  def externalId: Option[String]
 }
 
 @SwaggerModel(
@@ -143,21 +144,21 @@ trait BaseKoulutus extends PerustiedotWithOid {
     |"""
 )
 case class Koulutus(
-  oid: KoulutusOid,
-  johtaaTutkintoon: Boolean,
-  koulutustyyppi: Option[Koulutustyyppi],
-  koulutusKoodiUrit: Seq[String],
-  tila: Julkaisutila,
-  tarjoajat: List[OrganisaatioOid],
-  nimi: Kielistetty,
-  metadata: Option[KoulutusMetadata],
-  julkinen: Boolean,
-  sorakuvausId: Option[UUID],
-  muokkaaja: UserOid,
-  organisaatioOid: OrganisaatioOid,
-  kielivalinta: Seq[Kieli],
-  modified: Option[LocalDateTime],
-  externalId: Option[String]
+    oid: KoulutusOid,
+    johtaaTutkintoon: Boolean,
+    koulutustyyppi: Option[Koulutustyyppi],
+    koulutusKoodiUrit: Seq[String],
+    tila: Julkaisutila,
+    tarjoajat: List[OrganisaatioOid],
+    nimi: Kielistetty,
+    metadata: Option[KoulutusMetadata],
+    julkinen: Boolean,
+    sorakuvausId: Option[UUID],
+    muokkaaja: UserOid,
+    organisaatioOid: OrganisaatioOid,
+    kielivalinta: Seq[Kieli],
+    modified: Option[LocalDateTime],
+    externalId: Option[String]
 ) extends BaseKoulutus
 
 @SwaggerModel(
@@ -184,9 +185,9 @@ case class Koulutus(
     |"""
 )
 case class KoulutusKoodienAlatJaAsteet(
-  koulutusKoodiUri: Option[String],
-  koulutusalaKoodiUrit: Seq[String],
-  koulutusasteKoodiUrit: Seq[String]
+    koulutusKoodiUri: Option[String],
+    koulutusalaKoodiUrit: Seq[String],
+    koulutusasteKoodiUrit: Seq[String]
 )
 
 @SwaggerModel(
@@ -205,20 +206,20 @@ case class KoulutusKoodienAlatJaAsteet(
     |"""
 )
 case class OdwKoulutus(
-  oid: KoulutusOid,
-  johtaaTutkintoon: Boolean,
-  koulutustyyppi: Option[Koulutustyyppi],
-  koulutusKoodiUrit: Seq[String],
-  tila: Julkaisutila,
-  tarjoajat: List[OrganisaatioOid],
-  nimi: Kielistetty,
-  metadata: Option[KoulutusMetadata],
-  julkinen: Boolean,
-  sorakuvausId: Option[UUID],
-  muokkaaja: UserOid,
-  organisaatioOid: OrganisaatioOid,
-  kielivalinta: Seq[Kieli],
-  modified: Option[LocalDateTime],
-  externalId: Option[String],
-  koulutuskoodienAlatJaAsteet: Seq[KoulutusKoodienAlatJaAsteet]
+    oid: KoulutusOid,
+    johtaaTutkintoon: Boolean,
+    koulutustyyppi: Option[Koulutustyyppi],
+    koulutusKoodiUrit: Seq[String],
+    tila: Julkaisutila,
+    tarjoajat: List[OrganisaatioOid],
+    nimi: Kielistetty,
+    metadata: Option[KoulutusMetadata],
+    julkinen: Boolean,
+    sorakuvausId: Option[UUID],
+    muokkaaja: UserOid,
+    organisaatioOid: OrganisaatioOid,
+    kielivalinta: Seq[Kieli],
+    modified: Option[LocalDateTime],
+    externalId: Option[String],
+    koulutuskoodienAlatJaAsteet: Seq[KoulutusKoodienAlatJaAsteet]
 ) extends BaseKoulutus

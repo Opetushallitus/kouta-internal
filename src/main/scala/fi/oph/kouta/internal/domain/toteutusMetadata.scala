@@ -6,6 +6,7 @@ import fi.oph.kouta.domain.{
   Hakutermi,
   KkOpintojakso,
   Koulutustyyppi,
+  OpePedagOpinnot,
   Telma,
   Tuva,
   VapaaSivistystyoMuu,
@@ -274,7 +275,30 @@ case class AmmOpeErityisopeJaOpoToteutusMetadata(
     opetus: Option[Opetus],
     asiasanat: List[Keyword],
     ammattinimikkeet: List[Keyword],
-    yhteyshenkilot: Seq[Yhteyshenkilo]
+    yhteyshenkilot: Seq[Yhteyshenkilo],
+    aloituspaikat: Option[Int]
+) extends ToteutusMetadata
+
+@SwaggerModel("""    OpePedagOpinnotToteutusMetadata:
+    |      allOf:
+    |        - $ref: '#/components/schemas/ToteutusMetadata'
+    |        - type: object
+    |          properties:
+    |            tyyppi:
+    |              type: string
+    |              description: Koulutuksen metatiedon tyyppi
+    |              example: amm-ope-erityisope-ja-opo
+    |              enum:
+    |                - amm-ope-erityisope-ja-opo
+    |""")
+case class OpePedagOpinnotToteutusMetadata(
+    tyyppi: Koulutustyyppi = OpePedagOpinnot,
+    kuvaus: Kielistetty,
+    opetus: Option[Opetus],
+    asiasanat: List[Keyword],
+    ammattinimikkeet: List[Keyword],
+    yhteyshenkilot: Seq[Yhteyshenkilo],
+    aloituspaikat: Option[Int]
 ) extends ToteutusMetadata
 
 @SwaggerModel("""    KkOpintojaksoToteutusMetadata:

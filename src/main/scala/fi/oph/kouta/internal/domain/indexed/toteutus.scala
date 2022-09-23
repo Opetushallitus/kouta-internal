@@ -5,10 +5,11 @@ import fi.oph.kouta.domain.{
   AmmOpeErityisopeJaOpo,
   Hakutermi,
   KkOpintojakso,
-  Koulutustyyppi,
   KkOpintokokonaisuus,
+  Koulutustyyppi,
   Lk,
-  Maksullisuustyyppi
+  Maksullisuustyyppi,
+  OpePedagOpinnot
 }
 import fi.oph.kouta.internal.domain._
 import fi.oph.kouta.internal.domain.enums.{Hakulomaketyyppi, Julkaisutila, Kieli}
@@ -348,7 +349,8 @@ case class AmmOpeErityisopeJaOpoToteutusMetadataIndexed(
     opetus: Option[OpetusIndexed],
     asiasanat: List[Keyword],
     ammattinimikkeet: List[Keyword],
-    yhteyshenkilot: Seq[Yhteyshenkilo]
+    yhteyshenkilot: Seq[Yhteyshenkilo],
+    aloituspaikat: Option[Int]
 ) extends ToteutusMetadataIndexed {
   override def toToteutusMetadata: AmmOpeErityisopeJaOpoToteutusMetadata = {
     AmmOpeErityisopeJaOpoToteutusMetadata(
@@ -357,7 +359,30 @@ case class AmmOpeErityisopeJaOpoToteutusMetadataIndexed(
       opetus = opetus.map(_.toOpetus),
       asiasanat = asiasanat,
       ammattinimikkeet = ammattinimikkeet,
-      yhteyshenkilot = yhteyshenkilot
+      yhteyshenkilot = yhteyshenkilot,
+      aloituspaikat = aloituspaikat
+    )
+  }
+}
+
+case class OpePedagOpinnotToteutusMetadataIndexed(
+    tyyppi: Koulutustyyppi = OpePedagOpinnot,
+    kuvaus: Kielistetty,
+    opetus: Option[OpetusIndexed],
+    asiasanat: List[Keyword],
+    ammattinimikkeet: List[Keyword],
+    yhteyshenkilot: Seq[Yhteyshenkilo],
+    aloituspaikat: Option[Int]
+) extends ToteutusMetadataIndexed {
+  override def toToteutusMetadata: OpePedagOpinnotToteutusMetadata = {
+    OpePedagOpinnotToteutusMetadata(
+      tyyppi = tyyppi,
+      kuvaus = kuvaus,
+      opetus = opetus.map(_.toOpetus),
+      asiasanat = asiasanat,
+      ammattinimikkeet = ammattinimikkeet,
+      yhteyshenkilot = yhteyshenkilot,
+      aloituspaikat = aloituspaikat
     )
   }
 }

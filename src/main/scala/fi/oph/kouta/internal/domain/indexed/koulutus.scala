@@ -1,6 +1,6 @@
 package fi.oph.kouta.internal.domain.indexed
 
-import fi.oph.kouta.domain.{AmmOpeErityisopeJaOpo, KkOpintojakso, Koulutustyyppi, Lk}
+import fi.oph.kouta.domain.{AmmOpeErityisopeJaOpo, KkOpintojakso, Koulutustyyppi, Lk, OpePedagOpinnot}
 import fi.oph.kouta.internal.domain._
 import fi.oph.kouta.internal.domain.enums.{Julkaisutila, Kieli}
 import fi.oph.kouta.internal.domain.oid._
@@ -76,10 +76,10 @@ case class KoulutusIndexed(
         koulutuskoodienAlatJaAsteet = koulutuskoodienAlatJaAsteet
       )
     } catch {
-    case e: Exception =>
-      val msg: String = s"Failed to create OdwKoulutus ($oid)"
-      logger.error(msg, e)
-      throw new RuntimeException(msg, e)
+      case e: Exception =>
+        val msg: String = s"Failed to create OdwKoulutus ($oid)"
+        logger.error(msg, e)
+        throw new RuntimeException(msg, e)
     }
   }
 }
@@ -200,6 +200,24 @@ case class AmmOpeErityisopeJaOpoKoulutusMetadataIndexed(
     opintojenLaajuus: Option[KoodiUri]
 ) extends KorkeakoulutusKoulutusMetadataIndexed {
   override def toKoulutusMetadata: AmmOpeErityisopeJaOpoKoulutusMetadata = AmmOpeErityisopeJaOpoKoulutusMetadata(
+    tyyppi = tyyppi,
+    kuvaus = kuvaus,
+    lisatiedot = lisatiedot.map(_.toLisatieto),
+    koulutusalaKoodiUrit = koulutusala.map(_.koodiUri),
+    tutkintonimikeKoodiUrit = tutkintonimike.map(_.koodiUri),
+    opintojenLaajuusKoodiUri = opintojenLaajuus.map(_.koodiUri)
+  )
+}
+
+case class OpePedagOpinnotKoulutusMetadataIndexed(
+    tyyppi: Koulutustyyppi = OpePedagOpinnot,
+    kuvaus: Kielistetty,
+    lisatiedot: Seq[LisatietoIndexed],
+    koulutusala: Seq[KoodiUri],
+    tutkintonimike: Seq[KoodiUri],
+    opintojenLaajuus: Option[KoodiUri]
+) extends KorkeakoulutusKoulutusMetadataIndexed {
+  override def toKoulutusMetadata: OpePedagOpinnotKoulutusMetadata = OpePedagOpinnotKoulutusMetadata(
     tyyppi = tyyppi,
     kuvaus = kuvaus,
     lisatiedot = lisatiedot.map(_.toLisatieto),
