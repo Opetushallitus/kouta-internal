@@ -16,6 +16,7 @@ import fi.oph.kouta.domain.{
   KkOpintokokonaisuus,
   Koulutustyyppi,
   Lk,
+  OpePedagOpinnot,
   Telma,
   Tuva,
   VapaaSivistystyoMuu,
@@ -122,6 +123,7 @@ sealed trait DefaultKoutaJsonFormats {
         case Amk                         => s.extract[AmmattikorkeakouluKoulutusMetadata]
         case KkOpintojakso               => s.extract[KkOpintojaksoKoulutusMetadata]
         case AmmOpeErityisopeJaOpo       => s.extract[AmmOpeErityisopeJaOpoKoulutusMetadata]
+        case OpePedagOpinnot             => s.extract[OpePedagOpinnotKoulutusMetadata]
         case AmmTutkinnonOsa             => s.extract[AmmatillinenTutkinnonOsaKoulutusMetadata]
         case AmmOsaamisala               => s.extract[AmmatillinenOsaamisalaKoulutusMetadata]
         case AmmMuu                      => s.extract[AmmatillinenMuuKoulutusMetadata]
@@ -152,6 +154,7 @@ sealed trait DefaultKoutaJsonFormats {
         case Amk                         => s.extract[AmmattikorkeakouluKoulutusMetadataIndexed]
         case KkOpintojakso               => s.extract[KkOpintojaksoKoulutusMetadataIndexed]
         case AmmOpeErityisopeJaOpo       => s.extract[AmmOpeErityisopeJaOpoKoulutusMetadataIndexed]
+        case OpePedagOpinnot             => s.extract[OpePedagOpinnotKoulutusMetadataIndexed]
         case Amm                         => s.extract[AmmatillinenKoulutusMetadataIndexed]
         case AmmTutkinnonOsa             => s.extract[AmmatillinenTutkinnonOsaKoulutusMetadataIndexed]
         case AmmOsaamisala               => s.extract[AmmatillinenOsaamisalaKoulutusMetadataIndexed]
@@ -184,6 +187,7 @@ sealed trait DefaultKoutaJsonFormats {
         case Amk                         => s.extract[AmmattikorkeakouluToteutusMetadata]
         case KkOpintojakso               => s.extract[KkOpintojaksoToteutusMetadata]
         case AmmOpeErityisopeJaOpo       => s.extract[AmmOpeErityisopeJaOpoToteutusMetadata]
+        case OpePedagOpinnot             => s.extract[OpePedagOpinnotToteutusMetadata]
         case AmmTutkinnonOsa             => s.extract[AmmatillinenTutkinnonOsaToteutusMetadata]
         case AmmOsaamisala               => s.extract[AmmatillinenOsaamisalaToteutusMetadata]
         case AmmMuu                      => s.extract[AmmatillinenMuuToteutusMetadata]
@@ -214,6 +218,7 @@ sealed trait DefaultKoutaJsonFormats {
         case Amk                         => s.extract[AmmattikorkeakouluToteutusMetadataIndexed]
         case KkOpintojakso               => s.extract[KkOpintojaksoToteutusMetadataIndexed]
         case AmmOpeErityisopeJaOpo       => s.extract[AmmOpeErityisopeJaOpoToteutusMetadataIndexed]
+        case OpePedagOpinnot             => s.extract[OpePedagOpinnotToteutusMetadataIndexed]
         case Amm                         => s.extract[AmmatillinenToteutusMetadataIndexed]
         case AmmTutkinnonOsa             => s.extract[AmmatillinenTutkinnonOsaToteutusMetadataIndexed]
         case AmmOsaamisala               => s.extract[AmmatillinenOsaamisalaToteutusMetadataIndexed]

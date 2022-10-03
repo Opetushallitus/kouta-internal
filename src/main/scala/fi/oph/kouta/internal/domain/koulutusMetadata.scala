@@ -218,6 +218,27 @@ case class AmmOpeErityisopeJaOpoKoulutusMetadata(
     opintojenLaajuusKoodiUri: Option[String]
 ) extends KorkeakoulutusKoulutusMetadata
 
+@SwaggerModel("""    OpePedagOpinnotKoulutusMetadata:
+    |      allOf:
+    |        - $ref: '#/components/schemas/KorkeakouluMetadata'
+    |        - type: object
+    |          properties:
+    |            tyyppi:
+    |              type: string
+    |              description: Koulutuksen metatiedon tyyppi
+    |              example: ope-pedag-opinnot
+    |              enum:
+    |                - ope-pedag-opinnot
+    |""")
+case class OpePedagOpinnotKoulutusMetadata(
+    tyyppi: Koulutustyyppi,
+    kuvaus: Kielistetty,
+    lisatiedot: Seq[Lisatieto],
+    koulutusalaKoodiUrit: Seq[String],
+    tutkintonimikeKoodiUrit: Seq[String],
+    opintojenLaajuusKoodiUri: Option[String]
+) extends KorkeakoulutusKoulutusMetadata
+
 @SwaggerModel(
   """    KkOpintojaksoKoulutusMetadata:
     |      allOf:
