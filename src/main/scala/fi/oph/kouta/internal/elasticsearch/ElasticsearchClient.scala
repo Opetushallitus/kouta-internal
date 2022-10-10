@@ -1,39 +1,35 @@
 package fi.oph.kouta.internal.elasticsearch
 
-import com.github.blemale.scaffeine.Scaffeine
-import com.sksamuel.elastic4s.HitReader
-import com.sksamuel.elastic4s.requests.searches.queries.Query
 import com.sksamuel.elastic4s.ElasticDsl._
 import com.sksamuel.elastic4s.http.{JavaClient, NoOpHttpClientConfigCallback}
 import com.sksamuel.elastic4s.requests.get.GetResponse
 import com.sksamuel.elastic4s.requests.searches.SearchRequest
-import com.sksamuel.elastic4s.{ElasticClient, ElasticProperties, RequestFailure, RequestSuccess}
-import fi.oph.kouta.internal.{ElasticSearchConfiguration, KoutaConfigurationFactory}
+import com.sksamuel.elastic4s.requests.searches.queries.Query
+import com.sksamuel.elastic4s._
 import fi.oph.kouta.internal.domain.WithTila
 import fi.oph.kouta.internal.domain.enums.Julkaisutila.Tallennettu
 import fi.oph.kouta.internal.util.KoutaJsonFormats
+import fi.oph.kouta.internal.{ElasticSearchConfiguration, KoutaConfigurationFactory}
 import fi.vm.sade.utils.Timer.timed
 import fi.vm.sade.utils.slf4j.Logging
-import org.apache.http.HttpHost
 import org.apache.http.auth.{AuthScope, UsernamePasswordCredentials}
 import org.apache.http.client.config.RequestConfig.Builder
 import org.apache.http.impl.client.BasicCredentialsProvider
 import org.apache.http.impl.nio.client.HttpAsyncClientBuilder
-import org.elasticsearch.client.RestClientBuilder.{HttpClientConfigCallback, RequestConfigCallback}
-import org.elasticsearch.client.{RestClient, RestClientBuilder}
+import org.elasticsearch.client.RestClientBuilder.HttpClientConfigCallback
 
 import java.util.NoSuchElementException
 import java.util.concurrent.TimeUnit
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
-import scala.concurrent.duration.{Duration, DurationLong, FiniteDuration}
+import scala.concurrent.duration.{Duration, FiniteDuration}
 import scala.reflect.ClassTag
 import scala.util.{Failure, Success}
 
 trait ElasticsearchClient { this: KoutaJsonFormats with Logging =>
   val index: String
   val client: ElasticClient
-  private val cachedClient          = CachedElasticClient(client)
+  private val cachedClient          = client
   private val iterativeElasticFetch = new IterativeElasticFetch(client)
 
   def getItem[T <: WithTila: HitReader](id: String): Future[T] = timed(s"GetItem from ElasticSearch (Id: ${id}", 100) {
@@ -115,21 +111,12 @@ trait ElasticsearchClient { this: KoutaJsonFormats with Logging =>
     }
   }
 
-  private lazy val cache = Scaffeine()
-    .expireAfterWrite(KoutaConfigurationFactory.configuration.elasticSearchConfiguration.cacheTimeoutSeconds.seconds)
-    .buildAsync[SearchRequest, Any]()
-
-  private def executeScrollQuery[T: HitReader: ClassTag](searchRequest: SearchRequest): Future[IndexedSeq[T]] = {
+  private def executeScrollQuery[T: HitReader: ClassTag](req: SearchRequest): Future[IndexedSeq[T]] = {
     implicit val duration: FiniteDuration = Duration(1, TimeUnit.MINUTES)
-    logger.info(s"Elasticsearch request: ${searchRequest.show}")
-    cache
-      .getFuture(
-        searchRequest,
-        req =>
-          iterativeElasticFetch
-            .fetch(req)
-            .map(hit => hit.flatMap(_.safeTo[T].toOption))
-      )
+    logger.info(s"Elasticsearch request: ${req.show}")
+    iterativeElasticFetch
+      .fetch(req)
+      .map(hit => hit.flatMap(_.safeTo[T].toOption))
       .mapTo[IndexedSeq[T]]
   }
 }

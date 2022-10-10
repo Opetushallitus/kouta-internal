@@ -42,10 +42,10 @@ class HakuSpec extends HakuFixture with AccessControlSpec {
     }
   }
 
-  it should "return status code 418 if entity cannot be parsed" in {
+  it should "return status code 404 if entity cannot be parsed" in {
     get(hakuOid1, crudSessions(ChildOid))
     updateExistingHakuToCertainTila(hakuOid1.s, "outotila")
-    get(hakuOid1, crudSessions(ChildOid), 418)
+    get(hakuOid1, crudSessions(ChildOid), 404)
     updateExistingHakuToCertainTila(hakuOid1.s, "julkaistu")
   }
 
