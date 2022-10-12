@@ -13,7 +13,7 @@ import fi.oph.kouta.domain.{
 }
 import fi.oph.kouta.internal.domain._
 import fi.oph.kouta.internal.domain.enums.{Hakulomaketyyppi, Julkaisutila, Kieli}
-import fi.oph.kouta.internal.domain.oid.{KoulutusOid, ToteutusOid}
+import fi.oph.kouta.internal.domain.oid.{HakuOid, KoulutusOid, ToteutusOid}
 import fi.vm.sade.utils.slf4j.Logging
 
 import java.time.LocalDateTime
@@ -29,7 +29,8 @@ case class ToteutusIndexed(
     organisaatio: Option[Organisaatio],
     kielivalinta: Seq[Kieli],
     modified: Option[LocalDateTime],
-    externalId: Option[String]
+    externalId: Option[String],
+    haut: Seq[HakuOid]
 ) extends WithTila
     with Logging {
   def toToteutus: Toteutus = {

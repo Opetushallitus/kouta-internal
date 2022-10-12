@@ -6,7 +6,7 @@ import com.sksamuel.elastic4s.json4s.ElasticJson4s.Implicits._
 import com.sksamuel.elastic4s.requests.searches.queries.Query
 import fi.oph.kouta.internal.domain.enums.Julkaisutila
 import fi.oph.kouta.internal.domain.indexed.KoulutusIndexed
-import fi.oph.kouta.internal.domain.oid.KoulutusOid
+import fi.oph.kouta.internal.domain.oid.{HakuOid, KoulutusOid}
 import fi.oph.kouta.internal.domain.{Koulutus, OdwKoulutus}
 import fi.oph.kouta.internal.util.{ElasticCache, KoutaJsonFormats}
 import fi.vm.sade.utils.slf4j.Logging
@@ -31,6 +31,11 @@ class KoulutusClient(val index: String, val client: ElasticClient)
       case _ =>
         Future.failed(new NoSuchElementException(s"Koulutus not found from Elastic! Didn't find id $oid"))
     }
+
+  def getKoulutusByHakuOid(oid: HakuOid): Future[Seq[Koulutus]] = {
+    val query = termsQuery("haut.keyword", oid.toString)
+    searchItems[KoulutusIndexed](Some(must(query))).map(_.map(_.toKoulutus))
+  }
 
   def koulutusOidsByJulkaisutila(julkaisuTilat: Option[Seq[Julkaisutila]],
                                  modifiedDateStartFrom: Option[LocalDate],
