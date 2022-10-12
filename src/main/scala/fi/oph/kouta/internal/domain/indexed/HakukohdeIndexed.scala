@@ -10,6 +10,7 @@ import fi.oph.kouta.internal.domain.{
   Kielistetty,
   Liite,
   LiitteenToimitusosoite,
+  OdwKkTasot,
   PaateltyAlkamiskausi,
   PainotettuArvosana,
   Sora,
@@ -38,6 +39,22 @@ case class PainotettuArvosanaIndexed(
     PainotettuArvosana(
       koodiUri = koodit.flatMap(_.oppiaine).flatMap(_.koodiUri),
       painokerroin = painokerroin
+    )
+  }
+}
+
+case class OdwKkTasotIndexed(
+    alempiKkAste: Boolean,
+    ylempiKkAste: Boolean,
+    kkTutkinnonTaso: Int,
+    kkTutkinnonTasoSykli: Int
+) {
+  def toOdwKkTasot: OdwKkTasot = {
+    OdwKkTasot(
+      alempiKkAste = alempiKkAste,
+      ylempiKkAste = ylempiKkAste,
+      kkTutkinnonTaso = kkTutkinnonTaso,
+      kkTutkinnonTasoSykli = kkTutkinnonTasoSykli
     )
   }
 }
@@ -93,7 +110,8 @@ case class HakukohdeIndexed(
     jarjestaaUrheilijanAmmKoulutusta: Option[Boolean],
     externalId: Option[String],
     hakukohde: Option[KoodiUri],
-    paateltyAlkamiskausi: Option[PaateltyAlkamiskausi]
+    paateltyAlkamiskausi: Option[PaateltyAlkamiskausi],
+    odwKkTasot: Option[OdwKkTasotIndexed]
 ) extends WithTila
     with Logging {
   def toHakukohde(oikeusHakukohteeseenFn: OrganisaatioOid => Option[Boolean]): Hakukohde = {
@@ -154,7 +172,8 @@ case class HakukohdeIndexed(
         externalId = externalId,
         uudenOpiskelijanUrl = metadata.flatMap(_.uudenOpiskelijanUrl),
         hakukohde = hakukohde,
-        paateltyAlkamiskausi = paateltyAlkamiskausi
+        paateltyAlkamiskausi = paateltyAlkamiskausi,
+        odwKkTasot = odwKkTasot.map(_.toOdwKkTasot)
       )
     } catch {
       case e: Exception => {
