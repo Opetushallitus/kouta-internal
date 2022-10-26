@@ -7,12 +7,23 @@ object EmbeddedJettyLauncher extends Logging with KoutaConfigurationConstants {
 
   val DefaultPort = "8098"
 
-  val TestTemplateFilePath = "src/test/resources/dev-vars.yml"
+  lazy val TestTemplateFilePath: String = {
+    val isDevMode = Option(System.getProperty("kouta-internal.embedded")).exists("true".equalsIgnoreCase)
+    if(isDevMode) {
+      logger.info(s"Using local dev TestTemplateFilePath ${"src/test/resources/dev-vars.yml"}")
+      "src/test/resources/dev-vars.yml"
+    } else {
+      logger.info(s"Using TestTemplateFilePath ${"src/test/resources/test-vars.yml"}")
+      "src/test/resources/test-vars.yml"
+    }
+  }
 
   def main(args: Array[String]) {
-    System.getProperty("kouta-internal.embedded", "true") match {
+    System.getProperty("kouta-internal.embedded") match {
       case x if "false".equalsIgnoreCase(x) => TestSetups.setupWithoutEmbeddedPostgres()
-      case _                                => TestSetups.setupWithEmbeddedPostgres()
+      case _                                =>
+        System.setProperty("kouta-internal.embedded", "true")
+        TestSetups.setupWithEmbeddedPostgres()
     }
 
     val port = System.getProperty("kouta-internal.port", DefaultPort).toInt
@@ -87,7 +98,7 @@ object TestSetups extends Logging with KoutaConfigurationConstants {
 
 object Templates {
 
-  val DefaultTemplateFilePath = "src/test/resources/dev-vars.yml"
+  val DefaultTemplateFilePath: String = EmbeddedJettyLauncher.TestTemplateFilePath
   val TestTemplateFilePath    = "src/test/resources/embedded-jetty-vars.yml"
 
   import java.io.{File, PrintWriter}
