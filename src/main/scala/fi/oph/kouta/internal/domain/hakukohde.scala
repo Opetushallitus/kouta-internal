@@ -16,6 +16,13 @@ case class PaateltyAlkamiskausi(
     vuosi: String
 )
 
+case class OdwKkTasot(
+    alempiKkAste: Boolean,
+    ylempiKkAste: Boolean,
+    kkTutkinnonTaso: Int,
+    kkTutkinnonTasoSykli: Int
+)
+
 @SwaggerModel("""    YhdenPaikanSaanto:
     |      type: object
     |      properties:
@@ -320,5 +327,6 @@ case class Hakukohde(
     externalId: Option[String],
     uudenOpiskelijanUrl: Option[Kielistetty],
     hakukohde: Option[KoodiUri],
-    paateltyAlkamiskausi: Option[PaateltyAlkamiskausi]
+    paateltyAlkamiskausi: Option[PaateltyAlkamiskausi],
+    odwKkTasot: Option[OdwKkTasot]
 ) extends PerustiedotWithOid
