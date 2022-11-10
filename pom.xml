@@ -814,10 +814,7 @@
                 <version>2.0.1</version>
                 <configuration>
                     <java>
-                        <googleJavaFormat>
-                            <version>1.8</version>
-                            <style>GOOGLE</style>
-                        </googleJavaFormat>
+                        <eclipse />
                     </java>
                     <scala>
                         <scalafmt>
