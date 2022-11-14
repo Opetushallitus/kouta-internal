@@ -3,6 +3,21 @@ package fi.oph.kouta.internal
 import fi.vm.sade.utils.slf4j.Logging
 import fi.vm.sade.utils.tcp.PortFromSystemPropertyOrFindFree
 
+object TempDbUtils {
+
+  import scala.annotation.tailrec
+
+  @tailrec
+  def tryTimes(times: Int, sleep: Int)(thunk: () => Boolean): Boolean = times match {
+    case n if n < 1 => false
+    case 1          => thunk()
+    case n =>
+      thunk() || {
+        Thread.sleep(sleep);
+        tryTimes(n - 1, sleep)(thunk)
+      }
+  }
+}
 object TempDockerDb extends Logging {
 
   import TempDbUtils.tryTimes
