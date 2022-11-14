@@ -28,7 +28,7 @@ cd postgresql/docker
 docker build --tag koutainternal-postgres .
 ```
 
-Kopioi testikonfiguraatio lokaalia kehitystä varten '/src/test/resources/test-vars.yml' -> '/src/test/resources/dev-vars.yml'. 
+Kopioi lokaalia kehitystä varten konfiguraatiotiedosto '/src/test/resources/dev-vars.template.yml' -> '/src/test/resources/dev-vars.yml'. 
 Dev-vars.yml on ignoroitu Gitissä ettei salasanat valu repoon.
 
 Asetuksia voi muuttaa muokkaamalla '/src/test/resources/dev-vars.yml'-tiedostoa, tai

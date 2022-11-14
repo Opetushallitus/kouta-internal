@@ -1,0 +1,24 @@
+---
+kouta_internal_cas_username: DUMMY
+kouta_internal_cas_password: DUMMY
+
+host_postgresql_koutainternal: localhost
+host_postgresql_koutainternal_port: 5476
+postgres_app_user: oph
+host_postgresql_koutainternal_app_password: oph
+
+cas_url: https://virkailija.hahtuvaopintopolku.fi/cas
+kouta_internal_cas_service: http://localhost:8098/kouta-internal/auth/login
+
+kouta_internal_elasticsearch_url: http://localhost:9200
+kouta_internal_elasticsearch7_url: http://localhost:9200
+kouta_internal_elasticsearch_auth_enabled: false
+kouta_internal_elasticsearch_username: DUMMY
+kouta_internal_elasticsearch_password: DUMMY
+kouta_internal_cache_timeout: 0
+
+host_virkailija: virkailija.hahtuvaopintopolku.fi
+
+hakukohderyhmapalvelu_service: https://virkailija.hahtuvaopintopolku.fi/hakukohderyhmapalvelu
+hakukohderyhmapalvelu_hakukohteet: https://virkailija.hahtuvaopintopolku.fi/hakukohderyhmapalvelu/api/hakukohderyhma/$1/hakukohteet
+hakukohderyhmapalvelu_hakukohderyhmat: https://virkailija.hahtuvaopintopolku.fi/hakukohderyhmapalvelu/api/hakukohde/$1/hakukohderyhmat
