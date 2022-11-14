@@ -74,11 +74,8 @@ class KoutaDatabase(settings: KoutaDatabaseConfiguration) extends Logging {
   }
 
   private def migrate(): Unit = {
-    val flyway = new Flyway()
-    flyway.setDataSource(settings.url, settings.username, settings.password)
-    flyway.setLocations(
-      "flyway/migration"
-    ) // Vältetään defaulttia, koska se törmää testeissä kouta-backendin migraatioihin
+    val flyway =
+      Flyway.configure.locations("flyway/migration").dataSource(settings.url, settings.username, settings.password).load
     flyway.migrate()
   }
 }
