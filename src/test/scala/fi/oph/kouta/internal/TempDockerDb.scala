@@ -8,7 +8,7 @@ object TempDockerDb extends Logging {
   import TempDbUtils.tryTimes
   import CommandLine._
 
-  val port: Int     = new PortFromSystemPropertyOrFindFree("kouta-internal.db.port").chosenPort
+  val port: Int     = KoutaConfigurationFactory.configuration.databaseConfiguration.port
   val dbName        = "koutainternal"
   val containerName = "koutainternal-database"
 
@@ -42,7 +42,7 @@ object TempDockerDb extends Logging {
   }
 
   def startDatabaseContainer(): Unit = {
-    logger.info("Starting PostgreSQL container:")
+    logger.info(s"Starting PostgreSQL container (localhost:$port):")
     runBlocking(
       s"docker run --rm -d --name $containerName --env POSTGRES_PASSWORD=postgres -p $port:5432 koutainternal-postgres"
     )

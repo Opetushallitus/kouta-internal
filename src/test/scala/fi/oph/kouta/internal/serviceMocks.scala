@@ -21,7 +21,7 @@ sealed trait ServiceMocks extends Logging {
   var mockServer: Option[ClientAndServer]  = None
   var urlProperties: Option[OphProperties] = None
 
-  def startServiceMocking(port: Int = PortChecker.findFreeLocalPort) = {
+  def startServiceMocking(port: Int = 12345) = {
     logger.info(s"Mocking oph services in port $port")
     mockServer = Some(startClientAndServer(port))
     urlProperties = Some(

@@ -58,7 +58,7 @@ case class HakuIndexed(
     try {
       Haku(
         oid = oid,
-        hakukohdeOids = if(includeHakukohdeOids) Some(hakukohteet.map(_.oid)) else None,
+        hakukohdeOids = if (includeHakukohdeOids) Some(hakukohteet.map(_.oid)) else None,
         tila = tila,
         nimi = nimi,
         hakutapaKoodiUri = hakutapa.map(_.koodiUri),
@@ -71,10 +71,12 @@ case class HakuIndexed(
         ),
         hakuvuosi = hakuajat
           .sortBy(ha => ha.alkaa)
-          .headOption.map(ha => ha.paattyy.map(_.getYear).getOrElse(ha.alkaa.getYear)),
+          .headOption
+          .map(ha => ha.paattyy.map(_.getYear).getOrElse(ha.alkaa.getYear)),
         hakukausi = hakuajat
           .sortBy(ha => ha.alkaa)
-          .headOption.map(getHakukausiUri),
+          .headOption
+          .map(getHakukausiUri),
         alkamisvuosi = metadata.flatMap(m => m.koulutuksenAlkamiskausi.flatMap(_.koulutuksenAlkamisvuosi)),
         kohdejoukkoKoodiUri = kohdejoukko.koodiUri,
         kohdejoukonTarkenneKoodiUri = kohdejoukonTarkenne.map(_.koodiUri),

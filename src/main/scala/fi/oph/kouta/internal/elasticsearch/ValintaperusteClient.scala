@@ -15,7 +15,7 @@ import scala.concurrent.Future
 import scala.concurrent.duration.DurationLong
 
 class ValintaperusteClient(val index: String, val client: ElasticClient)
-  extends KoutaJsonFormats
+    extends KoutaJsonFormats
     with Logging
     with ElasticsearchClient {
 
@@ -24,8 +24,7 @@ class ValintaperusteClient(val index: String, val client: ElasticClient)
     .buildAsync[UUID, Valintaperuste]()
 
   def getValintaperuste(id: UUID): Future[Valintaperuste] =
-    valintaperusteCache.getFuture(id, id =>
-      getItem[ValintaperusteIndexed](id.toString).map(_.toValintaperuste))
+    valintaperusteCache.getFuture(id, id => getItem[ValintaperusteIndexed](id.toString).map(_.toValintaperuste))
 }
 
 object ValintaperusteClient extends ValintaperusteClient("valintaperuste-kouta", ElasticsearchClient.client)

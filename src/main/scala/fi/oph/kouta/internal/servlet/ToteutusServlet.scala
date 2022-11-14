@@ -51,7 +51,6 @@ class ToteutusServlet(toteutusService: ToteutusService, val sessionDAO: SessionD
     toteutusService.get(toteutusOid)
   }
 
-
   registerPath(
     "/toteutus/search",
     """    get:
@@ -82,7 +81,9 @@ class ToteutusServlet(toteutusService: ToteutusService, val sessionDAO: SessionD
   get("/search") {
     implicit val authenticated: Authenticated = authenticate
 
-    val hakuOid: HakuOid = params.get("hakuOid").map(HakuOid)
+    val hakuOid: HakuOid = params
+      .get("hakuOid")
+      .map(HakuOid)
       .getOrElse(throw new RuntimeException("HakuOid is mandatory parameter"))
 
     toteutusService.getByHakuOid(hakuOid)

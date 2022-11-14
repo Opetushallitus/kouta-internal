@@ -18,7 +18,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 class HakukohdeClient(val index: String, val client: ElasticClient)
-  extends KoutaJsonFormats
+    extends KoutaJsonFormats
     with Logging
     with ElasticsearchClient {
 
@@ -32,13 +32,14 @@ class HakukohdeClient(val index: String, val client: ElasticClient)
         Future.failed(new NoSuchElementException(s"Hakukohde not found from Elastic! Didn't find id $oid"))
     }
 
-  def search(hakuOid: Option[HakuOid],
-             tarjoajaOids: Option[Set[OrganisaatioOid]],
-             hakukohdeKoodi: Option[KoodiUri],
-             q: Option[String],
-             oikeusHakukohteeseenFn: OrganisaatioOid => Option[Boolean],
-             hakukohderyhmanHakukohdeOids: Option[Set[HakukohdeOid]]
-            ): Future[Seq[Hakukohde]] = {
+  def search(
+      hakuOid: Option[HakuOid],
+      tarjoajaOids: Option[Set[OrganisaatioOid]],
+      hakukohdeKoodi: Option[KoodiUri],
+      q: Option[String],
+      oikeusHakukohteeseenFn: OrganisaatioOid => Option[Boolean],
+      hakukohderyhmanHakukohdeOids: Option[Set[HakukohdeOid]]
+  ): Future[Seq[Hakukohde]] = {
     tarjoajaOids.foreach(oids =>
       if (oids.isEmpty)
         throw new IllegalArgumentException(s"Missing valid query parameters.")
@@ -104,11 +105,11 @@ class HakukohdeClient(val index: String, val client: ElasticClient)
   }
 
   def hakukohdeOidsByJulkaisutila(
-                                   julkaisuTilat: Option[Seq[Julkaisutila]],
-                                   modifiedDateStartFrom: Option[LocalDate],
-                                   offset: Int,
-                                   limit: Option[Int]
-                                 ): Future[Seq[HakukohdeOid]] = {
+      julkaisuTilat: Option[Seq[Julkaisutila]],
+      modifiedDateStartFrom: Option[LocalDate],
+      offset: Int,
+      limit: Option[Int]
+  ): Future[Seq[HakukohdeOid]] = {
     var allQueries: List[Query] = List()
     if (julkaisuTilat.isDefined) {
       allQueries ++= julkaisuTilat.map(tilat =>
@@ -137,11 +138,10 @@ class HakukohdeClient(val index: String, val client: ElasticClient)
   }
 
   def findByOids(
-                  hakukohteetOids: Set[HakukohdeOid],
-                  oikeusHakukohteeseenFn: OrganisaatioOid => Option[Boolean]
-                ): Future[Seq[Hakukohde]] =
+      hakukohteetOids: Set[HakukohdeOid],
+      oikeusHakukohteeseenFn: OrganisaatioOid => Option[Boolean]
+  ): Future[Seq[Hakukohde]] =
     findByOidsIndexed(hakukohteetOids).map(_.map(_.toHakukohde(oikeusHakukohteeseenFn)))
-
 
   private def findByOidsForReal(hakukohteetOids: Set[HakukohdeOid]): Future[Map[HakukohdeOid, HakukohdeIndexed]] = {
     val hakukohteetQuery = should(termsQuery("oid", hakukohteetOids.map(_.toString)))
@@ -150,7 +150,6 @@ class HakukohdeClient(val index: String, val client: ElasticClient)
   }
   private def findByOidsIndexed(hakukohteetOids: Set[HakukohdeOid]): Future[Seq[HakukohdeIndexed]] =
     hakukohdeCache.getMany(hakukohteetOids, missing => findByOidsForReal(missing.toSet))
-
 
   def findByOids(hakukohteetOids: Set[HakukohdeOid]): Future[Seq[Hakukohde]] =
     findByOidsIndexed(hakukohteetOids).map(h => h.map(_.toHakukohde))

@@ -5,7 +5,7 @@ import fi.vm.sade.utils.tcp.PortFromSystemPropertyOrFindFree
 
 object TempDb extends Logging {
 
-  val port   = new PortFromSystemPropertyOrFindFree("kouta-internal.db.port").chosenPort
+  val port   = KoutaConfigurationFactory.configuration.databaseConfiguration.port
   val dbName = "koutainternal"
 
   import java.io.File

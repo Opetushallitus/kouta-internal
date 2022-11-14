@@ -13,6 +13,7 @@ import scala.util.control.NonFatal
 import com.github.takezoe.slick.blocking.BlockingH2Driver.blockingApi._
 
 class KoutaDatabase(settings: KoutaDatabaseConfiguration) extends Logging {
+
   val db = initDb()
 
   def runBlocking[R](operations: DBIOAction[R, NoStream, Effect]): R = {
