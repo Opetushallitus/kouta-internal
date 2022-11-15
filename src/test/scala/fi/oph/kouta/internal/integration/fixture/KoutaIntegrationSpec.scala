@@ -3,7 +3,7 @@ package fi.oph.kouta.internal.integration.fixture
 import java.util.UUID
 
 import fi.oph.kouta.internal.KoutaConfigurationFactory
-import fi.oph.kouta.internal.TestSetups.{setupWithEmbeddedPostgres, setupWithTemplate}
+import fi.oph.kouta.internal.TestSetups
 import fi.oph.kouta.internal.database.{KoutaDatabase, SessionDAO}
 import fi.oph.kouta.internal.domain.oid.OrganisaatioOid
 import fi.oph.kouta.internal.security.{Authority, CasSession, RoleEntity, ServiceTicket}
@@ -13,19 +13,16 @@ import org.scalactic.Equality
 import org.scalatra.test.scalatest.ScalatraFlatSpec
 import slick.jdbc.PostgresProfile.api._
 
-import scala.reflect.Manifest
-
 trait KoutaIntegrationSpec extends ScalatraFlatSpec with HttpSpec with ElasticDumpFixture {
+
+  KoutaConfigurationFactory.setupWithDefaultTemplateFile()
+  TestSetups.setupPostgres()
 
   val serviceIdentifier  = KoutaIntegrationSpec.serviceIdentifier
   val rootOrganisaatio   = KoutaIntegrationSpec.rootOrganisaatio
   val defaultAuthorities = KoutaIntegrationSpec.defaultAuthorities
 
-  Option(System.getProperty("kouta-internal.test-postgres-port")) match {
-    case Some(port) => setupWithTemplate(port.toInt)
-    case None       => setupWithEmbeddedPostgres()
-  }
-  val db         = new KoutaDatabase(KoutaConfigurationFactory.configuration.databaseConfiguration)
+  val db         = KoutaDatabase
   val sessionDAO = new SessionDAO(db)
 
   val testUser = TestUser("test-user-oid", "testuser", defaultSessionId)

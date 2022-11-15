@@ -2,7 +2,7 @@ package fi.oph.kouta.internal.client
 
 import fi.oph.kouta.internal.KoutaConfigurationFactory
 import fi.oph.kouta.internal.util.{KoutaJsonFormats, ScalaCasConfig}
-import fi.vm.sade.javautils.nio.cas.{CasClient, CasClientBuilder}
+import fi.vm.sade.javautils.nio.cas.{CasClient => SadeCasClient, CasClientBuilder}
 import fi.vm.sade.properties.OphProperties
 import fi.vm.sade.utils.slf4j.Logging
 import org.asynchttpclient.{RequestBuilder, Response}
@@ -25,7 +25,7 @@ abstract class KoutaClient extends KoutaJsonFormats with Logging with CallerId {
   protected val sessionCookieName: String
   protected val serviceName: String
 
-  lazy protected val client: CasClient = {
+  lazy protected val client: SadeCasClient = {
     val config = KoutaConfigurationFactory.configuration.clientConfiguration
     CasClientBuilder.build(
       ScalaCasConfig(

@@ -13,6 +13,7 @@ import scala.util.control.NonFatal
 import com.github.takezoe.slick.blocking.BlockingH2Driver.blockingApi._
 
 class KoutaDatabase(settings: KoutaDatabaseConfiguration) extends Logging {
+
   val db = initDb()
 
   def runBlocking[R](operations: DBIOAction[R, NoStream, Effect]): R = {
@@ -74,11 +75,8 @@ class KoutaDatabase(settings: KoutaDatabaseConfiguration) extends Logging {
   }
 
   private def migrate(): Unit = {
-    val flyway = new Flyway()
-    flyway.setDataSource(settings.url, settings.username, settings.password)
-    flyway.setLocations(
-      "flyway/migration"
-    ) // Vältetään defaulttia, koska se törmää testeissä kouta-backendin migraatioihin
+    val flyway =
+      Flyway.configure.locations("flyway/migration").dataSource(settings.url, settings.username, settings.password).load
     flyway.migrate()
   }
 }

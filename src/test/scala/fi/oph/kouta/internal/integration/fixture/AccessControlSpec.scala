@@ -1,10 +1,9 @@
 package fi.oph.kouta.internal.integration.fixture
 
 import java.util.UUID
-
 import fi.oph.kouta.internal.domain.oid.OrganisaatioOid
 import fi.oph.kouta.internal.security._
-import fi.oph.kouta.internal.{MockSecurityContext, OrganisaatioServiceMock}
+import fi.oph.kouta.internal.{KoutaConfigurationFactory, MockSecurityContext, OrganisaatioServiceMock}
 import org.scalatra.test.scalatest.ScalatraFlatSpec
 
 import scala.collection.mutable
@@ -16,11 +15,15 @@ case class TestUser(oid: String, username: String, sessionId: UUID) {
 trait AccessControlSpec extends ScalatraFlatSpec with OrganisaatioServiceMock {
   this: HttpSpec with KoutaIntegrationSpec =>
 
+  KoutaConfigurationFactory.setupWithDefaultTemplateFile()
+  urlProperties = Some(KoutaConfigurationFactory.configuration.urlProperties)
+
   protected val roleEntities: Seq[RoleEntity] = Seq.empty
 
   override def beforeAll(): Unit = {
     super.beforeAll()
-    startServiceMocking()
+    val virkailijaHostPort = urlProperties.get.getProperty("host.virkailija").split(":").last.toInt
+    startServiceMocking(virkailijaHostPort)
     addTestSessions()
 
     mockOrganisaatioResponses(EvilChildOid, ChildOid, ParentOid, GrandChildOid)

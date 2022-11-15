@@ -108,7 +108,7 @@ class HakuServlet(hakuService: HakuService, val sessionDAO: SessionDAO)
 
     val ataruId  = params.get("ataruId")
     val tarjoaja = params.get("tarjoaja").map(_.split(",").map(OrganisaatioOid).toSet)
-    val vuosi = params.getAs[Int]("vuosi")
+    val vuosi    = params.getAs[Int]("vuosi")
     val includeHakukohdeOids = params.get("includeHakukohdeOids").exists {
       case "true"  => true
       case "false" => false

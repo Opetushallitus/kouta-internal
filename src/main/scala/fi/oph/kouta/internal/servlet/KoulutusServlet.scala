@@ -81,7 +81,9 @@ class KoulutusServlet(koulutusService: KoulutusService, val sessionDAO: SessionD
   get("/search") {
     implicit val authenticated: Authenticated = authenticate
 
-    val hakuOid: HakuOid = params.get("hakuOid").map(HakuOid)
+    val hakuOid: HakuOid = params
+      .get("hakuOid")
+      .map(HakuOid)
       .getOrElse(throw new RuntimeException("HakuOid is mandatory parameter"))
 
     koulutusService.getByHakuOid(hakuOid)

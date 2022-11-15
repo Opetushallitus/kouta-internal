@@ -20,7 +20,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 class ToteutusClient(val index: String, val client: ElasticClient)
-  extends KoutaJsonFormats
+    extends KoutaJsonFormats
     with Logging
     with ElasticsearchClient {
 
@@ -51,11 +51,11 @@ class ToteutusClient(val index: String, val client: ElasticClient)
   }
 
   def toteutusOidsByJulkaisutila(
-                                  julkaisuTilat: Option[Seq[Julkaisutila]],
-                                  modifiedDateStartFrom: Option[LocalDate],
-                                  offset: Int,
-                                  limit: Option[Int]
-                                ): Future[Seq[ToteutusOid]] = {
+      julkaisuTilat: Option[Seq[Julkaisutila]],
+      modifiedDateStartFrom: Option[LocalDate],
+      offset: Int,
+      limit: Option[Int]
+  ): Future[Seq[ToteutusOid]] = {
     var allQueries: List[Query] = List()
     if (julkaisuTilat.isDefined) {
       allQueries ++= julkaisuTilat.map(tilat =>

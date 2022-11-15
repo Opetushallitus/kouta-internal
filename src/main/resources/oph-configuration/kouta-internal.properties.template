@@ -4,6 +4,7 @@ kouta-internal.cas.username={{kouta_internal_cas_username}}
 kouta-internal.cas.password={{kouta_internal_cas_password}}
 
 kouta-internal.db.url=jdbc:postgresql://{{host_postgresql_koutainternal}}:{{host_postgresql_koutainternal_port}}/koutainternal
+kouta-internal.db.port={{host_postgresql_koutainternal_port}}
 kouta-internal.db.user={{postgres_app_user}}
 kouta-internal.db.password={{host_postgresql_koutainternal_app_password}}
 kouta-internal.db.connectionPool=HikariCP

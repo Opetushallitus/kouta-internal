@@ -2,17 +2,12 @@ package fi.oph.kouta.internal
 
 import com.typesafe.config.{Config => TypesafeConfig}
 import fi.oph.kouta.internal.domain.oid.OrganisaatioOid
+import fi.oph.kouta.util.{KoutaBaseConfig, KoutaConfigFactory}
 import fi.vm.sade.properties.OphProperties
-import fi.vm.sade.utils.config.{
-  ApplicationSettings,
-  ApplicationSettingsLoader,
-  ApplicationSettingsParser,
-  ConfigTemplateProcessor
-}
-import fi.vm.sade.utils.slf4j.Logging
 
 case class KoutaDatabaseConfiguration(
     url: String,
+    port: Int,
     username: String,
     password: String,
     numThreads: Option[Int],
@@ -43,11 +38,12 @@ case class ElasticSearchConfiguration(
 case class CasClientConfiguration(username: String, password: String, casUrl: String)
 
 case class KoutaConfiguration(config: TypesafeConfig, urlProperties: OphProperties)
-    extends ApplicationSettings(config) {
+    extends KoutaBaseConfig(config, urlProperties) {
 
   val databaseConfiguration: KoutaDatabaseConfiguration =
     KoutaDatabaseConfiguration(
       url = config.getString("kouta-internal.db.url"),
+      port = config.getInt("kouta-internal.db.port"),
       username = config.getString("kouta-internal.db.user"),
       password = config.getString("kouta-internal.db.password"),
       numThreads = Option(config.getInt("kouta-internal.db.numThreads")),
@@ -90,52 +86,7 @@ trait KoutaConfigurationConstants {
   val ConfigProfileTemplate = "template"
 }
 
-object KoutaConfigurationFactory extends Logging with KoutaConfigurationConstants {
-
-  val profile: String = System.getProperty(SystemPropertyNameConfigProfile, ConfigProfileDefault)
-  logger.info(s"Using profile '$profile'")
-
-  val configuration: KoutaConfiguration = profile match {
-    case ConfigProfileDefault  => loadOphConfiguration()
-    case ConfigProfileTemplate => loadTemplatedConfiguration()
-    case _ =>
-      throw new IllegalArgumentException(
-        s"Unknown profile '$profile'! Cannot load oph-properties! Use either " +
-          s"'$ConfigProfileDefault' or '$ConfigProfileTemplate' profiles."
-      )
-  }
-
-  private def loadOphConfiguration(): KoutaConfiguration = {
-    val configFilePath = System.getProperty("user.home") + "/oph-configuration/kouta-internal.properties"
-
-    val applicationSettingsParser = new ApplicationSettingsParser[KoutaConfiguration] {
-      override def parse(config: TypesafeConfig): KoutaConfiguration =
-        KoutaConfiguration(config, new OphProperties(configFilePath))
-    }
-
-    logger.info(s"Reading properties from '$configFilePath'")
-    ApplicationSettingsLoader.loadSettings(configFilePath)(applicationSettingsParser)
-  }
-
-  private def loadTemplatedConfiguration(overrideFromSystemProperties: Boolean = false): KoutaConfiguration = {
-    val templateFilePath = Option(System.getProperty(SystemPropertyNameTemplate)).getOrElse(
-      throw new IllegalArgumentException(
-        s"Using 'template' profile but '${SystemPropertyNameTemplate}' " +
-          "system property is missing. Cannot create oph-properties!"
-      )
-    )
-
-    implicit val applicationSettingsParser = new ApplicationSettingsParser[KoutaConfiguration] {
-      override def parse(c: TypesafeConfig): KoutaConfiguration =
-        KoutaConfiguration(
-          c,
-          new OphProperties("src/test/resources/kouta-internal.properties") {
-            addDefault("host.virkailija", c.getString("host.virkailija"))
-          }
-        )
-    }
-
-    logger.info(s"Reading template variables from '${templateFilePath}'")
-    ConfigTemplateProcessor.createSettings("kouta-internal", templateFilePath)
-  }
+object KoutaConfigurationFactory extends KoutaConfigFactory[KoutaConfiguration]("kouta-internal") {
+  def createConfigCaseClass(config: TypesafeConfig, urlProperties: OphProperties) =
+    KoutaConfiguration(config, urlProperties)
 }

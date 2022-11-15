@@ -18,7 +18,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 class KoulutusClient(val index: String, val client: ElasticClient)
-  extends KoutaJsonFormats
+    extends KoutaJsonFormats
     with Logging
     with ElasticsearchClient {
 
@@ -37,11 +37,12 @@ class KoulutusClient(val index: String, val client: ElasticClient)
     searchItems[KoulutusIndexed](Some(must(query))).map(_.map(_.toKoulutus))
   }
 
-  def koulutusOidsByJulkaisutila(julkaisuTilat: Option[Seq[Julkaisutila]],
-                                 modifiedDateStartFrom: Option[LocalDate],
-                                 offset: Int,
-                                 limit: Option[Int]
-                                ): Future[Seq[KoulutusOid]] = {
+  def koulutusOidsByJulkaisutila(
+      julkaisuTilat: Option[Seq[Julkaisutila]],
+      modifiedDateStartFrom: Option[LocalDate],
+      offset: Int,
+      limit: Option[Int]
+  ): Future[Seq[KoulutusOid]] = {
     var allQueries: List[Query] = List()
     if (julkaisuTilat.isDefined) {
       allQueries ++= julkaisuTilat.map(tilat =>
@@ -75,8 +76,12 @@ class KoulutusClient(val index: String, val client: ElasticClient)
   }
 
   private def findByOidsIndexed(oids: Set[KoulutusOid]): Future[Seq[KoulutusIndexed]] =
-    koulutusCache.getMany(oids, missing => findByOidsForReal(missing.toSet)
-      .map(h => h.map(hh => hh.oid -> hh).toMap))
+    koulutusCache.getMany(
+      oids,
+      missing =>
+        findByOidsForReal(missing.toSet)
+          .map(h => h.map(hh => hh.oid -> hh).toMap)
+    )
 
   def findByOidsFor(oids: Set[KoulutusOid]): Future[Seq[Koulutus]] =
     findByOidsIndexed(oids).map(_.map(_.toKoulutus))

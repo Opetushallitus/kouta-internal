@@ -17,7 +17,7 @@ kouta_internal_elasticsearch_username: DUMMY
 kouta_internal_elasticsearch_password: DUMMY
 kouta_internal_cache_timeout: 0
 
-host_virkailija: localhost:8098
+host_virkailija: virkailija.hahtuvaopintopolku.fi
 
 hakukohderyhmapalvelu_service: https://virkailija.hahtuvaopintopolku.fi/hakukohderyhmapalvelu
 hakukohderyhmapalvelu_hakukohteet: https://virkailija.hahtuvaopintopolku.fi/hakukohderyhmapalvelu/api/hakukohderyhma/$1/hakukohteet
