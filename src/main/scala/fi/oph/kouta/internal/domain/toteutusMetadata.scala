@@ -3,8 +3,10 @@ package fi.oph.kouta.internal.domain
 import fi.oph.kouta.domain.{
   AmmOpeErityisopeJaOpo,
   Erikoislaakari,
+  Erikoistumiskoulutus,
   Hakutermi,
   KkOpintojakso,
+  KkOpintokokonaisuus,
   Koulutustyyppi,
   OpePedagOpinnot,
   Telma,
@@ -616,17 +618,17 @@ case class AikuistenPerusopetusToteutusMetadata(
 ) extends TutkintoonJohtamatonToteutusMetadata
 
 @SwaggerModel("""    ErikoislaakariToteutusMetadata:
-                |      allOf:
-                |        - $ref: '#/components/schemas/ToteutusMetadata'
-                |        - type: object
-                |          properties:
-                |            tyyppi:
-                |              type: string
-                |              description: Koulutuksen metatiedon tyyppi
-                |              example: erikoislaakari
-                |              enum:
-                |                - erikoislaakari
-                |""")
+    |      allOf:
+    |        - $ref: '#/components/schemas/ToteutusMetadata'
+    |        - type: object
+    |          properties:
+    |            tyyppi:
+    |              type: string
+    |              description: Koulutuksen metatiedon tyyppi
+    |              example: erikoislaakari
+    |              enum:
+    |                - erikoislaakari
+    |""")
 case class ErikoislaakariToteutusMetadata(
     tyyppi: Koulutustyyppi = Erikoislaakari,
     kuvaus: Kielistetty = Map(),
@@ -659,10 +661,40 @@ case class ErikoislaakariToteutusMetadata(
   |"""
 )
 case class KkOpintokokonaisuusToteutusMetadata(
-    tyyppi: Koulutustyyppi,
+    tyyppi: Koulutustyyppi = KkOpintokokonaisuus,
     kuvaus: Kielistetty,
     opintojenLaajuusyksikkoKoodiUri: Option[String],
     opintojenLaajuusNumero: Option[Double],
+    opetus: Option[Opetus],
+    asiasanat: List[Keyword],
+    ammattinimikkeet: List[Keyword],
+    yhteyshenkilot: Seq[Yhteyshenkilo],
+    lisatietoaHakeutumisesta: Kielistetty,
+    lisatietoaValintaperusteista: Kielistetty,
+    hakutermi: Option[Hakutermi],
+    hakulomaketyyppi: Option[Hakulomaketyyppi],
+    hakulomakeLinkki: Kielistetty,
+    hakuaika: Option[Ajanjakso],
+    aloituspaikat: Option[Int]
+) extends TutkintoonJohtamatonToteutusMetadata
+
+@SwaggerModel(
+  """    ErikoistumiskoulutusToteutusMetadata:
+  |      allOf:
+  |        - $ref: '#/components/schemas/TutkintoonJohtamatonToteutusMetadata'
+  |        - type: object
+  |          properties:
+  |            tyyppi:
+  |              type: string
+  |              description: Koulutuksen metatiedon tyyppi
+  |              example: erikoistumiskoulutus
+  |              enum:
+  |                - erikoistumiskoulutus
+  |"""
+)
+case class ErikoistumiskoulutusToteutusMetadata(
+    tyyppi: Koulutustyyppi = Erikoistumiskoulutus,
+    kuvaus: Kielistetty,
     opetus: Option[Opetus],
     asiasanat: List[Keyword],
     ammattinimikkeet: List[Keyword],
