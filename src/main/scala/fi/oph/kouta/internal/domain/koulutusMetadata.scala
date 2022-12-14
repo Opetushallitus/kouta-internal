@@ -380,7 +380,8 @@ case class TuvaKoulutusMetadata(
     |            opintojenLaajuusNumero:
     |              type: double
     |              description: Opintojen laajuus tai kesto numeroarvona
-    |              example: 150    |"""
+    |              example: 150
+    |"""
 )
 case class TelmaKoulutusMetadata(
     tyyppi: Koulutustyyppi,
