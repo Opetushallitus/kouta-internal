@@ -1,7 +1,9 @@
 package fi.oph.kouta.internal.domain
 
-import fi.oph.kouta.domain.{Koulutustyyppi}
+import fi.oph.kouta.domain.Koulutustyyppi
 import fi.oph.kouta.internal.swagger.SwaggerModel
+
+import java.util.UUID
 
 @SwaggerModel(
   """    ValintaperusteMetadata:

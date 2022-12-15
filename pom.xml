@@ -150,6 +150,12 @@
 
     <dependencies>
         <dependency>
+            <groupId>io.swagger.parser.v3</groupId>
+            <artifactId>swagger-parser</artifactId>
+            <scope>test</scope>
+            <version>2.0.33</version>
+        </dependency>
+        <dependency>
             <groupId>org.asynchttpclient</groupId>
             <artifactId>async-http-client</artifactId>
         </dependency>

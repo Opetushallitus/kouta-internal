@@ -82,7 +82,6 @@ class HakuServlet(hakuService: HakuService, val sessionDAO: SessionDAO)
       |          schema:
       |            type: boolean
       |          required: false
-      |          default: false
       |          description: hakukohteen oidit paluuarvoon
       |          example: true
       |        - in: query

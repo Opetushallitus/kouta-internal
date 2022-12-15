@@ -50,7 +50,7 @@ sealed trait DefaultKoutaJsonFormats {
     koulutusMetadataIndexedSerializer,
     toteutusMetadataSerializer,
     toteutusMetadataIndexedSerializer,
-    valintatapaSisaltoSerializer,
+    sisaltoSerializer,
     valintaperusteMetadataSerializer,
     valintaperusteMetadataIndexedSerializer
   )
@@ -241,7 +241,7 @@ sealed trait DefaultKoutaJsonFormats {
 
   private def valintaperusteMetadataSerializer: CustomSerializer[ValintaperusteMetadata] =
     serializer[ValintaperusteMetadata] { case s: JObject =>
-      implicit def formats: Formats = genericKoutaFormats + valintatapaSisaltoSerializer
+      implicit def formats: Formats = genericKoutaFormats + sisaltoSerializer
 
       Try(s \ "tyyppi").toOption.collect { case JString(tyyppi) =>
         Koulutustyyppi.withName(tyyppi)
@@ -250,14 +250,14 @@ sealed trait DefaultKoutaJsonFormats {
         case kt                                      => throw new UnsupportedOperationException(s"Unsupported koulutustyyppi $kt")
       }
     } { case j: ValintaperusteMetadata =>
-      implicit def formats: Formats = genericKoutaFormats + valintatapaSisaltoSerializer
+      implicit def formats: Formats = genericKoutaFormats + sisaltoSerializer
 
       Extraction.decompose(j)
     }
 
   private def valintaperusteMetadataIndexedSerializer: CustomSerializer[ValintaperusteMetadataIndexed] =
     serializer[ValintaperusteMetadataIndexed] { case s: JObject =>
-      implicit def formats: Formats = genericKoutaFormats + valintatapaSisaltoSerializer
+      implicit def formats: Formats = genericKoutaFormats + sisaltoSerializer
 
       Try(s \ "tyyppi").toOption.collect { case JString(tyyppi) =>
         Koulutustyyppi.withName(tyyppi)
@@ -266,18 +266,18 @@ sealed trait DefaultKoutaJsonFormats {
         case kt                                      => throw new UnsupportedOperationException(s"Unsupported koulutustyyppi $kt")
       }
     } { case j: ValintaperusteMetadata =>
-      implicit def formats: Formats = genericKoutaFormats + valintatapaSisaltoSerializer
+      implicit def formats: Formats = genericKoutaFormats + sisaltoSerializer
 
       Extraction.decompose(j)
     }
 
-  private def valintatapaSisaltoSerializer = new CustomSerializer[Sisalto](implicit formats =>
+  private def sisaltoSerializer = new CustomSerializer[Sisalto](implicit formats =>
     (
       { case s: JObject =>
         Try(s \ "tyyppi").collect {
           case JString(tyyppi) if tyyppi == "teksti" =>
             Try(s \ "data").collect { case teksti: JObject =>
-              ValintatapaSisaltoTeksti(teksti.extract[Kielistetty])
+              SisaltoTeksti(teksti.extract[Kielistetty])
             }.get
           case JString(tyyppi) if tyyppi == "taulukko" =>
             Try(s \ "data").collect { case taulukko: JObject =>
@@ -286,7 +286,7 @@ sealed trait DefaultKoutaJsonFormats {
         }.get
       },
       {
-        case j: ValintatapaSisaltoTeksti =>
+        case j: SisaltoTeksti =>
           implicit def formats: Formats = genericKoutaFormats
 
           JObject(List("tyyppi" -> JString("teksti"), "data" -> Extraction.decompose(j.teksti)))
