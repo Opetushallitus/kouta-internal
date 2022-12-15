@@ -142,7 +142,7 @@ case class AmmatillinenOsaamisalaKoulutusMetadata(
     |        opintojenLaajuusNumero:
     |          type: double
     |          description: Opintojen laajuus tai kesto numeroarvona
-               example: 10
+    |          example: 10
     |        koulutusalaKoodiUrit:
     |          type: array
     |          description: Lista koulutusaloja. Viittaa [koodistoon](https://virkailija.testiopintopolku.fi/koodisto-ui/html/koodisto/kansallinenkoulutusluokitus2016koulutusalataso2/1)
@@ -611,8 +611,7 @@ case class KkOpintokokonaisuusKoulutusMetadata(
     |            opintojenLaajuusyksikkoKoodiUri:
     |              type: string
     |              description: Opintojen laajuusyksikko. Viittaa [koodistoon](https://virkailija.testiopintopolku.fi/koodisto-ui/html/koodisto/opintojenlaajuusyksikko/1)
-    |              example:
-    |                - opintojenlaajuusyksikko_6#1
+    |              example: opintojenlaajuusyksikko_6#1
     |            opintojenLaajuusNumeroMin:
     |              type: integer
     |              description: Opintojen laajuuden tai keston vähimmäismäärä numeroarvona

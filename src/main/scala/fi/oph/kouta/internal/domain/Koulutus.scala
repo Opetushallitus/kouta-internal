@@ -89,7 +89,7 @@ import java.util.UUID
     |            - $ref: '#/components/schemas/ErikoislaakariKoulutusMetadata'
     |            - $ref: '#/components/schemas/KkOpintojaksoKoulutusMetadata'
     |            - $ref: '#/components/schemas/KkOpintokokonaisuusKoulutusMetadata'
-    |            - $ref: '#/components/schemas/ErikoistumiskoulutusMetadata
+    |            - $ref: '#/components/schemas/ErikoistumiskoulutusMetadata'
     |
     |          example:
     |            koulutustyyppi: amm
