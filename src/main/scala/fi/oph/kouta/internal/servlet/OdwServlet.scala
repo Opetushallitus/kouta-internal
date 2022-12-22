@@ -42,7 +42,7 @@ class OdwServlet(odwService: OdwService, val sessionDAO: SessionDAO)
     """    get:
       |        summary: Listaa julkaistujen ja arkistoitujen hakujen OIDit
       |        description: Listaa kaikkien julkaistujen ja/tai arkistoitujen hakujen OIDit
-      |        operationId: Listaa hakujen OIDit
+      |        operationId: odwListHakuOids
       |        tags:
       |          - Odw
       |        parameters:
@@ -60,7 +60,8 @@ class OdwServlet(odwService: OdwService, val sessionDAO: SessionDAO)
       |              application/json:
       |                schema:
       |                  type: array
-      |                  items: string
+      |                  items:
+      |                     type: string
       |                  example: ["1.2.246.562.29.00000000000000000071", "1.2.246.562.29.00000000000000001183"]
       |""".stripMargin
   )
@@ -79,7 +80,7 @@ class OdwServlet(odwService: OdwService, val sessionDAO: SessionDAO)
     "/odw/findHautByOids",
     """    post:
       |      summary: Etsi hakuja oideilla
-      |      operationId: Etsi hakuja oideilla
+      |      operationId: odwFindHautByOids
       |      description: Etsii hakuja annetuilla oideilla
       |      tags:
       |        - Odw
@@ -135,7 +136,7 @@ class OdwServlet(odwService: OdwService, val sessionDAO: SessionDAO)
     """    get:
       |        summary: Listaa julkaistujen ja arkistoitujen hakukohteiden OIDit
       |        description: Listaa kaikkien julkaistujen ja/tai arkistoitujen hakukohteiden OIDit
-      |        operationId: Listaa hakukohteiden OIDit
+      |        operationId: odwListHakukohdeOids
       |        tags:
       |          - Odw
       |        parameters:
@@ -153,7 +154,8 @@ class OdwServlet(odwService: OdwService, val sessionDAO: SessionDAO)
       |              application/json:
       |                schema:
       |                  type: array
-      |                  items: string
+      |                  items:
+      |                    type: string
       |                  example: ["1.2.246.562.20.00000000000000002074", "1.2.246.562.20.00000000000000002142"]
       |""".stripMargin
   )
@@ -172,7 +174,7 @@ class OdwServlet(odwService: OdwService, val sessionDAO: SessionDAO)
     "/odw/findHakukohteetByOids",
     """    post:
       |      summary: Etsi hakukohteita oideilla
-      |      operationId: Etsi hakukohteita oideilla
+      |      operationId: odwFindHakukohteetByOids
       |      description: Etsii hakukohteita annetuilla oideilla
       |      tags:
       |        - Odw
@@ -211,7 +213,7 @@ class OdwServlet(odwService: OdwService, val sessionDAO: SessionDAO)
     """    get:
       |        summary: Listaa julkaistujen ja arkistoitujen koulutusten OIDit
       |        description: Listaa kaikkien julkaistujen ja/tai arkistoitujen koulutusten OIDit
-      |        operationId: Listaa koulutusten OIDit
+      |        operationId: odwListKoulutusOids
       |        tags:
       |          - Odw
       |        parameters:
@@ -229,7 +231,8 @@ class OdwServlet(odwService: OdwService, val sessionDAO: SessionDAO)
       |              application/json:
       |                schema:
       |                  type: array
-      |                  items: string
+      |                  items:
+      |                    type: string
       |                  example: ["1.2.246.562.13.00000000000000000445", "1.2.246.562.13.00000000000000000505"]
       |""".stripMargin
   )
@@ -248,7 +251,7 @@ class OdwServlet(odwService: OdwService, val sessionDAO: SessionDAO)
     "/odw/findKoulutuksetByOids",
     """    post:
       |      summary: Etsi koulutuksia oideilla
-      |      operationId: Etsi koulutuksia oideilla
+      |      operationId: odwFindKoulutuksetByOids
       |      description: Etsii koulutuksia annetuilla oideilla
       |      tags:
       |        - Odw
@@ -286,7 +289,7 @@ class OdwServlet(odwService: OdwService, val sessionDAO: SessionDAO)
     """    get:
       |        summary: Listaa julkaistujen ja arkistoitujen toteutusten OIDit
       |        description: Listaa kaikkien julkaistujen ja/tai arkistoitujen toteutusten OIDit
-      |        operationId: Listaa toteutusten OIDit
+      |        operationId: odwListToteutusOids
       |        tags:
       |          - Odw
       |        parameters:
@@ -304,7 +307,8 @@ class OdwServlet(odwService: OdwService, val sessionDAO: SessionDAO)
       |              application/json:
       |                schema:
       |                  type: array
-      |                  items: string
+      |                  items:
+      |                    type: string
       |                  example: ["1.2.246.562.17.00000000000000000267", "1.2.246.562.17.00000000000000000772"]
       |""".stripMargin
   )
@@ -323,7 +327,7 @@ class OdwServlet(odwService: OdwService, val sessionDAO: SessionDAO)
     "/odw/findToteutuksetByOids",
     """    post:
       |      summary: Etsi toteutuksia oideilla
-      |      operationId: Etsi toteutuksia oideilla
+      |      operationId: odwFindToteutuksetByOids
       |      description: Etsii toteutuksia annetuilla oideilla
       |      tags:
       |        - Odw

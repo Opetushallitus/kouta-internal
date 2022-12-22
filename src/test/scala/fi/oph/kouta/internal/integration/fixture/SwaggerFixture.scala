@@ -5,7 +5,7 @@ import fi.oph.kouta.internal.client.HakukohderyhmaClient
 import fi.oph.kouta.internal.elasticsearch.{HakuClient, HakukohdeClient, KoulutusClient, ToteutusClient, ValintaperusteClient}
 import fi.oph.kouta.internal.security.{CasSession, CasSessionService, SecurityContext, ServiceTicket}
 import fi.oph.kouta.internal.service.{HakuService, HakukohdeService, KoulutusService, ToteutusService, ValintaperusteService}
-import fi.oph.kouta.internal.servlet.{AuthServlet, HakuServlet, HakukohdeServlet, HealthcheckServlet, KoulutusServlet, ToteutusServlet, ValintaperusteServlet}
+import fi.oph.kouta.internal.servlet.{AuthServlet, HakuServlet, HakukohdeServlet, HealthcheckServlet, KoulutusServlet, OdwServlet, ToteutusServlet, ValintaperusteServlet}
 import fi.oph.kouta.internal.swagger.SwaggerServlet
 import fi.oph.kouta.internal.{KoutaConfigurationFactory, MockSecurityContext, TestSetups}
 import fi.vm.sade.properties.OphProperties
@@ -73,6 +73,7 @@ trait SwaggerFixture extends ScalatraFlatSpec {
     addServlet(new AuthServlet(MockCasSessionService), AuthPath)
     addServlet(HealthcheckServlet, "/healthcheck")
     addServlet(new SwaggerServlet(), "/swagger")
+    addServlet(OdwServlet, "/odw", "odw")
   }
 
   override def afterAll(): Unit = {
