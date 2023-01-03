@@ -69,8 +69,7 @@ package object domain {
   )
   case class Taulukko(id: Option[UUID], nimi: Kielistetty = Map(), rows: Seq[Row] = Seq()) extends Sisalto
 
-  @SwaggerModel(
-    """    HakutermiSwagger:
+  @SwaggerModel("""    HakutermiSwagger:
       |      type: string
       |      enum:
       |        - hakeutuminen

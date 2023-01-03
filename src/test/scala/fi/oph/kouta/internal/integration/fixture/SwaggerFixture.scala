@@ -2,10 +2,31 @@ package fi.oph.kouta.internal.integration.fixture
 
 import fi.oph.kouta.internal.database.SessionDAO
 import fi.oph.kouta.internal.client.HakukohderyhmaClient
-import fi.oph.kouta.internal.elasticsearch.{HakuClient, HakukohdeClient, KoulutusClient, ToteutusClient, ValintaperusteClient}
+import fi.oph.kouta.internal.elasticsearch.{
+  HakuClient,
+  HakukohdeClient,
+  KoulutusClient,
+  ToteutusClient,
+  ValintaperusteClient
+}
 import fi.oph.kouta.internal.security.{CasSession, CasSessionService, SecurityContext, ServiceTicket}
-import fi.oph.kouta.internal.service.{HakuService, HakukohdeService, KoulutusService, ToteutusService, ValintaperusteService}
-import fi.oph.kouta.internal.servlet.{AuthServlet, HakuServlet, HakukohdeServlet, HealthcheckServlet, KoulutusServlet, OdwServlet, ToteutusServlet, ValintaperusteServlet}
+import fi.oph.kouta.internal.service.{
+  HakuService,
+  HakukohdeService,
+  KoulutusService,
+  ToteutusService,
+  ValintaperusteService
+}
+import fi.oph.kouta.internal.servlet.{
+  AuthServlet,
+  HakuServlet,
+  HakukohdeServlet,
+  HealthcheckServlet,
+  KoulutusServlet,
+  OdwServlet,
+  ToteutusServlet,
+  ValintaperusteServlet
+}
 import fi.oph.kouta.internal.swagger.SwaggerServlet
 import fi.oph.kouta.internal.{KoutaConfigurationFactory, MockSecurityContext, TestSetups}
 import fi.vm.sade.properties.OphProperties
@@ -40,7 +61,6 @@ trait SwaggerFixture extends ScalatraFlatSpec {
     SessionDAO.store(CasSession(ServiceTicket(testUser.ticket), testUser.oid, defaultAuthorities), testUser.sessionId)
     urlProperties = Some(KoutaConfigurationFactory.configuration.urlProperties)
     val hakukohderyhmaClient = new HakukohderyhmaClientMock()
-
 
     val koulutusService =
       new KoulutusService(KoulutusClient)
