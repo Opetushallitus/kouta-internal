@@ -18,6 +18,7 @@ class SwaggerServlet extends ScalatraServlet {
         |openapi: 3.0.0
         |info:
         |  title: kouta-internal
+        |  version: 1
         |  description: >
         |    <p><strong>Uuden koulutustarjonnan Opintopolun sisäisille palveluille tarkoitetut rajapinnat.</strong></p>
         |    <p>Ohjeita rajapintojen kutsujalle:

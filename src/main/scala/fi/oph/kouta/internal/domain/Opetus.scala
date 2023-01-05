@@ -49,7 +49,7 @@ import fi.oph.kouta.internal.swagger.SwaggerModel
     |        onkoMaksullinen:
     |          type: boolean
     |          deprecated: true
-    |          decription: "Onko koulutus maksullinen?"
+    |          description: "Onko koulutus maksullinen?"
     |        maksullisuusKuvaus:
     |          type: object
     |          description: Koulutuksen toteutuksen maksullisuutta tarkentava kuvausteksti eri kielillä. Kielet on määritetty koulutuksen kielivalinnassa.

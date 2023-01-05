@@ -90,7 +90,7 @@ case class AmmatillinenToteutusMetadata(
     |               properties:
     |                 hakutermi:
     |                   type: object
-    |                   $ref: '#/components/schemas/Hakutermi'
+    |                   $ref: '#/components/schemas/HakutermiSwagger'
     |                 hakulomaketyyppi:
     |                   type: string
     |                   description: Hakulomakkeen tyyppi. Kertoo, käytetäänkö Atarun (hakemuspalvelun) hakulomaketta, muuta hakulomaketta
@@ -405,7 +405,7 @@ case class VapaaSivistystyoOpistovuosiToteutusMetadata(
     |        - $ref: '#/components/schemas/TutkintoonJohtamatonToteutusMetadata'
     |        - type: object
     |          properties:
-    |            koulutustyyppi:
+    |            tyyppi:
     |              type: string
     |              description: Koulutuksen metatiedon tyyppi
     |              example: vapaa-sivistystyo-muu

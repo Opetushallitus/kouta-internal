@@ -57,7 +57,7 @@ import fi.oph.kouta.internal.swagger.SwaggerModel
     |            - $ref: '#/components/schemas/TuvaToteutusMetadata'
     |            - $ref: '#/components/schemas/TelmaToteutusMetadata'
     |            - $ref: '#/components/schemas/VapaaSivistystyoOpistovuosiToteutusMetadata'
-    |            - $ref: '#/components/schemas/VapaasivistystyoMuuToteutusMetadata'
+    |            - $ref: '#/components/schemas/VapaaSivistystyoMuuToteutusMetadata'
     |            - $ref: '#/components/schemas/LukioToteutusMetadata'
     |            - $ref: '#/components/schemas/AikuistenPerusopetusToteutusMetadata'
     |            - $ref: '#/components/schemas/ErikoislaakariToteutusMetadata'

@@ -157,13 +157,14 @@ class HakukohdeServlet(hakukohdeService: HakukohdeService, val sessionDAO: Sessi
       |          example: 1.2.246.562.10.00000000001,1.2.246.562.10.00000000002
       |      requestBody:
       |          description: Palautettavien hakukohteiden oidit JSON-arrayna
-      |          example: ["1.2.246.562.10.00000000001","1.2.246.562.10.00000000002"]
       |          content:
       |             application/json:
       |               schema:
       |                 type: array
       |                 items:
       |                   type: string
+      |                 example:
+      |                   array: ["1.2.246.562.10.00000000001","1.2.246.562.10.00000000002"]
       |      responses:
       |        '200':
       |          description: Ok

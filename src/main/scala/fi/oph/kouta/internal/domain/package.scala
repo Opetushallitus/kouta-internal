@@ -8,6 +8,75 @@ import fi.oph.kouta.internal.swagger.SwaggerModel
 
 package object domain {
 
+  sealed trait Sisalto
+
+  @SwaggerModel(
+    """    SisaltoTeksti:
+      |      type: object
+      |      description: Tekstimuotoinen sisällön kuvaus
+      |      properties:
+      |        teksti:
+      |          type: object
+      |          description: Opintopolussa näytettävä kuvausteksti eri kielillä. Kielet on määritetty valintaperusteen kielivalinnassa.
+      |          allOf:
+      |            - $ref: '#/components/schemas/Teksti'
+      |"""
+  )
+  case class SisaltoTeksti(teksti: Kielistetty) extends Sisalto
+
+  @SwaggerModel(
+    """    SisaltoTaulukko:
+      |      type: object
+      |      description: Taulukkomuotoinen valintatavan sisällön kuvaus
+      |      properties:
+      |        id:
+      |          type: string
+      |          description: Taulukon yksilöivä tunnus
+      |          example: "ea596a9c-5940-497e-b5b7-aded3a2352a7"
+      |        nimi:
+      |          type: object
+      |          description: Taulukon Opintopolussa näytettävä nimi eri kielillä. Kielet on määritetty kielivalinnassa.
+      |          allOf:
+      |            - $ref: '#/components/schemas/Nimi'
+      |        rows:
+      |          type: array
+      |          description: Taukon rivit
+      |          items:
+      |            type: object
+      |            properties:
+      |              index:
+      |                type: integer
+      |                description: Rivin järjestysnumero
+      |              isHeader:
+      |                type: boolean
+      |                description: Onko rivi otsikkorivi
+      |              columns:
+      |                type: array
+      |                description: Rivin sarakkeet
+      |                items:
+      |                  type: object
+      |                  properties:
+      |                    index:
+      |                      type: integer
+      |                      description: Sarakkeen järjestysnumero
+      |                    text:
+      |                      type: object
+      |                      description: Sarakkeen Opintopolussa näytettävä teksti eri kielillä.
+      |                        Kielet on määritetty kielivalinnassa.
+      |                      allOf:
+      |                        - $ref: '#/components/schemas/Teksti'
+      |"""
+  )
+  case class Taulukko(id: Option[UUID], nimi: Kielistetty = Map(), rows: Seq[Row] = Seq()) extends Sisalto
+
+  @SwaggerModel("""    HakutermiSwagger:
+      |      type: string
+      |      enum:
+      |        - hakeutuminen
+      |        - ilmoittautuminen
+      |""")
+  abstract class HakutermiSwagger
+
   @SwaggerModel("""
       |    Koulutustyyppi:
       |      type: string
@@ -249,7 +318,7 @@ package object domain {
       |      properties:
       |        kieli:
       |          type: string
-      |          desciption: Ammattinimikkeen kieli
+      |          description: Ammattinimikkeen kieli
       |          allOf:
       |            - $ref: '#/components/schemas/Kieli'
       |          example: fi
@@ -262,7 +331,7 @@ package object domain {
       |      properties:
       |        kieli:
       |          type: string
-      |          desciption: Asiasanan kieli
+      |          description: Asiasanan kieli
       |          allOf:
       |            - $ref: '#/components/schemas/Kieli'
       |          example: fi

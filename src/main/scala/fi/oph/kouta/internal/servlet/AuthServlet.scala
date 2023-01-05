@@ -91,12 +91,12 @@ class AuthServlet(casSessionService: CasSessionService) extends KoutaServlet {
       |      description: Kirjaudu ulos
       |      tags:
       |        - Auth
-      |      parameters:
-      |        - in: body
-      |          schema:
-      |            type: string
-      |          required: true
-      |          description: logoutRequest
+      |      requestBody:
+      |        description: logoutRequest
+      |        content:
+      |          application/xml:
+      |            schema:
+      |              type: object
       |      responses:
       |        '200':
       |          description: Ok
