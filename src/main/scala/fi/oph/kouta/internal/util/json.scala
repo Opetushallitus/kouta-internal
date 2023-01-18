@@ -18,6 +18,7 @@ import fi.oph.kouta.domain.{
   Koulutustyyppi,
   Lk,
   OpePedagOpinnot,
+  TaiteenPerusopetus,
   Telma,
   Tuva,
   VapaaSivistystyoMuu,
@@ -134,6 +135,7 @@ sealed trait DefaultKoutaJsonFormats {
         case VapaaSivistystyoOpistovuosi => s.extract[VapaaSivistystyoKoulutusMetadata]
         case VapaaSivistystyoMuu         => s.extract[VapaaSivistystyoKoulutusMetadata]
         case AikuistenPerusopetus        => s.extract[AikuistenPerusopetusKoulutusMetadata]
+        case TaiteenPerusopetus          => s.extract[TaiteenPerusopetusKoulutusMetadata]
         case Erikoislaakari              => s.extract[ErikoislaakariKoulutusMetadata]
         case KkOpintokokonaisuus         => s.extract[KkOpintokokonaisuusKoulutusMetadata]
         case Erikoistumiskoulutus        => s.extract[ErikoistumiskoulutusMetadata]
@@ -167,6 +169,7 @@ sealed trait DefaultKoutaJsonFormats {
         case VapaaSivistystyoOpistovuosi => s.extract[VapaaSivistystyoKoulutusMetadataIndexed]
         case VapaaSivistystyoMuu         => s.extract[VapaaSivistystyoKoulutusMetadataIndexed]
         case AikuistenPerusopetus        => s.extract[AikuistenPerusopetusKoulutusMetadataIndexed]
+        case TaiteenPerusopetus          => s.extract[TaiteenPerusopetusKoulutusMetadataIndexed]
         case Erikoislaakari              => s.extract[ErikoislaakariKoulutusMetadataIndexed]
         case KkOpintokokonaisuus         => s.extract[KkOpintokokonaisuusKoulutusMetadataIndexed]
         case Erikoistumiskoulutus        => s.extract[ErikoislaakariKoulutusMetadataIndexed]
@@ -200,6 +203,7 @@ sealed trait DefaultKoutaJsonFormats {
         case VapaaSivistystyoOpistovuosi => s.extract[VapaaSivistystyoOpistovuosiToteutusMetadata]
         case VapaaSivistystyoMuu         => s.extract[VapaaSivistystyoMuuToteutusMetadata]
         case AikuistenPerusopetus        => s.extract[AikuistenPerusopetusToteutusMetadata]
+        case TaiteenPerusopetus          => s.extract[TaiteenPerusopetusToteutusMetadata]
         case Erikoislaakari              => s.extract[ErikoislaakariToteutusMetadata]
         case KkOpintokokonaisuus         => s.extract[KkOpintokokonaisuusToteutusMetadata]
         case Erikoistumiskoulutus        => s.extract[ErikoistumiskoulutusToteutusMetadata]
@@ -233,6 +237,7 @@ sealed trait DefaultKoutaJsonFormats {
         case VapaaSivistystyoOpistovuosi => s.extract[VapaaSivistystyoOpistovuosiToteutusMetadataIndexed]
         case VapaaSivistystyoMuu         => s.extract[VapaaSivistystyoMuuToteutusMetadataIndexed]
         case AikuistenPerusopetus        => s.extract[AikuistenPerusopetusToteutusMetadataIndexed]
+        case TaiteenPerusopetus          => s.extract[TaiteenPerusopetusToteutusMetadataIndexed]
         case Erikoislaakari              => s.extract[ErikoislaakariToteutusMetadataIndexed]
         case KkOpintokokonaisuus         => s.extract[KkOpintokokonaisuusToteutusMetadataIndexed]
         case Erikoistumiskoulutus        => s.extract[ErikoistumiskoulutusToteutusMetadataIndexed]

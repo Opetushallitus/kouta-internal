@@ -64,6 +64,7 @@ import fi.oph.kouta.internal.swagger.SwaggerModel
     |            - $ref: '#/components/schemas/KkOpintojaksoToteutusMetadata'
     |            - $ref: '#/components/schemas/KkOpintokokonaisuusToteutusMetadata'
     |            - $ref: '#/components/schemas/ErikoistumiskoulutusToteutusMetadata'
+    |            - $ref: '#/components/schemas/TaiteenPerusopetusToteutusMetadata'
     |          example:
     |            tyyppi: amm
     |            kuvaus:
