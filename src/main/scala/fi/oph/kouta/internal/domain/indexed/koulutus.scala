@@ -432,3 +432,18 @@ case class ErikoistumisKoulutusMetadataIndexed(
       opintojenLaajuusyksikkoKoodiUri = opintojenLaajuusyksikko.map(_.koodiUri)
     )
 }
+
+case class TaiteenPerusopetusKoulutusMetadataIndexed(
+    tyyppi: Koulutustyyppi,
+    kuvaus: Kielistetty,
+    lisatiedot: Seq[LisatietoIndexed],
+    linkkiEPerusteisiin: Kielistetty
+) extends KoulutusMetadataIndexed {
+  override def toKoulutusMetadata: TaiteenPerusopetusKoulutusMetadata =
+    TaiteenPerusopetusKoulutusMetadata(
+      tyyppi = tyyppi,
+      kuvaus = kuvaus,
+      lisatiedot = lisatiedot.map(_.toLisatieto),
+      linkkiEPerusteisiin = linkkiEPerusteisiin
+    )
+}
