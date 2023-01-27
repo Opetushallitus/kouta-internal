@@ -105,9 +105,10 @@ class HakuServlet(hakuService: HakuService, val sessionDAO: SessionDAO)
   get("/search") {
     implicit val authenticated: Authenticated = authenticate
 
-    val ataruId  = params.get("ataruId")
-    val tarjoaja = params.get("tarjoaja").map(_.split(",").map(OrganisaatioOid).toSet)
-    val vuosi    = params.getAs[Int]("vuosi")
+    val ataruId = params.get("ataruId")
+    val tarjoaja: Option[Set[OrganisaatioOid]] =
+      multiParams.get("tarjoaja").map(_.filter(_.nonEmpty).flatMap(_.split(",")).map(OrganisaatioOid).toSet)
+    val vuosi = params.getAs[Int]("vuosi")
     val includeHakukohdeOids = params.get("includeHakukohdeOids").exists {
       case "true"  => true
       case "false" => false
