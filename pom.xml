@@ -37,7 +37,7 @@
         <javax.servlet-api.version>4.0.1</javax.servlet-api.version>
 
         <!-- Elasticsearch properties -->
-        <elastic4sVersion>7.17.2</elastic4sVersion>
+        <elastic4sVersion>8.4.4</elastic4sVersion>
 
         <!-- Database related properties -->
         <flyway.version>8.5.12</flyway.version>
@@ -67,7 +67,7 @@
             <dependency>
                 <groupId>com.fasterxml.jackson.core</groupId>
                 <artifactId>jackson-databind</artifactId>
-                <version>2.11.4</version>
+                <version>2.13.2.1</version>
             </dependency>
             <dependency>
                 <groupId>com.github.java-json-tools</groupId>
@@ -87,7 +87,7 @@
             <dependency>
                 <groupId>com.fasterxml.jackson.dataformat</groupId>
                 <artifactId>jackson-dataformat-yaml</artifactId>
-                <version>2.12.2</version>
+                <version>2.13.4</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.httpcomponents</groupId>
@@ -123,7 +123,7 @@
             <dependency>
                 <groupId>com.fasterxml.jackson.core</groupId>
                 <artifactId>jackson-annotations</artifactId>
-                <version>2.12.2</version>
+                <version>2.13.4</version>
             </dependency>
             <dependency>
                 <groupId>org.slf4j</groupId>
@@ -159,7 +159,7 @@
             <dependency>
                 <groupId>com.fasterxml.jackson.core</groupId>
                 <artifactId>jackson-core</artifactId>
-                <version>2.12.2</version>
+                <version>2.13.4</version>
             </dependency>
             <dependency>
                 <groupId>org.json4s</groupId>
@@ -453,7 +453,7 @@
         <dependency>
             <groupId>com.sksamuel.elastic4s</groupId>
             <artifactId>elastic4s-client-esjava_2.12</artifactId>
-            <version>7.10.2</version>
+            <version>8.4.4</version>
             <exclusions>
                 <exclusion>
                     <groupId>org.apache.httpcomponents</groupId>
@@ -472,7 +472,7 @@
         <dependency>
             <groupId>com.sksamuel.elastic4s</groupId>
             <artifactId>elastic4s-core_2.12</artifactId>
-            <version>7.10.2</version>
+            <version>8.4.4</version>
             <exclusions>
                 <exclusion>
                     <groupId>org.slf4j</groupId>
@@ -491,10 +491,6 @@
                     <artifactId>scala-reflect</artifactId>
                 </exclusion>
                 <exclusion>
-                    <groupId>com.fasterxml.jackson.core</groupId>
-                    <artifactId>jackson-annotations</artifactId>
-                </exclusion>
-                <exclusion>
                     <groupId>com.typesafe</groupId>
                     <artifactId>config</artifactId>
                 </exclusion>
@@ -503,16 +499,8 @@
         <dependency>
             <groupId>com.sksamuel.elastic4s</groupId>
             <artifactId>elastic4s-json-json4s_2.12</artifactId>
-            <version>7.10.2</version>
+            <version>8.4.4</version>
             <exclusions>
-                <exclusion>
-                    <groupId>org.json4s</groupId>
-                    <artifactId>json4s-jackson_2.12</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.json4s</groupId>
-                    <artifactId>json4s-core_2.12</artifactId>
-                </exclusion>
                 <exclusion>
                     <groupId>org.scala-lang</groupId>
                     <artifactId>scala-library</artifactId>
