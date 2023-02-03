@@ -79,7 +79,7 @@ class HakukohdeServlet(hakukohdeService: HakukohdeService, val sessionDAO: Sessi
       |        - in: query
       |          name: hakukohderyhmat
       |          schema:
-      |            type: string
+      |            type: array
       |            items:
       |              type: string
       |          required: false
@@ -113,11 +113,13 @@ class HakukohdeServlet(hakukohdeService: HakukohdeService, val sessionDAO: Sessi
   get("/search") {
     implicit val authenticated: Authenticated = authenticate
 
-    val hakuOid            = params.get("haku").map(HakuOid)
-    val tarjoaja           = params.get("tarjoaja").map(s => s.split(",").map(OrganisaatioOid).toSet)
-    val hakukohderyhmaOids = params.get("hakukohderyhmat").map(s => s.split(",").map(HakukohderyhmaOid).toSet)
-    val hakukohdeKoodi     = params.get("hakukohdeKoodiUri").map(KoodiUri)
-    val q                  = params.get("q")
+    val hakuOid = params.get("haku").map(HakuOid)
+    val tarjoaja: Option[Set[OrganisaatioOid]] =
+      multiParams.get("tarjoaja").map(_.filter(_.nonEmpty).flatMap(_.split(",")).map(OrganisaatioOid).toSet)
+    val hakukohderyhmaOids: Option[Set[HakukohderyhmaOid]] =
+      multiParams.get("hakukohderyhmat").map(_.filter(_.nonEmpty).flatMap(_.split(",")).map(HakukohderyhmaOid).toSet)
+    val hakukohdeKoodi = params.get("hakukohdeKoodiUri").map(KoodiUri)
+    val q              = params.get("q")
     val all = params.get("all").exists {
       case "true"  => true
       case "false" => false
