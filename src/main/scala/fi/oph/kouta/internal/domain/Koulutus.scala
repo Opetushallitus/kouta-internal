@@ -91,7 +91,7 @@ import java.util.UUID
     |            - $ref: '#/components/schemas/KkOpintokokonaisuusKoulutusMetadata'
     |            - $ref: '#/components/schemas/ErikoistumiskoulutusMetadata'
     |            - $ref: '#/components/schemas/TaiteenPerusopetusKoulutusMetadata'
-    |
+    |            - $ref: '#/components/schemas/MuuKoulutusMetadata'
     |          example:
     |            koulutustyyppi: amm
     |            koulutusalaKoodiUrit:
