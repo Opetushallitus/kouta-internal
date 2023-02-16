@@ -1,30 +1,6 @@
 package fi.oph.kouta.internal.util
 
-import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
-import java.util.UUID
-import fi.oph.kouta.domain.{
-  AikuistenPerusopetus,
-  Amk,
-  Amm,
-  AmmMuu,
-  AmmOpeErityisopeJaOpo,
-  AmmOsaamisala,
-  AmmTutkinnonOsa,
-  Erikoislaakari,
-  Erikoistumiskoulutus,
-  KkOpintojakso,
-  KkOpintokokonaisuus,
-  Koulutustyyppi,
-  Lk,
-  OpePedagOpinnot,
-  TaiteenPerusopetus,
-  Telma,
-  Tuva,
-  VapaaSivistystyoMuu,
-  VapaaSivistystyoOpistovuosi,
-  Yo
-}
+import fi.oph.kouta.domain._
 import fi.oph.kouta.internal.domain._
 import fi.oph.kouta.internal.domain.enums.{Hakulomaketyyppi, Julkaisutila, Kieli, LiitteenToimitustapa}
 import fi.oph.kouta.internal.domain.indexed._
@@ -33,6 +9,9 @@ import org.json4s.JsonAST.{JObject, JString}
 import org.json4s._
 import org.json4s.jackson.Serialization.write
 
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
+import java.util.UUID
 import scala.util.Try
 
 trait KoutaJsonFormats extends DefaultKoutaJsonFormats {
@@ -139,6 +118,7 @@ sealed trait DefaultKoutaJsonFormats {
         case Erikoislaakari              => s.extract[ErikoislaakariKoulutusMetadata]
         case KkOpintokokonaisuus         => s.extract[KkOpintokokonaisuusKoulutusMetadata]
         case Erikoistumiskoulutus        => s.extract[ErikoistumiskoulutusMetadata]
+        case Muu                         => s.extract[MuuKoulutusMetadata]
         case kt                          => throw new UnsupportedOperationException(s"Unsupported koulutustyyppi $kt")
       }
   } { case j: KoulutusMetadata =>
@@ -173,6 +153,7 @@ sealed trait DefaultKoutaJsonFormats {
         case Erikoislaakari              => s.extract[ErikoislaakariKoulutusMetadataIndexed]
         case KkOpintokokonaisuus         => s.extract[KkOpintokokonaisuusKoulutusMetadataIndexed]
         case Erikoistumiskoulutus        => s.extract[ErikoislaakariKoulutusMetadataIndexed]
+        case Muu                         => s.extract[MuuKoulutusMetadataIndexed]
         case kt                          => throw new UnsupportedOperationException(s"Unsupported koulutustyyppi $kt")
       }
     } { case j: KoulutusMetadataIndexed =>
@@ -207,6 +188,7 @@ sealed trait DefaultKoutaJsonFormats {
         case Erikoislaakari              => s.extract[ErikoislaakariToteutusMetadata]
         case KkOpintokokonaisuus         => s.extract[KkOpintokokonaisuusToteutusMetadata]
         case Erikoistumiskoulutus        => s.extract[ErikoistumiskoulutusToteutusMetadata]
+        case Muu                         => s.extract[MuuToteutusMetadata]
         case kt                          => throw new UnsupportedOperationException(s"Unsupported koulutustyyppi $kt")
       }
   } { case j: ToteutusMetadata =>
@@ -241,6 +223,7 @@ sealed trait DefaultKoutaJsonFormats {
         case Erikoislaakari              => s.extract[ErikoislaakariToteutusMetadataIndexed]
         case KkOpintokokonaisuus         => s.extract[KkOpintokokonaisuusToteutusMetadataIndexed]
         case Erikoistumiskoulutus        => s.extract[ErikoistumiskoulutusToteutusMetadataIndexed]
+        case Muu                         => s.extract[MuuToteutusMetadataIndexed]
         case kt                          => throw new UnsupportedOperationException(s"Unsupported toteutustyyppi $kt")
       }
     } { case j: ToteutusMetadataIndexed =>
