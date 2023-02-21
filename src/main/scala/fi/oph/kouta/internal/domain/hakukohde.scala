@@ -5,7 +5,7 @@ import fi.oph.kouta.domain.Alkamiskausityyppi
 import java.time.LocalDateTime
 import java.util.UUID
 import fi.oph.kouta.internal.domain.enums.{Hakulomaketyyppi, Julkaisutila, Kieli, LiitteenToimitustapa}
-import fi.oph.kouta.internal.domain.indexed.{KoodiUri}
+import fi.oph.kouta.internal.domain.indexed.{KoodiUri, LukioTieto}
 import fi.oph.kouta.internal.domain.oid._
 import fi.oph.kouta.internal.swagger.SwaggerModel
 
@@ -327,6 +327,7 @@ case class Hakukohde(
     externalId: Option[String],
     uudenOpiskelijanUrl: Option[Kielistetty],
     hakukohde: Option[KoodiUri],
+    lukioTieto: Option[LukioTieto],
     paateltyAlkamiskausi: Option[PaateltyAlkamiskausi],
     odwKkTasot: Option[OdwKkTasot]
 ) extends PerustiedotWithOid

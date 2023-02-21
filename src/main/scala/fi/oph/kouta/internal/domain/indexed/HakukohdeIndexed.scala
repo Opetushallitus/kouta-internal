@@ -10,6 +10,7 @@ import fi.oph.kouta.internal.domain.{
   Kielistetty,
   Liite,
   LiitteenToimitusosoite,
+  LukiolinjaTieto,
   OdwKkTasot,
   PaateltyAlkamiskausi,
   PainotettuArvosana,
@@ -61,7 +62,8 @@ case class OdwKkTasotIndexed(
 
 case class HakukohteenLinjaIndexed(
     alinHyvaksyttyKeskiarvo: Option[Double],
-    painotetutArvosanat: List[PainotettuArvosanaIndexed]
+    painotetutArvosanat: List[PainotettuArvosanaIndexed],
+    linja: Option[KoodiUri]
 )
 
 case class HakukohdeMetadataIndexed(
@@ -71,6 +73,8 @@ case class HakukohdeMetadataIndexed(
     koulutuksenAlkamiskausi: Option[KoulutuksenAlkamiskausi],
     hakukohteenLinja: Option[HakukohteenLinjaIndexed]
 )
+
+case class LukioTieto(isLukio: Boolean = true, linja: Option[KoodiUri])
 
 case class HakukohdeIndexed(
     oid: HakukohdeOid,
@@ -172,6 +176,7 @@ case class HakukohdeIndexed(
         externalId = externalId,
         uudenOpiskelijanUrl = metadata.flatMap(_.uudenOpiskelijanUrl),
         hakukohde = hakukohde,
+        lukioTieto = metadata.flatMap(m => m.hakukohteenLinja.map(l => LukioTieto(linja = l.linja))),
         paateltyAlkamiskausi = paateltyAlkamiskausi,
         odwKkTasot = odwKkTasot.map(_.toOdwKkTasot)
       )
