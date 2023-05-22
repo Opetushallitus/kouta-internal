@@ -46,7 +46,7 @@ class ToteutusClient(val index: String, val client: ElasticClient)
   }
 
   def getToteutusByHakuOid(oid: HakuOid): Future[Seq[Toteutus]] = {
-    val query = termsQuery("haut.keyword", oid.toString)
+    val query = termsQuery("haut", oid.toString)
     searchItems[ToteutusIndexed](Some(must(query))).map(_.map(_.toToteutus))
   }
 
