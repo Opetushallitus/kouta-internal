@@ -66,4 +66,5 @@ jobs:
       application: 'kouta-internal'
       base-image: 'utility/baseimage-fatjar-openjdk11:master'
       configfolder: 'src/main/resources/*'
+      jarfile: 'kouta-internal-*-with-dependencies.jar'
     secrets: inherit
