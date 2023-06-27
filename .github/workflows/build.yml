@@ -1,7 +1,17 @@
-name: Kouta-internal
+name: Kouta-internal megabuild and manual deploy
 
 on:
   workflow_dispatch:
+    inputs:
+      environment:
+        type: choice
+        description: Deploy to
+        options:
+          - hahtuva
+          - untuva
+          - pallero
+          - sade
+          - none
   push:
     paths-ignore:
       - '**.md'
@@ -59,7 +69,7 @@ jobs:
           path: target
           key: ${{ github.sha }}
 
-  deploy-container:
+  push-container:
     needs: test-and-build
     uses: Opetushallitus/ci-tools/.github/workflows/push-scan-java-ecr.yml@reusable-workflows
     with:
@@ -67,4 +77,15 @@ jobs:
       base-image: 'utility/baseimage-fatjar-openjdk11:master'
       configfolder: 'src/main/resources/*'
       jarfile: 'kouta-internal-*-with-dependencies.jar'
-    secrets: inherit
+    secrets:
+      AWS_UTILITY_ROLE_ARN: ${{ secrets.AWS_ROLE_ARN }}
+
+  deploy-to-environment:
+    if: ${{ github.event_name == 'workflow_dispatch' && inputs.environment != 'none' }}
+    needs: [test-and-build, push-container]
+    uses: Opetushallitus/ci-tools/.github/workflows/ecs-deploy.yml@reusable-workflows
+    with:
+      application-name: 'kouta-internal'
+      environment-name: ${{ inputs.environment }}
+    secrets:
+      AWS_ENV_ROLE_ARN: ${{ secrets.AWS_ROLE_ARN }}
