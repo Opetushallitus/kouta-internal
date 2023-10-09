@@ -63,6 +63,7 @@ case class OdwKkTasotIndexed(
 case class HakukohteenLinjaIndexed(
     alinHyvaksyttyKeskiarvo: Option[Double],
     painotetutArvosanat: List[PainotettuArvosanaIndexed],
+    painotetutArvosanatOppiaineittain: List[PainotettuArvosanaIndexed],
     linja: Option[KoodiUri]
 )
 
@@ -142,7 +143,7 @@ case class HakukohdeIndexed(
         ensikertalaisenAloituspaikat = metadata.flatMap(_.aloituspaikat.flatMap(_.ensikertalaisille)),
         alinHyvaksyttyKeskiarvo = metadata.flatMap(_.hakukohteenLinja.flatMap(_.alinHyvaksyttyKeskiarvo)),
         painotetutArvosanat = metadata
-          .flatMap(_.hakukohteenLinja.flatMap(linja => Option.apply(linja.painotetutArvosanat)))
+          .flatMap(_.hakukohteenLinja.flatMap(linja => Option.apply(linja.painotetutArvosanatOppiaineittain)))
           .getOrElse(List.empty)
           .map(_.toPainotettuArvosana),
         pohjakoulutusvaatimusKoodiUrit = pohjakoulutusvaatimus.map(_.koodiUri),
