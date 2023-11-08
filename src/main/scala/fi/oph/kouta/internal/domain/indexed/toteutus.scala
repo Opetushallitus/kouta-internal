@@ -81,6 +81,7 @@ case class AmmatillinenToteutusMetadataIndexed(
 }
 
 sealed trait TutkintoonJohtamatonToteutusMetadataIndexed extends ToteutusMetadataIndexed {
+  val isHakukohteetKaytossa: Option[Boolean]
   val hakutermi: Option[Hakutermi]
   val hakulomaketyyppi: Option[Hakulomaketyyppi]
   val hakulomakeLinkki: Kielistetty
@@ -88,6 +89,7 @@ sealed trait TutkintoonJohtamatonToteutusMetadataIndexed extends ToteutusMetadat
   val lisatietoaValintaperusteista: Kielistetty
   val hakuaika: Option[Ajanjakso]
   val aloituspaikat: Option[Int]
+  val aloituspaikkakuvaus: Kielistetty
 }
 
 case class AmmatillinenTutkinnonOsaToteutusMetadataIndexed(
@@ -98,13 +100,15 @@ case class AmmatillinenTutkinnonOsaToteutusMetadataIndexed(
     asiasanat: List[Keyword],
     ammattinimikkeet: List[Keyword],
     yhteyshenkilot: Seq[Yhteyshenkilo],
+    isHakukohteetKaytossa: Option[Boolean],
     hakutermi: Option[Hakutermi],
     hakulomaketyyppi: Option[Hakulomaketyyppi],
     hakulomakeLinkki: Kielistetty,
     lisatietoaHakeutumisesta: Kielistetty,
     lisatietoaValintaperusteista: Kielistetty,
     hakuaika: Option[Ajanjakso],
-    aloituspaikat: Option[Int]
+    aloituspaikat: Option[Int],
+    aloituspaikkakuvaus: Kielistetty
 ) extends TutkintoonJohtamatonToteutusMetadataIndexed {
   override def toToteutusMetadata: AmmatillinenTutkinnonOsaToteutusMetadata = {
     AmmatillinenTutkinnonOsaToteutusMetadata(
@@ -114,13 +118,15 @@ case class AmmatillinenTutkinnonOsaToteutusMetadataIndexed(
       asiasanat = asiasanat,
       ammattinimikkeet = ammattinimikkeet,
       yhteyshenkilot = yhteyshenkilot,
+      isHakukohteetKaytossa = isHakukohteetKaytossa,
       hakutermi = hakutermi,
       hakulomaketyyppi = hakulomaketyyppi,
       hakulomakeLinkki = hakulomakeLinkki,
       lisatietoaHakeutumisesta = lisatietoaHakeutumisesta,
       lisatietoaValintaperusteista = lisatietoaValintaperusteista,
       hakuaika = hakuaika,
-      aloituspaikat = aloituspaikat
+      aloituspaikat = aloituspaikat,
+      aloituspaikkakuvaus = aloituspaikkakuvaus
     )
   }
 }
@@ -133,13 +139,15 @@ case class AmmatillinenOsaamisalaToteutusMetadataIndexed(
     asiasanat: List[Keyword],
     ammattinimikkeet: List[Keyword],
     yhteyshenkilot: Seq[Yhteyshenkilo],
+    isHakukohteetKaytossa: Option[Boolean],
     hakutermi: Option[Hakutermi],
     hakulomaketyyppi: Option[Hakulomaketyyppi],
     hakulomakeLinkki: Kielistetty,
     lisatietoaHakeutumisesta: Kielistetty,
     lisatietoaValintaperusteista: Kielistetty,
     hakuaika: Option[Ajanjakso],
-    aloituspaikat: Option[Int]
+    aloituspaikat: Option[Int],
+    aloituspaikkakuvaus: Kielistetty
 ) extends TutkintoonJohtamatonToteutusMetadataIndexed {
   override def toToteutusMetadata: AmmatillinenOsaamisalaToteutusMetadata = {
     AmmatillinenOsaamisalaToteutusMetadata(
@@ -149,13 +157,15 @@ case class AmmatillinenOsaamisalaToteutusMetadataIndexed(
       asiasanat = asiasanat,
       ammattinimikkeet = ammattinimikkeet,
       yhteyshenkilot = yhteyshenkilot,
+      isHakukohteetKaytossa = isHakukohteetKaytossa,
       hakutermi = hakutermi,
       hakulomaketyyppi = hakulomaketyyppi,
       hakulomakeLinkki = hakulomakeLinkki,
       lisatietoaHakeutumisesta = lisatietoaHakeutumisesta,
       lisatietoaValintaperusteista = lisatietoaValintaperusteista,
       hakuaika = hakuaika,
-      aloituspaikat = aloituspaikat
+      aloituspaikat = aloituspaikat,
+      aloituspaikkakuvaus = aloituspaikkakuvaus
     )
   }
 }
@@ -167,13 +177,15 @@ case class AmmatillinenMuuToteutusMetadataIndexed(
     asiasanat: List[Keyword],
     ammattinimikkeet: List[Keyword],
     yhteyshenkilot: Seq[Yhteyshenkilo],
+    isHakukohteetKaytossa: Option[Boolean],
     hakutermi: Option[Hakutermi],
     hakulomaketyyppi: Option[Hakulomaketyyppi],
     hakulomakeLinkki: Kielistetty,
     lisatietoaHakeutumisesta: Kielistetty,
     lisatietoaValintaperusteista: Kielistetty,
     hakuaika: Option[Ajanjakso],
-    aloituspaikat: Option[Int]
+    aloituspaikat: Option[Int],
+    aloituspaikkakuvaus: Kielistetty
 ) extends TutkintoonJohtamatonToteutusMetadataIndexed {
   override def toToteutusMetadata: AmmatillinenMuuToteutusMetadata = {
     AmmatillinenMuuToteutusMetadata(
@@ -183,13 +195,15 @@ case class AmmatillinenMuuToteutusMetadataIndexed(
       asiasanat = asiasanat,
       ammattinimikkeet = ammattinimikkeet,
       yhteyshenkilot = yhteyshenkilot,
+      isHakukohteetKaytossa = isHakukohteetKaytossa,
       hakutermi = hakutermi,
       hakulomaketyyppi = hakulomaketyyppi,
       hakulomakeLinkki = hakulomakeLinkki,
       lisatietoaHakeutumisesta = lisatietoaHakeutumisesta,
       lisatietoaValintaperusteista = lisatietoaValintaperusteista,
       hakuaika = hakuaika,
-      aloituspaikat = aloituspaikat
+      aloituspaikat = aloituspaikat,
+      aloituspaikkakuvaus = aloituspaikkakuvaus
     )
   }
 }
@@ -201,7 +215,6 @@ case class TuvaToteutusMetadataIndexed(
     asiasanat: List[Keyword],
     ammattinimikkeet: List[Keyword],
     yhteyshenkilot: Seq[Yhteyshenkilo],
-    aloituspaikat: Option[Int],
     jarjestetaanErityisopetuksena: Boolean
 ) extends ToteutusMetadataIndexed {
   override def toToteutusMetadata: TuvaToteutusMetadata = {
@@ -212,7 +225,6 @@ case class TuvaToteutusMetadataIndexed(
       asiasanat = asiasanat,
       ammattinimikkeet = ammattinimikkeet,
       yhteyshenkilot = yhteyshenkilot,
-      aloituspaikat = aloituspaikat,
       jarjestetaanErityisopetuksena = jarjestetaanErityisopetuksena
     )
   }
@@ -224,8 +236,7 @@ case class TelmaToteutusMetadataIndexed(
     opetus: Option[OpetusIndexed],
     asiasanat: List[Keyword],
     ammattinimikkeet: List[Keyword],
-    yhteyshenkilot: Seq[Yhteyshenkilo],
-    aloituspaikat: Option[Int]
+    yhteyshenkilot: Seq[Yhteyshenkilo]
 ) extends ToteutusMetadataIndexed {
   override def toToteutusMetadata: TelmaToteutusMetadata = {
     TelmaToteutusMetadata(
@@ -234,8 +245,7 @@ case class TelmaToteutusMetadataIndexed(
       opetus = opetus.map(_.toOpetus),
       asiasanat = asiasanat,
       ammattinimikkeet = ammattinimikkeet,
-      yhteyshenkilot = yhteyshenkilot,
-      aloituspaikat = aloituspaikat
+      yhteyshenkilot = yhteyshenkilot
     )
   }
 }
@@ -267,13 +277,15 @@ case class VapaaSivistystyoMuuToteutusMetadataIndexed(
     asiasanat: List[Keyword],
     ammattinimikkeet: List[Keyword],
     yhteyshenkilot: Seq[Yhteyshenkilo],
+    isHakukohteetKaytossa: Option[Boolean],
     hakutermi: Option[Hakutermi],
     hakulomaketyyppi: Option[Hakulomaketyyppi],
     hakulomakeLinkki: Kielistetty,
     lisatietoaHakeutumisesta: Kielistetty,
     lisatietoaValintaperusteista: Kielistetty,
     hakuaika: Option[Ajanjakso],
-    aloituspaikat: Option[Int]
+    aloituspaikat: Option[Int],
+    aloituspaikkakuvaus: Kielistetty
 ) extends TutkintoonJohtamatonToteutusMetadataIndexed {
   override def toToteutusMetadata: VapaaSivistystyoMuuToteutusMetadata = {
     VapaaSivistystyoMuuToteutusMetadata(
@@ -283,13 +295,15 @@ case class VapaaSivistystyoMuuToteutusMetadataIndexed(
       asiasanat = asiasanat,
       ammattinimikkeet = ammattinimikkeet,
       yhteyshenkilot = yhteyshenkilot,
+      isHakukohteetKaytossa = isHakukohteetKaytossa,
       hakutermi = hakutermi,
       hakulomaketyyppi = hakulomaketyyppi,
       hakulomakeLinkki = hakulomakeLinkki,
       lisatietoaHakeutumisesta = lisatietoaHakeutumisesta,
       lisatietoaValintaperusteista = lisatietoaValintaperusteista,
       hakuaika = hakuaika,
-      aloituspaikat = aloituspaikat
+      aloituspaikat = aloituspaikat,
+      aloituspaikkakuvaus = aloituspaikkakuvaus
     )
   }
 }
@@ -340,8 +354,7 @@ case class AmmOpeErityisopeJaOpoToteutusMetadataIndexed(
     opetus: Option[OpetusIndexed],
     asiasanat: List[Keyword],
     ammattinimikkeet: List[Keyword],
-    yhteyshenkilot: Seq[Yhteyshenkilo],
-    aloituspaikat: Option[Int]
+    yhteyshenkilot: Seq[Yhteyshenkilo]
 ) extends ToteutusMetadataIndexed {
   override def toToteutusMetadata: AmmOpeErityisopeJaOpoToteutusMetadata = {
     AmmOpeErityisopeJaOpoToteutusMetadata(
@@ -350,8 +363,7 @@ case class AmmOpeErityisopeJaOpoToteutusMetadataIndexed(
       opetus = opetus.map(_.toOpetus),
       asiasanat = asiasanat,
       ammattinimikkeet = ammattinimikkeet,
-      yhteyshenkilot = yhteyshenkilot,
-      aloituspaikat = aloituspaikat
+      yhteyshenkilot = yhteyshenkilot
     )
   }
 }
@@ -362,8 +374,7 @@ case class OpePedagOpinnotToteutusMetadataIndexed(
     opetus: Option[OpetusIndexed],
     asiasanat: List[Keyword],
     ammattinimikkeet: List[Keyword],
-    yhteyshenkilot: Seq[Yhteyshenkilo],
-    aloituspaikat: Option[Int]
+    yhteyshenkilot: Seq[Yhteyshenkilo]
 ) extends ToteutusMetadataIndexed {
   override def toToteutusMetadata: OpePedagOpinnotToteutusMetadata = {
     OpePedagOpinnotToteutusMetadata(
@@ -372,8 +383,7 @@ case class OpePedagOpinnotToteutusMetadataIndexed(
       opetus = opetus.map(_.toOpetus),
       asiasanat = asiasanat,
       ammattinimikkeet = ammattinimikkeet,
-      yhteyshenkilot = yhteyshenkilot,
-      aloituspaikat = aloituspaikat
+      yhteyshenkilot = yhteyshenkilot
     )
   }
 }
@@ -385,13 +395,15 @@ case class KkOpintojaksoToteutusMetadataIndexed(
     asiasanat: List[Keyword],
     ammattinimikkeet: List[Keyword],
     yhteyshenkilot: Seq[Yhteyshenkilo],
+    isHakukohteetKaytossa: Option[Boolean],
     hakutermi: Option[Hakutermi],
     hakulomaketyyppi: Option[Hakulomaketyyppi],
     hakulomakeLinkki: Kielistetty,
     lisatietoaHakeutumisesta: Kielistetty,
     lisatietoaValintaperusteista: Kielistetty,
     hakuaika: Option[Ajanjakso],
-    aloituspaikat: Option[Int]
+    aloituspaikat: Option[Int],
+    aloituspaikkakuvaus: Kielistetty
 ) extends ToteutusMetadataIndexed {
   override def toToteutusMetadata: KkOpintojaksoToteutusMetadata = {
     KkOpintojaksoToteutusMetadata(
@@ -401,13 +413,15 @@ case class KkOpintojaksoToteutusMetadataIndexed(
       asiasanat = asiasanat,
       ammattinimikkeet = ammattinimikkeet,
       yhteyshenkilot = yhteyshenkilot,
+      isHakukohteetKaytossa = isHakukohteetKaytossa,
       hakutermi = hakutermi,
       hakulomaketyyppi = hakulomaketyyppi,
       hakulomakeLinkki = hakulomakeLinkki,
       lisatietoaHakeutumisesta = lisatietoaHakeutumisesta,
       lisatietoaValintaperusteista = lisatietoaValintaperusteista,
       hakuaika = hakuaika,
-      aloituspaikat = aloituspaikat
+      aloituspaikat = aloituspaikat,
+      aloituspaikkakuvaus = aloituspaikkakuvaus
     )
   }
 }
@@ -535,13 +549,15 @@ case class AikuistenPerusopetusToteutusMetadataIndexed(
     asiasanat: List[Keyword],
     ammattinimikkeet: List[Keyword],
     yhteyshenkilot: Seq[Yhteyshenkilo],
+    isHakukohteetKaytossa: Option[Boolean],
     hakutermi: Option[Hakutermi],
     hakulomaketyyppi: Option[Hakulomaketyyppi],
     hakulomakeLinkki: Kielistetty,
     lisatietoaHakeutumisesta: Kielistetty,
     lisatietoaValintaperusteista: Kielistetty,
     hakuaika: Option[Ajanjakso],
-    aloituspaikat: Option[Int]
+    aloituspaikat: Option[Int],
+    aloituspaikkakuvaus: Kielistetty
 ) extends TutkintoonJohtamatonToteutusMetadataIndexed {
   override def toToteutusMetadata: AikuistenPerusopetusToteutusMetadata = {
     AikuistenPerusopetusToteutusMetadata(
@@ -551,13 +567,15 @@ case class AikuistenPerusopetusToteutusMetadataIndexed(
       asiasanat = asiasanat,
       ammattinimikkeet = ammattinimikkeet,
       yhteyshenkilot = yhteyshenkilot,
+      isHakukohteetKaytossa = isHakukohteetKaytossa,
       hakutermi = hakutermi,
       hakulomaketyyppi = hakulomaketyyppi,
       hakulomakeLinkki = hakulomakeLinkki,
       lisatietoaHakeutumisesta = lisatietoaHakeutumisesta,
       lisatietoaValintaperusteista = lisatietoaValintaperusteista,
       hakuaika = hakuaika,
-      aloituspaikat = aloituspaikat
+      aloituspaikat = aloituspaikat,
+      aloituspaikkakuvaus = aloituspaikkakuvaus
     )
   }
 }
@@ -591,13 +609,15 @@ case class KkOpintokokonaisuusToteutusMetadataIndexed(
     asiasanat: List[Keyword],
     ammattinimikkeet: List[Keyword],
     yhteyshenkilot: Seq[Yhteyshenkilo],
+    isHakukohteetKaytossa: Option[Boolean],
     hakutermi: Option[Hakutermi],
     hakulomaketyyppi: Option[Hakulomaketyyppi],
     hakulomakeLinkki: Kielistetty,
     lisatietoaHakeutumisesta: Kielistetty,
     lisatietoaValintaperusteista: Kielistetty,
     hakuaika: Option[Ajanjakso],
-    aloituspaikat: Option[Int]
+    aloituspaikat: Option[Int],
+    aloituspaikkakuvaus: Kielistetty
 ) extends ToteutusMetadataIndexed {
   override def toToteutusMetadata: KkOpintokokonaisuusToteutusMetadata = {
     KkOpintokokonaisuusToteutusMetadata(
@@ -607,6 +627,7 @@ case class KkOpintokokonaisuusToteutusMetadataIndexed(
       asiasanat = asiasanat,
       ammattinimikkeet = ammattinimikkeet,
       yhteyshenkilot = yhteyshenkilot,
+      isHakukohteetKaytossa = isHakukohteetKaytossa,
       hakutermi = hakutermi,
       hakulomaketyyppi = hakulomaketyyppi,
       hakulomakeLinkki = hakulomakeLinkki,
@@ -614,6 +635,7 @@ case class KkOpintokokonaisuusToteutusMetadataIndexed(
       lisatietoaValintaperusteista = lisatietoaValintaperusteista,
       hakuaika = hakuaika,
       aloituspaikat = aloituspaikat,
+      aloituspaikkakuvaus = aloituspaikkakuvaus,
       opintojenLaajuusyksikkoKoodiUri = opintojenLaajuusyksikko.map(_.koodiUri),
       opintojenLaajuusNumero = opintojenLaajuusNumero
     )
@@ -627,13 +649,15 @@ case class ErikoistumiskoulutusToteutusMetadataIndexed(
     asiasanat: List[Keyword],
     ammattinimikkeet: List[Keyword],
     yhteyshenkilot: Seq[Yhteyshenkilo],
+    isHakukohteetKaytossa: Option[Boolean],
     hakutermi: Option[Hakutermi],
     hakulomaketyyppi: Option[Hakulomaketyyppi],
     hakulomakeLinkki: Kielistetty,
     lisatietoaHakeutumisesta: Kielistetty,
     lisatietoaValintaperusteista: Kielistetty,
     hakuaika: Option[Ajanjakso],
-    aloituspaikat: Option[Int]
+    aloituspaikat: Option[Int],
+    aloituspaikkakuvaus: Kielistetty
 ) extends TutkintoonJohtamatonToteutusMetadataIndexed {
   override def toToteutusMetadata: ErikoistumiskoulutusToteutusMetadata = {
     ErikoistumiskoulutusToteutusMetadata(
@@ -643,13 +667,15 @@ case class ErikoistumiskoulutusToteutusMetadataIndexed(
       asiasanat = asiasanat,
       ammattinimikkeet = ammattinimikkeet,
       yhteyshenkilot = yhteyshenkilot,
+      isHakukohteetKaytossa = isHakukohteetKaytossa,
       hakutermi = hakutermi,
       hakulomaketyyppi = hakulomaketyyppi,
       hakulomakeLinkki = hakulomakeLinkki,
       lisatietoaHakeutumisesta = lisatietoaHakeutumisesta,
       lisatietoaValintaperusteista = lisatietoaValintaperusteista,
       hakuaika = hakuaika,
-      aloituspaikat = aloituspaikat
+      aloituspaikat = aloituspaikat,
+      aloituspaikkakuvaus = aloituspaikkakuvaus
     )
   }
 }
@@ -665,13 +691,15 @@ case class TaiteenPerusopetusToteutusMetadataIndexed(
     asiasanat: List[Keyword],
     ammattinimikkeet: List[Keyword],
     yhteyshenkilot: Seq[Yhteyshenkilo],
+    isHakukohteetKaytossa: Option[Boolean],
     hakutermi: Option[Hakutermi],
     hakulomaketyyppi: Option[Hakulomaketyyppi],
     hakulomakeLinkki: Kielistetty,
     lisatietoaHakeutumisesta: Kielistetty,
     lisatietoaValintaperusteista: Kielistetty,
     hakuaika: Option[Ajanjakso],
-    aloituspaikat: Option[Int]
+    aloituspaikat: Option[Int],
+    aloituspaikkakuvaus: Kielistetty
 ) extends TutkintoonJohtamatonToteutusMetadataIndexed {
   override def toToteutusMetadata: TaiteenPerusopetusToteutusMetadata =
     TaiteenPerusopetusToteutusMetadata(
@@ -685,13 +713,15 @@ case class TaiteenPerusopetusToteutusMetadataIndexed(
       asiasanat = asiasanat,
       ammattinimikkeet = ammattinimikkeet,
       yhteyshenkilot = yhteyshenkilot,
+      isHakukohteetKaytossa = isHakukohteetKaytossa,
       hakutermi = hakutermi,
       hakulomaketyyppi = hakulomaketyyppi,
       hakulomakeLinkki = hakulomakeLinkki,
       lisatietoaHakeutumisesta = lisatietoaHakeutumisesta,
       lisatietoaValintaperusteista = lisatietoaValintaperusteista,
       hakuaika = hakuaika,
-      aloituspaikat = aloituspaikat
+      aloituspaikat = aloituspaikat,
+      aloituspaikkakuvaus = aloituspaikkakuvaus
     )
 }
 
@@ -706,13 +736,15 @@ case class MuuToteutusMetadataIndexed(
     asiasanat: List[Keyword],
     ammattinimikkeet: List[Keyword],
     yhteyshenkilot: Seq[Yhteyshenkilo],
+    isHakukohteetKaytossa: Option[Boolean],
     hakutermi: Option[Hakutermi],
     hakulomaketyyppi: Option[Hakulomaketyyppi],
     hakulomakeLinkki: Kielistetty,
     lisatietoaHakeutumisesta: Kielistetty,
     lisatietoaValintaperusteista: Kielistetty,
     hakuaika: Option[Ajanjakso],
-    aloituspaikat: Option[Int]
+    aloituspaikat: Option[Int],
+    aloituspaikkakuvaus: Kielistetty
 ) extends TutkintoonJohtamatonToteutusMetadataIndexed {
   override def toToteutusMetadata: MuuToteutusMetadata =
     MuuToteutusMetadata(
@@ -725,12 +757,14 @@ case class MuuToteutusMetadataIndexed(
       asiasanat = asiasanat,
       ammattinimikkeet = ammattinimikkeet,
       yhteyshenkilot = yhteyshenkilot,
+      isHakukohteetKaytossa = isHakukohteetKaytossa,
       hakutermi = hakutermi,
       hakulomaketyyppi = hakulomaketyyppi,
       hakulomakeLinkki = hakulomakeLinkki,
       lisatietoaHakeutumisesta = lisatietoaHakeutumisesta,
       lisatietoaValintaperusteista = lisatietoaValintaperusteista,
       hakuaika = hakuaika,
-      aloituspaikat = aloituspaikat
+      aloituspaikat = aloituspaikat,
+      aloituspaikkakuvaus = aloituspaikkakuvaus
     )
 }
