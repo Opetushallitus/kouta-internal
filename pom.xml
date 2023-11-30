@@ -10,7 +10,7 @@
     <name>kouta-internal</name>
 
     <properties>
-        <scala.version>2.12.13</scala.version>
+        <scala.version>2.13.12</scala.version>
 
         <kouta-common.version>2.19.6-SNAPSHOT</kouta-common.version>
 
@@ -848,7 +848,7 @@
                 <version>2.0.1</version>
                 <configuration>
                     <java>
-                        <eclipse />
+                        <eclipse/>
                     </java>
                     <scala>
                         <scalafmt>
