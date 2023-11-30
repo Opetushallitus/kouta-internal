@@ -499,7 +499,7 @@
         <dependency>
             <groupId>com.sksamuel.elastic4s</groupId>
             <artifactId>elastic4s-json-json4s_2.12</artifactId>
-            <version>8.4.4</version>
+            <version>8.10.0</version>
             <exclusions>
                 <exclusion>
                     <groupId>org.scala-lang</groupId>
@@ -848,7 +848,7 @@
                 <version>2.0.1</version>
                 <configuration>
                     <java>
-                        <eclipse />
+                        <eclipse/>
                     </java>
                     <scala>
                         <scalafmt>
