@@ -37,8 +37,10 @@ class CasSessionService(
           .get(30, TimeUnit.SECONDS)
       )
     } catch {
-      case t: Throwable =>
+      case t: Throwable => {
+        logger.warn(s"Failed to validate service ticket $s", t)
         Left(AuthenticationFailedException(s"Failed to validate service ticket $s", t))
+      }
     }
   }
 
