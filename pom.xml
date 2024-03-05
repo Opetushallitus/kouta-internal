@@ -38,6 +38,7 @@
 
         <!-- Elasticsearch properties -->
         <elastic4sVersion>8.4.4</elastic4sVersion>
+        <elasticsearch-java-version>8.10.0</elasticsearch-java-version>
 
         <!-- Database related properties -->
         <flyway.version>8.5.12</flyway.version>
@@ -190,6 +191,17 @@
     </dependencyManagement>
 
     <dependencies>
+        <dependency>
+            <groupId>co.elastic.clients</groupId>
+            <artifactId>elasticsearch-java</artifactId>
+            <version>8.10.0</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.apache.httpcomponents</groupId>
+                    <artifactId>httpcore</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
         <dependency>
             <groupId>io.swagger.parser.v3</groupId>
             <artifactId>swagger-parser</artifactId>
@@ -466,6 +478,10 @@
                 <exclusion>
                     <groupId>org.scala-lang</groupId>
                     <artifactId>scala-reflect</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.elasticsearch.client</groupId>
+                    <artifactId>elasticsearch-rest-client</artifactId>
                 </exclusion>
             </exclusions>
         </dependency>

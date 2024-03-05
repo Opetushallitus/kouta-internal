@@ -14,7 +14,7 @@ trait ToteutusFixture extends KoutaIntegrationSpec {
 
   addServlet(
     new ToteutusServlet(
-      new ToteutusService(new ToteutusClient("toteutus-kouta", TempElasticClient.client)),
+      new ToteutusService(new ToteutusClient("toteutus-kouta", TempElasticClient.client, TempElasticClient.clientJava)),
       sessionDAO
     ),
     ToteutusPath

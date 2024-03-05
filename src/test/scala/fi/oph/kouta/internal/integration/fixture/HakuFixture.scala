@@ -12,7 +12,7 @@ trait HakuFixture extends KoutaIntegrationSpec {
   val HakuPath = "/haku"
 
   addServlet(
-    new HakuServlet(new HakuService(new HakuClient("haku-kouta", TempElasticClient.client)), sessionDAO),
+    new HakuServlet(new HakuService(new HakuClient("haku-kouta", TempElasticClient.client, TempElasticClient.clientJava)), sessionDAO),
     HakuPath
   )
 

@@ -1,5 +1,6 @@
 package fi.oph.kouta.internal.elasticsearch
 
+import co.elastic.clients.elasticsearch
 import com.sksamuel.elastic4s.ElasticDsl._
 import com.sksamuel.elastic4s.json4s.ElasticJson4s.Implicits._
 import com.sksamuel.elastic4s.requests.searches.queries.Query
@@ -17,7 +18,7 @@ import java.util.NoSuchElementException
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class HakukohdeClient(val index: String, val client: ElasticClient)
+class HakukohdeClient(val index: String, val client: ElasticClient, val clientJava: elasticsearch.ElasticsearchClient)
     extends KoutaJsonFormats
     with Logging
     with ElasticsearchClient {
@@ -155,4 +156,4 @@ class HakukohdeClient(val index: String, val client: ElasticClient)
     findByOidsIndexed(hakukohteetOids).map(h => h.map(_.toHakukohde))
 }
 
-object HakukohdeClient extends HakukohdeClient("hakukohde-kouta", ElasticsearchClient.client)
+object HakukohdeClient extends HakukohdeClient("hakukohde-kouta", ElasticsearchClient.client, ElasticsearchClient.clientJava)

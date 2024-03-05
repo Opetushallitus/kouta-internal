@@ -13,7 +13,7 @@ trait ValintaperusteFixture extends KoutaIntegrationSpec {
 
   addServlet(
     new ValintaperusteServlet(
-      new ValintaperusteService(new ValintaperusteClient("valintaperuste-kouta", TempElasticClient.client)),
+      new ValintaperusteService(new ValintaperusteClient("valintaperuste-kouta", TempElasticClient.client, TempElasticClient.clientJava)),
       sessionDAO
     ),
     ValintaperustePath

@@ -1,9 +1,26 @@
 package fi.oph.kouta.internal.elasticsearch
 
+import co.elastic.clients.elasticsearch
+import co.elastic.clients.json.jackson.JacksonJsonpMapper
+import co.elastic.clients.transport.ElasticsearchTransport
+import co.elastic.clients.transport.rest_client.RestClientTransport
+import org.apache.http.HttpHost
+import org.elasticsearch.client.RestClient
+//import co.elastic.clients.elasticsearch.ElasticsearchClient
+import co.elastic.clients.elasticsearch._types.{FieldSort, SortOptions, SortOrder, Time, query_dsl}
+import co.elastic.clients.elasticsearch._types.query_dsl.QueryBuilders
+import co.elastic.clients.elasticsearch.core.{OpenPointInTimeRequest, search}
+import co.elastic.clients.elasticsearch.core.search.PointInTimeReference
+import co.elastic.clients.elasticsearch.core.SearchRequest
+import com.fasterxml.jackson.databind.{DeserializationFeature, ObjectMapper}
+import com.fasterxml.jackson.module.scala.DefaultScalaModule
 import com.sksamuel.elastic4s.ElasticDsl._
 import com.sksamuel.elastic4s.http.{JavaClient, NoOpHttpClientConfigCallback}
 import com.sksamuel.elastic4s.requests.get.GetResponse
-import com.sksamuel.elastic4s.requests.searches.SearchRequest
+
+import java.util
+import scala.reflect.classTag
+//import com.sksamuel.elastic4s.requests.searches.SearchRequest
 import com.sksamuel.elastic4s.requests.searches.queries.Query
 import com.sksamuel.elastic4s._
 import fi.oph.kouta.internal.domain.WithTila
@@ -26,9 +43,16 @@ import scala.concurrent.duration.{Duration, FiniteDuration}
 import scala.reflect.ClassTag
 import scala.util.{Failure, Success}
 
+import scala.collection.convert.ImplicitConversions.`collection AsScalaIterable`
+
 trait ElasticsearchClient { this: KoutaJsonFormats with Logging =>
   val index: String
   val client: ElasticClient
+
+  val clientJava: elasticsearch.ElasticsearchClient
+  val mapper: ObjectMapper = new ObjectMapper()
+    .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
+    .registerModule(DefaultScalaModule)
   private val cachedClient          = client
   private val iterativeElasticFetch = new IterativeElasticFetch(client)
 
@@ -92,11 +116,65 @@ trait ElasticsearchClient { this: KoutaJsonFormats with Logging =>
       val notTallennettu = not(termsQuery("tila.keyword", "tallennettu"))
 
       query.fold[Future[IndexedSeq[T]]](
-        executeScrollQuery(search(index).query(notTallennettu).keepAlive("1m").size(500))
+        executeScrollQuery(ElasticApi.search(index).query(notTallennettu).keepAlive("1m").size(500))
       )(q => {
-        val request = search(index).bool(must(notTallennettu, q)).keepAlive("1m").size(500)
+        val request = ElasticApi.search(index).bool(must(notTallennettu, q)).keepAlive("1m").size(500)
         executeScrollQuery(request)
       })
+    }
+  }
+//
+  protected def searchItemsNew[T: ClassTag](queryList: java.util.List[query_dsl.Query]): IndexedSeq[T] = { // List[T] = {
+    val searchSize = 500
+    try {
+      val openPitRequest = new OpenPointInTimeRequest.Builder()
+        .index(index)
+        .keepAlive(new Time.Builder().time("1m").build())
+        .build()
+      val pointInTimeReference: PointInTimeReference = new PointInTimeReference.Builder()
+        .keepAlive(new Time.Builder().time("1m").build())
+        .id(clientJava.openPointInTime(openPitRequest).id())
+        .build()
+      val sortOpt =
+        new SortOptions.Builder().field(FieldSort.of(f => f.field("oid.keyword").order(SortOrder.Asc))).build()
+      val query = QueryBuilders.bool.must(queryList).build._toQuery()
+      var searchRequestBuilder =
+        new SearchRequest.Builder().query(query).size(searchSize).sort(sortOpt).pit(pointInTimeReference)
+
+      val searchRequest = searchRequestBuilder.build()
+      logger.info("searchRequest.query().toString = " +searchRequest.query().toString)
+      var response: co.elastic.clients.elasticsearch.core.SearchResponse[Map[String, Object]] =
+        clientJava.search(searchRequest, classOf[Map[String, Object]])
+
+      var hitList = new util.ArrayList[search.Hit[Map[String, Object]]]
+      hitList.addAll(response.hits().hits())
+      var hitCount = hitList.size()
+
+      // Search rest of results (While hitCount equals searchSize there is more search results)
+      while (hitCount == searchSize) {
+        val lastHit = response.hits().hits().last
+        val lastHitSort = lastHit.sort()
+
+        searchRequestBuilder = new SearchRequest.Builder()
+          .query(query)
+          .sort(sortOpt)
+          .size(searchSize)
+          .pit(pointInTimeReference)
+          .searchAfter(lastHitSort)
+        response = clientJava.search(searchRequestBuilder.build(), classOf[Object])
+        hitList.addAll(response.hits().hits())
+        hitCount = response.hits().hits().size()
+      }
+
+      val listToReturn =
+//        hitList.map(hit => mapper.convertValue(hit.source(), classTag[T].runtimeClass).asInstanceOf[T]).toList
+        hitList.map(hit => mapper.convertValue(hit.source(), classTag[T].runtimeClass).asInstanceOf[T]).toIndexedSeq
+      listToReturn
+//      List.empty
+    } catch {
+      case e: Exception =>
+        logger.error("Got error: " + e.printStackTrace())
+        IndexedSeq.empty
     }
   }
 
@@ -106,12 +184,12 @@ trait ElasticsearchClient { this: KoutaJsonFormats with Logging =>
       limit: Option[Int]
   ): Future[IndexedSeq[T]] = {
     timed(s"Search item bulks from ElasticSearch (Query: ${query}, offset: ${offset}, limit: ${limit})", 100) {
-      val request = search(index).query(query.get).keepAlive("1m").size(500)
+      val request = ElasticApi.search(index).query(query.get).keepAlive("1m").size(500)
       executeScrollQuery[T](request)
     }
   }
 
-  private def executeScrollQuery[T: HitReader: ClassTag](req: SearchRequest): Future[IndexedSeq[T]] = {
+  private def executeScrollQuery[T: HitReader: ClassTag](req: com.sksamuel.elastic4s.requests.searches.SearchRequest): Future[IndexedSeq[T]] = {
     implicit val duration: FiniteDuration = Duration(1, TimeUnit.MINUTES)
     logger.info(s"Elasticsearch request: ${req.show}")
     iterativeElasticFetch
@@ -145,4 +223,28 @@ object ElasticsearchClient {
       httpClientConfigCallback
     )
   )
+
+  val mapper: ObjectMapper = new ObjectMapper()
+    .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
+    .registerModule(DefaultScalaModule)
+
+  lazy val providerJavaClient = {
+    val provider = new BasicCredentialsProvider
+    val credentials = new UsernamePasswordCredentials(config.username, config.password)
+    provider.setCredentials(AuthScope.ANY, credentials)
+    provider
+  }
+  val restClient = RestClient
+    .builder(HttpHost.create(config.elasticUrl))
+    .setHttpClientConfigCallback(new HttpClientConfigCallback() {
+      def customizeHttpClient(httpClientBuilder: HttpAsyncClientBuilder): HttpAsyncClientBuilder = {
+        httpClientBuilder.disableAuthCaching
+        httpClientBuilder.setDefaultCredentialsProvider(providerJavaClient)
+      }
+    })
+    .build()
+  val transport: ElasticsearchTransport =
+    new RestClientTransport(restClient, new JacksonJsonpMapper(ElasticsearchClient.mapper))
+  val clientJava: co.elastic.clients.elasticsearch.ElasticsearchClient =
+    new elasticsearch.ElasticsearchClient(transport)
 }

@@ -1,5 +1,6 @@
 package fi.oph.kouta.internal.elasticsearch
 
+import co.elastic.clients.elasticsearch
 import com.github.blemale.scaffeine.Scaffeine
 import com.sksamuel.elastic4s.ElasticClient
 import com.sksamuel.elastic4s.json4s.ElasticJson4s.Implicits._
@@ -14,7 +15,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 import scala.concurrent.duration.DurationLong
 
-class ValintaperusteClient(val index: String, val client: ElasticClient)
+class ValintaperusteClient(val index: String, val client: ElasticClient, val clientJava: elasticsearch.ElasticsearchClient)
     extends KoutaJsonFormats
     with Logging
     with ElasticsearchClient {
@@ -27,4 +28,4 @@ class ValintaperusteClient(val index: String, val client: ElasticClient)
     valintaperusteCache.getFuture(id, id => getItem[ValintaperusteIndexed](id.toString).map(_.toValintaperuste))
 }
 
-object ValintaperusteClient extends ValintaperusteClient("valintaperuste-kouta", ElasticsearchClient.client)
+object ValintaperusteClient extends ValintaperusteClient("valintaperuste-kouta", ElasticsearchClient.client, ElasticsearchClient.clientJava)

@@ -1,5 +1,6 @@
 package fi.oph.kouta.internal.elasticsearch
 
+import co.elastic.clients.elasticsearch
 import com.sksamuel.elastic4s.ElasticApi.{must, rangeQuery, should, termsQuery}
 import com.sksamuel.elastic4s.{ElasticClient, ElasticDateMath}
 import com.sksamuel.elastic4s.json4s.ElasticJson4s.Implicits._
@@ -19,7 +20,7 @@ import java.util.NoSuchElementException
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class ToteutusClient(val index: String, val client: ElasticClient)
+class ToteutusClient(val index: String, val client: ElasticClient, val clientJava: elasticsearch.ElasticsearchClient)
     extends KoutaJsonFormats
     with Logging
     with ElasticsearchClient {
@@ -84,4 +85,4 @@ class ToteutusClient(val index: String, val client: ElasticClient)
   }
 }
 
-object ToteutusClient extends ToteutusClient("toteutus-kouta", ElasticsearchClient.client)
+object ToteutusClient extends ToteutusClient("toteutus-kouta", ElasticsearchClient.client, ElasticsearchClient.clientJava)

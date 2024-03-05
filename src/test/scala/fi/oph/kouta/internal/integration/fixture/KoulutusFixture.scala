@@ -13,7 +13,7 @@ trait KoulutusFixture extends KoutaIntegrationSpec {
 
   addServlet(
     new KoulutusServlet(
-      new KoulutusService(new KoulutusClient("koulutus-kouta", TempElasticClient.client)),
+      new KoulutusService(new KoulutusClient("koulutus-kouta", TempElasticClient.client, TempElasticClient.clientJava)),
       sessionDAO
     ),
     KoulutusPath
