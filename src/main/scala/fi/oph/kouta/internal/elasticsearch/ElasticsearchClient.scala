@@ -123,7 +123,7 @@ trait ElasticsearchClient { this: KoutaJsonFormats with Logging =>
       })
     }
   }
-//
+
   protected def searchItemsNew[T: ClassTag](queryList: java.util.List[query_dsl.Query]): IndexedSeq[T] = { // List[T] = {
     val searchSize = 500
     try {
@@ -142,7 +142,7 @@ trait ElasticsearchClient { this: KoutaJsonFormats with Logging =>
         new SearchRequest.Builder().query(query).size(searchSize).sort(sortOpt).pit(pointInTimeReference)
 
       val searchRequest = searchRequestBuilder.build()
-      logger.info("searchRequest.query().toString = " +searchRequest.query().toString)
+      logger.info("searchRequest.query().toString = " + searchRequest.query().toString)
       var response: co.elastic.clients.elasticsearch.core.SearchResponse[Map[String, Object]] =
         clientJava.search(searchRequest, classOf[Map[String, Object]])
 
@@ -152,7 +152,7 @@ trait ElasticsearchClient { this: KoutaJsonFormats with Logging =>
 
       // Search rest of results (While hitCount equals searchSize there is more search results)
       while (hitCount == searchSize) {
-        val lastHit = response.hits().hits().last
+        val lastHit     = response.hits().hits().last
         val lastHitSort = lastHit.sort()
 
         searchRequestBuilder = new SearchRequest.Builder()
@@ -189,7 +189,9 @@ trait ElasticsearchClient { this: KoutaJsonFormats with Logging =>
     }
   }
 
-  private def executeScrollQuery[T: HitReader: ClassTag](req: com.sksamuel.elastic4s.requests.searches.SearchRequest): Future[IndexedSeq[T]] = {
+  private def executeScrollQuery[T: HitReader: ClassTag](
+      req: com.sksamuel.elastic4s.requests.searches.SearchRequest
+  ): Future[IndexedSeq[T]] = {
     implicit val duration: FiniteDuration = Duration(1, TimeUnit.MINUTES)
     logger.info(s"Elasticsearch request: ${req.show}")
     iterativeElasticFetch
@@ -229,7 +231,7 @@ object ElasticsearchClient {
     .registerModule(DefaultScalaModule)
 
   lazy val providerJavaClient = {
-    val provider = new BasicCredentialsProvider
+    val provider    = new BasicCredentialsProvider
     val credentials = new UsernamePasswordCredentials(config.username, config.password)
     provider.setCredentials(AuthScope.ANY, credentials)
     provider

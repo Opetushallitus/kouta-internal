@@ -66,93 +66,93 @@ class HakuClient(val index: String, val client: ElasticClient, val clientJava: e
       vuosi: Option[Int],
       includeHakukohdeOids: Boolean
   ): Future[Seq[Haku]] = {
-    val ataruIdQueryOld      = ataruId.map(termsQuery("hakulomakeAtaruId.keyword", _))
-   val ataruIdQuery = ataruId.map(t =>
-     (TermsQuery.of(m => m.field("hakulomakeAtaruId.keyword").terms(
-       new TermsQueryField.Builder()
-         .value(ataruId.toList.map(m => FieldValue.of(m)).asJava)
-         .build()
-     ))._toQuery()))
 
-    val alkamisvuosiQueryOld = vuosi.map(termsQuery("metadata.koulutuksenAlkamiskausi.koulutuksenAlkamisvuosi", _))
-    val alkamisvuosiQuery = vuosi.map(t =>
-      TermsQuery.of(m => m.field("metadata.koulutuksenAlkamiskausi.koulutuksenAlkamisvuosi").terms(
-        new TermsQueryField.Builder()
-          .value(vuosi.toList.map(m => FieldValue.of(m)).asJava)
-          .build()
-      ))._toQuery())
-
-    val hakuvuosiQueryOld    = vuosi.map(termsQuery("hakuvuosi", _))
-    val hakuvuosiQuery = vuosi.map(t =>
-      TermsQuery.of(m => m.field("hakuvuosi").terms(
-        new TermsQueryField.Builder()
-          .value(vuosi.toList.map(m => FieldValue.of(m)).asJava)
-          .build()
-      ))._toQuery())
-    val tarjoajaQueryOld = tarjoajaOids.map(oids =>
-      should(
-        oids.map(oid =>
-          should(
-            termsQuery("hakukohteet.jarjestyspaikka.oid", oid.toString),
-            termsQuery("hakukohteet.toteutus.tarjoajat.oid", oid.toString)
-          )
+    val ataruIdQuery = ataruId.map(t =>
+      (TermsQuery
+        .of(m =>
+          m.field("hakulomakeAtaruId.keyword")
+            .terms(
+              new TermsQueryField.Builder()
+                .value(ataruId.toList.map(m => FieldValue.of(m)).asJava)
+                .build()
+            )
         )
-      )
+        ._toQuery())
     )
+
+    val alkamisvuosiQuery = vuosi.map(t =>
+      TermsQuery
+        .of(m =>
+          m.field("metadata.koulutuksenAlkamiskausi.koulutuksenAlkamisvuosi")
+            .terms(
+              new TermsQueryField.Builder()
+                .value(vuosi.toList.map(m => FieldValue.of(m)).asJava)
+                .build()
+            )
+        )
+        ._toQuery()
+    )
+
+    val hakuvuosiQuery = vuosi.map(t =>
+      TermsQuery
+        .of(m =>
+          m.field("hakuvuosi")
+            .terms(
+              new TermsQueryField.Builder()
+                .value(vuosi.toList.map(m => FieldValue.of(m)).asJava)
+                .build()
+            )
+        )
+        ._toQuery()
+    )
+
     val tarjoajaQuery =
       tarjoajaOids.map(oids =>
-        QueryBuilders.bool.should(
-          oids.map(oid =>
-            QueryBuilders.bool.should(
-              TermsQuery.of(m => m.field("hakukohteet.jarjestyspaikka.oid").terms(
-                new TermsQueryField.Builder()
-                  .value(List(FieldValue.of(oid.toString())).asJava)
-                  .build()
-              ))._toQuery(),
-              TermsQuery.of(m => m.field("hakukohteet.toteutus.tarjoajat.oid").terms(
-                new TermsQueryField.Builder()
-                  .value(List(FieldValue.of(oid.toString())).asJava)
-                  .build()
-              ))._toQuery()
-            ).build()._toQuery()).toList.asJava).build()._toQuery())
+        QueryBuilders.bool
+          .should(
+            oids
+              .map(oid =>
+                QueryBuilders.bool
+                  .should(
+                    TermsQuery
+                      .of(m =>
+                        m.field("hakukohteet.jarjestyspaikka.oid")
+                          .terms(
+                            new TermsQueryField.Builder()
+                              .value(List(FieldValue.of(oid.toString())).asJava)
+                              .build()
+                          ))
+                      ._toQuery(),
+                    TermsQuery
+                      .of(m =>
+                        m.field("hakukohteet.toteutus.tarjoajat.oid")
+                          .terms(
+                            new TermsQueryField.Builder()
+                              .value(List(FieldValue.of(oid.toString())).asJava)
+                              .build()
+                          ))
+                      ._toQuery()).build()._toQuery()
+              ).toList.asJava
+          ).build()._toQuery())
 
     val tilaQuery =
       Option.apply(
         QueryBuilders.bool.mustNot(
-          TermsQuery.of(m => m.field("tila.keyword").terms(
-            new TermsQueryField.Builder()
-              .value(List(FieldValue.of("tallennettu")).asJava)
-              .build()
-          ))._toQuery()
-        ).build()._toQuery())
+            TermsQuery
+              .of(m =>
+                m.field("tila.keyword")
+                  .terms(
+                    new TermsQueryField.Builder()
+                      .value(List(FieldValue.of("tallennettu")).asJava)
+                      .build()
+                  ))._toQuery()).build()._toQuery())
 
+    val queryList = List(ataruIdQuery, tarjoajaQuery, alkamisvuosiQuery, hakuvuosiQuery).flatten.asJava
 
-
-    val queryList = List(
-      ataruIdQuery,
-      tarjoajaQuery,
-      alkamisvuosiQuery,
-      hakuvuosiQuery).flatten.asJava
-
-    val queryListFinal = List(
-      tilaQuery,
-      Some(QueryBuilders.bool.must(queryList).build._toQuery())).flatten.asJava
-
-    // Tämä toimii teknisesti, muttei ehkä oikealla tavalla
-    //Future(searchItemsNew[HakuJavaClient](queryListFinal).map(_.toResult()).toSeq.map(_.toHaku()))
-
-
-
-//    val query = ataruIdQueryOld ++ tarjoajaQueryOld ++ alkamisvuosiQueryOld ++ hakuvuosiQueryOld
-
-    // Alkup haku
-//  val origSearch =  searchItems[HakuIndexed](if (query.isEmpty) None else Some(must(query)))
-//      .map(_.filter(byTarjoajaAndTila(tarjoajaOids, _)).map(_.toHaku(includeHakukohdeOids)))
+    val queryListFinal = List(tilaQuery, Some(QueryBuilders.bool.must(queryList).build._toQuery())).flatten.asJava
 
     Future(searchItemsNew[HakuJavaClient](queryListFinal).map(_.toResult()))
       .map(_.filter(byTarjoajaAndTila(tarjoajaOids, _)).map(_.toHaku(includeHakukohdeOids)))
-    //Future(
-      //searchItemsNew[HakuJavaClient](queryListFinal).map(_.toResult()).toSeq.map(_.toHaku()))
   }
 
   def hakuOidsByJulkaisutila(
