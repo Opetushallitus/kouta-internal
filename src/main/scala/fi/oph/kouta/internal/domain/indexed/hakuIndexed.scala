@@ -108,7 +108,10 @@ case class HakuJavaClient @JsonCreator() (
       metadata = createHakuMetadataIndexed(metadata), //TODO
       organisaatio = Some(Organisaatio(oid = OrganisaatioOid(organisaatio.oid), toKielistettyMap(organisaatio.nimi))),
       hakuajat = hakuajat.map(hakuaika => {
-        Ajanjakso(parseLocalDateTime(hakuaika.alkaa), hakuaika.paattyy.map(parseLocalDateTime))
+        Ajanjakso(
+          alkaa = parseLocalDateTime(hakuaika.alkaa),
+          paattyy = if (hakuaika.paattyy != null) Option.apply(parseLocalDateTime(hakuaika.paattyy)) else None
+        )
       }),
       valintakokeet = getValintakokeet(valintakokeet),
       muokkaaja = Muokkaaja(UserOid(muokkaaja.oid)),
@@ -138,7 +141,7 @@ case class HakuJavaClient @JsonCreator() (
             aika = tilaisuus.aika.map(aika =>
               Ajanjakso(
                 alkaa = parseLocalDateTime(aika.alkaa),
-                paattyy = aika.paattyy.map(paattyy => parseLocalDateTime(paattyy))
+                paattyy = if (aika.paattyy != null) Option.apply(parseLocalDateTime(aika.paattyy)) else None
               )
             ),
             lisatietoja = toKielistettyMap(tilaisuus.lisatietoja)
@@ -170,14 +173,14 @@ case class HakuJavaClient @JsonCreator() (
         tulevaisuudenAikataulu = metadataES.tulevaisuudenAikataulu.map(m =>
           Ajanjakso(
             alkaa = parseLocalDateTime(m.alkaa),
-            paattyy = m.paattyy.map(parseLocalDateTime)
+            paattyy = if (m.paattyy != null) Option.apply(parseLocalDateTime(m.paattyy)) else None
           )
         ),
         koulutuksenAlkamiskausi = metadataES.koulutuksenAlkamiskausi.map(koulutuksenAlkamiskausi =>
           KoulutuksenAlkamiskausi(
-            alkamiskausityyppi = Alkamiskausityyppi.withName(koulutuksenAlkamiskausi.alkamiskausityyppi.get),
-            koulutuksenAlkamiskausi = koulutuksenAlkamiskausi.koulutuksenAlkamiskausi.map(ka => KoodiUri(ka.koodiUri)),
-            koulutuksenAlkamisvuosi = koulutuksenAlkamiskausi.koulutuksenAlkamisvuosi
+            alkamiskausityyppi = Alkamiskausityyppi.withName(koulutuksenAlkamiskausi.alkamiskausityyppi),
+            koulutuksenAlkamiskausi = Option.apply(KoodiUri(koulutuksenAlkamiskausi.koulutuksenAlkamiskausi.koodiUri)),
+            koulutuksenAlkamisvuosi = Option.apply(koulutuksenAlkamiskausi.koulutuksenAlkamisvuosi)
           )
         )
       )

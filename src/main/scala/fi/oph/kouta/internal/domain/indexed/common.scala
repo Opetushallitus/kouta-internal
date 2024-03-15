@@ -37,18 +37,18 @@ case class ValintakoeIndexed(
 
 case class AikaJakso @JsonCreator() (
     @JsonProperty("alkaa") alkaa: String,
-    @JsonProperty("formatoituAlkaa") formatoituAlkaa: Map[String, String] = Map(),
-    @JsonProperty("formatoituPaattyy") formatoituPaattyy: Map[String, String] = Map(),
-    @JsonProperty("paattyy") paattyy: Option[String]
+    @JsonProperty("formatoituAlkaa") formatoituAlkaa: Map[String, String],
+    @JsonProperty("formatoituPaattyy") formatoituPaattyy: Map[String, String],
+    @JsonProperty("paattyy") paattyy: String
 )
 
 case class KoulutuksenAlkamiskausiHakukohdeES @JsonCreator() (
-    @JsonProperty("alkamiskausityyppi") alkamiskausityyppi: Option[String],
-    //    @JsonProperty("henkilokohtaisenSuunnitelmanLisatiedot") henkilokohtaisenSuunnitelmanLisatiedot: Map[String, String] = Map(),
-    @JsonProperty("koulutuksenAlkamispaivamaara") koulutuksenAlkamispaivamaara: Option[String],
-    @JsonProperty("koulutuksenPaattymispaivamaara") koulutuksenPaattymispaivamaara: Option[String],
-    @JsonProperty("koulutuksenAlkamiskausi") koulutuksenAlkamiskausi: Option[KoulutuksenAlkamiskausiMapES],
-    @JsonProperty("koulutuksenAlkamisvuosi") koulutuksenAlkamisvuosi: Option[String]
+    @JsonProperty("alkamiskausityyppi") alkamiskausityyppi: String,
+    @JsonProperty("henkilokohtaisenSuunnitelmanLisatiedot") henkilokohtaisenSuunnitelmanLisatiedot: Map[String, String],
+    @JsonProperty("koulutuksenAlkamispaivamaara") koulutuksenAlkamispaivamaara: String,
+    @JsonProperty("koulutuksenPaattymispaivamaara") koulutuksenPaattymispaivamaara: String,
+    @JsonProperty("koulutuksenAlkamiskausi") koulutuksenAlkamiskausi: KoulutuksenAlkamiskausiMapES,
+    @JsonProperty("koulutuksenAlkamisvuosi") koulutuksenAlkamisvuosi: String
 )
 
 case class KoulutuksenAlkamiskausiMapES @JsonCreator() (
@@ -58,12 +58,12 @@ case class KoulutuksenAlkamiskausiMapES @JsonCreator() (
 
 case class ValintakoeES @JsonCreator() (
     @JsonProperty("id") id: String,
-    @JsonProperty("tyyppi") tyyppi: Option[ValintakoeTyyppi],
+    @JsonProperty("tyyppi") tyyppi: Option[ValintakoeTyyppiES],
     @JsonProperty("nimi") nimi: Map[String, String] = Map(),
     @JsonProperty("metadata") metadata: Option[ValintaKoeMetadataES],
     @JsonProperty("tilaisuudet") tilaisuudet: List[ValintakoeTilaisuus] = List()
 )
-case class ValintakoeTyyppi @JsonCreator() (
+case class ValintakoeTyyppiES @JsonCreator() (
     @JsonProperty("koodiUri") koodiUri: String,
     @JsonProperty("nimi") nimi: Map[String, String]
 )
