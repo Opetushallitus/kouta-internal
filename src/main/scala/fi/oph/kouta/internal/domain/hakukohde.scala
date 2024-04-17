@@ -329,5 +329,6 @@ case class Hakukohde(
     hakukohde: Option[KoodiUri],
     lukioTieto: Option[LukioTieto],
     paateltyAlkamiskausi: Option[PaateltyAlkamiskausi],
-    odwKkTasot: Option[OdwKkTasot]
+    odwKkTasot: Option[OdwKkTasot],
+    jarjestyspaikkaHierarkiaNimi: Option[Kielistetty]
 ) extends PerustiedotWithOid

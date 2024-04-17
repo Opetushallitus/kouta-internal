@@ -59,6 +59,7 @@ case class HakuIndexed(
       Haku(
         oid = oid,
         hakukohdeOids = if (includeHakukohdeOids) Some(hakukohteet.map(_.oid)) else None,
+        totalHakukohteet = hakukohteet.length,
         tila = tila,
         nimi = nimi,
         hakutapaKoodiUri = hakutapa.map(_.koodiUri),
