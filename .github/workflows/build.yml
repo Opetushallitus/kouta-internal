@@ -6,9 +6,16 @@ on:
     paths-ignore:
       - '**.md'
 
+permissions:
+  id-token: write   # This is required for requesting the JWT
+  contents: read    # This is required for actions/checkout read
+  security-events: write # Required for trivy results
+
 env:
-  AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-  AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+  DOCKER_BUILD_DIR: '/tmp/docker_build'
+  ARTIFACT_NAME: 'kouta-internal'
+  BASE_IMAGE: 'utility/baseimage-fatjar-openjdk11:master'
+  ARTIFACT_DEST_PATH: '/usr/local/bin'
 
 jobs:
   test-and-build:
@@ -27,15 +34,40 @@ jobs:
       - uses: szenius/set-timezone@v1.0
         with:
           timezoneLinux: "Europe/Helsinki"
+      
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+          role-session-name: kouta-internal-build
+          aws-region: eu-west-1
+
+      - name: Login to ECR
+        id: ecr-login
+        uses: aws-actions/amazon-ecr-login@v1
 
       - name: Build with Maven
         run: |
-          git clone https://github.com/Opetushallitus/ci-tools.git
-          source ci-tools/common/setup-tools.sh
           cd postgresql/docker
           docker build --tag koutainternal-postgres .
           cd -
           mvn clean package -B
+
+      - name: Run Trivy vulnerability scanner with rootfs command
+        uses: aquasecurity/trivy-action@master
+        with:
+          scan-type: 'rootfs'
+          image-ref: 'alpine:latest'
+          scan-ref: '/github/workspace/target/'
+          ignore-unfixed: true
+          format: 'sarif'
+          output: 'trivy-results.sarif'
+          severity: 'CRITICAL'
+
+      - name: Upload Trivy scan results to GitHub Security tab
+        uses: github/codeql-action/upload-sarif@v2
+        with:
+          sarif_file: 'trivy-results.sarif'
 
       - uses: actions/cache@v3
         id: restore-build
@@ -50,6 +82,29 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v2
+
+      - name: Setup buildx
+        uses: docker/setup-buildx-action@v2
+        id: buildx
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+          role-session-name: kouta-internal-deploy
+          aws-region: eu-west-1
+
+      - name: Login to ECR
+        id: ecr-login
+        uses: aws-actions/amazon-ecr-login@v1
+
+      - name: Login to docker with ECR
+        uses: docker/login-action@v2
+        with:
+          registry: ${{ steps.ecr-login.outputs.registry }}
+
       - uses: actions/cache@v3
         id: restore-build
         with:
@@ -57,15 +112,41 @@ jobs:
             target
           key: ${{ github.sha }}
 
-      - name: Build and deploy Docker container
+      - name: Prepare for build
         shell: bash
+        env:
+          ECR_REPO: ${{ steps.ecr-login.outputs.registry }}
         run: |
-          git clone https://github.com/Opetushallitus/ci-tools.git
-          source ci-tools/common/setup-tools.sh
-          export ARTIFACT_NAME="kouta-internal"
+          mkdir -p $DOCKER_BUILD_DIR && mkdir $DOCKER_BUILD_DIR/config && mkdir $DOCKER_BUILD_DIR/artifact
           mv target/kouta-internal-*-jar-with-dependencies.jar $DOCKER_BUILD_DIR/artifact/${ARTIFACT_NAME}.jar
           cp -vr src/main/resources/* $DOCKER_BUILD_DIR/config/
-          export BASE_IMAGE="baseimage-fatjar-openjdk11:master"
-          ./ci-tools/common/pull-image.sh
-          ./ci-tools/github-build/build-fatjar.sh $ARTIFACT_NAME
-          ./ci-tools/github-build/upload-image.sh $ARTIFACT_NAME
+          cp Dockerfile $DOCKER_BUILD_DIR/Dockerfile
+          sed -i -e "s|BASEIMAGE|${ECR_REPO}/${BASE_IMAGE}|g" ${DOCKER_BUILD_DIR}/Dockerfile
+          ./tools/build-docker.sh
+
+      - name: Docker meta for image
+        id: meta
+        uses: docker/metadata-action@v4
+        with:
+          images: |
+            ${{ steps.ecr-login.outputs.registry }}/utility/${{ env.ARTIFACT_NAME }}
+          tags: |
+            type=raw,value=ga-${{ github.run_number }}
+            type=raw,value=${{ github.ref_name }}
+
+      - name: Build image
+        uses: docker/build-push-action@v4
+        with:
+          context: ${{ env.DOCKER_BUILD_DIR }}
+          push: true
+          platforms: linux/amd64, linux/arm64
+          tags: ${{ steps.meta.outputs.tags }}
+          build-args: |
+            NAME=${{ env.ARTIFACT_NAME }}
+            ARTIFACT_DESTINATION=${{ env.ARTIFACT_DEST_PATH }}
+
+      - name: Update build metadata
+        shell: bash
+        run: |
+          BUILD_TIMESTAMP=`TZ='Europe/Helsinki' date +'%Y-%m-%d %H:%M:%S %Z'`
+          aws dynamodb put-item --table-name builds --item "{\"Service\": {\"S\": \"$ARTIFACT_NAME\"}, \"Build\": {\"S\": \"ga-$GITHUB_RUN_NUMBER\"}, \"Branch\": {\"S\": \"$GITHUB_REF_NAME\"}, \"Commit\": {\"S\": \"$GITHUB_SHA\"}, \"Time\": {\"S\": \"$BUILD_TIMESTAMP\"}}" --condition-expression "attribute_not_exists(Id)" --region eu-west-1

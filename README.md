@@ -61,7 +61,7 @@ Kirjoitushetkellä projektissa on ainoastaan yksi migraatio, jossa luodaan sessi
 Ennen lokaalia ajoa täytyy olla elasticsearch pyörimässä. Kontin saa pystyyn kirjautumalla ecr:n ja sitten ajamalla
 ```shell
 aws ecr get-login-password --region eu-west-1 --profile oph-utility | docker login --username AWS --password-stdin 190073735177.dkr.ecr.eu-west-1.amazonaws.com
-docker run --rm --name kouta-elastic --env "discovery.type=single-node" -p 127.0.0.1:9200:9200 -p 127.0.0.1:9300:9300 190073735177.dkr.ecr.eu-west-1.amazonaws.com/utility/elasticsearch-kouta:7.17.3
+docker run --rm --name kouta-elastic --env "discovery.type=single-node" -p 127.0.0.1:9200:9200 -p 127.0.0.1:9300:9300 190073735177.dkr.ecr.eu-west-1.amazonaws.com/utility/elasticsearch-kouta:8.5.2
 ```
 
 Jonkin testiympäristön Elasticsearchia voi hyödyntää helposti seuraavanlaisen ssh-tunnelin avulla:
@@ -112,7 +112,7 @@ esim. untuva-app-kouta-internal
 
 Projekti käyttää [Scalafmt](https://scalameta.org/scalafmt/) formatteria ja mavenin 
 [Spotless](https://github.com/diffplug/spotless/tree/master/plugin-maven) 
-pluginia koodin formatoinnin tarkastamiseen. SKoodin tyyli korjataa käännöksen yhteydessä ajamalla spotless:apply. Voit
+pluginia koodin formatoinnin tarkastamiseen. Koodin tyyli korjataa käännöksen yhteydessä ajamalla spotless:apply. Voit
 vaihtaa idean scalan code style asetuksista formatteriksi scalafmt ja laittaa vaikka päälle
 automaattisen formatoinnin tallennuksen yhteydessä. Spotlessin voi ajaa lokaalisti komennolla
 `mvn spotless:check` tai idean maven-valikosta.
