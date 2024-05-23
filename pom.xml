@@ -453,7 +453,7 @@
         <dependency>
             <groupId>com.sksamuel.elastic4s</groupId>
             <artifactId>elastic4s-client-esjava_2.12</artifactId>
-            <version>8.4.4</version>
+            <version>8.11.5</version>
             <exclusions>
                 <exclusion>
                     <groupId>org.apache.httpcomponents</groupId>
