@@ -24,6 +24,7 @@ kouta-internal.elasticsearch.password={{kouta_internal_elasticsearch_password}}
 kouta-internal.elasticsearch.cacheTimeoutSeconds={{kouta_internal_cache_timeout | default('60')}}
 
 host.virkailija={{host_virkailija}}
+host.alb.virkailija={{host_alb_virkailija}}
 hakukohderyhmapalvelu.service=https://{{host_virkailija}}/hakukohderyhmapalvelu
 hakukohderyhmapalvelu.hakukohteet=https://{{host_virkailija}}/hakukohderyhmapalvelu/api/hakukohderyhma/$1/hakukohteet
 hakukohderyhmapalvelu.hakukohderyhmat=https://{{host_virkailija}}/hakukohderyhmapalvelu/api/hakukohde/$1/hakukohderyhmat
