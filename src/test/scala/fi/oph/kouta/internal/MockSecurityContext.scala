@@ -6,6 +6,7 @@ import fi.vm.sade.javautils.nio.cas.CasClient
 import fi.vm.sade.utils.cas.CasClient.SessionCookie
 import org.asynchttpclient.{Request, Response}
 
+import java.util
 import java.util.concurrent.CompletableFuture
 
 class MockSecurityContext(
@@ -35,6 +36,11 @@ class MockSecurityContext(
         s: SessionCookie,
         s1: SessionCookie
     ): CompletableFuture[java.util.HashMap[SessionCookie, SessionCookie]] = ???
+
+    override def executeAndRetryWithCleanSessionOnStatusCodes(
+        request: Request,
+        set: java.util.Set[Integer]
+    ): CompletableFuture[Response] = ???
   }
 }
 
