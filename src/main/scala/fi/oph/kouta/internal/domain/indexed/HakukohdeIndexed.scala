@@ -20,7 +20,7 @@ import fi.oph.kouta.internal.domain.{
 }
 import fi.vm.sade.utils.slf4j.Logging
 
-case class HakukohdeToteutusIndexed(oid: ToteutusOid, tarjoajat: List[Organisaatio])
+case class HakukohdeToteutusIndexed(oid: ToteutusOid, tarjoajat: List[Organisaatio], opetuskieliKoodiUrit: List[String])
 
 case class AloituspaikatIndexed(lukumaara: Option[Int], ensikertalaisille: Option[Int])
 
