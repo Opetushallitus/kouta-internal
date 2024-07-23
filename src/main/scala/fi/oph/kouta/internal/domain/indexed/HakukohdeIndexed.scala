@@ -179,7 +179,8 @@ case class HakukohdeIndexed(
         hakukohde = hakukohde,
         lukioTieto = metadata.flatMap(m => m.hakukohteenLinja.map(l => LukioTieto(linja = l.linja))),
         paateltyAlkamiskausi = paateltyAlkamiskausi,
-        odwKkTasot = odwKkTasot.map(_.toOdwKkTasot)
+        odwKkTasot = odwKkTasot.map(_.toOdwKkTasot),
+        opetuskieliKoodiUrit = toteutus.opetuskieliKoodiUrit
       )
     } catch {
       case e: Exception => {
