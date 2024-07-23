@@ -158,6 +158,7 @@ trait BaseHaku extends PerustiedotWithOid {
 case class Haku(
     oid: HakuOid,
     hakukohdeOids: Option[List[HakukohdeOid]],
+    totalHakukohteet: Int,
     tila: Julkaisutila,
     nimi: Kielistetty,
     hakutapaKoodiUri: Option[String],
