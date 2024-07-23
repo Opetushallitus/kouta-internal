@@ -10,6 +10,8 @@
     <name>kouta-internal</name>
 
     <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <scala.version>2.12.13</scala.version>
 
         <kouta-common.version>2.19.6-SNAPSHOT</kouta-common.version>
