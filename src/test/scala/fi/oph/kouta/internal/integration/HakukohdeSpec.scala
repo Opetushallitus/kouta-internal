@@ -25,6 +25,12 @@ class HakukohdeSpec extends HakukohdeFixture with AccessControlSpec with Generic
 
   getTests()
 
+  it should "get hakukohde by OID" in {
+    val hakukohde = get[Hakukohde](s"$HakukohdePath/${hakukohdeOid1.toString}", defaultSessionId)
+    hakukohde.oid should equal(hakukohdeOid1)
+    hakukohde.opetuskieliKoodiUrit should contain theSameElementsAs Seq("oppilaitoksenopetuskieli_1#1")
+  }
+
   it should "find hakukohde based on haku OID" in {
     val hakukohteet = get[Seq[Hakukohde]](s"$HakukohdePath/search?haku=${hakuOid.toString}", defaultSessionId)
     hakukohteet.map(_.oid) should contain theSameElementsAs Seq(hakukohdeOid1, hakukohdeOid2)
@@ -103,4 +109,5 @@ class HakukohdeSpec extends HakukohdeFixture with AccessControlSpec with Generic
     }
   }
 
+  override def header = ???
 }

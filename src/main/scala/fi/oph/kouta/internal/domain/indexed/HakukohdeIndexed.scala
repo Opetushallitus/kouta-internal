@@ -20,7 +20,7 @@ import fi.oph.kouta.internal.domain.{
 }
 import fi.vm.sade.utils.slf4j.Logging
 
-case class HakukohdeToteutusIndexed(oid: ToteutusOid, tarjoajat: List[Organisaatio], opetuskieliKoodiUrit: List[String])
+case class HakukohdeToteutusIndexed(oid: ToteutusOid, tarjoajat: List[Organisaatio])
 
 case class AloituspaikatIndexed(lukumaara: Option[Int], ensikertalaisille: Option[Int])
 
@@ -116,7 +116,8 @@ case class HakukohdeIndexed(
     externalId: Option[String],
     hakukohde: Option[KoodiUri],
     paateltyAlkamiskausi: Option[PaateltyAlkamiskausi],
-    odwKkTasot: Option[OdwKkTasotIndexed]
+    odwKkTasot: Option[OdwKkTasotIndexed],
+    opetuskieliKoodiUrit: List[String]
 ) extends WithTila
     with Logging {
   def toHakukohde(oikeusHakukohteeseenFn: OrganisaatioOid => Option[Boolean]): Hakukohde = {
@@ -180,7 +181,7 @@ case class HakukohdeIndexed(
         lukioTieto = metadata.flatMap(m => m.hakukohteenLinja.map(l => LukioTieto(linja = l.linja))),
         paateltyAlkamiskausi = paateltyAlkamiskausi,
         odwKkTasot = odwKkTasot.map(_.toOdwKkTasot),
-        opetuskieliKoodiUrit = toteutus.opetuskieliKoodiUrit
+        opetuskieliKoodiUrit = opetuskieliKoodiUrit
       )
     } catch {
       case e: Exception => {
