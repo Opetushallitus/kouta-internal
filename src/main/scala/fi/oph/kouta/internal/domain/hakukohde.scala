@@ -276,6 +276,14 @@ case class PainotettuArvosana(koodiUri: Option[String], painokerroin: Option[Dou
     |           description: Hakukohteen päätelty alkamiskausi (tieto peräisin hakukohteelta, haulta tai toteutukselta)
     |           example:
     |             koodiUri: hakukohteetperusopetuksenjalkeinenyhteishaku_124#1
+    |        opetuskieliKoodiUrit:
+    |           type: array
+    |           description: Lista opetuskielistä. Viittaa [koodistoon](https://virkailija.testiopintopolku.fi/koodisto-ui/html/koodisto/oppilaitoksenopetuskieli/1)
+    |           items:
+    |             type: string
+    |             example:
+    |               - oppilaitoksenopetuskieli_1#1
+    |               - oppilaitoksenopetuskieli_2#1
     |
     |"""
 )
@@ -330,5 +338,6 @@ case class Hakukohde(
     lukioTieto: Option[LukioTieto],
     paateltyAlkamiskausi: Option[PaateltyAlkamiskausi],
     odwKkTasot: Option[OdwKkTasot],
-    jarjestyspaikkaHierarkiaNimi: Option[Kielistetty]
+    jarjestyspaikkaHierarkiaNimi: Option[Kielistetty],
+    opetuskieliKoodiUrit: Seq[String]
 ) extends PerustiedotWithOid
