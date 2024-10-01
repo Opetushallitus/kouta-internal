@@ -2,8 +2,7 @@ package fi.oph.kouta.internal.domain
 
 import java.time.LocalDateTime
 import java.util.UUID
-
-import fi.oph.kouta.internal.domain.enums.LiitteenToimitustapa
+import fi.oph.kouta.internal.domain.enums.{Kieli, LiitteenToimitustapa}
 import fi.oph.kouta.internal.swagger.SwaggerModel
 
 @SwaggerModel(
@@ -115,7 +114,7 @@ case class LiitteenToimitusosoite(
                 |          allOf:
                 |            - $ref: '#/components/schemas/LiitteenPostinumero'
                 |""")
-case class LiitteenOsoite(osoite: Option[Kielistetty], postinumero: Option[LiitteenPostinumero])
+case class LiitteenOsoite(osoite: Option[Kielistetty], postinumero: Option[Map[Kieli, LiitteenPostinumero]])
 
 @SwaggerModel("""    LiitteenPostinumero:
                 |      type: object
@@ -130,4 +129,4 @@ case class LiitteenOsoite(osoite: Option[Kielistetty], postinumero: Option[Liitt
                 |          allOf:
                 |            - $ref: '#/components/schemas/Teksti'
                 |""")
-case class LiitteenPostinumero(koodiUri: Option[String], nimi: Option[Kielistetty])
+case class LiitteenPostinumero(koodiUri: Option[String], nimi: Option[String])
