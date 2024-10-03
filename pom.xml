@@ -10,6 +10,8 @@
     <name>kouta-internal</name>
 
     <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <scala.version>2.12.13</scala.version>
 
         <kouta-common.version>2.20.0-SNAPSHOT</kouta-common.version>
@@ -17,8 +19,8 @@
         <!-- Korjaa käännösvirheen:
              [ERROR] Source option 5 is no longer supported. Use 6 or later.
              [ERROR] Target option 1.5 is no longer supported. Use 1.6 or later. -->
-        <maven.compiler.source>1.8</maven.compiler.source>
-        <maven.compiler.target>1.8</maven.compiler.target>
+        <maven.compiler.source>11</maven.compiler.source>
+        <maven.compiler.target>11</maven.compiler.target>
 
         <!-- Utility properties -->
         <scala-utils.version>1.2.3-SNAPSHOT</scala-utils.version>
@@ -42,7 +44,7 @@
         <!-- Database related properties -->
         <flyway.version>8.5.12</flyway.version>
         <slick.version>3.2.3</slick.version>
-        <jdbc.version>42.2.6</jdbc.version>
+        <postgresql.version>42.7.3</postgresql.version>
 
         <!-- Test properties -->
         <scala-test.version>3.2.0-M4</scala-test.version>
@@ -67,7 +69,7 @@
             <dependency>
                 <groupId>com.fasterxml.jackson.core</groupId>
                 <artifactId>jackson-databind</artifactId>
-                <version>2.13.2.1</version>
+                <version>2.13.4.2</version>
             </dependency>
             <dependency>
                 <groupId>com.github.java-json-tools</groupId>
@@ -82,7 +84,7 @@
             <dependency>
                 <groupId>org.apache.commons</groupId>
                 <artifactId>commons-lang3</artifactId>
-                <version>3.12.0</version>
+                <version>3.15.0</version>
             </dependency>
             <dependency>
                 <groupId>com.fasterxml.jackson.dataformat</groupId>
@@ -379,7 +381,7 @@
         <dependency>
             <groupId>fi.vm.sade.java-utils</groupId>
             <artifactId>java-cas</artifactId>
-            <version>1.0.7-SNAPSHOT</version>
+            <version>1.2.1-SNAPSHOT</version>
         </dependency>
 
         <!-- Cas related dependencies -->
@@ -580,7 +582,7 @@
         <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
-            <version>${jdbc.version}</version>
+            <version>${postgresql.version}</version>
         </dependency>
 
         <!-- Test dependencies -->
@@ -806,6 +808,19 @@
     </dependencies>
 
     <repositories>
+        <repository>
+            <id>github</id>
+            <url>https://maven.pkg.github.com/opetushallitus/packages</url>
+            <releases>
+                <enabled>false</enabled>
+                <checksumPolicy>warn</checksumPolicy>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+                <updatePolicy>daily</updatePolicy>
+                <checksumPolicy>warn</checksumPolicy>
+            </snapshots>
+        </repository>
         <repository>
             <id>oph-sade-artifactory-snapshots</id>
             <url>https://artifactory.opintopolku.fi/artifactory/oph-sade-snapshot-local</url>
