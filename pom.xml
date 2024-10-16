@@ -14,7 +14,7 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <scala.version>2.12.13</scala.version>
 
-        <kouta-common.version>2.19.6-SNAPSHOT</kouta-common.version>
+        <kouta-common.version>2.20.0-SNAPSHOT</kouta-common.version>
 
         <!-- Korjaa käännösvirheen:
              [ERROR] Source option 5 is no longer supported. Use 6 or later.
@@ -187,6 +187,11 @@
                 <groupId>org.scala-lang.modules</groupId>
                 <artifactId>scala-xml_2.12</artifactId>
                 <version>${scala-xml.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>joda-time</groupId>
+                <artifactId>joda-time</artifactId>
+                <version>2.10.13</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
