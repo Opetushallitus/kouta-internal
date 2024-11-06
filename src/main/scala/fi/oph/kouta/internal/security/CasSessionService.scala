@@ -4,7 +4,7 @@ import fi.oph.kouta.internal.KoutaConfigurationFactory
 import fi.oph.kouta.internal.client.KayttooikeusClient
 import fi.oph.kouta.internal.database.SessionDAO
 import fi.vm.sade.utils.cas.CasClient.Username
-import fi.vm.sade.utils.slf4j.Logging
+import fi.oph.kouta.logging.Logging
 
 import java.util.UUID
 import java.util.concurrent.TimeUnit

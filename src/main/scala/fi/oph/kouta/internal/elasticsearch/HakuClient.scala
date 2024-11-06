@@ -10,7 +10,7 @@ import fi.oph.kouta.internal.domain.indexed.HakuIndexed
 import fi.oph.kouta.internal.domain.oid.{HakuOid, OrganisaatioOid}
 import fi.oph.kouta.internal.domain.{Haku, OdwHaku}
 import fi.oph.kouta.internal.util.{ElasticCache, KoutaJsonFormats}
-import fi.vm.sade.utils.slf4j.Logging
+import fi.oph.kouta.logging.Logging
 
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter

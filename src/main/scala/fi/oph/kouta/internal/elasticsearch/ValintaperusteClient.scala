@@ -7,7 +7,7 @@ import fi.oph.kouta.internal.KoutaConfigurationFactory
 import fi.oph.kouta.internal.domain.Valintaperuste
 import fi.oph.kouta.internal.domain.indexed.ValintaperusteIndexed
 import fi.oph.kouta.internal.util.KoutaJsonFormats
-import fi.vm.sade.utils.slf4j.Logging
+import fi.oph.kouta.logging.Logging
 
 import java.util.UUID
 import scala.concurrent.ExecutionContext.Implicits.global

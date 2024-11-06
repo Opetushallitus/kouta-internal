@@ -3,7 +3,7 @@ package fi.oph.kouta.internal.database
 import java.util.concurrent.TimeUnit
 import com.zaxxer.hikari.{HikariConfig, HikariDataSource}
 import fi.oph.kouta.internal.{KoutaConfigurationFactory, KoutaDatabaseConfiguration}
-import fi.vm.sade.utils.slf4j.Logging
+import fi.oph.kouta.logging.Logging
 import org.apache.commons.lang3.builder.ToStringBuilder
 import org.flywaydb.core.Flyway
 import org.postgresql.util.PSQLException

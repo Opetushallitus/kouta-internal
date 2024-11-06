@@ -1,11 +1,10 @@
 package fi.oph.kouta.internal.servlet
 
 import java.util.UUID
-import fi.vm.sade.utils.Timer.timed
-
 import fi.oph.kouta.internal.database.SessionDAO
 import fi.oph.kouta.internal.security.{Authenticated, AuthenticationFailedException}
-import fi.vm.sade.utils.slf4j.Logging
+import fi.oph.kouta.logging.Logging
+import fi.oph.kouta.util.Timer.timed
 import org.scalatra.ScalatraServlet
 
 trait CasAuthenticatedServlet {

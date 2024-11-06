@@ -5,7 +5,7 @@ import com.sksamuel.elastic4s.requests.cluster.ClusterHealthResponse
 import com.sksamuel.elastic4s.{ElasticClient, RequestFailure, RequestSuccess}
 import fi.oph.kouta.internal.domain.enums.ElasticsearchHealthStatus
 import fi.oph.kouta.internal.util.KoutaJsonFormats
-import fi.vm.sade.utils.slf4j.Logging
+import fi.oph.kouta.logging.Logging
 import org.json4s.jackson.Serialization.write
 
 import scala.concurrent.ExecutionContext.Implicits.global

@@ -1,7 +1,7 @@
 package fi.oph.kouta.internal
 
 import fi.oph.kouta.internal.elasticsearch.ElasticsearchHealth
-import fi.vm.sade.utils.slf4j.Logging
+import fi.oph.kouta.logging.Logging
 
 object EmbeddedJettyLauncher extends Logging {
 

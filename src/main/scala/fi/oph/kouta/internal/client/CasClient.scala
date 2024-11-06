@@ -4,7 +4,7 @@ import fi.oph.kouta.internal.KoutaConfigurationFactory
 import fi.oph.kouta.internal.util.{KoutaJsonFormats, ScalaCasConfig}
 import fi.vm.sade.javautils.nio.cas.{CasClient => SadeCasClient, CasClientBuilder}
 import fi.vm.sade.properties.OphProperties
-import fi.vm.sade.utils.slf4j.Logging
+import fi.oph.kouta.logging.Logging
 import org.asynchttpclient.{RequestBuilder, Response}
 import org.http4s.{Headers, Method}
 import org.json4s.{Extraction, Writer}

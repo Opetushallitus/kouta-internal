@@ -3,7 +3,7 @@ package fi.oph.kouta.internal.elasticsearch
 import com.sksamuel.elastic4s.ElasticDsl.{clearScroll}
 import com.sksamuel.elastic4s.{ElasticClient, RequestFailure, RequestSuccess, Response}
 import com.sksamuel.elastic4s.requests.searches.{SearchHit, SearchRequest, SearchResponse}
-import fi.vm.sade.utils.slf4j.Logging
+import fi.oph.kouta.logging.Logging
 
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.{Failure, Success}
