@@ -185,7 +185,7 @@ case class HakukohdeIndexed(
         odwKkTasot = odwKkTasot.map(_.toOdwKkTasot),
         jarjestyspaikkaHierarkiaNimi = jarjestyspaikkaHierarkiaNimi,
         opetuskieliKoodiUrit = opetuskieliKoodiUrit,
-        johtaaTutkintoon = Option.apply(johtaaTutkintoon)
+        johtaaTutkintoon = johtaaTutkintoon
       )
     } catch {
       case e: Exception => {
