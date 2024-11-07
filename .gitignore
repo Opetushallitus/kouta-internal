@@ -74,3 +74,6 @@ kouta-temp-db/
 
 .java-version
 src/test/resources/dev-vars.yml
+
+.metals
+.vscode
