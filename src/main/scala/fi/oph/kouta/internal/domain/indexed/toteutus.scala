@@ -4,7 +4,7 @@ import fi.oph.kouta.domain._
 import fi.oph.kouta.internal.domain._
 import fi.oph.kouta.internal.domain.enums.{Hakulomaketyyppi, Julkaisutila, Kieli}
 import fi.oph.kouta.internal.domain.oid.{HakuOid, KoulutusOid, ToteutusOid}
-import fi.vm.sade.utils.slf4j.Logging
+import fi.oph.kouta.logging.Logging
 
 import java.time.LocalDateTime
 

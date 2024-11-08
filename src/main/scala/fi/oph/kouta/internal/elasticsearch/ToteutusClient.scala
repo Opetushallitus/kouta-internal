@@ -11,7 +11,7 @@ import fi.oph.kouta.internal.domain.oid.ToteutusOid
 import fi.oph.kouta.internal.util.{ElasticCache, KoutaJsonFormats}
 import fi.oph.kouta.internal.domain.oid.{HakuOid, ToteutusOid}
 import fi.oph.kouta.internal.util.KoutaJsonFormats
-import fi.vm.sade.utils.slf4j.Logging
+import fi.oph.kouta.logging.Logging
 
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter

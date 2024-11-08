@@ -10,8 +10,8 @@ import fi.oph.kouta.internal.domain.WithTila
 import fi.oph.kouta.internal.domain.enums.Julkaisutila.Tallennettu
 import fi.oph.kouta.internal.util.KoutaJsonFormats
 import fi.oph.kouta.internal.{ElasticSearchConfiguration, KoutaConfigurationFactory}
-import fi.vm.sade.utils.Timer.timed
-import fi.vm.sade.utils.slf4j.Logging
+import fi.oph.kouta.util.Timer.timed;
+import fi.oph.kouta.logging.Logging
 import org.apache.http.auth.{AuthScope, UsernamePasswordCredentials}
 import org.apache.http.client.config.RequestConfig.Builder
 import org.apache.http.impl.client.BasicCredentialsProvider

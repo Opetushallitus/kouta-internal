@@ -17,7 +17,7 @@ import fi.oph.kouta.domain.{
 }
 import fi.oph.kouta.internal.domain.enums.{Julkaisutila, Kieli}
 import fi.oph.kouta.internal.domain._
-import fi.vm.sade.utils.slf4j.Logging
+import fi.oph.kouta.logging.Logging
 
 case class ValintaperusteIndexed(
     id: Option[UUID],

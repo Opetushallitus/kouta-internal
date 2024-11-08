@@ -7,7 +7,7 @@ import java.util.UUID
 import fi.oph.kouta.internal.domain.Ajanjakso
 import fi.oph.kouta.internal.domain.oid._
 import fi.oph.kouta.internal.util.KoutaJsonFormats
-import fi.vm.sade.utils.slf4j.Logging
+import fi.oph.kouta.logging.Logging
 import slick.jdbc.{PositionedParameters, SetParameter}
 
 trait SQLHelpers extends KoutaJsonFormats with Logging {

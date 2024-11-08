@@ -1,7 +1,6 @@
 package fi.oph.kouta.internal
 
-import fi.vm.sade.utils.slf4j.Logging
-import fi.vm.sade.utils.tcp.PortFromSystemPropertyOrFindFree
+import fi.oph.kouta.logging.Logging
 
 object TempDbUtils {
 

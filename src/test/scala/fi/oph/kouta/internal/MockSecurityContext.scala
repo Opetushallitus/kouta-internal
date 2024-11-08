@@ -6,7 +6,6 @@ import fi.vm.sade.javautils.nio.cas.CasClient
 import fi.vm.sade.utils.cas.CasClient.SessionCookie
 import org.asynchttpclient.{Request, Response}
 
-import java.util
 import java.util.concurrent.CompletableFuture
 
 class MockSecurityContext(

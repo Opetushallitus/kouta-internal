@@ -18,7 +18,7 @@ import fi.oph.kouta.internal.domain.{
   WithTila,
   YhdenPaikanSaanto
 }
-import fi.vm.sade.utils.slf4j.Logging
+import fi.oph.kouta.logging.Logging
 
 case class HakukohdeToteutusIndexed(oid: ToteutusOid, tarjoajat: List[Organisaatio])
 

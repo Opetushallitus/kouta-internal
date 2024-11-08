@@ -6,7 +6,7 @@ import java.util.{ConcurrentModificationException, NoSuchElementException}
 import fi.oph.kouta.internal.elasticsearch.{ElasticSearchException, TeapotException}
 import fi.oph.kouta.internal.security._
 import fi.oph.kouta.internal.util.KoutaJsonFormats
-import fi.vm.sade.utils.slf4j.Logging
+import fi.oph.kouta.logging.Logging
 import org.json4s.jackson.Serialization.write
 import org.scalatra._
 import org.scalatra.json.JacksonJsonSupport

@@ -9,7 +9,7 @@ import fi.oph.kouta.internal.domain.indexed.KoulutusIndexed
 import fi.oph.kouta.internal.domain.oid.{HakuOid, KoulutusOid}
 import fi.oph.kouta.internal.domain.{Koulutus, OdwKoulutus}
 import fi.oph.kouta.internal.util.{ElasticCache, KoutaJsonFormats}
-import fi.vm.sade.utils.slf4j.Logging
+import fi.oph.kouta.logging.Logging
 
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter

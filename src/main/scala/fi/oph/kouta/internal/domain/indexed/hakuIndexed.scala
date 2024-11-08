@@ -5,7 +5,7 @@ import java.util.UUID
 import fi.oph.kouta.internal.domain.enums.{Hakulomaketyyppi, Julkaisutila, Kieli}
 import fi.oph.kouta.internal.domain.oid.{HakuOid, HakukohdeOid}
 import fi.oph.kouta.internal.domain._
-import fi.vm.sade.utils.slf4j.Logging
+import fi.oph.kouta.logging.Logging
 import org.joda.time.LocalDate
 
 import java.time.temporal.TemporalField
