@@ -284,6 +284,9 @@ case class PainotettuArvosana(koodiUri: Option[String], painokerroin: Option[Dou
     |             example:
     |               - oppilaitoksenopetuskieli_1#1
     |               - oppilaitoksenopetuskieli_2#1
+    |        johtaaTutkintoon:
+    |          type: boolean
+    |          description: Onko koulutus tutkintoon johtavaa
     |
     |"""
 )
@@ -339,5 +342,6 @@ case class Hakukohde(
     paateltyAlkamiskausi: Option[PaateltyAlkamiskausi],
     odwKkTasot: Option[OdwKkTasot],
     jarjestyspaikkaHierarkiaNimi: Option[Kielistetty],
-    opetuskieliKoodiUrit: Seq[String]
+    opetuskieliKoodiUrit: Seq[String],
+    johtaaTutkintoon: Option[Boolean]
 ) extends PerustiedotWithOid
