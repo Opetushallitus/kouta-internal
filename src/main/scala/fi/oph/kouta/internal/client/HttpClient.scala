@@ -13,7 +13,7 @@ import scala.compat.java8.FutureConverters._
 import scala.concurrent.Future
 
 trait HttpClient extends CallerId {
-  private val DefaultConnTimeout = 30000
+  private val DefaultConnTimeout = 60000
   private val DefaultReadTimeout = 120000
 
   private def defaultOptions(doFollowRedirects: Boolean = false): Seq[HttpOption] = Seq(
