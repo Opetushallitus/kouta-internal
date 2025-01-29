@@ -1,17 +1,17 @@
 package fi.oph.kouta.internal.servlet
 
 import fi.oph.kouta.internal.database.SessionDAO
-import fi.oph.kouta.internal.domain.Haku
 import fi.oph.kouta.internal.domain.oid.{HakuOid, HakukohdeOid, KoulutusOid, ToteutusOid}
 import fi.oph.kouta.internal.security.Authenticated
 import fi.oph.kouta.internal.service.OdwService
 import fi.oph.kouta.internal.swagger.SwaggerPaths.registerPath
-import org.scalatra.{BadRequest, FutureSupport}
+import org.scalatra.{ActionResult, AsyncResult, BadRequest, FutureSupport, Ok}
 
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ExecutionContext, Future}
 import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.duration.{Duration, DurationInt}
 import scala.util.Try
 
 class OdwServlet(odwService: OdwService, val sessionDAO: SessionDAO)
@@ -167,7 +167,11 @@ class OdwServlet(odwService: OdwService, val sessionDAO: SessionDAO)
     val offset = Try(params("offset").toInt).toOption
     val limit  = Try(params("limit").toInt).toOption
 
-    odwService.listAllHakukohdeOids(modifiedDateStartFrom, offset.getOrElse(0), limit)
+    new AsyncResult() {
+      override implicit def timeout: Duration = 5.minutes
+      override val is: Future[ActionResult] = odwService.listAllHakukohdeOids(modifiedDateStartFrom, offset.getOrElse(0), limit).map(Ok(_))
+    }
+
   }
 
   registerPath(
