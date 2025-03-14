@@ -169,7 +169,8 @@ class OdwServlet(odwService: OdwService, val sessionDAO: SessionDAO)
 
     new AsyncResult() {
       override implicit def timeout: Duration = 5.minutes
-      override val is: Future[ActionResult] = odwService.listAllHakukohdeOids(modifiedDateStartFrom, offset.getOrElse(0), limit).map(Ok(_))
+      override val is: Future[ActionResult] =
+        odwService.listAllHakukohdeOids(modifiedDateStartFrom, offset.getOrElse(0), limit).map(Ok(_))
     }
 
   }

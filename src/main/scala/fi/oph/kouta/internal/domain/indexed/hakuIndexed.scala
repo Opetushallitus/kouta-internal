@@ -41,7 +41,8 @@ case class HakuIndexed(
     muokkaaja: Muokkaaja,
     kielivalinta: Seq[Kieli],
     modified: Option[LocalDateTime],
-    externalId: Option[String]
+    externalId: Option[String],
+    maksullinenKkHaku: Boolean
 ) extends WithTila
     with Logging {
   def toHaku(includeHakukohdeOids: Boolean = false): Haku = {
@@ -92,7 +93,8 @@ case class HakuIndexed(
         muokkaaja = muokkaaja.oid,
         kielivalinta = kielivalinta,
         modified = modified,
-        externalId = externalId
+        externalId = externalId,
+        maksullinenKkHaku = maksullinenKkHaku
       )
     } catch {
       case e: Exception => {
