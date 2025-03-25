@@ -156,7 +156,7 @@ trait BaseHaku extends PerustiedotWithOid {
     |      properties:
     |        maksullinenKkHaku:
     |           type: boolean
-    |           description: Onko kyseessä maksullinen korkeakoulu-haku
+    |           description: Onko kyseessä hakemusmaksullinen korkeakouluhaku
     |"""
 )
 case class Haku(
