@@ -18,6 +18,7 @@ class HakukohdeSpec extends HakukohdeFixture with AccessControlSpec with Generic
 
   val hakukohdeOid1      = HakukohdeOid("1.2.246.562.20.00000000000000000001")
   val hakukohdeOid2      = HakukohdeOid("1.2.246.562.20.00000000000000000002")
+  val hakukohdeOid3      = HakukohdeOid("1.2.246.562.20.00000000000000000003")
   val hakuOid            = HakuOid("1.2.246.562.29.00000000000000000001")
   val nonExistingOid     = HakukohdeOid("1.2.246.562.20.00000000000000000000")
   val nonExistingHakuOid = HakukohdeOid("1.2.246.562.29.00000000000000000000")
@@ -40,7 +41,7 @@ class HakukohdeSpec extends HakukohdeFixture with AccessControlSpec with Generic
   it should "find hakukohde based on tarjoaja OID" in {
     val hakukohteet =
       get[Seq[Hakukohde]](s"$HakukohdePath/search?tarjoaja=${ParentOid.toString}", defaultSessionId)
-    hakukohteet.map(_.oid) should contain theSameElementsAs Seq(hakukohdeOid1)
+    hakukohteet.map(_.oid) should contain theSameElementsAs Seq(hakukohdeOid1, hakukohdeOid3)
     hakukohteet.foreach(_.oikeusHakukohteeseen should be(Some(true)))
   }
 

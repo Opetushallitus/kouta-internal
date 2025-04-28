@@ -19,6 +19,7 @@ class HakuSpec extends HakuFixture with AccessControlSpec {
   val hakuOid4 = HakuOid("1.2.246.562.29.00000000000000000004")
   val hakuOid5 = HakuOid("1.2.246.562.29.00000000000000000005")
   val hakuOid6 = HakuOid("1.2.246.562.29.00000000000000000006")
+  val hakuOid7 = HakuOid("1.2.246.562.29.00000000000000000007")
 
   val ataruId1: UUID = UUID.fromString("dcd38a87-912e-4e91-8840-99c7e242dd53")
   val ataruId2: UUID = UUID.fromString("dcd38a87-912e-4e91-8840-99c7e242dd54")
@@ -26,6 +27,7 @@ class HakuSpec extends HakuFixture with AccessControlSpec {
 
   "GET /:id" should s"get haku from elastic search" in {
     get(hakuOid1, defaultSessionId)
+    get(hakuOid7, defaultSessionId).maksullinenKkHaku shouldEqual true
   }
 
   it should s"return 404 if haku not found" in {
@@ -60,7 +62,8 @@ class HakuSpec extends HakuFixture with AccessControlSpec {
       hakuOid1,
       hakuOid2,
       hakuOid5,
-      hakuOid6
+      hakuOid6,
+      hakuOid7
     )
   }
 
@@ -83,7 +86,8 @@ class HakuSpec extends HakuFixture with AccessControlSpec {
     haut.map(_.oid) should contain theSameElementsAs Seq(
       hakuOid2,
       hakuOid5,
-      hakuOid6
+      hakuOid6,
+      hakuOid7
     )
     updateExistingHakuToCertainTila(hakuOid1.s, "julkaistu")
   }

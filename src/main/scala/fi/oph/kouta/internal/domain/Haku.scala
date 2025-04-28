@@ -153,6 +153,10 @@ trait BaseHaku extends PerustiedotWithOid {
     |      type: object
     |      allOf:
     |        - $ref: '#/components/schemas/BaseHaku'
+    |      properties:
+    |        maksullinenKkHaku:
+    |           type: boolean
+    |           description: Onko kyseessä hakemusmaksullinen korkeakouluhaku
     |"""
 )
 case class Haku(
@@ -182,7 +186,8 @@ case class Haku(
     muokkaaja: UserOid,
     kielivalinta: Seq[Kieli],
     modified: Option[LocalDateTime],
-    externalId: Option[String]
+    externalId: Option[String],
+    maksullinenKkHaku: Boolean
 ) extends BaseHaku
 
 @SwaggerModel(
