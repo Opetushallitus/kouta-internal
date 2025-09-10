@@ -3,7 +3,6 @@ package fi.oph.kouta.internal
 import fi.oph.kouta.internal.client.CallerId
 import fi.oph.kouta.internal.security.{Authority, KayttooikeusUserDetails, SecurityContext}
 import fi.vm.sade.javautils.nio.cas.CasClient
-import fi.vm.sade.utils.cas.CasClient.SessionCookie
 import org.asynchttpclient.{Request, Response}
 
 import java.util.concurrent.CompletableFuture
@@ -32,9 +31,9 @@ class MockSecurityContext(
     override def execute(request: Request): CompletableFuture[Response] = ???
 
     override def validateServiceTicketWithOppijaAttributes(
-        s: SessionCookie,
-        s1: SessionCookie
-    ): CompletableFuture[java.util.HashMap[SessionCookie, SessionCookie]] = ???
+        s: String,
+        s1: String
+    ): CompletableFuture[java.util.HashMap[String, String]] = ???
 
     override def executeAndRetryWithCleanSessionOnStatusCodes(
         request: Request,
@@ -51,7 +50,7 @@ object MockSecurityContext {
     new MockSecurityContext(casUrl, casServiceIdentifier, users)
   }
 
-  def ticketFor(service: String, username: String): SessionCookie = ticketPrefix(service) + username
+  def ticketFor(service: String, username: String): String = ticketPrefix(service) + username
 
-  private def ticketPrefix(service: String): SessionCookie = "mock-ticket-" + service + "-"
+  private def ticketPrefix(service: String): String = "mock-ticket-" + service + "-"
 }
