@@ -6,7 +6,6 @@ import fi.vm.sade.javautils.nio.cas.{CasClient => SadeCasClient, CasClientBuilde
 import fi.vm.sade.properties.OphProperties
 import fi.oph.kouta.logging.Logging
 import org.asynchttpclient.{RequestBuilder, Response}
-import org.http4s.{Headers, Method}
 import org.json4s.{Extraction, Writer}
 import org.json4s.jackson.JsonMethods.{compact, render}
 
@@ -41,13 +40,15 @@ abstract class KoutaClient extends KoutaJsonFormats with Logging with CallerId {
     )
   }
 
-  protected def fetch[T](method: Method, url: String, body: T, headers: Headers): Future[(Int, String)] = {
+  protected def fetch[T](method: String, url: String, body: Option[T] = None): Future[(Int, String)] = {
     implicit val writer: Writer[T] = (obj: T) => Extraction.decompose(obj)
     val requestBuilder = new RequestBuilder()
-      .setMethod(method.name)
+      .setMethod(method)
       .setUrl(url)
-      .setBody(compact(render(writer.write(body))))
-    headers.foreach(h => requestBuilder.addHeader(h.name, h.value))
+
+    body.foreach { b =>
+      requestBuilder.setBody(compact(render(writer.write(b))))
+    }
 
     val request = requestBuilder.build()
 
