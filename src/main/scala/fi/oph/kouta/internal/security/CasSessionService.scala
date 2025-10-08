@@ -3,7 +3,6 @@ package fi.oph.kouta.internal.security
 import fi.oph.kouta.internal.KoutaConfigurationFactory
 import fi.oph.kouta.internal.client.KayttooikeusClient
 import fi.oph.kouta.internal.database.SessionDAO
-import fi.vm.sade.utils.cas.CasClient.Username
 import fi.oph.kouta.logging.Logging
 
 import java.util.UUID
@@ -28,7 +27,7 @@ class CasSessionService(
 
   private val casClient = securityContext.casClient
 
-  private def validateServiceTicket(ticket: ServiceTicket): Either[Throwable, Username] = {
+  private def validateServiceTicket(ticket: ServiceTicket): Either[Throwable, String] = {
     val ServiceTicket(s) = ticket
     try {
       Right(
