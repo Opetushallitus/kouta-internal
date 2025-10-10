@@ -452,7 +452,8 @@ case class KorkeakouluOsaamisalaIndexed(
 case class KoulutuksenAlkamiskausi(
     alkamiskausityyppi: Alkamiskausityyppi,
     koulutuksenAlkamiskausi: Option[KoodiUri],
-    koulutuksenAlkamisvuosi: Option[String]
+    koulutuksenAlkamisvuosi: Option[String],
+    koulutuksenAlkamispaivamaara: Option[String]
 )
 
 case class OpetusIndexed(
