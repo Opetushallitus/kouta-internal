@@ -14,7 +14,7 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <scala.version>2.12.19</scala.version>
 
-        <kouta-common.version>2.23.4-SNAPSHOT</kouta-common.version>
+        <kouta-common.version>2.23.5-SNAPSHOT</kouta-common.version>
 
         <!-- Korjaa käännösvirheen:
              [ERROR] Source option 5 is no longer supported. Use 6 or later.
@@ -54,7 +54,7 @@
         <commons.io.version>2.14.0</commons.io.version>
 
         <!-- Plugin properties -->
-        <enforce.java.version>[21,22)</enforce.java.version>
+        <enforce.java.version>[21,)</enforce.java.version>
 
         <plugin.scala-maven-plugin.version>3.3.2</plugin.scala-maven-plugin.version>
         <plugin.maven-enforcer-plugin.version>3.0.0-M2</plugin.maven-enforcer-plugin.version>
@@ -446,7 +446,7 @@
         <dependency>
             <groupId>opiskelijavalinnat-utils</groupId>
             <artifactId>java-cas</artifactId>
-            <version>1.2.4-SNAPSHOT</version>
+            <version>2.0.0-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.scalaz</groupId>
