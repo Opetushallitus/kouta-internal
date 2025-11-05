@@ -110,7 +110,7 @@ class AuthServlet(casSessionService: CasSessionService) extends KoutaServlet {
       .getOrElse(throw new IllegalArgumentException("Not 'logoutRequest' parameter given"))
 
     val ticket: Option[String] = toScalaOption(casLogout.parseTicketFromLogoutRequest(logoutRequest))
-    if(ticket.isEmpty) throw new RuntimeException(s"Failed to parse CAS logout request $request")
+    if (ticket.isEmpty) throw new RuntimeException(s"Failed to parse CAS logout request $request")
 
     casSessionService.deleteSession(ServiceTicket(ticket.get))
     NoContent()
