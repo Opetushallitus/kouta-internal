@@ -24,7 +24,7 @@ class MockSecurityContext(
       if (serviceTicket.startsWith(MockSecurityContext.ticketPrefix(service))) {
         val username: String = serviceTicket.stripPrefix(MockSecurityContext.ticketPrefix(service))
         if (username == "testuser") {
-          val henkiloOid  = "1.2.246.562.24.10000000000"
+          val henkiloOid  = "test-user-oid"
           val roles       = defaultAuthorities.map(a => s"ROLE_${a.role}").asJava
           val userDetails = new UserDetails(username, henkiloOid, null, null, roles)
           CompletableFuture.completedFuture(userDetails)
