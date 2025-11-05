@@ -1,23 +1,22 @@
 package fi.oph.kouta.internal.security
 
 import fi.oph.kouta.internal.KoutaConfigurationFactory
-import fi.oph.kouta.internal.client.KayttooikeusClient
 import fi.oph.kouta.internal.database.SessionDAO
 import fi.oph.kouta.logging.Logging
+import fi.vm.sade.javautils.nio.cas.UserDetails
 
 import java.util.UUID
 import java.util.concurrent.TimeUnit
+import scala.collection.JavaConverters._
 
 object CasSessionService
     extends CasSessionService(
       ProductionSecurityContext(KoutaConfigurationFactory.configuration.securityConfiguration),
-      KayttooikeusClient,
       SessionDAO
     )
 
 class CasSessionService(
     securityContext: SecurityContext,
-    userDetailsService: KayttooikeusClient,
     sessionDAO: SessionDAO
 ) extends Logging {
   logger.info(s"Using security context ${securityContext.getClass.getSimpleName}")
@@ -27,12 +26,12 @@ class CasSessionService(
 
   private val casClient = securityContext.casClient
 
-  private def validateServiceTicket(ticket: ServiceTicket): Either[Throwable, String] = {
+  private def validateServiceTicket(ticket: ServiceTicket): Either[Throwable, UserDetails] = {
     val ServiceTicket(s) = ticket
     try {
       Right(
         casClient
-          .validateServiceTicketWithVirkailijaUsername(securityContext.casServiceIdentifier, s)
+          .validateServiceTicketWithVirkailijaUserDetails(securityContext.casServiceIdentifier, s)
           .get(30, TimeUnit.SECONDS)
       )
     } catch {
@@ -40,6 +39,12 @@ class CasSessionService(
         Left(AuthenticationFailedException(s"Failed to validate service ticket $s", t))
     }
   }
+
+  private def extractUserDetails(userDetails: UserDetails) =
+    KayttooikeusUserDetails(
+      userDetails.getRoles.asScala.map(a => Authority(a.replace("ROLE_", ""))).toSet,
+      userDetails.getHenkiloOid
+    )
 
   private def storeSession(ticket: ServiceTicket, user: KayttooikeusUserDetails): (UUID, CasSession) = {
     val session = CasSession(ticket, user.oid, user.authorities)
@@ -50,7 +55,7 @@ class CasSessionService(
 
   private def createSession(ticket: ServiceTicket): Either[Throwable, (UUID, CasSession)] = {
     validateServiceTicket(ticket)
-      .map(userDetailsService.getUserByUsername)
+      .map(extractUserDetails)
       .map(storeSession(ticket, _))
   }
 
