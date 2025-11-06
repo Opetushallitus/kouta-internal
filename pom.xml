@@ -14,13 +14,13 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <scala.version>2.12.19</scala.version>
 
-        <kouta-common.version>2.23.1-SNAPSHOT</kouta-common.version>
+        <kouta-common.version>2.23.2-SNAPSHOT</kouta-common.version>
 
         <!-- Korjaa käännösvirheen:
              [ERROR] Source option 5 is no longer supported. Use 6 or later.
              [ERROR] Target option 1.5 is no longer supported. Use 1.6 or later. -->
-        <maven.compiler.source>11</maven.compiler.source>
-        <maven.compiler.target>11</maven.compiler.target>
+        <maven.compiler.source>21</maven.compiler.source>
+        <maven.compiler.target>21</maven.compiler.target>
 
         <netty.version>4.1.124.Final</netty.version>
 
@@ -54,7 +54,7 @@
         <commons.io.version>2.14.0</commons.io.version>
 
         <!-- Plugin properties -->
-        <enforce.java.version>[11,12)</enforce.java.version>
+        <enforce.java.version>[21,22)</enforce.java.version>
 
         <plugin.scala-maven-plugin.version>3.3.2</plugin.scala-maven-plugin.version>
         <plugin.maven-enforcer-plugin.version>3.0.0-M2</plugin.maven-enforcer-plugin.version>
@@ -182,7 +182,7 @@
             <dependency>
                 <groupId>com.google.guava</groupId>
                 <artifactId>guava</artifactId>
-                <version>28.0-jre</version>
+                <version>33.3.1-jre</version>
             </dependency>
             <dependency>
                 <groupId>com.google.code.findbugs</groupId>
@@ -258,11 +258,6 @@
                 <groupId>org.yaml</groupId>
                 <artifactId>snakeyaml</artifactId>
                 <version>2.3</version>
-            </dependency>
-            <dependency>
-                <groupId>com.hubspot.jinjava</groupId>
-                <artifactId>jinjava</artifactId>
-                <version>2.7.5</version>
             </dependency>
             <dependency>
                 <groupId>com.hubspot.immutables</groupId>
@@ -482,11 +477,6 @@
                     <artifactId>scala-library</artifactId>
                 </exclusion>
             </exclusions>
-        </dependency>
-        <!-- Make Jinjava explicit so classpath is stable; inherits version from dependencyManagement -->
-        <dependency>
-            <groupId>com.hubspot.jinjava</groupId>
-            <artifactId>jinjava</artifactId>
         </dependency>
         
         <!-- Elasticsearch dependencies -->
@@ -982,22 +972,10 @@
                         <configuration>
                             <rules>
                                 <dependencyConvergence/>
-                                <bannedDependencies>
-                                    <searchTransitive>true</searchTransitive>
-                                    <excludes>
-                                        <exclude>com.hubspot.jinjava:jinjava:[2.8,)</exclude>
-                                    </excludes>
-                                </bannedDependencies>
                             </rules>
                             <fail>true</fail>
                         </configuration>
                         <phase>validate</phase>
-                    </execution>
-                    <execution>
-                        <id>ban-jinjava-28plus</id>
-                        <goals>
-                            <goal>enforce</goal>
-                        </goals>
                     </execution>
                 </executions>
             </plugin>
