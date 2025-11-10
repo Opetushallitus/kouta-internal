@@ -23,7 +23,6 @@ case class SecurityConfiguration(
     password: String,
     casUrl: String,
     casServiceIdentifier: String,
-    kayttooikeusUrl: String,
     rootOrganisaatio: OrganisaatioOid
 )
 
@@ -59,7 +58,6 @@ case class KoutaConfiguration(config: TypesafeConfig, urlProperties: OphProperti
     password = config.getString("kouta-internal.cas.password"),
     casUrl = config.getString("cas.url"),
     casServiceIdentifier = config.getString("kouta-internal.cas.service"),
-    kayttooikeusUrl = config.getString("kayttooikeus-service.userDetails.byUsername"),
     rootOrganisaatio = OrganisaatioOid(config.getString("root.organisaatio.oid"))
   )
 
