@@ -2,21 +2,11 @@ package fi.oph.kouta.internal.integration.fixture
 
 import fi.oph.kouta.internal.domain.oid.{HakukohdeOid, HakukohderyhmaOid}
 import fi.oph.kouta.internal.MockSecurityContext
-import fi.oph.kouta.internal.client.{HakukohderyhmaClient, KayttooikeusClient}
+import fi.oph.kouta.internal.client.HakukohderyhmaClient
 import fi.oph.kouta.internal.security._
 import fi.oph.kouta.internal.servlet.AuthServlet
 
 import scala.concurrent.Future
-
-class KayttooikeusClientMock(securityContext: SecurityContext, defaultAuthorities: Set[Authority])
-    extends KayttooikeusClient {
-  override def getUserByUsername(username: String): KayttooikeusUserDetails = {
-    username match {
-      case "testuser" => KayttooikeusUserDetails(defaultAuthorities, "test-user-oid")
-      case _          => throw new AuthenticationFailedException(s"User not found with username: $username")
-    }
-  }
-}
 
 class HakukohderyhmaClientMock() extends HakukohderyhmaClient {
   override def getHakukohteet(oid: HakukohderyhmaOid): Future[Seq[HakukohdeOid]] = {
