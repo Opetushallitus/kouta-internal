@@ -86,9 +86,8 @@ trait SwaggerFixture extends ScalatraFlatSpec {
     addServlet(new ValintaperusteServlet(valintaperusteService, SessionDAO), ValintaperustePath)
 
     val securityContext: SecurityContext = MockSecurityContext(casUrl, serviceIdentifier, defaultAuthorities)
-    val kayttooikeusClient               = new KayttooikeusClientMock(securityContext, defaultAuthorities)
 
-    object MockCasSessionService extends CasSessionService(securityContext, kayttooikeusClient, SessionDAO)
+    object MockCasSessionService extends CasSessionService(securityContext, SessionDAO)
 
     addServlet(new AuthServlet(MockCasSessionService), AuthPath)
     addServlet(HealthcheckServlet, "/healthcheck")

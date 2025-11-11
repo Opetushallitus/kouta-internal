@@ -1,28 +1,36 @@
 package fi.oph.kouta.internal
 
 import fi.oph.kouta.internal.client.CallerId
-import fi.oph.kouta.internal.security.{Authority, KayttooikeusUserDetails, SecurityContext}
-import fi.vm.sade.javautils.nio.cas.CasClient
+import fi.oph.kouta.internal.security.{AuthenticationFailedException, Authority, SecurityContext}
+import fi.vm.sade.javautils.nio.cas.{CasClient, UserDetails}
 import org.asynchttpclient.{Request, Response}
 
 import java.util.concurrent.CompletableFuture
+import scala.collection.JavaConverters._
 
 class MockSecurityContext(
     val casUrl: String,
     val casServiceIdentifier: String,
-    users: Map[String, KayttooikeusUserDetails]
+    defaultAuthorities: Set[Authority]
 ) extends SecurityContext
     with CallerId {
 
   val casClient: CasClient = new CasClient {
-    override def validateServiceTicketWithVirkailijaUsername(
+    override def validateServiceTicketWithVirkailijaUserDetails(
         service: String,
         serviceTicket: String
-    ): CompletableFuture[String] = {
+    ): CompletableFuture[UserDetails] = {
 
-      if (serviceTicket.startsWith(MockSecurityContext.ticketPrefix(service).toString)) {
-        val username: String = serviceTicket.stripPrefix(MockSecurityContext.ticketPrefix(service).toString)
-        CompletableFuture.completedFuture(username)
+      if (serviceTicket.startsWith(MockSecurityContext.ticketPrefix(service))) {
+        val username: String = serviceTicket.stripPrefix(MockSecurityContext.ticketPrefix(service))
+        if (username == "testuser") {
+          val henkiloOid  = "test-user-oid"
+          val roles       = defaultAuthorities.map(a => s"ROLE_${a.role}").asJava
+          val userDetails = new UserDetails(username, henkiloOid, null, null, roles)
+          CompletableFuture.completedFuture(userDetails)
+        } else {
+          CompletableFuture.failedFuture(new AuthenticationFailedException(s"User not found with username: $username"))
+        }
       } else {
         CompletableFuture.failedFuture(new RuntimeException("unrecognized ticket: " + serviceTicket))
       }
@@ -45,9 +53,7 @@ class MockSecurityContext(
 object MockSecurityContext {
 
   def apply(casUrl: String, casServiceIdentifier: String, defaultAuthorities: Set[Authority]): MockSecurityContext = {
-    val users = Map("testuser" -> KayttooikeusUserDetails(defaultAuthorities, "mockoid"))
-
-    new MockSecurityContext(casUrl, casServiceIdentifier, users)
+    new MockSecurityContext(casUrl, casServiceIdentifier, defaultAuthorities)
   }
 
   def ticketFor(service: String, username: String): String = ticketPrefix(service) + username

@@ -18,14 +18,15 @@ object ProductionSecurityContext extends CallerId {
   def apply(config: SecurityConfiguration): ProductionSecurityContext = {
     val casClient = CasClientBuilder.build(
       ScalaCasConfig(
-        config.username,
-        config.password,
-        config.casUrl,
-        config.kayttooikeusUrl,
+        // Suurinta osaa arvoista ei tarvita pelkkään tiketin validointiin
+        username="",
+        password="",
+        casUrl=config.casUrl,
+        serviceUrl="",
         csrf = callerId,
         callerId = callerId,
-        serviceUrlSuffix = "/j_spring_cas_security_check",
-        jSessionName = "JSESSIONID"
+        serviceUrlSuffix = "",
+        jSessionName = ""
       )
     )
 
