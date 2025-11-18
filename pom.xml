@@ -14,13 +14,13 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <scala.version>2.12.19</scala.version>
 
-        <kouta-common.version>2.23.1-SNAPSHOT</kouta-common.version>
+        <kouta-common.version>2.23.2-SNAPSHOT</kouta-common.version>
 
         <!-- Korjaa käännösvirheen:
              [ERROR] Source option 5 is no longer supported. Use 6 or later.
              [ERROR] Target option 1.5 is no longer supported. Use 1.6 or later. -->
-        <maven.compiler.source>11</maven.compiler.source>
-        <maven.compiler.target>11</maven.compiler.target>
+        <maven.compiler.source>21</maven.compiler.source>
+        <maven.compiler.target>21</maven.compiler.target>
 
         <netty.version>4.1.124.Final</netty.version>
 
@@ -54,7 +54,7 @@
         <commons.io.version>2.14.0</commons.io.version>
 
         <!-- Plugin properties -->
-        <enforce.java.version>[1.8,)</enforce.java.version>
+        <enforce.java.version>[21,22)</enforce.java.version>
 
         <plugin.scala-maven-plugin.version>3.3.2</plugin.scala-maven-plugin.version>
         <plugin.maven-enforcer-plugin.version>3.0.0-M2</plugin.maven-enforcer-plugin.version>
@@ -62,6 +62,7 @@
         <plugin.maven-jar-plugin.version>3.1.1</plugin.maven-jar-plugin.version>
         <plugin.maven-surefire-plugin.version>2.22.0</plugin.maven-surefire-plugin.version>
         <plugin.scalatest-maven-plugin.version>1.0</plugin.scalatest-maven-plugin.version>
+        <swagger.parser.v3.version>2.1.35</swagger.parser.v3.version>
     </properties>
 
     <dependencyManagement>
@@ -176,12 +177,12 @@
             <dependency>
                 <groupId>org.apache.httpcomponents</groupId>
                 <artifactId>httpclient</artifactId>
-                <version>4.5.10</version>
+                <version>4.5.14</version>
             </dependency>
             <dependency>
                 <groupId>com.google.guava</groupId>
                 <artifactId>guava</artifactId>
-                <version>28.0-jre</version>
+                <version>33.3.1-jre</version>
             </dependency>
             <dependency>
                 <groupId>com.google.code.findbugs</groupId>
@@ -201,7 +202,7 @@
             <dependency>
                 <groupId>org.slf4j</groupId>
                 <artifactId>slf4j-api</artifactId>
-                <version>1.7.30</version>
+                <version>1.7.36</version>
             </dependency>
             <dependency>
                 <groupId>fi.vm.sade</groupId>
@@ -258,15 +259,45 @@
                 <artifactId>snakeyaml</artifactId>
                 <version>2.3</version>
             </dependency>
-        </dependencies>
+            <dependency>
+                <groupId>com.hubspot.immutables</groupId>
+                <artifactId>immutables-exceptions</artifactId>
+                <version>1.9</version>
+            </dependency>
+            <!-- Converge Error Prone annotations across Guava/Caffeine paths -->
+            <dependency>
+                <groupId>com.google.errorprone</groupId>
+                <artifactId>error_prone_annotations</artifactId>
+                <version>2.14.0</version>
+            </dependency>
+            <dependency>
+                <groupId>io.swagger.parser.v3</groupId>
+                <artifactId>swagger-parser-v3</artifactId>
+                <version>${swagger.parser.v3.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.swagger.core.v3</groupId>
+                <artifactId>swagger-models</artifactId>
+                <version>2.2.37</version>
+            </dependency>
+            <dependency>
+                <groupId>io.swagger.core.v3</groupId>
+                <artifactId>swagger-core</artifactId>
+                <version>2.2.37</version>
+            </dependency>
+            <dependency>
+                <groupId>io.swagger.parser.v3</groupId>
+                <artifactId>swagger-parser-core</artifactId>
+                <version>2.1.35</version>
+            </dependency>
+        </dependencies> 
     </dependencyManagement>
 
     <dependencies>
         <dependency>
             <groupId>io.swagger.parser.v3</groupId>
-            <artifactId>swagger-parser</artifactId>
+            <artifactId>swagger-parser-v3</artifactId>
             <scope>test</scope>
-            <version>2.0.33</version>
             <exclusions>
                 <exclusion>
                     <groupId>org.yaml</groupId>
@@ -447,7 +478,7 @@
                 </exclusion>
             </exclusions>
         </dependency>
-
+        
         <!-- Elasticsearch dependencies -->
         <dependency>
             <groupId>com.sksamuel.elastic4s</groupId>
@@ -715,12 +746,11 @@
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpcore</artifactId>
-            <version>4.4.14</version>
+            <version>4.4.16</version>
         </dependency>
         <dependency>
             <groupId>org.yaml</groupId>
             <artifactId>snakeyaml</artifactId>
-            <version>1.33</version>
             <scope>test</scope>
         </dependency>
 
@@ -920,6 +950,7 @@
                     </args>
                 </configuration>
             </plugin>
+            <!-- Single Enforcer plugin declaration (merge all executions here) -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-enforcer-plugin</artifactId>
@@ -938,6 +969,12 @@
                         <goals>
                             <goal>enforce</goal>
                         </goals>
+                        <configuration>
+                            <rules>
+                                <dependencyConvergence/>
+                            </rules>
+                            <fail>true</fail>
+                        </configuration>
                         <phase>validate</phase>
                     </execution>
                 </executions>
@@ -972,10 +1009,10 @@
                 <version>${plugin.maven-jar-plugin.version}</version>
                 <!--Huom! Includen lisääminen muuttaa jostain syystä fat jarin sisältöä.-->
                 <!--configuration>
-                    <includes>
-                        <include>**/external/*</include>
-                    </includes>
-                </configuration-->
+                     <includes>
+                     <include>**/external/*</include>
+                     </includes>
+                     </configuration-->
                 <executions>
                     <execution>
                         <id>test-jar</id>
@@ -1001,9 +1038,11 @@
                 <version>${plugin.scalatest-maven-plugin.version}</version>
                 <configuration>
                     <stdout>G</stdout>
+                    <reportsDirectory>${project.build.directory}/surefire-reports</reportsDirectory>
+                    <argLine>-Dscalatest.verbose=true</argLine>
                     <!--systemProperties>
                         <property>
-                            <name>aws.accessKeyId</name>
+                           <name>aws.accessKeyId</name>
                             <value>testAccessKeyId</value>
                         </property>
                         <property>
