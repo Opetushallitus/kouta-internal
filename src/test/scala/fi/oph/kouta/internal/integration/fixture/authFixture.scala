@@ -37,9 +37,8 @@ trait AuthFixture {
   val casUrl = "testCasUrl"
 
   val securityContext: SecurityContext           = MockSecurityContext(casUrl, serviceIdentifier, defaultAuthorities)
-  val kayttooikeusClient: KayttooikeusClient     = new KayttooikeusClientMock(securityContext, defaultAuthorities)
   val hakukohderyhmaClient: HakukohderyhmaClient = new HakukohderyhmaClientMock()
-  val sessionService                             = new CasSessionService(securityContext, kayttooikeusClient, sessionDAO)
+  val sessionService                             = new CasSessionService(securityContext, sessionDAO)
 
   addServlet(new AuthServlet(sessionService), authPath)
 

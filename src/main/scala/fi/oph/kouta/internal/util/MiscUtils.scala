@@ -4,5 +4,5 @@ import java.util.Optional
 
 object MiscUtils {
   def toScalaOption[A](maybeA: Optional[A]): Option[A] =
-  if(maybeA.isEmpty) None else Some(maybeA.get)
+    if (maybeA.isEmpty) None else Some(maybeA.get)
 }
