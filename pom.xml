@@ -14,7 +14,7 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <scala.version>2.12.19</scala.version>
 
-        <kouta-common.version>2.23.2-SNAPSHOT</kouta-common.version>
+        <kouta-common.version>2.23.4-SNAPSHOT</kouta-common.version>
 
         <!-- Korjaa käännösvirheen:
              [ERROR] Source option 5 is no longer supported. Use 6 or later.
@@ -290,7 +290,7 @@
                 <artifactId>swagger-parser-core</artifactId>
                 <version>2.1.35</version>
             </dependency>
-        </dependencies> 
+        </dependencies>
     </dependencyManagement>
 
     <dependencies>
@@ -478,7 +478,7 @@
                 </exclusion>
             </exclusions>
         </dependency>
-        
+
         <!-- Elasticsearch dependencies -->
         <dependency>
             <groupId>com.sksamuel.elastic4s</groupId>
