@@ -289,10 +289,17 @@
             <!-- Versioristiriitojen korjaukset -->
 
             <dependency>
-                <!-- org.mock-server:mockserver-netty:5.5.1 vs fi.oph.kouta:kouta-common:2.23.5-20251106.090203-1 -->
+                <!-- org.mock-server:mockserver-netty:5.5.1 vs fi.oph.kouta:kouta-common:2.23.6-20260213.121609-1 -->
                 <groupId>joda-time</groupId>
                 <artifactId>joda-time</artifactId>
                 <version>2.10.14</version>
+            </dependency>
+            <dependency>
+                <!-- org.mock-server:mockserver-netty:5.5.1 vs org.testcontainers:elasticsearch:1.21.4 -->
+                <groupId>junit</groupId>
+                <artifactId>junit</artifactId>
+                <version>4.13.2</version>
+                <scope>test</scope>
             </dependency>
         </dependencies>
     </dependencyManagement>
@@ -658,7 +665,7 @@
         <dependency>
             <groupId>org.testcontainers</groupId>
             <artifactId>elasticsearch</artifactId>
-            <version>1.15.3</version>
+            <version>1.21.4</version>
             <scope>test</scope>
         </dependency>
 
