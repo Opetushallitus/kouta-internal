@@ -19,10 +19,10 @@ object ProductionSecurityContext extends CallerId {
     val casClient = CasClientBuilder.build(
       ScalaCasConfig(
         // Suurinta osaa arvoista ei tarvita pelkkään tiketin validointiin
-        username="",
-        password="",
-        casUrl=config.casUrl,
-        serviceUrl="",
+        username = "",
+        password = "",
+        casUrl = config.casUrl,
+        serviceUrl = "",
         csrf = callerId,
         callerId = callerId,
         serviceUrlSuffix = "",

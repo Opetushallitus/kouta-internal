@@ -6,7 +6,7 @@
 
     <groupId>fi.oph.kouta</groupId>
     <artifactId>kouta-internal</artifactId>
-    <version>2.1.0-SNAPSHOT</version>
+    <version>2.1.1-SNAPSHOT</version>
     <name>kouta-internal</name>
 
     <properties>
@@ -14,7 +14,7 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <scala.version>2.12.19</scala.version>
 
-        <kouta-common.version>2.23.5-SNAPSHOT</kouta-common.version>
+        <kouta-common.version>2.23.6-SNAPSHOT</kouta-common.version>
 
         <!-- Korjaa käännösvirheen:
              [ERROR] Source option 5 is no longer supported. Use 6 or later.
@@ -240,11 +240,6 @@
                 <version>${scala-xml.version}</version>
             </dependency>
             <dependency>
-                <groupId>joda-time</groupId>
-                <artifactId>joda-time</artifactId>
-                <version>2.10.13</version>
-            </dependency>
-            <dependency>
                 <groupId>org.jsoup</groupId>
                 <artifactId>jsoup</artifactId>
                 <version>1.14.2</version>
@@ -289,6 +284,22 @@
                 <groupId>io.swagger.parser.v3</groupId>
                 <artifactId>swagger-parser-core</artifactId>
                 <version>2.1.35</version>
+            </dependency>
+
+            <!-- Versioristiriitojen korjaukset -->
+
+            <dependency>
+                <!-- org.mock-server:mockserver-netty:5.5.1 vs fi.oph.kouta:kouta-common:2.23.6-20260213.121609-1 -->
+                <groupId>joda-time</groupId>
+                <artifactId>joda-time</artifactId>
+                <version>2.10.14</version>
+            </dependency>
+            <dependency>
+                <!-- org.mock-server:mockserver-netty:5.5.1 vs org.testcontainers:elasticsearch:1.21.4 -->
+                <groupId>junit</groupId>
+                <artifactId>junit</artifactId>
+                <version>4.13.2</version>
+                <scope>test</scope>
             </dependency>
         </dependencies>
     </dependencyManagement>
@@ -509,10 +520,6 @@
                     <artifactId>slf4j-api</artifactId>
                 </exclusion>
                 <exclusion>
-                    <groupId>joda-time</groupId>
-                    <artifactId>joda-time</artifactId>
-                </exclusion>
-                <exclusion>
                     <groupId>org.scala-lang</groupId>
                     <artifactId>scala-library</artifactId>
                 </exclusion>
@@ -658,7 +665,7 @@
         <dependency>
             <groupId>org.testcontainers</groupId>
             <artifactId>elasticsearch</artifactId>
-            <version>1.15.3</version>
+            <version>1.21.4</version>
             <scope>test</scope>
         </dependency>
 
@@ -735,10 +742,6 @@
                 <exclusion>
                     <groupId>javax.servlet</groupId>
                     <artifactId>javax.servlet-api</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>joda-time</groupId>
-                    <artifactId>joda-time</artifactId>
                 </exclusion>
             </exclusions>
         </dependency>
