@@ -119,7 +119,8 @@ case class HakukohdeIndexed(
     odwKkTasot: Option[OdwKkTasotIndexed],
     jarjestyspaikkaHierarkiaNimi: Option[Kielistetty],
     opetuskieliKoodiUrit: List[String],
-    johtaaTutkintoon: Option[Boolean]
+    johtaaTutkintoon: Option[Boolean],
+    koulutusasteKoodiUrit: List[String]
 ) extends WithTila
     with Logging {
   def toHakukohde(oikeusHakukohteeseenFn: OrganisaatioOid => Option[Boolean]): Hakukohde = {
@@ -185,7 +186,8 @@ case class HakukohdeIndexed(
         odwKkTasot = odwKkTasot.map(_.toOdwKkTasot),
         jarjestyspaikkaHierarkiaNimi = jarjestyspaikkaHierarkiaNimi,
         opetuskieliKoodiUrit = opetuskieliKoodiUrit,
-        johtaaTutkintoon = johtaaTutkintoon
+        johtaaTutkintoon = johtaaTutkintoon,
+        koulutusasteKoodiUrit = koulutusasteKoodiUrit
       )
     } catch {
       case e: Exception => {

@@ -343,5 +343,6 @@ case class Hakukohde(
     odwKkTasot: Option[OdwKkTasot],
     jarjestyspaikkaHierarkiaNimi: Option[Kielistetty],
     opetuskieliKoodiUrit: Seq[String],
-    johtaaTutkintoon: Option[Boolean]
+    johtaaTutkintoon: Option[Boolean],
+    koulutusasteKoodiUrit: Seq[String]
 ) extends PerustiedotWithOid
