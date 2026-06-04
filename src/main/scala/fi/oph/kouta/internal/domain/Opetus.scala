@@ -46,23 +46,17 @@ import fi.oph.kouta.internal.swagger.SwaggerModel
     |          description: Koulutuksen toteutuksen opetustapoja tarkentava kuvausteksti eri kielillä. Kielet on määritetty koulutuksen kielivalinnassa.
     |          allOf:
     |            - $ref: '#/components/schemas/Kuvaus'
-    |        onkoMaksullinen:
-    |          type: boolean
-    |          deprecated: true
-    |          description: "Onko koulutus maksullinen?"
+    |        maksut:
+    |          type: array
+    |          description: Opetuksen maksullisuustiedot. Ammatillisilla ja lukiototeutuksilla voi olla yhtäaikaa kaksi eri maksutyyppiä, 'lukuvuosimaksu' ja 'maksullinen', muilla toteutuksilla vain yksi arvo, joka on julkaistulle toteutukselle pakollinen.
+    |          items:
+    |            type: object
+    |            $ref: '#/components/schemas/Maksu'
     |        maksullisuusKuvaus:
     |          type: object
     |          description: Koulutuksen toteutuksen maksullisuutta tarkentava kuvausteksti eri kielillä. Kielet on määritetty koulutuksen kielivalinnassa.
     |          allOf:
     |            - $ref: '#/components/schemas/Kuvaus'
-    |        maksunMaara:
-    |          type: double
-    |          description: "Koulutuksen toteutuksen maksun määrä euroissa?"
-    |          example: 220.50
-    |        koulutuksenTarkkaAlkamisaika:
-    |          type: boolean
-    |          description: Jos alkamisaika on tiedossa niin alkamis- ja päättymispäivämäärä on pakollinen. Muussa tapauksessa kausi ja vuosi on pakollisia tietoja.
-    |          example: true
     |        alkamiskausiKoodiUri:
     |          type: string
     |          description: Koulutuksen toteutuksen alkamiskausi. Viittaa [koodistoon](https://virkailija.testiopintopolku.fi/koodisto-ui/html/koodisto/kausi/1)
@@ -71,42 +65,12 @@ import fi.oph.kouta.internal.swagger.SwaggerModel
     |          type: string
     |          description: Koulutuksen toteutuksen alkamisvuosi
     |          example: 2020
-    |        alkamisaikaKuvaus:
-    |          type: object
-    |          description: Koulutuksen toteutuksen alkamisaikoja tarkentava kuvausteksti eri kielillä. Kielet on määritetty koulutuksen kielivalinnassa.
-    |          allOf:
-    |            - $ref: '#/components/schemas/Kuvaus'
     |        lisatiedot:
     |          type: array
     |          description: Koulutuksen toteutukseen liittyviä lisätietoja, jotka näkyvät oppijalle Opintopolussa
     |          items:
     |            type: object
     |            $ref: '#/components/schemas/Lisatieto'
-    |        onkoLukuvuosimaksua:
-    |          type: boolean
-    |          description: "Onko koulutuksella lukuvuosimaksua?"
-    |        lukuvuosimaksu:
-    |          type: object
-    |          description: Koulutuksen toteutuksen lukuvuosimaksu eri kielillä. Kielet on määritetty koulutuksen kielivalinnassa.
-    |          allOf:
-    |            - $ref: '#/components/schemas/Teksti'
-    |        lukuvuosimaksuKuvaus:
-    |          type: object
-    |          description: Koulutuksen toteutuksen lukuvuosimaksua tarkentava kuvausteksti eri kielillä. Kielet on määritetty koulutuksen kielivalinnassa.
-    |          allOf:
-    |            - $ref: '#/components/schemas/Kuvaus'
-    |        onkoStipendia:
-    |          type: boolean
-    |          description: "Onko koulutukseen stipendiä?"
-    |        stipendinMaara:
-    |          type: double
-    |          description: Koulutuksen toteutuksen stipendin määrä.
-    |          example: 10.0
-    |        stipendinKuvaus:
-    |          type: object
-    |          description: Koulutuksen toteutuksen stipendiä tarkentava kuvausteksti eri kielillä. Kielet on määritetty koulutuksen kielivalinnassa.
-    |          allOf:
-    |            - $ref: '#/components/schemas/Kuvaus'
     |"""
 )
 case class Opetus(
@@ -116,10 +80,34 @@ case class Opetus(
     opetusaikaKuvaus: Kielistetty,
     opetustapaKoodiUrit: Seq[String],
     opetustapaKuvaus: Kielistetty,
-    maksullisuustyyppi: Option[Maksullisuustyyppi] = None,
+    maksut: Seq[Maksu],
     maksullisuusKuvaus: Kielistetty,
-    maksunMaara: Option[Double],
     alkamiskausiKoodiUri: Option[String],
     alkamisvuosi: Option[String],
     lisatiedot: Seq[Lisatieto]
+)
+
+@SwaggerModel(
+  """    Maksu:
+    |      type: object
+    |      required:
+    |        - maksullisuustyyppi
+    |      properties:
+    |        maksullisuustyyppi:
+    |          type: string
+    |          description: Maksullisuuden tyyppi. Ammatillisilla ja lukiototeutuksilla voi olla yhtäaikaa sekä 'lukuvuosimaksu' että 'maksullinen' maksuissa, muilla toteutuksilla vain yksi arvo, joka on julkaistulle toteutukselle pakollinen.
+    |          enum:
+    |            - 'maksullinen'
+    |            - 'maksuton'
+    |            - 'lukuvuosimaksu'
+    |        maksunMaara:
+    |          type: number
+    |          format: double
+    |          description: "Koulutuksen toteutuksen maksun määrä euroissa. Pakollinen, jos maksullisuustyyppi ei ole 'maksuton'."
+    |          example: 220.50
+    |"""
+)
+case class Maksu(
+    maksullisuustyyppi: Maksullisuustyyppi,
+    maksunMaara: Option[Double] = None
 )

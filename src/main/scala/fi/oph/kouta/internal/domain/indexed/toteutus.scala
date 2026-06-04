@@ -463,9 +463,8 @@ case class OpetusIndexed(
     opetusaikaKuvaus: Kielistetty,
     opetustapa: Seq[KoodiUri],
     opetustapaKuvaus: Kielistetty,
-    maksullisuustyyppi: Option[Maksullisuustyyppi],
+    maksut: Seq[Maksu],
     maksullisuusKuvaus: Kielistetty,
-    maksunMaara: Option[Double],
     koulutuksenAlkamiskausi: Option[KoulutuksenAlkamiskausi],
     lisatiedot: Seq[LisatietoIndexed]
 ) {
@@ -476,9 +475,8 @@ case class OpetusIndexed(
     opetusaikaKuvaus = opetusaikaKuvaus,
     opetustapaKoodiUrit = opetustapa.map(_.koodiUri),
     opetustapaKuvaus = opetustapaKuvaus,
-    maksullisuustyyppi = maksullisuustyyppi,
+    maksut = maksut,
     maksullisuusKuvaus = maksullisuusKuvaus,
-    maksunMaara = maksunMaara,
     alkamiskausiKoodiUri = koulutuksenAlkamiskausi.flatMap(_.koulutuksenAlkamiskausi.map(_.koodiUri)),
     alkamisvuosi = koulutuksenAlkamiskausi.flatMap(_.koulutuksenAlkamisvuosi),
     lisatiedot = lisatiedot.map(_.toLisatieto)
