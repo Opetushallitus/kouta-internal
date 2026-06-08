@@ -48,7 +48,7 @@ import fi.oph.kouta.internal.swagger.SwaggerModel
     |            - $ref: '#/components/schemas/Kuvaus'
     |        maksut:
     |          type: array
-    |          description: Opetuksen maksullisuustiedot. Ammatillisilla ja lukiototeutuksilla voi olla yhtäaikaa kaksi eri maksutyyppiä, 'lukuvuosimaksu' ja 'maksullinen', muilla toteutuksilla vain yksi arvo, joka on julkaistulle toteutukselle pakollinen.
+    |          description: Opetuksen maksullisuustiedot. Ammatillisilla (amm, amm-tutkinnon-osa, amm-osaamisala, amm-muu, telma) ja lukiototeutuksilla voi olla yhtäaikaa sekä 'lukuvuosimaksu' että 'maksullinen' maksuissa, muilla toteutuksilla vain yksi arvo, joka on julkaistulle toteutukselle pakollinen.
     |          items:
     |            type: object
     |            $ref: '#/components/schemas/Maksu'
@@ -95,7 +95,7 @@ case class Opetus(
     |      properties:
     |        maksullisuustyyppi:
     |          type: string
-    |          description: Maksullisuuden tyyppi. Ammatillisilla ja lukiototeutuksilla voi olla yhtäaikaa sekä 'lukuvuosimaksu' että 'maksullinen' maksuissa, muilla toteutuksilla vain yksi arvo, joka on julkaistulle toteutukselle pakollinen.
+    |          description: Maksullisuuden tyyppi.
     |          enum:
     |            - 'maksullinen'
     |            - 'maksuton'
