@@ -16,6 +16,12 @@ case class PaateltyAlkamiskausi(
     vuosi: String
 )
 
+case class PaateltyAlkamisAjankohta(
+    alkamiskausityyppi: Alkamiskausityyppi,
+    source: String, //lähde-entiteetin oid (hakukohde, haku tai toteutus)
+    pvm: String,
+)
+
 case class OdwKkTasot(
     alempiKkAste: Boolean,
     ylempiKkAste: Boolean,
@@ -276,6 +282,9 @@ case class PainotettuArvosana(koodiUri: Option[String], painokerroin: Option[Dou
     |           description: Hakukohteen päätelty alkamiskausi (tieto peräisin hakukohteelta, haulta tai toteutukselta)
     |           example:
     |             koodiUri: hakukohteetperusopetuksenjalkeinenyhteishaku_124#1
+    |        paateltyAlkamisAjankohta
+    |           type: object
+    |           description: Hakukohteen päätelty alkamis päivämäärä (tieto peräisin hakukohteelta, haulta tai toteutukselta)
     |        opetuskieliKoodiUrit:
     |           type: array
     |           description: Lista opetuskielistä. Viittaa [koodistoon](https://virkailija.testiopintopolku.fi/koodisto-ui/html/koodisto/oppilaitoksenopetuskieli/1)
@@ -340,6 +349,7 @@ case class Hakukohde(
     hakukohde: Option[KoodiUri],
     lukioTieto: Option[LukioTieto],
     paateltyAlkamiskausi: Option[PaateltyAlkamiskausi],
+    paateltyAlkamisAjankohta: Option[PaateltyAlkamisAjankohta],
     odwKkTasot: Option[OdwKkTasot],
     jarjestyspaikkaHierarkiaNimi: Option[Kielistetty],
     opetuskieliKoodiUrit: Seq[String],

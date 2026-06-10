@@ -4,20 +4,7 @@ import java.time.LocalDateTime
 import java.util.UUID
 import fi.oph.kouta.internal.domain.enums.{Hakulomaketyyppi, Julkaisutila, Kieli, LiitteenToimitustapa}
 import fi.oph.kouta.internal.domain.oid.{HakuOid, HakukohdeOid, OrganisaatioOid, ToteutusOid}
-import fi.oph.kouta.internal.domain.{
-  Ajanjakso,
-  Hakukohde,
-  Kielistetty,
-  Liite,
-  LiitteenToimitusosoite,
-  LukiolinjaTieto,
-  OdwKkTasot,
-  PaateltyAlkamiskausi,
-  PainotettuArvosana,
-  Sora,
-  WithTila,
-  YhdenPaikanSaanto
-}
+import fi.oph.kouta.internal.domain.{Ajanjakso, Hakukohde, Kielistetty, Liite, LiitteenToimitusosoite, LukiolinjaTieto, OdwKkTasot, PaateltyAlkamisAjankohta, PaateltyAlkamiskausi, PainotettuArvosana, Sora, WithTila, YhdenPaikanSaanto}
 import fi.oph.kouta.logging.Logging
 
 case class HakukohdeToteutusIndexed(oid: ToteutusOid, tarjoajat: List[Organisaatio])
@@ -116,6 +103,7 @@ case class HakukohdeIndexed(
     externalId: Option[String],
     hakukohde: Option[KoodiUri],
     paateltyAlkamiskausi: Option[PaateltyAlkamiskausi],
+    paateltyAlkamisAjankohta: Option[PaateltyAlkamisAjankohta],
     odwKkTasot: Option[OdwKkTasotIndexed],
     jarjestyspaikkaHierarkiaNimi: Option[Kielistetty],
     opetuskieliKoodiUrit: List[String],
@@ -183,6 +171,7 @@ case class HakukohdeIndexed(
         hakukohde = hakukohde,
         lukioTieto = metadata.flatMap(m => m.hakukohteenLinja.map(l => LukioTieto(linja = l.linja))),
         paateltyAlkamiskausi = paateltyAlkamiskausi,
+        paateltyAlkamisAjankohta = paateltyAlkamisAjankohta,
         odwKkTasot = odwKkTasot.map(_.toOdwKkTasot),
         jarjestyspaikkaHierarkiaNimi = jarjestyspaikkaHierarkiaNimi,
         opetuskieliKoodiUrit = opetuskieliKoodiUrit,
