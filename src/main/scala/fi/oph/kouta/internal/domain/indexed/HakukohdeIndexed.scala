@@ -4,7 +4,21 @@ import java.time.LocalDateTime
 import java.util.UUID
 import fi.oph.kouta.internal.domain.enums.{Hakulomaketyyppi, Julkaisutila, Kieli, LiitteenToimitustapa}
 import fi.oph.kouta.internal.domain.oid.{HakuOid, HakukohdeOid, OrganisaatioOid, ToteutusOid}
-import fi.oph.kouta.internal.domain.{Ajanjakso, Hakukohde, Kielistetty, Liite, LiitteenToimitusosoite, LukiolinjaTieto, OdwKkTasot, PaateltyAlkamisAjankohta, PaateltyAlkamiskausi, PainotettuArvosana, Sora, WithTila, YhdenPaikanSaanto}
+import fi.oph.kouta.internal.domain.{
+  Ajanjakso,
+  Hakukohde,
+  Kielistetty,
+  Liite,
+  LiitteenToimitusosoite,
+  LukiolinjaTieto,
+  OdwKkTasot,
+  PaateltyAlkamisAjankohta,
+  PaateltyAlkamiskausi,
+  PainotettuArvosana,
+  Sora,
+  WithTila,
+  YhdenPaikanSaanto
+}
 import fi.oph.kouta.logging.Logging
 
 case class HakukohdeToteutusIndexed(oid: ToteutusOid, tarjoajat: List[Organisaatio])

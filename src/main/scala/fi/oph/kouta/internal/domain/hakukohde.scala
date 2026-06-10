@@ -17,9 +17,10 @@ case class PaateltyAlkamiskausi(
 )
 
 case class PaateltyAlkamisAjankohta(
-    alkamiskausityyppi: Alkamiskausityyppi,
+    alkamiskausityyppi: Option[Alkamiskausityyppi],
     source: String, //lähde-entiteetin oid (hakukohde, haku tai toteutus)
     pvm: String,
+    henkilokohtainenSuunnitelma: Boolean
 )
 
 case class OdwKkTasot(
@@ -282,7 +283,7 @@ case class PainotettuArvosana(koodiUri: Option[String], painokerroin: Option[Dou
     |           description: Hakukohteen päätelty alkamiskausi (tieto peräisin hakukohteelta, haulta tai toteutukselta)
     |           example:
     |             koodiUri: hakukohteetperusopetuksenjalkeinenyhteishaku_124#1
-    |        paateltyAlkamisAjankohta
+    |        paateltyAlkamisAjankohta:
     |           type: object
     |           description: Hakukohteen päätelty alkamis päivämäärä (tieto peräisin hakukohteelta, haulta tai toteutukselta)
     |        opetuskieliKoodiUrit:
