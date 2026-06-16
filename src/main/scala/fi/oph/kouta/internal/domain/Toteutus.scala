@@ -96,35 +96,19 @@ import fi.oph.kouta.internal.swagger.SwaggerModel
     |              opetustapaKuvaus:
     |                fi: Opetustavan suomenkielinen kuvaus
     |                sv: Opetustavan ruotsinkielinen kuvaus
-    |              onkoMaksullinen: true
+    |              maksut:
+    |                - maksullisuustyyppi: maksullinen
+    |                  maksunMaara: 200.50
     |              maksullisuusKuvaus:
     |                fi: Maksullisuuden suomenkielinen kuvaus
     |                sv: Maksullisuuden ruotsinkielinen kuvaus
-    |              maksunMaara: 200.50
     |              alkamiskausiKoodiUri: kausi_k#1
     |              alkamisvuosi : 2020
-    |              alkamisaikaKuvaus:
-    |                fi: Alkamisajan suomenkielinen kuvaus
-    |                sv: Alkamisajan ruotsinkielinen kuvaus
     |              lisatiedot:
     |                - otsikkoKoodiUri: koulutuksenjarjestamisenlisaosiot_3#1
     |                  teksti:
     |                    fi: Suomenkielinen lisätietoteksti
     |                    sv: Ruotsinkielinen lisätietoteksti
-    |              onkoLukuvuosimaksua: true
-    |              lukuvuosimaksu:
-    |                 fi: 200 lukukaudessa
-    |                 sv: 200 på svenska
-    |              lukuvuosimaksuKuvaus:
-    |                fi: Lukuvuosimaksun suomenkielinen kuvaus
-    |                sv: Lukuvuosimaksun ruotsinkielinen kuvaus
-    |              onkoStipendia: true
-    |              stipendinMaara:
-    |                 fi: 200 lukukaudessa
-    |                 sv: 200 på svenska
-    |              stipendinKuvaus:
-    |                fi: Stipendin suomenkielinen kuvaus
-    |                sv: Stipendin ruotsinkielinen kuvaus
     |            ammattinimikkeet:
     |              - kieli: fi
     |                arvo: insinööri
