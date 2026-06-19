@@ -12,6 +12,7 @@ import fi.oph.kouta.internal.domain.{
   LiitteenToimitusosoite,
   LukiolinjaTieto,
   OdwKkTasot,
+  PaateltyAlkamisajankohta,
   PaateltyAlkamiskausi,
   PainotettuArvosana,
   Sora,
@@ -116,10 +117,12 @@ case class HakukohdeIndexed(
     externalId: Option[String],
     hakukohde: Option[KoodiUri],
     paateltyAlkamiskausi: Option[PaateltyAlkamiskausi],
+    paateltyAlkamisajankohta: Option[PaateltyAlkamisajankohta],
     odwKkTasot: Option[OdwKkTasotIndexed],
     jarjestyspaikkaHierarkiaNimi: Option[Kielistetty],
     opetuskieliKoodiUrit: List[String],
-    johtaaTutkintoon: Option[Boolean]
+    johtaaTutkintoon: Option[Boolean],
+    koulutusasteKoodiUrit: List[String]
 ) extends WithTila
     with Logging {
   def toHakukohde(oikeusHakukohteeseenFn: OrganisaatioOid => Option[Boolean]): Hakukohde = {
@@ -182,10 +185,12 @@ case class HakukohdeIndexed(
         hakukohde = hakukohde,
         lukioTieto = metadata.flatMap(m => m.hakukohteenLinja.map(l => LukioTieto(linja = l.linja))),
         paateltyAlkamiskausi = paateltyAlkamiskausi,
+        paateltyAlkamisajankohta = paateltyAlkamisajankohta,
         odwKkTasot = odwKkTasot.map(_.toOdwKkTasot),
         jarjestyspaikkaHierarkiaNimi = jarjestyspaikkaHierarkiaNimi,
         opetuskieliKoodiUrit = opetuskieliKoodiUrit,
-        johtaaTutkintoon = johtaaTutkintoon
+        johtaaTutkintoon = johtaaTutkintoon,
+        koulutusasteKoodiUrit = koulutusasteKoodiUrit
       )
     } catch {
       case e: Exception => {
