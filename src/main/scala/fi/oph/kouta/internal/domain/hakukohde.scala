@@ -17,9 +17,9 @@ case class PaateltyAlkamiskausi(
 )
 
 case class PaateltyAlkamisajankohta(
-    alkamiskausityyppi: Option[Alkamiskausityyppi],
+    alkamiskausityyppi: Option[Alkamiskausityyppi] = None,
     source: String, //lähde-entiteetin oid (hakukohde, haku tai toteutus)
-    pvm: String,
+    pvm: Option[String] = None,
     henkilokohtainenSuunnitelma: Boolean
 )
 
