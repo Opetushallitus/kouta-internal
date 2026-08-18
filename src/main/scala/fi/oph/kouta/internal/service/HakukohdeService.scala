@@ -99,6 +99,10 @@ class HakukohdeService(
       .asyncGetAllChildOidsFlat(tarjoajaOids)
       .flatMap(oids => hakukohdeClient.findByOids(hakukohdeOids, createOikeusFn(withRootOikeus, oids)))
   }
+
+  def findByHakukohdeOids(hakukohdeOids: Set[HakukohdeOid])(implicit authenticated: Authenticated): Future[Seq[Hakukohde]] = {
+    hakukohdeClient.findByOids(hakukohdeOids)
+  }
 }
 
 object HakukohdeService extends HakukohdeService(HakukohdeClient, HakuService, new HakukohderyhmaClient)

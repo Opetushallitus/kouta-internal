@@ -200,6 +200,26 @@ class HakukohdeServlet(hakukohdeService: HakukohdeService, val sessionDAO: Sessi
     }
 
   }
+
+  post("/multiple") {
+    implicit val authenticated: Authenticated = authenticate
+
+    val hakukohteet = parsedBody.extract[Set[HakukohdeOid]]
+
+    new AsyncResult() {
+      override implicit def timeout: Duration = 5.minutes
+
+      override val is: Future[ActionResult] = hakukohteet match {
+        case oids if oids.exists(!_.isValid()) =>
+          Future.successful(BadRequest(s"Invalid hakukohdeOids ${oids.find(!_.isValid()).get.toString}"))
+        case hakukohdeOids =>
+          hakukohdeService
+            .findByHakukohdeOids(hakukohdeOids)
+            .map(Ok(_))
+      }
+    }
+
+  }
 }
 
 object HakukohdeServlet extends HakukohdeServlet(HakukohdeService, SessionDAO)
