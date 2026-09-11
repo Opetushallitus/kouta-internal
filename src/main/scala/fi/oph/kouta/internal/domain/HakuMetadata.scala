@@ -5,7 +5,8 @@ import fi.oph.kouta.internal.swagger.SwaggerModel
 
 import java.time.LocalDateTime
 
-@SwaggerModel("""    HakuMetadata:
+@SwaggerModel(
+  """    HakuMetadata:
     |      type: object
     |      properties:
     |        yhteyshenkilot:
@@ -46,7 +47,8 @@ import java.time.LocalDateTime
     |          format: date-time
     |          description: Haun varasijatäytön päättymisen ajankohta. Käytetään oma-opiskelijavalinnassa hakijan tiedottamiseen.
     |          example: 2019-08-23T09:55
-    |""")
+    |"""
+)
 case class HakuMetadata(
     yhteyshenkilot: Seq[Yhteyshenkilo],
     tulevaisuudenAikataulu: Seq[Ajanjakso],
