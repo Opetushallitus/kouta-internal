@@ -4,9 +4,8 @@ import ch.qos.logback.access.jetty.RequestLogImpl
 import fi.vm.sade.properties.OphProperties
 import fi.oph.kouta.logging.Logging
 import org.eclipse.jetty.server.{Connector, RequestLog, Server, ServerConnector}
-import org.eclipse.jetty.util.resource.Resource
 import org.eclipse.jetty.util.thread.{QueuedThreadPool, ThreadPool}
-import org.eclipse.jetty.webapp.WebAppContext
+import org.eclipse.jetty.ee10.webapp.WebAppContext
 
 object JettyLauncher extends Logging {
   val DEFAULT_PORT = "8080"
@@ -22,8 +21,7 @@ class JettyLauncher(val port: Int) {
   val threadPool: ThreadPool = new QueuedThreadPool(200, 100, 60000)
   val server                 = new Server(threadPool)
   val context                = new WebAppContext()
-  context.setBaseResource(Resource.newClassPathResource("webapp"))
-  context.setDescriptor("WEB-INF/web.xml")
+  context.setBaseResource(context.getResourceFactory.newClassLoaderResource("/webapp"))
   context.setContextPath("/kouta-internal")
   server.setHandler(context)
   val serverConnector = new ServerConnector(server)

@@ -2,12 +2,12 @@ import fi.oph.kouta.internal.database.KoutaDatabase
 import fi.oph.kouta.internal.servlet._
 import fi.oph.kouta.internal.swagger.SwaggerServlet
 
-import javax.servlet.ServletContext
+import jakarta.servlet.ServletContext
 import org.scalatra._
 import org.scalatra.servlet.AsyncSupport
 
 class ScalatraBootstrap extends LifeCycle {
-  override def init(context: ServletContext) {
+  override def init(context: ServletContext): Unit = {
     context.setAttribute(AsyncSupport.ExecutionContextKey, "executionContext")
     super.init(context)
 
@@ -20,7 +20,7 @@ class ScalatraBootstrap extends LifeCycle {
     context.mount(ToteutusServlet, "/toteutus", "toteutus")
 
     context.mount(HealthcheckServlet, "/healthcheck", "healthcheck")
-    context.mount(new SwaggerServlet, "/swagger")
+    context.mount(new SwaggerServlet, "/api-docs")
 
     context.mount(OdwServlet, "/odw", "odw")
   }
