@@ -42,7 +42,7 @@
         <!-- Database related properties -->
         <flyway.version>8.5.12</flyway.version>
         <slick.version>3.2.3</slick.version>
-        <postgresql.version>42.7.3</postgresql.version>
+        <postgresql.version>42.7.12</postgresql.version>
 
         <!-- Test properties -->
         <scala-test.version>3.2.0-M4</scala-test.version>
@@ -95,6 +95,12 @@
                 <groupId>com.sksamuel.elastic4s</groupId>
                 <artifactId>elastic4s-json-json4s_2.12</artifactId>
                 <version>${elastic4sVersion}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.postgresql</groupId>
+                <artifactId>postgresql</artifactId>
+                <version>${postgresql.version}</version>
             </dependency>
 
             <dependency>
@@ -417,7 +423,6 @@
         <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
-            <version>${postgresql.version}</version>
         </dependency>
 
         <!-- Test dependencies -->
