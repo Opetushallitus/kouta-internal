@@ -6,7 +6,7 @@
 
     <groupId>fi.oph.kouta</groupId>
     <artifactId>kouta-internal</artifactId>
-    <version>3.0.0-SNAPSHOT</version>
+    <version>4.0.0-SNAPSHOT</version>
     <name>kouta-internal</name>
 
     <properties>
@@ -484,12 +484,17 @@
         </dependency>
     </dependencies>
 
+    <!--
+        Artifactory on poistettu käytöstä; riippuvuudet haetaan Github Packagesista.
+        Riippuvuuksien POMit määrittelevät edelleen Artifactoryn repositoryksi - ne id:t
+        on ohjattu Github Packagesiin settings.xml:n <mirrors>-määrityksellä.
+    -->
     <repositories>
         <repository>
             <id>github</id>
             <url>https://maven.pkg.github.com/opetushallitus/packages</url>
             <releases>
-                <enabled>false</enabled>
+                <enabled>true</enabled>
                 <checksumPolicy>warn</checksumPolicy>
             </releases>
             <snapshots>
@@ -498,44 +503,16 @@
                 <checksumPolicy>warn</checksumPolicy>
             </snapshots>
         </repository>
-        <repository>
-            <id>oph-sade-artifactory-snapshots</id>
-            <url>https://artifactory.opintopolku.fi/artifactory/oph-sade-snapshot-local</url>
-            <snapshots>
-                <enabled>true</enabled>
-            </snapshots>
-            <releases>
-                <enabled>false</enabled>
-            </releases>
-        </repository>
-        <repository>
-            <id>oph-sade-artifactory-releases</id>
-            <url>https://artifactory.opintopolku.fi/artifactory/oph-sade-release-local</url>
-            <releases>
-                <enabled>true</enabled>
-            </releases>
-        </repository>
-        <repository>
-            <id>ext-snapshot-local-artifactory-snapshots</id>
-            <url>https://artifactory.opintopolku.fi/artifactory/ext-snapshot-local</url>
-            <snapshots>
-                <enabled>true</enabled>
-            </snapshots>
-            <releases>
-                <enabled>false</enabled>
-            </releases>
-        </repository>
-        <repository>
-            <!--            TARVIIKO TÄTÄ-->
-            <id>clojars</id>
-            <url>https://repo.clojars.org/</url>
-            <snapshots>
-                <enabled>true</enabled>
-            </snapshots>
-            <releases>
-                <enabled>true</enabled>
-            </releases>
-        </repository>
+<!--        <repository>-->
+<!--            <id>clojars</id>-->
+<!--            <url>https://repo.clojars.org/</url>-->
+<!--            <snapshots>-->
+<!--                <enabled>true</enabled>-->
+<!--            </snapshots>-->
+<!--            <releases>-->
+<!--                <enabled>true</enabled>-->
+<!--            </releases>-->
+<!--        </repository>-->
     </repositories>
 
     <build>
@@ -706,17 +683,4 @@
             </plugin>
         </plugins>
     </build>
-
-    <distributionManagement>
-        <repository>
-            <id>oph-sade-artifactory</id>
-            <name>oph-sade-artifactory-releases</name>
-            <url>https://artifactory.opintopolku.fi/artifactory/oph-sade-release-local</url>
-        </repository>
-        <snapshotRepository>
-            <id>oph-sade-artifactory</id>
-            <name>oph-sade-artifactory-snapshots</name>
-            <url>https://artifactory.opintopolku.fi/artifactory/oph-sade-snapshot-local</url>
-        </snapshotRepository>
-    </distributionManagement>
 </project>
