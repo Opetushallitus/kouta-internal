@@ -75,7 +75,7 @@ class HakukohdeServlet(hakukohdeService: HakukohdeService, val sessionDAO: Sessi
       |              type: string
       |          required: false
       |          description: Organisaatio joka on hakukohteen tarjoaja
-      |          example: 1.2.246.562.10.00000000001,1.2.246.562.10.00000000002
+      |          example: [1.2.246.562.10.00000000001,1.2.246.562.10.00000000002]
       |        - in: query
       |          name: hakukohderyhmat
       |          schema:
@@ -84,7 +84,7 @@ class HakukohdeServlet(hakukohdeService: HakukohdeService, val sessionDAO: Sessi
       |              type: string
       |          required: false
       |          description: Hakukohderyhmät
-      |          example: 1.2.246.562.28.00000000001,1.2.246.562.28.00000000002
+      |          example: [1.2.246.562.28.00000000001,1.2.246.562.28.00000000002]
       |        - in: query
       |          name: q
       |          schema:
@@ -165,7 +165,7 @@ class HakukohdeServlet(hakukohdeService: HakukohdeService, val sessionDAO: Sessi
       |                 type: array
       |                 items:
       |                   type: string
-      |                 example: [1.2.246.562.10.00000000001, 1.2.246.562.10.00000000002]
+      |                 example: [1.2.246.562.20.00000000001, 1.2.246.562.20.00000000002]
       |      responses:
       |        '200':
       |          description: Ok
