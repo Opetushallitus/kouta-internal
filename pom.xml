@@ -503,16 +503,6 @@
                 <checksumPolicy>warn</checksumPolicy>
             </snapshots>
         </repository>
-<!--        <repository>-->
-<!--            <id>clojars</id>-->
-<!--            <url>https://repo.clojars.org/</url>-->
-<!--            <snapshots>-->
-<!--                <enabled>true</enabled>-->
-<!--            </snapshots>-->
-<!--            <releases>-->
-<!--                <enabled>true</enabled>-->
-<!--            </releases>-->
-<!--        </repository>-->
     </repositories>
 
     <build>
