@@ -60,7 +60,7 @@
         <plugin.maven-jar-plugin.version>3.1.1</plugin.maven-jar-plugin.version>
         <plugin.maven-surefire-plugin.version>2.22.0</plugin.maven-surefire-plugin.version>
         <plugin.scalatest-maven-plugin.version>1.0</plugin.scalatest-maven-plugin.version>
-        <swagger.parser.v3.version>2.1.45</swagger.parser.v3.version>
+        <swagger.parser.v3.version>2.1.46</swagger.parser.v3.version>
     </properties>
 
     <dependencyManagement>
