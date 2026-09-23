@@ -156,7 +156,7 @@ class HakukohdeServlet(hakukohdeService: HakukohdeService, val sessionDAO: Sessi
       |              type: string
       |          required: false
       |          description: Organisaatio joka on hakukohteen tarjoaja
-      |          example: 1.2.246.562.10.00000000001,1.2.246.562.10.00000000002
+      |          example: [1.2.246.562.10.00000000001, 1.2.246.562.10.00000000002]
       |      requestBody:
       |          description: Palautettavien hakukohteiden oidit JSON-arrayna
       |          content:
@@ -165,8 +165,7 @@ class HakukohdeServlet(hakukohdeService: HakukohdeService, val sessionDAO: Sessi
       |                 type: array
       |                 items:
       |                   type: string
-      |                 example:
-      |                   array: ["1.2.246.562.10.00000000001","1.2.246.562.10.00000000002"]
+      |                 example: [1.2.246.562.10.00000000001, 1.2.246.562.10.00000000002]
       |      responses:
       |        '200':
       |          description: Ok
