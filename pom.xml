@@ -40,7 +40,7 @@
         <elastic4sVersion>8.11.5</elastic4sVersion>
 
         <!-- Database related properties -->
-        <flyway.version>8.5.12</flyway.version>
+        <flyway.version>12.11.0</flyway.version>
         <slick.version>3.2.3</slick.version>
         <postgresql.version>42.7.12</postgresql.version>
 
@@ -56,7 +56,7 @@
 
         <plugin.scala-maven-plugin.version>4.9.10</plugin.scala-maven-plugin.version>
         <plugin.maven-enforcer-plugin.version>3.0.0-M2</plugin.maven-enforcer-plugin.version>
-        <plugin.maven-assembly-plugin.version>3.1.1</plugin.maven-assembly-plugin.version>
+        <plugin.maven-shade-plugin.version>3.6.2</plugin.maven-shade-plugin.version>
         <plugin.maven-jar-plugin.version>3.1.1</plugin.maven-jar-plugin.version>
         <plugin.maven-surefire-plugin.version>2.22.0</plugin.maven-surefire-plugin.version>
         <plugin.scalatest-maven-plugin.version>1.0</plugin.scalatest-maven-plugin.version>
@@ -104,6 +104,12 @@
                 <groupId>org.postgresql</groupId>
                 <artifactId>postgresql</artifactId>
                 <version>${postgresql.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.flywaydb</groupId>
+                <artifactId>flyway-database-postgresql</artifactId>
+                <version>${flyway.version}</version>
             </dependency>
 
             <dependency>
@@ -394,8 +400,7 @@
         <!-- Database related properties -->
         <dependency>
             <groupId>org.flywaydb</groupId>
-            <artifactId>flyway-core</artifactId>
-            <version>${flyway.version}</version>
+            <artifactId>flyway-database-postgresql</artifactId>
         </dependency>
         <dependency>
             <groupId>com.github.takezoe</groupId>
@@ -591,26 +596,35 @@
                 </executions>
             </plugin>
             <plugin>
-                <artifactId>maven-assembly-plugin</artifactId>
-                <version>${plugin.maven-assembly-plugin.version}</version>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>${plugin.maven-shade-plugin.version}</version>
                 <executions>
                     <execution>
                         <id>make-assembly</id>
                         <phase>package</phase>
-                        <configuration>
-                            <archive>
-                                <manifest>
-                                    <mainClass>fi.oph.kouta.internal.JettyLauncher</mainClass>
-                                </manifest>
-                            </archive>
-                            <descriptorRefs>
-                                <descriptorRef>jar-with-dependencies</descriptorRef>
-                            </descriptorRefs>
-                            <appendAssemblyId>true</appendAssemblyId>
-                        </configuration>
                         <goals>
-                            <goal>single</goal>
+                            <goal>shade</goal>
                         </goals>
+                        <configuration>
+                            <shadedArtifactAttached>true</shadedArtifactAttached>
+                            <shadedClassifierName>jar-with-dependencies</shadedClassifierName>
+                            <createDependencyReducedPom>false</createDependencyReducedPom>
+                            <transformers>
+                                <!-- flyway-core and flyway-database-postgresql each ship their own
+                                     META-INF/services/org.flywaydb.core.extensibility.Plugin file (Flyway 10+
+                                     split database support into separate modules). Without merging these,
+                                     the naive fat-jar build keeps only one module's registrations, dropping
+                                     entries like AwsSecretsManagerSupportStub and causing a
+                                     NullPointerException from PluginRegister.getInstanceOf() at runtime. -->
+                                <transformer
+                                        implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"/>
+                                <transformer
+                                        implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                                    <mainClass>fi.oph.kouta.internal.JettyLauncher</mainClass>
+                                </transformer>
+                            </transformers>
+                        </configuration>
                     </execution>
                 </executions>
             </plugin>
