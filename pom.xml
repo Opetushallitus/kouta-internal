@@ -31,7 +31,7 @@
         <logback-access.version>2.0.12</logback-access.version>
 
         <!-- Cas properties -->
-        <scala-cas.version>2.2.2.1-SNAPSHOT</scala-cas.version>
+        <java-cas.version>2.0.0-SNAPSHOT</java-cas.version>
 
         <!-- Http related properties -->
         <scalatra.version>3.1.2</scalatra.version>
@@ -85,6 +85,24 @@
             </dependency>
 
             <dependency>
+                <groupId>org.scala-lang</groupId>
+                <artifactId>scala-library</artifactId>
+                <version>${scala.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>fi.oph.kouta</groupId>
+                <artifactId>kouta-common</artifactId>
+                <version>${kouta-common.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>opiskelijavalinnat-utils</groupId>
+                <artifactId>java-cas</artifactId>
+                <version>${java-cas.version}</version>
+            </dependency>
+
+            <dependency>
                 <groupId>com.sksamuel.elastic4s</groupId>
                 <artifactId>elastic4s-client-esjava_2.12</artifactId>
                 <version>${elastic4sVersion}</version>
@@ -113,16 +131,67 @@
             </dependency>
 
             <dependency>
+                <groupId>com.github.takezoe</groupId>
+                <artifactId>blocking-slick-32_2.12</artifactId>
+                <version>0.0.12</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.typesafe.slick</groupId>
+                <artifactId>slick_2.12</artifactId>
+                <version>${slick.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.typesafe.slick</groupId>
+                <artifactId>slick-hikaricp_2.12</artifactId>
+                <version>${slick.version}</version>
+            </dependency>
+
+            <dependency>
                 <groupId>org.asynchttpclient</groupId>
                 <artifactId>async-http-client</artifactId>
                 <version>2.16.1</version>
             </dependency>
 
+            <dependency>
+                <groupId>org.eclipse.jetty</groupId>
+                <artifactId>jetty-server</artifactId>
+                <version>${jetty.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.jetty.ee10</groupId>
+                <artifactId>jetty-ee10-webapp</artifactId>
+                <version>${jetty.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.scalatra</groupId>
+                <artifactId>scalatra-jakarta_2.12</artifactId>
+                <version>${scalatra.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.scalatra</groupId>
+                <artifactId>scalatra-json-jakarta_2.12</artifactId>
+                <version>${scalatra.version}</version>
+            </dependency>
 
             <dependency>
                 <groupId>org.reflections</groupId>
                 <artifactId>reflections</artifactId>
                 <version>0.10.2</version>
+            </dependency>
+
+            <dependency>
+                <groupId>ch.qos.logback.access</groupId>
+                <artifactId>logback-access-jetty12</artifactId>
+                <version>${logback-access.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.github.blemale</groupId>
+                <artifactId>scaffeine_2.12</artifactId>
+                <version>5.3.0</version>
             </dependency>
 
             <dependency>
@@ -205,11 +274,7 @@
                 <artifactId>jsoup</artifactId>
                 <version>1.14.2</version>
             </dependency>
-            <dependency>
-                <groupId>org.scala-lang</groupId>
-                <artifactId>scala-library</artifactId>
-                <version>${scala.version}</version>
-            </dependency>
+
             <dependency>
                 <groupId>org.yaml</groupId>
                 <artifactId>snakeyaml</artifactId>
@@ -220,20 +285,38 @@
                 <artifactId>immutables-exceptions</artifactId>
                 <version>1.9</version>
             </dependency>
-            <!-- Converge Error Prone annotations across Guava/Caffeine paths -->
-            <dependency>
-                <groupId>com.google.errorprone</groupId>
-                <artifactId>error_prone_annotations</artifactId>
-                <version>2.14.0</version>
-            </dependency>
             <dependency>
                 <groupId>io.swagger.parser.v3</groupId>
                 <artifactId>swagger-parser-v3</artifactId>
                 <version>${swagger.parser.v3.version}</version>
             </dependency>
 
+            <!-- Test dependencies -->
+            <dependency>
+                <groupId>org.scalatra</groupId>
+                <artifactId>scalatra-scalatest-jakarta_2.12</artifactId>
+                <version>${scalatra.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.testcontainers</groupId>
+                <artifactId>elasticsearch</artifactId>
+                <version>1.21.4</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.mock-server</groupId>
+                <artifactId>mockserver-netty</artifactId>
+                <version>${mockserver-netty.version}</version>
+            </dependency>
+
             <!-- Versioristiriitojen korjaukset -->
 
+            <!-- fi.oph.kouta:kouta-common:3.0.2-SNAPSHOT vs com.github.blemale:scaffeine_2.12:5.3.0 -->
+            <dependency>
+                <groupId>com.google.errorprone</groupId>
+                <artifactId>error_prone_annotations</artifactId>
+                <version>2.35.1</version>
+            </dependency>
             <dependency>
                 <!-- org.mock-server:mockserver-netty:5.5.1 vs fi.oph.kouta:kouta-common:3.0.2-SNAPSHOT -->
                 <groupId>joda-time</groupId>
@@ -287,12 +370,10 @@
         <dependency>
             <groupId>org.scala-lang</groupId>
             <artifactId>scala-library</artifactId>
-            <version>${scala.version}</version>
         </dependency>
         <dependency>
             <groupId>org.scalatra</groupId>
             <artifactId>scalatra-jakarta_2.12</artifactId>
-            <version>${scalatra.version}</version>
             <exclusions>
                 <exclusion>
                     <groupId>jakarta.servlet</groupId>
@@ -307,19 +388,16 @@
         <dependency>
             <groupId>org.scalatra</groupId>
             <artifactId>scalatra-json-jakarta_2.12</artifactId>
-            <version>${scalatra.version}</version>
         </dependency>
 
         <!-- Jetty -->
         <dependency>
             <groupId>org.eclipse.jetty</groupId>
             <artifactId>jetty-server</artifactId>
-            <version>${jetty.version}</version>
         </dependency>
         <dependency>
             <groupId>org.eclipse.jetty.ee10</groupId>
             <artifactId>jetty-ee10-webapp</artifactId>
-            <version>${jetty.version}</version>
             <exclusions>
                 <exclusion>
                     <groupId>jakarta.servlet</groupId>
@@ -350,7 +428,6 @@
         <dependency>
             <groupId>org.json4s</groupId>
             <artifactId>json4s-jackson_2.12</artifactId>
-            <version>${json4s.version}</version>
         </dependency>
         <dependency>
             <groupId>org.reflections</groupId>
@@ -360,15 +437,10 @@
         <dependency>
             <groupId>ch.qos.logback.access</groupId>
             <artifactId>logback-access-jetty12</artifactId>
-            <version>${logback-access.version}</version>
             <exclusions>
                 <exclusion>
                     <groupId>jakarta.servlet</groupId>
                     <artifactId>jakarta.servlet-api</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.eclipse.jetty</groupId>
-                    <artifactId>jetty-server</artifactId>
                 </exclusion>
             </exclusions>
         </dependency>
@@ -377,17 +449,6 @@
         <dependency>
             <groupId>opiskelijavalinnat-utils</groupId>
             <artifactId>java-cas</artifactId>
-            <version>2.0.0-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>org.scalaz</groupId>
-            <artifactId>scalaz-core_2.12</artifactId>
-            <version>7.2.30</version>
-        </dependency>
-        <dependency>
-            <groupId>org.scalaz</groupId>
-            <artifactId>scalaz-concurrent_2.12</artifactId>
-            <version>7.2.30</version>
         </dependency>
 
         <!-- Elasticsearch dependencies -->
@@ -409,10 +470,10 @@
             <groupId>org.flywaydb</groupId>
             <artifactId>flyway-database-postgresql</artifactId>
         </dependency>
+
         <dependency>
             <groupId>com.github.takezoe</groupId>
             <artifactId>blocking-slick-32_2.12</artifactId>
-            <version>0.0.12</version>
             <exclusions>
                 <exclusion>
                     <groupId>com.typesafe.slick</groupId>
@@ -420,11 +481,9 @@
                 </exclusion>
             </exclusions>
         </dependency>
-
         <dependency>
             <groupId>com.typesafe.slick</groupId>
             <artifactId>slick_2.12</artifactId>
-            <version>${slick.version}</version>
             <exclusions>
                 <exclusion>
                     <groupId>org.reactivestreams</groupId>
@@ -435,31 +494,38 @@
         <dependency>
             <groupId>com.typesafe.slick</groupId>
             <artifactId>slick-hikaricp_2.12</artifactId>
-            <version>${slick.version}</version>
         </dependency>
+
         <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>fi.oph.kouta</groupId>
+            <artifactId>kouta-common</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.github.blemale</groupId>
+            <artifactId>scaffeine_2.12</artifactId>
         </dependency>
 
         <!-- Test dependencies -->
         <dependency>
             <groupId>org.scalatra</groupId>
             <artifactId>scalatra-scalatest-jakarta_2.12</artifactId>
-            <version>${scalatra.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.testcontainers</groupId>
             <artifactId>elasticsearch</artifactId>
-            <version>1.21.4</version>
             <scope>test</scope>
         </dependency>
 
         <dependency>
             <groupId>org.mock-server</groupId>
             <artifactId>mockserver-netty</artifactId>
-            <version>${mockserver-netty.version}</version>
             <scope>test</scope>
             <exclusions>
                 <exclusion>
@@ -471,28 +537,6 @@
                     <artifactId>commons-text</artifactId>
                 </exclusion>
             </exclusions>
-        </dependency>
-
-        <dependency>
-            <groupId>org.yaml</groupId>
-            <artifactId>snakeyaml</artifactId>
-            <scope>test</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>fi.oph.kouta</groupId>
-            <artifactId>kouta-common</artifactId>
-            <version>${kouta-common.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.scala-lang.modules</groupId>
-            <artifactId>scala-java8-compat_2.12</artifactId>
-            <version>1.0.2</version>
-        </dependency>
-        <dependency>
-            <groupId>com.github.blemale</groupId>
-            <artifactId>scaffeine_2.12</artifactId>
-            <version>5.3.0</version>
         </dependency>
     </dependencies>
 
