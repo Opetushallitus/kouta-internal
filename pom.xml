@@ -165,6 +165,12 @@
             </dependency>
 
             <dependency>
+                <groupId>jakarta.servlet</groupId>
+                <artifactId>jakarta.servlet-api</artifactId>
+                <version>6.1.0</version>
+            </dependency>
+
+            <dependency>
                 <groupId>org.scalatra</groupId>
                 <artifactId>scalatra-jakarta_2.12</artifactId>
                 <version>${scalatra.version}</version>
@@ -322,12 +328,6 @@
                 <version>2.4.0-b180830.0359</version>
             </dependency>
             <dependency>
-                <!-- fi.oph.kouta:kouta-common:3.0.2-SNAPSHOT vs org.scalatra:scalatra-jakarta_2.12:3.1.2 -->
-                <groupId>jakarta.servlet</groupId>
-                <artifactId>jakarta.servlet-api</artifactId>
-                <version>6.1.0</version>
-            </dependency>
-            <dependency>
                 <!-- fi.oph.kouta:kouta-common:3.0.2-SNAPSHOT:n jinjava riippuu monesta versiosta -->
                 <groupId>com.hubspot.immutables</groupId>
                 <artifactId>immutables-exceptions</artifactId>
@@ -399,6 +399,10 @@
         <dependency>
             <groupId>org.scala-lang</groupId>
             <artifactId>scala-library</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>jakarta.servlet</groupId>
+            <artifactId>jakarta.servlet-api</artifactId>
         </dependency>
         <dependency>
             <groupId>org.scalatra</groupId>
