@@ -40,7 +40,7 @@
 
         <!-- Database related properties -->
         <flyway.version>12.11.0</flyway.version>
-        <slick.version>3.2.3</slick.version>
+        <slick.version>3.4.1</slick.version>
         <postgresql.version>42.7.12</postgresql.version>
 
         <!-- Test properties -->
@@ -131,8 +131,8 @@
 
             <dependency>
                 <groupId>com.github.takezoe</groupId>
-                <artifactId>blocking-slick-32_2.12</artifactId>
-                <version>0.0.12</version>
+                <artifactId>blocking-slick_2.12</artifactId>
+                <version>0.0.14</version>
             </dependency>
 
             <dependency>
@@ -342,18 +342,18 @@
                 <version>2.3.0</version>
             </dependency>
             <dependency>
-                <!-- org.asynchttpclient:async-http-client:2.16.1
-                     vs org.asynchttpclient:async-http-client:2.16.1
-                     vs com.typesafe.slick:slick_2.12:3.2.3 -->
-                <groupId>org.reactivestreams</groupId>
-                <artifactId>reactive-streams</artifactId>
-                <version>1.0.4</version>
+                <!-- org.scalatra:scalatra-jakarta_2.12:3.1.2
+                     vs com.typesafe.slick:slick_2.12:3.4.1
+                     vs org.scalatra:scalatra-scalatest-jakarta_2.12:3.1.2 -->
+                <groupId>org.scala-lang.modules</groupId>
+                <artifactId>scala-collection-compat_2.12</artifactId>
+                <version>2.13.0</version>
             </dependency>
             <dependency>
                 <!-- com.sksamuel.elastic4s:elastic4s-client-esjava_2.12:8.11.5
                      vs com.sksamuel.elastic4s:elastic4s-core_2.12:8.11.5
                      vs com.sksamuel.elastic4s:elastic4s-json-json4s_2.12:8.11.5
-                     vs com.typesafe.slick:slick_2.12:3.2.3
+                     vs com.typesafe.slick:slick_2.12:3.4.1
                      vs fi.oph.kouta:kouta-common:3.0.2-SNAPSHOT -->
                 <groupId>com.typesafe</groupId>
                 <artifactId>config</artifactId>
@@ -370,8 +370,7 @@
                      vs com.sksamuel.elastic4s:elastic4s-client-esjava_2.12:8.11.5
                      vs com.sksamuel.elastic4s:elastic4s-core_2.12:8.11.5
                      vs com.sksamuel.elastic4s:elastic4s-json-json4s_2.12:8.11.5
-                     vs com.typesafe.slick:slick_2.12:3.2.3
-                     vs com.typesafe.slick:slick-hikaricp_2.12:3.2.3
+                     vs com.typesafe.slick:slick_2.12:3.4.1
                      vs fi.oph.kouta:kouta-common:3.0.2-SNAPSHOT
                      vs org.scalatra:scalatra-scalatest-jakarta_2.12:3.1.2
                      vs org.testcontainers:elasticsearch:1.21.4
@@ -476,7 +475,7 @@
 
         <dependency>
             <groupId>com.github.takezoe</groupId>
-            <artifactId>blocking-slick-32_2.12</artifactId>
+            <artifactId>blocking-slick_2.12</artifactId>
         </dependency>
         <dependency>
             <groupId>com.typesafe.slick</groupId>
