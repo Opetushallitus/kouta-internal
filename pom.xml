@@ -27,7 +27,7 @@
         <!-- Utility properties -->
         <json4s.version>4.0.7</json4s.version>
         <scalactic.version>3.2.20</scalactic.version>
-        <logback-access.version>2.0.12</logback-access.version>
+        <logback-access.version>2.0.13</logback-access.version>
 
         <!-- Cas properties -->
         <java-cas.version>2.0.0-SNAPSHOT</java-cas.version>
