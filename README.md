@@ -112,7 +112,7 @@ esim. untuva-app-kouta-internal
 
 Projekti käyttää [Scalafmt](https://scalameta.org/scalafmt/) formatteria ja mavenin 
 [Spotless](https://github.com/diffplug/spotless/tree/master/plugin-maven) 
-pluginia koodin formatoinnin tarkastamiseen. SKoodin tyyli korjataa käännöksen yhteydessä ajamalla spotless:apply. Voit
+pluginia koodin formatoinnin tarkastamiseen. Koodin tyyli korjataan käännöksen yhteydessä ajamalla spotless:apply. Voit
 vaihtaa idean scalan code style asetuksista formatteriksi scalafmt ja laittaa vaikka päälle
 automaattisen formatoinnin tallennuksen yhteydessä. Spotlessin voi ajaa lokaalisti komennolla
 `mvn spotless:check` tai idean maven-valikosta.

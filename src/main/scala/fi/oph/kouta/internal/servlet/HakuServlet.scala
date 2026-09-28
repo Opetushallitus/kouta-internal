@@ -76,7 +76,7 @@ class HakuServlet(hakuService: HakuService, val sessionDAO: SessionDAO)
       |              type: string
       |          required: false
       |          description: Organisaatio joka on haun hakukohteen tarjoaja
-      |          example: 1.2.246.562.10.00000000001,1.2.246.562.10.00000000002
+      |          example: [1.2.246.562.10.00000000001,1.2.246.562.10.00000000002]
       |        - in: query
       |          name: includeHakukohdeOids
       |          schema:
