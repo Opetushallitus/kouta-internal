@@ -85,11 +85,18 @@ class HakuServlet(hakuService: HakuService, val sessionDAO: SessionDAO)
       |          description: hakukohteen oidit paluuarvoon
       |          example: true
       |        - in: query
-      |          name: vuosi
+      |          name: hakuvuosi
       |          schema:
       |            type: integer
       |          required: false
-      |          description: viimeiseksi alkaneen hakuajan vuosi tai koulutuksen alkamisvuosi
+      |          description: Haun hakuajan vuosi
+      |          example: 2022
+      |        - in: query
+      |          name: koulutuksenAlkamisvuosi
+      |          schema:
+      |            type: integer
+      |          required: false
+      |          description: Koulutuksen alkamisvuosi
       |          example: 2022
       |      responses:
       |        '200':
@@ -108,13 +115,17 @@ class HakuServlet(hakuService: HakuService, val sessionDAO: SessionDAO)
     val ataruId = params.get("ataruId")
     val tarjoaja: Option[Set[OrganisaatioOid]] =
       multiParams.get("tarjoaja").map(_.filter(_.nonEmpty).flatMap(_.split(",")).map(OrganisaatioOid).toSet)
-    val vuosi = params.getAs[Int]("vuosi")
+    val hakuvuosi               = params.getAs[Int]("hakuvuosi")
+    val koulutuksenAlkamisvuosi = params.getAs[Int]("koulutuksenAlkamisvuosi")
     val includeHakukohdeOids = params.get("includeHakukohdeOids").exists {
       case "true"  => true
       case "false" => false
     }
 
-    logger.debug(s"Request: /haku/search | ataruId: ${ataruId} | tarjoaja: ${tarjoaja}")
+    logger.debug(
+      s"Request: /haku/search | ataruId: ${ataruId} | tarjoaja: ${tarjoaja} | " +
+        s"hakuvuosi: ${hakuvuosi} | koulutuksenAlkamisvuosi: ${koulutuksenAlkamisvuosi}"
+    )
 
     new AsyncResult() {
       override implicit def timeout: Duration = 5.minutes
@@ -122,7 +133,10 @@ class HakuServlet(hakuService: HakuService, val sessionDAO: SessionDAO)
       override val is: Future[ActionResult] = tarjoaja match {
         case Some(oids) if oids.exists(!_.isValid) =>
           Future.successful(BadRequest(s"Invalid tarjoaja ${oids.find(!_.isValid()).get.toString}"))
-        case tarjoaja => hakuService.search(ataruId, tarjoaja, vuosi, includeHakukohdeOids).map(Ok(_))
+        case tarjoaja =>
+          hakuService
+            .search(ataruId, tarjoaja, hakuvuosi, koulutuksenAlkamisvuosi, includeHakukohdeOids)
+            .map(Ok(_))
       }
     }
 

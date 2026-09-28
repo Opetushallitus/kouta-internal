@@ -58,12 +58,15 @@ class HakuClient(val index: String, val client: ElasticClient)
   def search(
       ataruId: Option[String],
       tarjoajaOids: Option[Set[OrganisaatioOid]],
-      vuosi: Option[Int],
+      hakuvuosi: Option[Int],
+      koulutuksenAlkamisvuosi: Option[Int],
       includeHakukohdeOids: Boolean
   ): Future[Seq[Haku]] = {
-    val ataruIdQuery      = ataruId.map(termsQuery("hakulomakeAtaruId.keyword", _))
-    val alkamisvuosiQuery = vuosi.map(termsQuery("metadata.koulutuksenAlkamiskausi.koulutuksenAlkamisvuosi", _))
-    val hakuvuosiQuery    = vuosi.map(termsQuery("hakuvuosi", _))
+    val ataruIdQuery   = ataruId.map(termsQuery("hakulomakeAtaruId.keyword", _))
+    val hakuvuosiQuery = hakuvuosi.map(termsQuery("hakuvuosi", _))
+    val alkamisvuosiQuery = koulutuksenAlkamisvuosi.map(v =>
+      termsQuery("metadata.koulutuksenAlkamiskausi.koulutuksenAlkamisvuosi.keyword", v.toString)
+    )
     val tarjoajaQuery = tarjoajaOids.map(oids =>
       should(
         oids.map(oid =>
@@ -74,7 +77,7 @@ class HakuClient(val index: String, val client: ElasticClient)
         )
       )
     )
-    val query = ataruIdQuery ++ tarjoajaQuery ++ alkamisvuosiQuery ++ hakuvuosiQuery
+    val query = ataruIdQuery ++ tarjoajaQuery ++ hakuvuosiQuery ++ alkamisvuosiQuery
     searchItems[HakuIndexed](if (query.isEmpty) None else Some(must(query)))
       .map(_.filter(byTarjoajaAndTila(tarjoajaOids, _)).map(_.toHaku(includeHakukohdeOids)))
   }
