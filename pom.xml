@@ -22,15 +22,16 @@
         <maven.compiler.source>21</maven.compiler.source>
         <maven.compiler.target>21</maven.compiler.target>
 
-        <netty.version>4.2.17.Final</netty.version>
+        <netty.version>4.2.18.Final</netty.version>
 
         <!-- Utility properties -->
         <json4s.version>4.0.7</json4s.version>
         <scalactic.version>3.2.20</scalactic.version>
         <logback-access.version>2.0.13</logback-access.version>
+        <slf4j.version>1.7.36</slf4j.version>
 
         <!-- Cas properties -->
-        <java-cas.version>2.0.0-SNAPSHOT</java-cas.version>
+        <java-cas.version>2.3.0-SNAPSHOT</java-cas.version>
 
         <!-- Http related properties -->
         <scalatra.version>3.1.2</scalatra.version>
@@ -149,7 +150,7 @@
             <dependency>
                 <groupId>org.asynchttpclient</groupId>
                 <artifactId>async-http-client</artifactId>
-                <version>2.16.1</version>
+                <version>3.0.12</version>
             </dependency>
 
             <dependency>
@@ -184,6 +185,18 @@
                 <groupId>org.reflections</groupId>
                 <artifactId>reflections</artifactId>
                 <version>0.10.2</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-api</artifactId>
+                <version>${slf4j.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-simple</artifactId>
+                <version>${slf4j.version}</version>
             </dependency>
 
             <dependency>
@@ -260,10 +273,12 @@
                 <version>3.0.2</version>
             </dependency>
             <dependency>
-                <!-- fi.oph.kouta:kouta-common:3.0.2-SNAPSHOT vs com.github.blemale:scaffeine_2.12:5.3.0 -->
+                <!-- fi.oph.kouta:kouta-common:3.0.2-SNAPSHOT
+                     vs com.github.blemale:scaffeine_2.12:5.3.0
+                     vs opiskelijavalinnat-utils:java-cas:2.3.0-SNAPSHOT -->
                 <groupId>com.google.errorprone</groupId>
                 <artifactId>error_prone_annotations</artifactId>
-                <version>2.35.1</version>
+                <version>2.48.0</version>
             </dependency>
             <dependency>
                 <!-- org.mock-server:mockserver-netty:5.5.1 vs fi.oph.kouta:kouta-common:3.0.2-SNAPSHOT -->
@@ -309,8 +324,8 @@
             <dependency>
                 <!-- io.swagger.parser.v3:swagger-parser-v3:2.1.46
                      vs org.scalatra:scalatra-jakarta_2.12:3.1.2
-                     vs opiskelijavalinnat-utils:java-cas:2.0.0-SNAPSHOT
                      vs fi.oph.kouta:kouta-common:3.0.2-SNAPSHOT
+                     vs opiskelijavalinnat-utils:java-cas:2.3.0-SNAPSHOT
                      vs org.mock-server:mockserver-netty:5.5.1 -->
                 <groupId>org.apache.commons</groupId>
                 <artifactId>commons-lang3</artifactId>
@@ -385,24 +400,10 @@
                 <version>4.4.16</version>
             </dependency>
             <dependency>
-                <!-- io.swagger.parser.v3:swagger-parser-v3:2.1.46
-                     vs org.asynchttpclient:async-http-client:2.16.1
-                     vs org.scalatra:scalatra-jakarta_2.12:3.1.2
-                     vs org.eclipse.jetty:jetty-server:12.1.12
-                     vs org.eclipse.jetty.ee10:jetty-ee10-webapp:12.1.12
-                     vs org.reflections:reflections:0.10.2
-                     vs opiskelijavalinnat-utils:java-cas:2.0.0-SNAPSHOT
-                     vs nl.gn0s1s:elastic4s-client-esjava_2.12:8.19.2
-                     vs nl.gn0s1s:elastic4s-core_2.12:8.19.2
-                     vs nl.gn0s1s:elastic4s-json-json4s_2.12:8.19.2
-                     vs com.typesafe.slick:slick_2.12:3.4.1
-                     vs fi.oph.kouta:kouta-common:3.0.2-SNAPSHOT
-                     vs org.scalatra:scalatra-scalatest-jakarta_2.12:3.1.2
-                     vs org.testcontainers:elasticsearch:1.21.4
-                     vs org.mock-server:mockserver-netty:5.5.1 -->
-                <groupId>org.slf4j</groupId>
-                <artifactId>slf4j-api</artifactId>
-                <version>1.7.36</version>
+                <!-- org.asynchttpclient:async-http-client:3.0.12 vs org.testcontainers:elasticsearch:1.21.4-->
+                <groupId>org.jetbrains</groupId>
+                <artifactId>annotations</artifactId>
+                <version>26.1.0</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
@@ -450,6 +451,16 @@
 
         <!-- Utility dependencies -->
         <dependency>
+            <groupId>fi.oph.kouta</groupId>
+            <artifactId>kouta-common</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.github.blemale</groupId>
+            <artifactId>scaffeine_2.12</artifactId>
+        </dependency>
+
+        <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
         </dependency>
@@ -469,6 +480,16 @@
         <dependency>
             <groupId>org.reflections</groupId>
             <artifactId>reflections</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-simple</artifactId>
         </dependency>
 
         <dependency>
@@ -518,16 +539,6 @@
         <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>fi.oph.kouta</groupId>
-            <artifactId>kouta-common</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>com.github.blemale</groupId>
-            <artifactId>scaffeine_2.12</artifactId>
         </dependency>
 
         <!-- Test dependencies -->
