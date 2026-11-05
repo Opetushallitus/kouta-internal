@@ -297,6 +297,9 @@ case class PainotettuArvosana(koodiUri: Option[String], painokerroin: Option[Dou
     |        johtaaTutkintoon:
     |          type: boolean
     |          description: Onko koulutus tutkintoon johtavaa
+    |        kuuluuYosinPiiriin:
+    |          type: boolean
+    |          description: Kuuluuko hakukohde yhden opiskeluoikeuden säännön (YOS) piiriin. Päätelty kouta-backendissä.
     |
     |"""
 )
@@ -355,5 +358,6 @@ case class Hakukohde(
     jarjestyspaikkaHierarkiaNimi: Option[Kielistetty],
     opetuskieliKoodiUrit: Seq[String],
     johtaaTutkintoon: Option[Boolean],
-    koulutusasteKoodiUrit: Seq[String]
+    koulutusasteKoodiUrit: Seq[String],
+    kuuluuYosinPiiriin: Option[Boolean]
 ) extends PerustiedotWithOid
