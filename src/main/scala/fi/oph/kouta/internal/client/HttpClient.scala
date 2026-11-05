@@ -30,6 +30,7 @@ trait HttpClient extends CallerId {
     config()
       .setReadTimeout(defaultReadTimeout)
       .setConnectTimeout(defaultConnTimeout)
+      .setHttp2Enabled(false)
   )
 
   def asyncGet[T](
