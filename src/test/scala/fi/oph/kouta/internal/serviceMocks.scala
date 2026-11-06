@@ -11,6 +11,8 @@ import org.mockserver.model.HttpResponse.response
 import scala.io.Source
 import fi.oph.kouta.logging.Logging
 
+import java.net.{URI, URL}
+
 /* If you need to debug mocks,
    change log4j.logger.org.mockserver=INFO
    in test/resources/log4j.properties */
@@ -32,7 +34,7 @@ sealed trait ServiceMocks extends Logging {
 
   def clearServiceMocks() = mockServer.foreach(_.reset())
 
-  protected def getMockPath(key: String) = urlProperties.map(p => new java.net.URL(p.url(key)).getPath).getOrElse("/")
+  protected def getMockPath(key: String) = urlProperties.map(p => new URI(p.url(key)).getPath).getOrElse("/")
 
   protected def responseFromResource(filename: String) =
     Source.fromInputStream(getClass().getClassLoader().getResourceAsStream(s"data/$filename.json")).mkString

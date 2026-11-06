@@ -19,7 +19,7 @@ object EmbeddedJettyLauncher extends Logging {
     )
 
     logger.info(s"Starting standalone Kouta-intenal Jetty on port $port...")
-    logger.info(s"http://localhost:$port/kouta-external/swagger")
+    logger.info(s"http://localhost:$port/kouta-internal/swagger")
     new JettyLauncher(port).start().join()
   }
 }
