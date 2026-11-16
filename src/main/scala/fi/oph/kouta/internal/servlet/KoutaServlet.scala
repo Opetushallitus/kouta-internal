@@ -57,6 +57,10 @@ trait KoutaServlet extends ScalatraServlet with KoutaJsonFormats with JacksonJso
     case None    => throw new IllegalArgumentException("Otsake If-Unmodified-Since on pakollinen.")
   }
 
+  // Virheellinen arvo heittää IllegalArgumentExceptionin, josta error-käsittelijä palauttaa 400.
+  protected def parseParam[T](name: String)(parse: String => T): Option[T] =
+    params.get(name).map(v => Try(parse(v)).getOrElse(throw new IllegalArgumentException(s"Invalid $name: $v")))
+
   def errorMsgFromRequest(): String = {
     def msgBody = request.body.length match {
       case x if x > 500000 => request.body.substring(0, 500000)
