@@ -73,6 +73,25 @@ class HakukohdeSpec extends HakukohdeFixture with AccessControlSpec with Generic
     )
   }
 
+  it should "accept all parameter case-insensitively" in {
+    val hakukohteet = get[Seq[Hakukohde]](
+      s"$HakukohdePath/search?all=TRUE&haku=${hakuOid.s}&tarjoaja=${ParentOid.s}",
+      defaultSessionId
+    )
+    hakukohteet.map(_.oid) should contain theSameElementsAs Seq(hakukohdeOid1, hakukohdeOid2)
+  }
+
+  it should "return 400 for invalid all parameter" in {
+    Seq("yes", "").foreach { value =>
+      get(s"$HakukohdePath/search?all=$value&haku=${hakuOid.s}", headers = Seq(defaultSessionHeader)) {
+        withClue(body) {
+          status should equal(400)
+        }
+        body should include(s"Invalid all: $value")
+      }
+    }
+  }
+
   it should "return 404 if haku does not exist" in {
     get(s"$HakukohdePath/search?haku=${nonExistingHakuOid.s}", headers = Seq(defaultSessionHeader)) {
       status should equal(404)
