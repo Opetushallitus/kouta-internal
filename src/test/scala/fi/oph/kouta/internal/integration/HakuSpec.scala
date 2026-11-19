@@ -128,7 +128,7 @@ class HakuSpec extends HakuFixture with AccessControlSpec {
     get[Seq[Haku]](s"$HakuPath/search?koulutuksenAlkamisvuosi=2025", defaultSessionId) should be(empty)
   }
 
-  // hakuOid3:n hakuvuosi eroaa koulutuksen alkamisvuodesta, joten sillä erotetaan hakuehdot toisistaan.
+  // Testit asettavat hakuOid3:n hakuvuodeksi 2025 (alkamisvuosi pysyy 2026), jotta hakuehdot voidaan erottaa toisistaan.
   "hakuvuosi and koulutuksenAlkamisvuosi" should "filter independently of each other" in {
     updateExistingHakuHakuvuosi(hakuOid3.s, 2025)
     try {
@@ -253,16 +253,16 @@ class HakuSpec extends HakuFixture with AccessControlSpec {
 
   private def updateExistingHaku(hakuOid: String, field: (String, Any)): Unit = {
     import com.sksamuel.elastic4s.ElasticDsl._
+    import com.sksamuel.elastic4s.requests.common.RefreshPolicy
     import scala.concurrent.ExecutionContext.Implicits.global
     import scala.concurrent.Await
     import scala.concurrent.duration.Duration
 
+    // Refresh heti, jotta muokattu haku on haettavissa seuraavassa kyselyssä.
     val updateOperation = TempElasticClient.client.execute {
-      updateById("haku-kouta-virkailija", hakuOid).doc(field)
+      updateById("haku-kouta-virkailija", hakuOid).doc(field).refresh(RefreshPolicy.Immediate)
     }
 
     Await.result(updateOperation, Duration.Inf)
-    // Elasticsearch refreshaa oletuksena sekunnin välein. Odotetaan sekunti että muokattu haku on haettavissa.
-    Thread.sleep(1000)
   }
 }
