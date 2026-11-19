@@ -92,18 +92,177 @@ class HakuSpec extends HakuFixture with AccessControlSpec {
     updateExistingHakuToCertainTila(hakuOid1.s, "julkaistu")
   }
 
-  private def updateExistingHakuToCertainTila(hakuOid: String, tila: String): Unit = {
+  "Search by hakuvuosi" should "find haut based on hakuvuosi" in {
+    val haut = get[Seq[Haku]](s"$HakuPath/search?hakuvuosi=2026", defaultSessionId)
+
+    haut.map(_.oid) should contain theSameElementsAs Seq(
+      hakuOid1,
+      hakuOid2,
+      hakuOid3,
+      hakuOid4,
+      hakuOid5,
+      hakuOid6,
+      hakuOid7
+    )
+  }
+
+  it should "return 200 with an empty list if no haut match the hakuvuosi" in {
+    get[Seq[Haku]](s"$HakuPath/search?hakuvuosi=2025", defaultSessionId) should be(empty)
+  }
+
+  "Search by koulutuksenAlkamisvuosi" should "find haut based on koulutuksen alkamisvuosi" in {
+    val haut = get[Seq[Haku]](s"$HakuPath/search?koulutuksenAlkamisvuosi=2026", defaultSessionId)
+
+    haut.map(_.oid) should contain theSameElementsAs Seq(
+      hakuOid1,
+      hakuOid2,
+      hakuOid3,
+      hakuOid4,
+      hakuOid5,
+      hakuOid6,
+      hakuOid7
+    )
+  }
+
+  it should "return 200 with an empty list if no haut match the koulutuksen alkamisvuosi" in {
+    get[Seq[Haku]](s"$HakuPath/search?koulutuksenAlkamisvuosi=2025", defaultSessionId) should be(empty)
+  }
+
+  // Testit asettavat hakuOid3:n hakuvuodeksi 2025 (alkamisvuosi pysyy 2026), jotta hakuehdot voidaan erottaa toisistaan.
+  "hakuvuosi and koulutuksenAlkamisvuosi" should "filter independently of each other" in {
+    updateExistingHakuHakuvuosi(hakuOid3.s, 2025)
+    try {
+      get[Seq[Haku]](s"$HakuPath/search?hakuvuosi=2025", defaultSessionId)
+        .map(_.oid) should contain theSameElementsAs Seq(hakuOid3)
+
+      // Haku löytyy alkamisvuodella vaikka sen hakuvuosi on eri. Vanha yhdistetty vuosi-parametri pudotti tämän.
+      get[Seq[Haku]](s"$HakuPath/search?koulutuksenAlkamisvuosi=2026", defaultSessionId)
+        .map(_.oid) should contain(hakuOid3)
+    } finally {
+      updateExistingHakuHakuvuosi(hakuOid3.s, 2026)
+    }
+  }
+
+  it should "combine the two parameters with AND" in {
+    updateExistingHakuHakuvuosi(hakuOid3.s, 2025)
+    try {
+      get[Seq[Haku]](s"$HakuPath/search?hakuvuosi=2025&koulutuksenAlkamisvuosi=2026", defaultSessionId)
+        .map(_.oid) should contain theSameElementsAs Seq(hakuOid3)
+
+      get[Seq[Haku]](s"$HakuPath/search?hakuvuosi=2026&koulutuksenAlkamisvuosi=2026", defaultSessionId)
+        .map(_.oid) should contain theSameElementsAs Seq(
+        hakuOid1,
+        hakuOid2,
+        hakuOid4,
+        hakuOid5,
+        hakuOid6,
+        hakuOid7
+      )
+
+      get[Seq[Haku]](
+        s"$HakuPath/search?hakuvuosi=2025&koulutuksenAlkamisvuosi=2025",
+        defaultSessionId
+      ) should be(empty)
+    } finally {
+      updateExistingHakuHakuvuosi(hakuOid3.s, 2026)
+    }
+  }
+
+  it should "combine with ataruId" in {
+    val haut = get[Seq[Haku]](s"$HakuPath/search?ataruId=$ataruId1&hakuvuosi=2026", defaultSessionId)
+
+    haut.map(_.oid) should contain theSameElementsAs Seq(
+      hakuOid1,
+      hakuOid2,
+      hakuOid5,
+      hakuOid6,
+      hakuOid7
+    )
+
+    get[Seq[Haku]](s"$HakuPath/search?ataruId=$ataruId1&hakuvuosi=2025", defaultSessionId) should be(empty)
+  }
+
+  "Search parameter validation" should "return 400 for removed vuosi parameter" in {
+    expectBadRequest("vuosi=2026", "vuosi is not supported")
+  }
+
+  it should "return 400 for non-numeric hakuvuosi" in {
+    expectBadRequest("hakuvuosi=abc", "Invalid hakuvuosi: abc")
+  }
+
+  it should "return 400 for non-numeric koulutuksenAlkamisvuosi" in {
+    expectBadRequest("koulutuksenAlkamisvuosi=abc", "Invalid koulutuksenAlkamisvuosi: abc")
+  }
+
+  it should "return 400 for invalid includeHakukohdeOids" in {
+    expectBadRequest("includeHakukohdeOids=foo", "Invalid includeHakukohdeOids: foo")
+  }
+
+  it should "return 400 for ataruId that is not an UUID" in {
+    expectBadRequest("ataruId=not-a-uuid", "Invalid ataruId: not-a-uuid")
+  }
+
+  it should "return 400 for invalid tarjoaja" in {
+    expectBadRequest("tarjoaja=1.2.246.562.10.00000000001,foo", "Invalid tarjoaja foo")
+  }
+
+  it should "return 400 for invalid tarjoaja given as repeated parameter" in {
+    expectBadRequest(s"tarjoaja=${ChildOid.s}&tarjoaja=foo", "Invalid tarjoaja foo")
+  }
+
+  it should "return 400 for empty values" in {
+    expectBadRequest("hakuvuosi=", "Invalid hakuvuosi: ")
+    expectBadRequest("koulutuksenAlkamisvuosi=", "Invalid koulutuksenAlkamisvuosi: ")
+    expectBadRequest("ataruId=", "Invalid ataruId: ")
+    expectBadRequest("includeHakukohdeOids=", "Invalid includeHakukohdeOids: ")
+  }
+
+  it should "include hakukohdeOids only when includeHakukohdeOids is true, case-insensitively" in {
+    def hakukohdeOidsIncluded(value: String): Seq[Boolean] =
+      get[Seq[Haku]](s"$HakuPath/search?ataruId=$ataruId1&includeHakukohdeOids=$value", defaultSessionId)
+        .map(_.hakukohdeOids.isDefined)
+
+    hakukohdeOidsIncluded("true") should (not be empty and contain only true)
+    hakukohdeOidsIncluded("TRUE") should (not be empty and contain only true)
+    hakukohdeOidsIncluded("false") should (not be empty and contain only false)
+    get[Seq[Haku]](s"$HakuPath/search?ataruId=$ataruId1", defaultSessionId)
+      .map(_.hakukohdeOids) should contain only None
+  }
+
+  it should "accept valid parameters together" in {
+    get[Seq[Haku]](
+      s"$HakuPath/search?ataruId=$ataruId1&tarjoaja=${ChildOid.s}&includeHakukohdeOids=true" +
+        "&hakuvuosi=2026&koulutuksenAlkamisvuosi=2026",
+      defaultSessionId
+    )
+  }
+
+  private def expectBadRequest(query: String, expectedError: String): Unit =
+    get(s"$HakuPath/search?$query", headers = Seq(defaultSessionHeader)) {
+      withClue(body) {
+        status should equal(400)
+      }
+      body should include(expectedError)
+    }
+
+  private def updateExistingHakuToCertainTila(hakuOid: String, tila: String): Unit =
+    updateExistingHaku(hakuOid, "tila" -> tila)
+
+  private def updateExistingHakuHakuvuosi(hakuOid: String, hakuvuosi: Int): Unit =
+    updateExistingHaku(hakuOid, "hakuvuosi" -> hakuvuosi)
+
+  private def updateExistingHaku(hakuOid: String, field: (String, Any)): Unit = {
     import com.sksamuel.elastic4s.ElasticDsl._
+    import com.sksamuel.elastic4s.requests.common.RefreshPolicy
     import scala.concurrent.ExecutionContext.Implicits.global
     import scala.concurrent.Await
     import scala.concurrent.duration.Duration
 
+    // Refresh heti, jotta muokattu haku on haettavissa seuraavassa kyselyssä.
     val updateOperation = TempElasticClient.client.execute {
-      updateById("haku-kouta-virkailija", hakuOid).doc("tila" -> tila)
+      updateById("haku-kouta-virkailija", hakuOid).doc(field).refresh(RefreshPolicy.Immediate)
     }
 
     Await.result(updateOperation, Duration.Inf)
-    // Elasticsearch refreshaa oletuksena sekunnin välein. Odotetaan sekunti että muokattu haku on haettavissa.
-    Thread.sleep(1000)
   }
 }
