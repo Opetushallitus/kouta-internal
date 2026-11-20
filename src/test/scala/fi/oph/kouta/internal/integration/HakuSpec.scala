@@ -111,14 +111,38 @@ class HakuSpec extends HakuFixture with AccessControlSpec {
     get[Seq[Haku]](s"$HakuPath/search?hakukohderyhmat=1.2.246.562.28.00000000003", defaultSessionId) should be(empty)
   }
 
-  it should "combine provider and group matches with OR" in {
-    val providerQuery = "tarjoaja=1.2.246.562.10.00000000001"
+  it should "keep root provider searches unrestricted when groups are supplied" in {
+    val providerQuery = s"tarjoaja=$rootOrganisaatio"
     val providerHaut  = get[Seq[Haku]](s"$HakuPath/search?$providerQuery", defaultSessionId)
     val haut = get[Seq[Haku]](
       s"$HakuPath/search?$providerQuery&hakukohderyhmat=1.2.246.562.28.00000000002",
       defaultSessionId
     )
-    haut.map(_.oid).toSet shouldEqual (providerHaut.map(_.oid).toSet + hakuOid7)
+    haut.map(_.oid).toSet shouldEqual providerHaut.map(_.oid).toSet
+  }
+
+  it should "include provider matches outside the supplied groups" in {
+    val haut = get[Seq[Haku]](
+      s"$HakuPath/search?tarjoaja=$ChildOid&hakukohderyhmat=1.2.246.562.28.00000000001",
+      defaultSessionId
+    )
+    haut.map(_.oid) should contain theSameElementsAs Seq(hakuOid1, hakuOid7)
+  }
+
+  it should "include group matches when the provider has no matching hakukohteet" in {
+    val haut = get[Seq[Haku]](
+      s"$HakuPath/search?tarjoaja=$GrandChildOid&hakukohderyhmat=1.2.246.562.28.00000000001",
+      defaultSessionId
+    )
+    haut.map(_.oid) should contain theSameElementsAs Seq(hakuOid1)
+  }
+
+  it should "keep Ataru restrictions with a root provider and an empty group" in {
+    val haut = get[Seq[Haku]](
+      s"$HakuPath/search?tarjoaja=$rootOrganisaatio&ataruId=$ataruId1&hakukohderyhmat=1.2.246.562.28.00000000003",
+      defaultSessionId
+    )
+    haut.map(_.oid) should contain theSameElementsAs Seq(hakuOid1, hakuOid2, hakuOid5, hakuOid6, hakuOid7)
   }
 
   it should "apply Ataru restrictions also to group matches" in {

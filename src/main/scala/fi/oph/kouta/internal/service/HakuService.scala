@@ -1,5 +1,6 @@
 package fi.oph.kouta.internal.service
 
+import fi.oph.kouta.internal.KoutaConfigurationFactory
 import fi.oph.kouta.internal.client.{HakukohderyhmaClient, OrganisaatioClient}
 import fi.oph.kouta.internal.domain.Haku
 import fi.oph.kouta.internal.domain.oid.{HakuOid, HakukohdeOid, HakukohderyhmaOid, OrganisaatioOid}
@@ -21,10 +22,15 @@ class HakuService(hakuClient: HakuClient, hakukohderyhmaClient: HakukohderyhmaCl
       hakukohderyhmaOids: Option[Set[HakukohderyhmaOid]] = None
   )(implicit
       authenticated: Authenticated
-  ): Future[Seq[Haku]] =
+  ): Future[Seq[Haku]] = {
+    val rootOrganisaatioOid = KoutaConfigurationFactory.configuration.securityConfiguration.rootOrganisaatio
+    val withRootOikeus      = tarjoajaOids.exists(_.contains(rootOrganisaatioOid))
+    // Juuriorganisaation tarjoajarajaus kattaa kaikki haut myös ryhmärajauksen kanssa.
+    val ryhmaRajaus = if (withRootOikeus) None else hakukohderyhmaOids
+
     for {
       tarjoajat <- OrganisaatioClient.asyncGetAllChildOidsFlat(tarjoajaOids)
-      hakukohteet <- hakukohderyhmaOids match {
+      hakukohteet <- ryhmaRajaus match {
         case None => Future.successful(Option.empty[Set[HakukohdeOid]])
         case Some(oids) =>
           Future
@@ -33,6 +39,7 @@ class HakuService(hakuClient: HakuClient, hakukohderyhmaClient: HakukohderyhmaCl
       }
       haut <- hakuClient.search(ataruId, tarjoajat, vuosi, includeHakukohdeOids, hakukohteet)
     } yield haut
+  }
 
 }
 
