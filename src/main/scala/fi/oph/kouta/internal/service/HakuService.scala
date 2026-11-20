@@ -36,4 +36,4 @@ class HakuService(hakuClient: HakuClient, hakukohderyhmaClient: HakukohderyhmaCl
 
 }
 
-object HakuService extends HakuService(HakuClient)
+object HakuService extends HakuService(HakuClient, new HakukohderyhmaClient)
