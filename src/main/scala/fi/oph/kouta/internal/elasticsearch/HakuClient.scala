@@ -7,7 +7,7 @@ import com.sksamuel.elastic4s.requests.searches.queries.Query
 import fi.oph.kouta.internal.domain.enums.Julkaisutila
 import fi.oph.kouta.internal.domain.enums.Julkaisutila.Tallennettu
 import fi.oph.kouta.internal.domain.indexed.HakuIndexed
-import fi.oph.kouta.internal.domain.oid.{HakuOid, OrganisaatioOid}
+import fi.oph.kouta.internal.domain.oid.{HakuOid, HakukohdeOid, OrganisaatioOid}
 import fi.oph.kouta.internal.domain.{Haku, OdwHaku}
 import fi.oph.kouta.internal.util.{ElasticCache, KoutaJsonFormats}
 import fi.oph.kouta.logging.Logging
@@ -42,24 +42,29 @@ class HakuClient(val index: String, val client: ElasticClient)
         Future.failed(new NoSuchElementException(s"Haku not found from Elastic! Didn't find id $oid"))
     }
 
-  private def byTarjoajaAndTila(tarjoajaOids: Option[Set[OrganisaatioOid]], haku: HakuIndexed): Boolean =
-    tarjoajaOids.fold(true)(oids =>
-      haku.hakukohteet.exists(hakukohde => {
-        hakukohde.tila match {
-          case Tallennettu => false
-          case _ =>
+  private def byTarjoajaOrHakukohderyhmaAndTila(
+      tarjoajaOids: Option[Set[OrganisaatioOid]],
+      hakukohdeOids: Option[Set[HakukohdeOid]],
+      haku: HakuIndexed
+  ): Boolean =
+    if (tarjoajaOids.isEmpty && hakukohdeOids.isEmpty) true
+    else
+      haku.hakukohteet.exists(hakukohde =>
+        hakukohde.tila != Tallennettu && (
+          tarjoajaOids.exists(oids =>
             hakukohde.jarjestyspaikka.fold(hakukohde.toteutus.tarjoajat.exists(t => oids.contains(t.oid)))(j =>
               oids.contains(j.oid)
             )
-        }
-      })
-    )
+          ) || hakukohdeOids.exists(_.contains(hakukohde.oid))
+        )
+      )
 
   def search(
       ataruId: Option[String],
       tarjoajaOids: Option[Set[OrganisaatioOid]],
       vuosi: Option[Int],
-      includeHakukohdeOids: Boolean
+      includeHakukohdeOids: Boolean,
+      hakukohderyhmanHakukohdeOids: Option[Set[HakukohdeOid]] = None
   ): Future[Seq[Haku]] = {
     val ataruIdQuery      = ataruId.map(termsQuery("hakulomakeAtaruId.keyword", _))
     val alkamisvuosiQuery = vuosi.map(termsQuery("metadata.koulutuksenAlkamiskausi.koulutuksenAlkamisvuosi", _))
@@ -74,9 +79,18 @@ class HakuClient(val index: String, val client: ElasticClient)
         )
       )
     )
-    val query = ataruIdQuery ++ tarjoajaQuery ++ alkamisvuosiQuery ++ hakuvuosiQuery
+    val ryhmaQuery          = hakukohderyhmanHakukohdeOids.map(oids => termsQuery("hakukohteet.oid", oids.map(_.toString)))
+    val organizationQueries = tarjoajaQuery.toSeq ++ ryhmaQuery.toSeq
+    val organizationQuery =
+      if (organizationQueries.isEmpty) None
+      else Some(should(organizationQueries).minimumShouldMatch(1))
+    val query = ataruIdQuery ++ organizationQuery ++ alkamisvuosiQuery ++ hakuvuosiQuery
     searchItems[HakuIndexed](if (query.isEmpty) None else Some(must(query)))
-      .map(_.filter(byTarjoajaAndTila(tarjoajaOids, _)).map(_.toHaku(includeHakukohdeOids)))
+      .map(
+        _.filter(byTarjoajaOrHakukohderyhmaAndTila(tarjoajaOids, hakukohderyhmanHakukohdeOids, _)).map(
+          _.toHaku(includeHakukohdeOids)
+        )
+      )
   }
 
   def hakuOidsByJulkaisutila(

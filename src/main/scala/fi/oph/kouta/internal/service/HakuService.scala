@@ -1,15 +1,15 @@
 package fi.oph.kouta.internal.service
 
-import fi.oph.kouta.internal.client.OrganisaatioClient
+import fi.oph.kouta.internal.client.{HakukohderyhmaClient, OrganisaatioClient}
 import fi.oph.kouta.internal.domain.Haku
-import fi.oph.kouta.internal.domain.oid.{HakuOid, OrganisaatioOid}
+import fi.oph.kouta.internal.domain.oid.{HakuOid, HakukohdeOid, HakukohderyhmaOid, OrganisaatioOid}
 import fi.oph.kouta.internal.elasticsearch.HakuClient
 import fi.oph.kouta.internal.security.Authenticated
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class HakuService(hakuClient: HakuClient) {
+class HakuService(hakuClient: HakuClient, hakukohderyhmaClient: HakukohderyhmaClient = new HakukohderyhmaClient) {
   def get(oid: HakuOid)(implicit authenticated: Authenticated): Future[Haku] =
     hakuClient.getHaku(oid)
 
@@ -17,13 +17,22 @@ class HakuService(hakuClient: HakuClient) {
       ataruId: Option[String],
       tarjoajaOids: Option[Set[OrganisaatioOid]],
       vuosi: Option[Int] = None,
-      includeHakukohdeOids: Boolean = false
+      includeHakukohdeOids: Boolean = false,
+      hakukohderyhmaOids: Option[Set[HakukohderyhmaOid]] = None
   )(implicit
       authenticated: Authenticated
   ): Future[Seq[Haku]] =
-    OrganisaatioClient
-      .asyncGetAllChildOidsFlat(tarjoajaOids)
-      .flatMap(oids => hakuClient.search(ataruId, oids, vuosi, includeHakukohdeOids))
+    for {
+      tarjoajat <- OrganisaatioClient.asyncGetAllChildOidsFlat(tarjoajaOids)
+      hakukohteet <- hakukohderyhmaOids match {
+        case None => Future.successful(Option.empty[Set[HakukohdeOid]])
+        case Some(oids) =>
+          Future
+            .sequence(oids.toSeq.map(hakukohderyhmaClient.getHakukohteet))
+            .map(results => Some(results.flatten.toSet))
+      }
+      haut <- hakuClient.search(ataruId, tarjoajat, vuosi, includeHakukohdeOids, hakukohteet)
+    } yield haut
 
 }
 
