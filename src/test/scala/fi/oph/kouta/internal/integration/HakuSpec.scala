@@ -92,6 +92,73 @@ class HakuSpec extends HakuFixture with AccessControlSpec {
     updateExistingHakuToCertainTila(hakuOid1.s, "julkaistu")
   }
 
+  "Search by hakukohderyhmat" should "find only haut containing group hakukohteet" in {
+    val haut = get[Seq[Haku]](s"$HakuPath/search?hakukohderyhmat=1.2.246.562.28.00000000001", defaultSessionId)
+    haut.map(_.oid) should contain theSameElementsAs Seq(hakuOid1)
+  }
+
+  it should "support repeated and comma-separated groups" in {
+    Seq(
+      "hakukohderyhmat=1.2.246.562.28.00000000001&hakukohderyhmat=1.2.246.562.28.00000000002",
+      "hakukohderyhmat=1.2.246.562.28.00000000001,1.2.246.562.28.00000000002"
+    ).foreach { query =>
+      get[Seq[Haku]](s"$HakuPath/search?$query", defaultSessionId).map(_.oid) should
+        contain theSameElementsAs Seq(hakuOid1, hakuOid7)
+    }
+  }
+
+  it should "return no haut for an empty group" in {
+    get[Seq[Haku]](s"$HakuPath/search?hakukohderyhmat=1.2.246.562.28.00000000003", defaultSessionId) should be(empty)
+  }
+
+  it should "keep root provider searches unrestricted when groups are supplied" in {
+    val providerQuery = s"tarjoaja=$rootOrganisaatio"
+    val providerHaut  = get[Seq[Haku]](s"$HakuPath/search?$providerQuery", defaultSessionId)
+    val haut = get[Seq[Haku]](
+      s"$HakuPath/search?$providerQuery&hakukohderyhmat=1.2.246.562.28.00000000002",
+      defaultSessionId
+    )
+    haut.map(_.oid).toSet shouldEqual providerHaut.map(_.oid).toSet
+  }
+
+  it should "include provider matches outside the supplied groups" in {
+    val haut = get[Seq[Haku]](
+      s"$HakuPath/search?tarjoaja=$ChildOid&hakukohderyhmat=1.2.246.562.28.00000000001",
+      defaultSessionId
+    )
+    haut.map(_.oid) should contain theSameElementsAs Seq(hakuOid1, hakuOid7)
+  }
+
+  it should "include group matches when the provider has no matching hakukohteet" in {
+    val haut = get[Seq[Haku]](
+      s"$HakuPath/search?tarjoaja=$GrandChildOid&hakukohderyhmat=1.2.246.562.28.00000000001",
+      defaultSessionId
+    )
+    haut.map(_.oid) should contain theSameElementsAs Seq(hakuOid1)
+  }
+
+  it should "keep Ataru restrictions with a root provider and an empty group" in {
+    val haut = get[Seq[Haku]](
+      s"$HakuPath/search?tarjoaja=$rootOrganisaatio&ataruId=$ataruId1&hakukohderyhmat=1.2.246.562.28.00000000003",
+      defaultSessionId
+    )
+    haut.map(_.oid) should contain theSameElementsAs Seq(hakuOid1, hakuOid2, hakuOid5, hakuOid6, hakuOid7)
+  }
+
+  it should "apply Ataru restrictions also to group matches" in {
+    get[Seq[Haku]](
+      s"$HakuPath/search?ataruId=$ataruId3&hakukohderyhmat=1.2.246.562.28.00000000001",
+      defaultSessionId
+    ) should be(empty)
+  }
+
+  it should "reject invalid group OIDs" in {
+    get(s"$HakuPath/search?hakukohderyhmat=invalid", headers = Seq(defaultSessionHeader)) {
+      status should equal(400)
+      body should include("Invalid hakukohderyhmat")
+    }
+  }
+
   private def updateExistingHakuToCertainTila(hakuOid: String, tila: String): Unit = {
     import com.sksamuel.elastic4s.ElasticDsl._
     import scala.concurrent.ExecutionContext.Implicits.global
