@@ -16,14 +16,15 @@ class HakuService(hakuClient: HakuClient) {
   def search(
       ataruId: Option[String],
       tarjoajaOids: Option[Set[OrganisaatioOid]],
-      vuosi: Option[Int] = None,
+      hakuvuosi: Option[Int] = None,
+      koulutuksenAlkamisvuosi: Option[Int] = None,
       includeHakukohdeOids: Boolean = false
   )(implicit
       authenticated: Authenticated
   ): Future[Seq[Haku]] =
     OrganisaatioClient
       .asyncGetAllChildOidsFlat(tarjoajaOids)
-      .flatMap(oids => hakuClient.search(ataruId, oids, vuosi, includeHakukohdeOids))
+      .flatMap(oids => hakuClient.search(ataruId, oids, hakuvuosi, koulutuksenAlkamisvuosi, includeHakukohdeOids))
 
 }
 

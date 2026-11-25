@@ -120,10 +120,7 @@ class HakukohdeServlet(hakukohdeService: HakukohdeService, val sessionDAO: Sessi
       multiParams.get("hakukohderyhmat").map(_.filter(_.nonEmpty).flatMap(_.split(",")).map(HakukohderyhmaOid).toSet)
     val hakukohdeKoodi = params.get("hakukohdeKoodiUri").map(KoodiUri)
     val q              = params.get("q")
-    val all = params.get("all").exists {
-      case "true"  => true
-      case "false" => false
-    }
+    val all            = parseParam("all")(_.toBoolean).getOrElse(false)
 
     new AsyncResult() {
       override implicit def timeout: Duration = 5.minutes
