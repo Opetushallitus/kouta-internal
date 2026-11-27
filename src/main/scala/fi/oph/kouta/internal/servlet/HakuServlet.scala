@@ -1,7 +1,7 @@
 package fi.oph.kouta.internal.servlet
 
 import fi.oph.kouta.internal.database.SessionDAO
-import fi.oph.kouta.internal.domain.oid.{HakuOid, OrganisaatioOid}
+import fi.oph.kouta.internal.domain.oid.{HakuOid, HakukohderyhmaOid, OrganisaatioOid}
 import fi.oph.kouta.internal.security.Authenticated
 import fi.oph.kouta.internal.service.HakuService
 import fi.oph.kouta.internal.swagger.SwaggerPaths.registerPath
@@ -78,6 +78,15 @@ class HakuServlet(hakuService: HakuService, val sessionDAO: SessionDAO)
       |          description: Organisaatio joka on haun hakukohteen tarjoaja
       |          example: [1.2.246.562.10.00000000001,1.2.246.562.10.00000000002]
       |        - in: query
+      |          name: hakukohderyhmat
+      |          schema:
+      |            type: array
+      |            items:
+      |              type: string
+      |          required: false
+      |          description: Hakukohderyhmät, joiden hakukohteiden hakuja haetaan. Yhdistetään tarjoajarajaukseen TAI-ehdolla.
+      |          example: 1.2.246.562.28.00000000001,1.2.246.562.28.00000000002
+      |        - in: query
       |          name: includeHakukohdeOids
       |          schema:
       |            type: boolean
@@ -108,6 +117,8 @@ class HakuServlet(hakuService: HakuService, val sessionDAO: SessionDAO)
     val ataruId = params.get("ataruId")
     val tarjoaja: Option[Set[OrganisaatioOid]] =
       multiParams.get("tarjoaja").map(_.filter(_.nonEmpty).flatMap(_.split(",")).map(OrganisaatioOid).toSet)
+    val hakukohderyhmat: Option[Set[HakukohderyhmaOid]] =
+      multiParams.get("hakukohderyhmat").map(_.filter(_.nonEmpty).flatMap(_.split(",")).map(HakukohderyhmaOid).toSet)
     val vuosi = params.getAs[Int]("vuosi")
     val includeHakukohdeOids = params.get("includeHakukohdeOids").exists {
       case "true"  => true
@@ -119,10 +130,12 @@ class HakuServlet(hakuService: HakuService, val sessionDAO: SessionDAO)
     new AsyncResult() {
       override implicit def timeout: Duration = 5.minutes
 
-      override val is: Future[ActionResult] = tarjoaja match {
-        case Some(oids) if oids.exists(!_.isValid) =>
+      override val is: Future[ActionResult] = (tarjoaja, hakukohderyhmat) match {
+        case (Some(oids), _) if oids.exists(!_.isValid) =>
           Future.successful(BadRequest(s"Invalid tarjoaja ${oids.find(!_.isValid()).get.toString}"))
-        case tarjoaja => hakuService.search(ataruId, tarjoaja, vuosi, includeHakukohdeOids).map(Ok(_))
+        case (_, Some(oids)) if oids.exists(!_.isValid) =>
+          Future.successful(BadRequest(s"Invalid hakukohderyhmat ${oids.find(!_.isValid()).get.toString}"))
+        case (tarjoaja, ryhmat) => hakuService.search(ataruId, tarjoaja, vuosi, includeHakukohdeOids, ryhmat).map(Ok(_))
       }
     }
 
